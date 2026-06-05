@@ -384,7 +384,77 @@ Store merge decisions explicitly:
 }
 ```
 
-### 9. Validation and Review
+### 9. Adversarial Evidence Review
+
+Before final validation, extracted data should go through an adversarial evidence review step.
+
+This should not be a free-form autonomous agent. It should be a constrained reviewer whose job is to challenge the extracted data against the source text.
+
+The reviewer receives:
+
+- The original source chunk or source spans.
+- The extracted candidate entity, relation, secret, or scene packet.
+- The relevant schema.
+- The source references claimed by the extractor.
+- The current confidence score.
+
+The reviewer should look for:
+
+- Unsupported claims.
+- Contradictions with the source.
+- Overconfident inference.
+- Missing conditions.
+- Spoilers in player-safe fields.
+- Relations that are plausible but not actually supported.
+- Incorrect entity merges.
+- Important facts omitted from the extraction.
+
+Example review output:
+
+```json
+{
+  "review_id": "review_000123",
+  "target_type": "entity",
+  "target_id": "npc_mira",
+  "verdict": "needs_revision",
+  "issues": [
+    {
+      "type": "unsupported_claim",
+      "severity": "high",
+      "field": "gm_only.secrets[0]",
+      "reason": "The source says Mira is afraid of the symbol, but does not establish that she knows the cult leader.",
+      "suggested_fix": "Replace this secret with a weaker claim or lower confidence."
+    }
+  ],
+  "missing_information": [],
+  "confidence_adjustment": -0.25
+}
+```
+
+Recommended verdicts:
+
+```text
+pass
+needs_revision
+human_review
+```
+
+Avoid allowing the reviewer to rewrite the canonical extraction directly. The reviewer should produce objections and suggested fixes. A correction pass can then revise the extraction using the original source and the review output.
+
+Recommended loop:
+
+```text
+extract candidate
+schema validation
+adversarial evidence review
+single correction pass if needed
+final validation
+human review if still uncertain
+```
+
+The loop should be bounded. Do not allow endless extractor/reviewer debate during automated ingestion.
+
+### 10. Final Validation and Review
 
 The ingestion output should be validated before being used by the GM Agent.
 
@@ -397,6 +467,7 @@ Validation checks:
 - Scene packets do not include unrelated secrets.
 - Player-safe text does not contain obvious GM-only facts.
 - Low-confidence extraction is flagged.
+- Adversarial reviews are resolved or explicitly marked for human review.
 
 Manual review should be supported from the start, even if the interface is basic.
 
@@ -543,6 +614,41 @@ confidence
 metadata_json
 ```
 
+### extraction_reviews
+
+```text
+id
+campaign_id
+ingestion_run_id
+target_type
+target_id
+reviewer_model
+review_prompt_version
+verdict
+issues_json
+missing_information_json
+confidence_adjustment
+source_refs_json
+created_at
+```
+
+### correction_attempts
+
+```text
+id
+campaign_id
+ingestion_run_id
+target_type
+target_id
+review_id
+original_payload_json
+corrected_payload_json
+correction_model
+correction_prompt_version
+status
+created_at
+```
+
 ### secrets
 
 Secrets may be stored as typed entities, but a dedicated table can be useful.
@@ -687,15 +793,28 @@ Mid model:
 - relation extraction
 - reveal conditions
 - scene packet generation
+- adversarial evidence review for important entities and relations
 
 Strong model:
 - contradiction review
 - difficult entity resolution
 - quality audits
 - benchmark generation
+- sampled adversarial review of completed ingestion runs
 ```
 
 The exact model names should remain configurable.
+
+Suggested development setup:
+
+```text
+cheap extractor: gpt-5-nano
+default extractor: gpt-5-mini
+default reviewer: gpt-5-mini with a separate evidence-review prompt
+strong reviewer: gpt-5.2 for sampled audits or difficult contradictions
+```
+
+The reviewer can use the same model family as the extractor. The important difference is the role, prompt, schema, and requirement to ground every objection in the source.
 
 ## Ingestion Output Requirements
 
@@ -704,6 +823,7 @@ Every extracted fact should be:
 - Structured.
 - Source-backed.
 - Confidence-scored.
+- Reviewable by an adversarial evidence reviewer.
 - Traceable to an ingestion run.
 - Validated against a schema.
 - Correctable by a human.
@@ -776,6 +896,19 @@ Mitigation:
 - Store confidence.
 - Reject unsupported facts.
 - Keep source excerpts for review.
+- Run adversarial evidence review on extracted facts and relations.
+
+### Overzealous Adversarial Review
+
+The reviewer may object too often, invent weak objections, or create unnecessary correction loops.
+
+Mitigation:
+
+- Require objections to reference the source.
+- Use structured verdicts.
+- Limit automated correction to one pass.
+- Send unresolved disputes to human review.
+- Track reviewer false positives over time.
 
 ### Duplicate or Confused Entities
 
