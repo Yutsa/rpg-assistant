@@ -931,11 +931,23 @@ Mitigation:
 - Avoid exports that replace the original book.
 - Keep source references tied to the user's local/private document.
 
+## Roadmap: Map and Handout Assets
+
+Text-based ingestion does not capture image-only pages (maps, some handouts). On *Mondanités et Momie*, PDF pages 6 and 19 are full-page JPEGs with almost no extractable text.
+
+Planned work (Stage 1 extension):
+
+- Detect image-heavy pages during raw import (low text coverage + large embedded images).
+- Extract images with page number and bounding box; store as document assets linked to `page_id`.
+- Classify asset type (`map`, `handout`, `illustration`) — manually or via semantic layer later.
+- Surface assets in the GM workspace alongside chunks and source references.
+
+Handouts with a text layer are already covered by chunking; this item targets **graphical** assets only. Full-document OCR remains out of scope.
+
 ## Open Questions
 
 - How much manual review is acceptable after ingestion?
 - Should the first app be local-first to reduce copyright and privacy concerns?
-- Should maps and handouts be extracted as first-class assets?
 - How much rules-system awareness should ingestion include?
 - Should scene packets be generated ahead of time or dynamically at runtime?
 - Is a graph UI important for the MVP, or only for later exploration?

@@ -124,6 +124,10 @@ Turn a campaign PDF into a searchable structured campaign bible.
 
 Primary users: GMs preparing a campaign.
 
+Planned ingestion extensions for this stage:
+
+- **Map extraction**: detect PDF pages that are mostly images (plans, battle maps, handout maps) and store them as first-class assets linked to source pages — e.g. the Piémont city map and dungeon plans in *Mondanités et Momie*, which have no text layer today.
+
 ### Stage 2: GM Workspace
 
 Add session preparation, annotations, reveal tracking, and live navigation.
