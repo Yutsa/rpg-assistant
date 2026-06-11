@@ -16,6 +16,8 @@ dependencies = [
     "alembic>=1.13",
     "sqlalchemy>=2.0",
     "tiktoken>=0.7",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
 ]
 
 [dependency-groups]
@@ -27,6 +29,7 @@ dev = [
 [project.scripts]
 rpg-ingest = "rpg_assistant.cli.ingest:main"
 rpg-assistant-mcp = "rpg_assistant.mcp.server:main"
+rpg-web = "rpg_assistant.api.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
