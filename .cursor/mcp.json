@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "rpg-assistant": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "${workspaceFolder}",
+        "run",
+        "rpg-assistant-mcp"
+      ],
+      "env": {
+        "DATABASE_URL": "sqlite:///./data/rpg_assistant.db"
+      }
+    }
+  }
+}

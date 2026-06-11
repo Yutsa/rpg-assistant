@@ -68,3 +68,79 @@ Tabletop RPG books are full of stories, places, characters, secrets, and situati
 It is for players who want to experience adventures they own, test scenarios, explore campaign material, or simply enjoy role-playing when scheduling a session is not realistic.
 
 At its heart, Solo RPG Companion is about making solo role-playing easier, richer, and more memorable.
+
+## Campaign Ingestion (dev setup)
+
+The ingestion pipeline has two layers:
+
+- **Raw (deterministic):** PDF → pages, blocks with bbox, sections, chunks. No LLM.
+- **Semantic (agent-driven):** External agents submit classifications, entities, and relations via MCP. Validated deterministically in code.
+
+### Prerequisites
+
+- [uv](https://docs.astral.sh/uv/) — install with `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- Python 3.11+ (uv can install it automatically if missing)
+- Docker (optional, only if you use PostgreSQL locally)
+
+### Install
+
+```bash
+uv sync
+cp .env.example .env
+uv run alembic upgrade head
+```
+
+`uv sync` creates `.venv`, installs locked dependencies (including dev tools), and installs this project in editable mode. Re-run it after pulling changes that touch `uv.lock`.
+
+Run project commands through `uv run` (no manual activation needed), for example `uv run pytest` or `uv run rpg-ingest raw extract ...`.
+
+**Database:** by default the app uses SQLite (`sqlite:///./data/rpg_assistant.db`) — no Docker required. For PostgreSQL (e.g. production or shared dev), set `DATABASE_URL` in `.env` and start Postgres:
+
+```bash
+# .env
+DATABASE_URL=postgresql://rpg:rpg@localhost:5432/rpg_assistant
+
+docker compose up -d
+uv run alembic upgrade head
+```
+
+### CLI (large PDFs / batch)
+
+```bash
+uv run rpg-ingest raw extract path/to/campaign.pdf --campaign-id camp_my_adventure
+uv run rpg-ingest raw status --ingestion-run-id run_xxxxxxxxxxxx
+```
+
+### MCP server (Cursor / Claude Desktop)
+
+Add `.cursor/mcp.json` (example included) or configure your MCP client:
+
+```json
+{
+  "mcpServers": {
+    "rpg-assistant": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["--directory", "${workspaceFolder}", "run", "rpg-assistant-mcp"],
+      "env": {
+        "DATABASE_URL": "sqlite:///./data/rpg_assistant.db"
+      },
+      "envFile": "${workspaceFolder}/.env"
+    }
+  }
+}
+```
+
+See `AGENTS.md` for the agent workflow (explore chunks, test semantic MVP).
+
+Restart Cursor after editing `.cursor/mcp.json`, then check **Settings → Tools & MCP** that `rpg-assistant` is connected. Tools include `import_pdf`, `list_sections`, `list_chunks`, `get_chunk`, `get_source_excerpt`, `submit_chunk_classifications`, `submit_entities`, `submit_relations`, `validate_semantic_layer`, and `get_semantic_summary`. Resources expose JSON schemas and a reference extraction prompt at `ingestion://schemas/*` and `ingestion://prompts/entity_extraction`.
+
+### Test workflow with an external agent
+
+1. Extract: `rpg-ingest raw extract ...` or MCP `import_pdf` — check `text_coverage_ratio` in status.
+2. Explore: `list_sections` → `list_chunks` → `get_chunk` per chapter.
+3. Submit: `submit_chunk_classifications`, then `submit_entities` with `source_refs` pointing to real `chunk_id` values.
+4. Validate: `validate_semantic_layer` — fix errors and resubmit.
+5. Relations: `submit_relations`, then `get_semantic_summary`.
+
+Read `docs/technical-ingestion.md` for the full data model. The exploratory script `script/count_pdf_tokens.py` is unchanged.
