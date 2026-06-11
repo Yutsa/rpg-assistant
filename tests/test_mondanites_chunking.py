@@ -180,3 +180,13 @@ def test_mondanites_chunk_quality():
     assert "La salle mesure" in drame_text
     assert "La salle mesure" not in partie_ii_text
     assert "Le manoir Horsbi" in drame_text
+    assert "état de conservation exceptionnel" in drame_text
+    investigations = next(
+        s
+        for s in section_result.sections
+        if "investigations imm" in s.title.replace("\u2019", "'").lower()
+    )
+    inv_chunks = [c for c in chunks if c.section_id == investigations.id]
+    inv_text = " ".join(c.text for c in inv_chunks)
+    assert "état de conservation exceptionnel" not in inv_text
+    assert "Une fois le sable retombé" in inv_text

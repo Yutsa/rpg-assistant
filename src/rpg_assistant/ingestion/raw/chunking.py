@@ -161,6 +161,33 @@ def _first_chapter_heading_y_in_column(
     return min(ys) if ys else None
 
 
+def _parallel_blocked_by_column_owner(
+    page: LayoutPage,
+    block: LayoutBlock,
+    heading_ref: _HeadingRef,
+    heading_refs: list[_HeadingRef],
+    sections: list[SectionRecord],
+    column_continuation_owners: dict[tuple[int, str], int] | None,
+) -> bool:
+    if not column_continuation_owners:
+        return False
+    col_side = column_side(block, page.width)
+    owner = column_continuation_owners.get((page.page_number, col_side))
+    if owner is None or owner == heading_ref.section_index:
+        return False
+    if sections[owner].page_start >= page.page_number:
+        return False
+    if sections[owner].page_end < page.page_number:
+        return False
+    if any(
+        ref.page_number == page.page_number
+        and column_side(ref.block, page.width) == col_side
+        for ref in heading_refs
+    ):
+        return False
+    return True
+
+
 def _parallel_subordinate_list_item(
     page: LayoutPage,
     heading: LayoutBlock,
@@ -193,12 +220,22 @@ def _intervening_heading_blocks(
     block: LayoutBlock,
     page: LayoutPage,
     heading_refs: list[_HeadingRef],
+    *,
+    owner: _HeadingRef,
+    sections: list[SectionRecord],
 ) -> list[LayoutBlock]:
     between: list[LayoutBlock] = []
+    owner_parent = sections[owner.section_index].parent_section_id
     for ref in heading_refs:
         if ref.page_number != page.page_number:
             continue
         if ref.block_index == heading.block_index and ref.page_number == heading.page_number:
+            continue
+        if (
+            owner_parent is not None
+            and sections[ref.section_index].parent_section_id == owner_parent
+            and ref.section_index != owner.section_index
+        ):
             continue
         other = ref.block
         if other.bbox.y0 <= heading.bbox.y0:
@@ -290,6 +327,7 @@ def _blocks_for_section_spatial(
     heading_ref: _HeadingRef,
     heading_refs: list[_HeadingRef],
     heading_positions: set[tuple[int, int]],
+    sections: list[SectionRecord],
     *,
     continuation_by_page: dict[int, int | None],
     column_continuation_owners: dict[tuple[int, str], int] | None = None,
@@ -325,13 +363,29 @@ def _blocks_for_section_spatial(
                 in_parallel_list = _parallel_subordinate_list_item(
                     page, heading, block, heading_refs, heading_ref
                 )
+                col_owner_blocked = _parallel_blocked_by_column_owner(
+                    page,
+                    block,
+                    heading_ref,
+                    heading_refs,
+                    sections,
+                    column_continuation_owners,
+                )
+                if col_owner_blocked:
+                    in_parallel = False
+                    in_parallel_list = False
                 if not heading_ref.is_content_only and block.bbox.y0 <= heading.bbox.y0:
                     if not in_parallel and not in_parallel_list and not in_zone:
                         continue
                 if not in_zone and not in_parallel and not in_parallel_list:
                     continue
                 if (in_zone or in_parallel_list) and _intervening_heading_blocks(
-                    heading, block, page, heading_refs
+                    heading,
+                    block,
+                    page,
+                    heading_refs,
+                    owner=heading_ref,
+                    sections=sections,
                 ):
                     continue
             else:
@@ -342,22 +396,29 @@ def _blocks_for_section_spatial(
                     else []
                 )
                 col_side = column_side(block, page.width)
-                first_heading_y = _first_heading_y_in_column(
+                column_first_heading_y = _first_heading_y_in_column(
                     page, heading_refs, col_side
                 )
-                if first_heading_y is None:
-                    first_heading_y = _first_heading_y_on_page(page, heading_positions)
+                page_first_heading_y = _first_heading_y_on_page(
+                    page, heading_positions
+                )
                 column_owner = (
                     column_continuation_owners or {}
                 ).get((page.page_number, col_side))
                 is_sparse_continuation = (
                     continuation_by_page.get(page.page_number) == heading_ref.section_index
                     and bool(gap_pages)
-                    and (first_heading_y is None or block.bbox.y0 < first_heading_y)
+                    and (
+                        page_first_heading_y is None
+                        or block.bbox.y0 < page_first_heading_y
+                    )
                 )
                 is_column_continuation = (
                     column_owner == heading_ref.section_index
-                    and (first_heading_y is None or block.bbox.y0 < first_heading_y)
+                    and (
+                        column_first_heading_y is None
+                        or block.bbox.y0 < column_first_heading_y
+                    )
                 )
                 if not is_sparse_continuation and not is_column_continuation:
                     continue
@@ -365,10 +426,19 @@ def _blocks_for_section_spatial(
                     block,
                     page,
                     page.blocks,
-                    first_heading_y=first_heading_y,
+                    first_heading_y=column_first_heading_y
+                    if column_first_heading_y is not None
+                    else page_first_heading_y,
                 ):
                     continue
-                if _intervening_heading_blocks(heading, block, page, heading_refs):
+                if _intervening_heading_blocks(
+                    heading,
+                    block,
+                    page,
+                    heading_refs,
+                    owner=heading_ref,
+                    sections=sections,
+                ):
                     continue
 
             result.append((page, block))
@@ -716,12 +786,17 @@ def build_chunks(
     sorted_refs = sorted(heading_refs, key=lambda ref: spatial_sort_key(ref.block))
 
     for ref in sorted_refs:
+        incremental_column_owners = _column_continuation_owners(
+            pages, section_blocks, heading_refs, sections
+        )
         same_page_blocks = _blocks_for_section_spatial(
             pages,
             ref,
             heading_refs,
             heading_positions,
+            sections,
             continuation_by_page={},
+            column_continuation_owners=incremental_column_owners,
             claimed=claimed,
         )
         section_blocks[ref.section_index].extend(same_page_blocks)
@@ -738,6 +813,7 @@ def build_chunks(
             ref,
             heading_refs,
             heading_positions,
+            sections,
             continuation_by_page=continuation_by_page,
             column_continuation_owners=column_owners,
             claimed=claimed,
