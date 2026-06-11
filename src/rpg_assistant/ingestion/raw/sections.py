@@ -4,6 +4,7 @@ import re
 from dataclasses import dataclass
 
 from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
+from rpg_assistant.ingestion.raw.stat_blocks.profile import StatBlockProfile
 from rpg_assistant.models.raw import SectionRecord
 from rpg_assistant.storage.ids import new_id
 
@@ -40,11 +41,17 @@ def _is_heading_candidate(
     page_median_font: float,
     page_blocks: list[LayoutBlock],
     block_idx: int,
+    *,
+    profile: StatBlockProfile | None = None,
 ) -> bool:
     text = block.text.strip()
     if not text or len(text) > 120:
         return False
     if len(text.split()) > 14:
+        return False
+    if block.metadata.get("stat_block_role") in {"header", "stats", "icon"}:
+        return False
+    if profile and profile.is_false_heading(block, page_blocks, block_idx):
         return False
     if _is_drop_cap_false_heading(block, page_blocks, block_idx):
         return False
@@ -100,12 +107,15 @@ def detect_sections(
     *,
     campaign_id: str,
     document_id: str,
+    profile: StatBlockProfile | None = None,
 ) -> SectionDetectionResult:
     headings: list[tuple[int, int, str, int]] = []
     for page in pages:
         median = _page_median_font(page.blocks)
         for block_idx, block in enumerate(page.blocks):
-            if _is_heading_candidate(block, median, page.blocks, block_idx):
+            if _is_heading_candidate(
+                block, median, page.blocks, block_idx, profile=profile
+            ):
                 level = _heading_level(
                     block.text.strip(),
                     block.metadata.get("max_font_size") or median,

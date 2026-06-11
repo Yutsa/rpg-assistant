@@ -53,6 +53,13 @@ class SectionRecord(BaseModel):
     page_end: int
 
 
+class StatBlockIndexEntry(BaseModel):
+    name: str
+    nc: int | None = None
+    chunk_id: str
+    pages: dict[str, int]
+
+
 class ChunkRecord(BaseModel):
     id: str
     campaign_id: str

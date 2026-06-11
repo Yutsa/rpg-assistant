@@ -5,14 +5,13 @@ import re
 import tiktoken
 
 from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage, merge_block_bboxes
+from rpg_assistant.ingestion.raw.stat_blocks.profile import StatBlockProfile
+from rpg_assistant.ingestion.raw.stat_blocks.types import StatBlockSpan
 from rpg_assistant.models.raw import ChunkRecord, SectionRecord, SourceSpan
 from rpg_assistant.storage.ids import chunk_id, page_block_id
 
 DEFAULT_MAX_TOKENS = 1200
 ENCODING_NAME = "cl100k_base"
-
-TABLE_RE = re.compile(r"(\|.+\|)|(\bAC\b|\bHP\b|\bSpeed\b)", re.IGNORECASE)
-STAT_BLOCK_RE = re.compile(r"\b(armor class|hit points|challenge rating)\b", re.IGNORECASE)
 
 
 def _get_encoding() -> tiktoken.Encoding:
@@ -23,11 +22,16 @@ def estimate_tokens(text: str) -> int:
     return len(_get_encoding().encode(text))
 
 
-def _chunk_type_hint(text: str, blocks: list[LayoutBlock]) -> str:
-    if STAT_BLOCK_RE.search(text) or TABLE_RE.search(text):
-        return "stat_block"
-    if len(blocks) <= 3 and max((len(b.text) for b in blocks), default=0) < 80:
-        return "table"
+def _chunk_type_hint(
+    text: str,
+    blocks: list[LayoutBlock],
+    *,
+    profile: StatBlockProfile | None = None,
+) -> str:
+    if profile:
+        hinted = profile.chunk_type_hint(text, blocks)
+        if hinted:
+            return hinted
     lowered = text.lower()
     if "secret" in lowered or "gm only" in lowered:
         return "secret"
@@ -97,6 +101,26 @@ def chunk_uniqueness_stats(chunks: list[ChunkRecord]) -> dict[str, float | int]:
     }
 
 
+def _partition_by_stat_boundaries(
+    block_items: list[tuple[LayoutPage, LayoutBlock]],
+) -> list[tuple[str | None, list[tuple[LayoutPage, LayoutBlock]]]]:
+    groups: list[tuple[str | None, list[tuple[LayoutPage, LayoutBlock]]]] = []
+    current: list[tuple[LayoutPage, LayoutBlock]] = []
+    current_stat_id: str | None = None
+
+    for page, block in block_items:
+        stat_id = block.metadata.get("stat_block_id")
+        if current and stat_id != current_stat_id:
+            groups.append((current_stat_id, current))
+            current = []
+        current_stat_id = stat_id
+        current.append((page, block))
+
+    if current:
+        groups.append((current_stat_id, current))
+    return groups
+
+
 def _split_blocks_into_chunks(
     block_items: list[tuple[LayoutPage, LayoutBlock]],
     max_tokens: int,
@@ -119,6 +143,19 @@ def _split_blocks_into_chunks(
     return chunks
 
 
+def _group_blocks_for_chunking(
+    block_items: list[tuple[LayoutPage, LayoutBlock]],
+    max_tokens: int,
+) -> list[list[tuple[LayoutPage, LayoutBlock]]]:
+    groups: list[list[tuple[LayoutPage, LayoutBlock]]] = []
+    for stat_id, stat_group in _partition_by_stat_boundaries(block_items):
+        if stat_id:
+            groups.append(stat_group)
+        else:
+            groups.extend(_split_blocks_into_chunks(stat_group, max_tokens))
+    return groups
+
+
 def _make_chunk(
     *,
     campaign_id: str,
@@ -127,8 +164,28 @@ def _make_chunk(
     index: int,
     block_groups: list[tuple[LayoutPage, LayoutBlock]],
     needs_rechunk: bool = False,
+    profile: StatBlockProfile | None = None,
+    stat_spans: dict[str, StatBlockSpan] | None = None,
 ) -> ChunkRecord:
-    text = "\n\n".join(block.text for _, block in block_groups)
+    blocks_only = [b for _, b in block_groups]
+    stat_id = blocks_only[0].metadata.get("stat_block_id") if blocks_only else None
+    metadata: dict = {}
+    text: str
+
+    if stat_id and profile and stat_spans and stat_id in stat_spans:
+        parsed = profile.parse_span(stat_spans[stat_id])
+        text = parsed.raw_text or "\n\n".join(
+            profile.normalize_block_text(block.text) for _, block in block_groups
+        )
+        metadata = {
+            "stat_block": parsed.model_dump(),
+            "game_system": parsed.game_system,
+        }
+        chunk_hint = "stat_block"
+    else:
+        text = "\n\n".join(block.text for _, block in block_groups)
+        chunk_hint = _chunk_type_hint(text, blocks_only, profile=profile)
+
     page_numbers = [page.page_number for page, _ in block_groups]
     page_start = min(page_numbers)
     page_end = max(page_numbers)
@@ -150,7 +207,6 @@ def _make_chunk(
             )
         )
 
-    blocks_only = [b for _, b in block_groups]
     return ChunkRecord(
         id=chunk_id(page_start, index),
         campaign_id=campaign_id,
@@ -159,9 +215,10 @@ def _make_chunk(
         page_start=page_start,
         page_end=page_end,
         text=text,
-        chunk_type_hint=_chunk_type_hint(text, blocks_only),
+        chunk_type_hint=chunk_hint,
         token_count=estimate_tokens(text),
         source_spans=source_spans,
+        metadata=metadata,
         needs_rechunk=needs_rechunk,
     )
 
@@ -174,10 +231,13 @@ def build_chunks(
     document_id: str,
     heading_anchors: list[tuple[int, int]] | None = None,
     max_tokens: int = DEFAULT_MAX_TOKENS,
+    stat_spans: list[StatBlockSpan] | None = None,
+    profile: StatBlockProfile | None = None,
 ) -> list[ChunkRecord]:
     if not pages:
         return []
 
+    span_by_id = {span.id: span for span in (stat_spans or [])}
     chunks: list[ChunkRecord] = []
     chunk_index = 0
 
@@ -185,7 +245,7 @@ def build_chunks(
         block_items = _blocks_for_page_range(
             pages, sections[0].page_start, sections[0].page_end
         )
-        for group in _split_blocks_into_chunks(block_items, max_tokens):
+        for group in _group_blocks_for_chunking(block_items, max_tokens):
             chunks.append(
                 _make_chunk(
                     campaign_id=campaign_id,
@@ -194,6 +254,8 @@ def build_chunks(
                     index=chunk_index,
                     block_groups=group,
                     needs_rechunk=len(group) < 2,
+                    profile=profile,
+                    stat_spans=span_by_id,
                 )
             )
             chunk_index += 1
@@ -218,7 +280,7 @@ def build_chunks(
             )
         if not block_items:
             continue
-        groups = _split_blocks_into_chunks(block_items, max_tokens)
+        groups = _group_blocks_for_chunking(block_items, max_tokens)
         for group in groups:
             chunks.append(
                 _make_chunk(
@@ -228,6 +290,8 @@ def build_chunks(
                     index=chunk_index,
                     block_groups=group,
                     needs_rechunk=len(groups) == 1 and len(group) > 40,
+                    profile=profile,
+                    stat_spans=span_by_id,
                 )
             )
             chunk_index += 1

@@ -7,6 +7,7 @@ from typing import Any
 import pymupdf
 
 from rpg_assistant.ingestion.raw.chunking import build_chunks, chunk_uniqueness_stats
+from rpg_assistant.ingestion.raw.stat_blocks import annotate_stat_blocks, resolve_profile
 from rpg_assistant.ingestion.raw.coverage import (
     DEFAULT_COVERAGE_THRESHOLD,
     document_coverage_ratio,
@@ -82,12 +83,15 @@ def run(
             )
 
         layout_pages = extract_layout_pages(document)
+        stat_profile = resolve_profile(game_system, layout_pages)
         filter_result = filter_watermark_blocks(layout_pages)
         layout_pages = filter_result.pages
-        merge_result = merge_fragmented_blocks(layout_pages)
+        merge_result = merge_fragmented_blocks(layout_pages, profile=stat_profile)
         layout_pages = merge_result.pages
         drop_cap_result = merge_drop_caps(layout_pages)
         layout_pages = drop_cap_result.pages
+        stat_result = annotate_stat_blocks(layout_pages, stat_profile)
+        layout_pages = stat_result.pages
         page_ratios = [
             page_text_coverage_ratio(p.text, p.width, p.height) for p in layout_pages
         ]
@@ -161,7 +165,10 @@ def run(
                 )
 
         section_result = detect_sections(
-            layout_pages, campaign_id=campaign_id, document_id=document_id
+            layout_pages,
+            campaign_id=campaign_id,
+            document_id=document_id,
+            profile=stat_profile,
         )
         sections = section_result.sections
         chunks: list[ChunkRecord] = build_chunks(
@@ -170,6 +177,8 @@ def run(
             campaign_id=campaign_id,
             document_id=document_id,
             heading_anchors=section_result.heading_anchors,
+            stat_spans=stat_result.spans,
+            profile=stat_profile,
         )
 
         repo.insert_pages(pages)
@@ -189,6 +198,8 @@ def run(
             "watermark_blocks_removed": filter_result.removed_block_count,
             "merged_block_count": merge_result.merged_block_count,
             "drop_cap_merged_count": drop_cap_result.merged_block_count,
+            "stat_block_count": len(stat_result.spans),
+            "stat_block_profile": stat_result.profile_id,
             "singleton_heading_count": sum(
                 1 for section in sections if len(section.title.strip()) == 1
             ),

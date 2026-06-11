@@ -82,3 +82,16 @@ class Dialect:
             return f"{column} = ANY(%s)", [values]
         placeholders = ", ".join(["%s"] * len(values))
         return f"{column} IN ({placeholders})", list(values)
+
+    def stat_block_json_path(self, field: str) -> str:
+        if self.is_postgresql:
+            return f"metadata_json->'stat_block'->>'{field}'"
+        return f"json_extract(metadata_json, '$.stat_block.{field}')"
+
+    def stat_block_name_expr(self) -> str:
+        return f"{self.stat_block_json_path('name')} AS stat_block_name"
+
+    def stat_block_nc_expr(self) -> str:
+        if self.is_postgresql:
+            return "(metadata_json->'stat_block'->>'nc')::int AS stat_block_nc"
+        return "CAST(json_extract(metadata_json, '$.stat_block.nc') AS INTEGER) AS stat_block_nc"

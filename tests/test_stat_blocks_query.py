@@ -1,0 +1,227 @@
+from __future__ import annotations
+
+import json
+import sqlite3
+
+from rpg_assistant.ingestion.raw.stat_blocks.matching import (
+    matches_stat_block_name,
+    normalize_stat_block_key,
+)
+from rpg_assistant.ingestion.raw.stat_blocks.serialize import chunk_to_stat_block_detail
+from rpg_assistant.models.raw import ChunkRecord, SourceSpan
+from rpg_assistant.storage.db import _SqliteConnection
+from rpg_assistant.storage.dialect import Dialect
+from rpg_assistant.storage.repositories.raw import RawRepository
+
+
+def _memory_repo() -> RawRepository:
+    connection = sqlite3.connect(":memory:")
+    connection.execute("PRAGMA foreign_keys = ON")
+    connection.executescript(
+        """
+        CREATE TABLE campaigns (
+            id TEXT PRIMARY KEY,
+            title TEXT NOT NULL DEFAULT '',
+            game_system TEXT NOT NULL DEFAULT '',
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE TABLE documents (
+            id TEXT PRIMARY KEY,
+            campaign_id TEXT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+            filename TEXT NOT NULL,
+            page_count INTEGER NOT NULL DEFAULT 0,
+            content_hash TEXT NOT NULL,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE TABLE chunks (
+            id TEXT PRIMARY KEY,
+            campaign_id TEXT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+            document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+            section_id TEXT,
+            page_start INTEGER NOT NULL,
+            page_end INTEGER NOT NULL,
+            text TEXT NOT NULL DEFAULT '',
+            chunk_type TEXT,
+            chunk_type_hint TEXT,
+            token_count INTEGER NOT NULL DEFAULT 0,
+            source_spans_json TEXT NOT NULL DEFAULT '[]',
+            metadata_json TEXT NOT NULL DEFAULT '{}',
+            needs_rechunk INTEGER NOT NULL DEFAULT 0
+        );
+        """
+    )
+    return RawRepository(_SqliteConnection(connection, Dialect("sqlite")))
+
+
+def _azulria_metadata() -> dict:
+    return {
+        "stat_block": {
+            "name": "AZULRIA",
+            "subtitle": "PRÊTRESSE 7",
+            "nc": 4,
+            "attributes": {"AGI": 1, "FOR": 3},
+            "abilities": [{"title": "PASSAGE DANS LA PIERRE", "text": "Deux fois par jour."}],
+            "raw_text": "AZULRIA | NC 4",
+            "block_refs": [],
+            "game_system": "cof2",
+        },
+        "game_system": "cof2",
+    }
+
+
+def _seed_document(repo: RawRepository) -> None:
+    with repo.conn.cursor() as cur:
+        cur.execute(
+            "INSERT INTO campaigns (id, title, game_system) VALUES (%s, %s, %s)",
+            ("momie", "Test", "cof2"),
+        )
+        cur.execute(
+            """
+            INSERT INTO documents (id, campaign_id, filename, page_count, content_hash)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            ("doc_test", "momie", "test.pdf", 20, "hash"),
+        )
+    repo.conn.commit()
+
+
+def _insert_stat_chunk(
+    repo: RawRepository,
+    chunk_id: str,
+    metadata: dict,
+    *,
+    page_start: int = 15,
+    page_end: int = 15,
+) -> None:
+    with repo.conn.cursor() as cur:
+        cur.execute(
+            """
+            INSERT INTO chunks (
+                id, campaign_id, document_id, page_start, page_end,
+                text, chunk_type_hint, token_count, source_spans_json, metadata_json
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (
+                chunk_id,
+                "momie",
+                "doc_test",
+                page_start,
+                page_end,
+                "stat text",
+                "stat_block",
+                10,
+                json.dumps([{"page": page_start, "page_block_ids": ["pb_1"]}]),
+                json.dumps(metadata),
+            ),
+        )
+    repo.conn.commit()
+
+
+def test_normalize_stat_block_key():
+    assert normalize_stat_block_key("  AZULRIA  ") == "azulria"
+    assert normalize_stat_block_key("PRÊTRESSE 7") == "pretresse 7"
+    assert normalize_stat_block_key("ÉèÀ") == "eea"
+
+
+def test_matches_stat_block_name():
+    stat_block = _azulria_metadata()["stat_block"]
+    assert matches_stat_block_name("AZULRIA", stat_block)
+    assert matches_stat_block_name("azulria", stat_block)
+    assert matches_stat_block_name("pretresse 7", stat_block)
+    assert not matches_stat_block_name("UNKNOWN", stat_block)
+
+
+def test_list_stat_blocks():
+    repo = _memory_repo()
+    _seed_document(repo)
+    _insert_stat_chunk(repo, "chk_azulria", _azulria_metadata())
+    _insert_stat_chunk(
+        repo,
+        "chk_generic",
+        {"stat_block": {"name": "", "nc": None, "raw_text": "generic"}, "game_system": "generic"},
+        page_start=10,
+    )
+    _insert_stat_chunk(
+        repo,
+        "chk_other",
+        {
+            "stat_block": {
+                "name": "GOLEM",
+                "nc": 6,
+                "attributes": {},
+                "abilities": [],
+                "raw_text": "",
+                "block_refs": [],
+                "game_system": "cof2",
+            },
+            "game_system": "cof2",
+        },
+        page_start=18,
+        page_end=19,
+    )
+
+    entries = repo.list_stat_blocks("doc_test")
+    assert len(entries) == 2
+    assert entries[0].name == "AZULRIA"
+    assert entries[0].nc == 4
+    assert entries[0].chunk_id == "chk_azulria"
+    assert entries[0].pages == {"start": 15, "end": 15}
+    assert entries[1].name == "GOLEM"
+    assert entries[1].pages == {"start": 18, "end": 19}
+
+
+def test_get_stat_block_by_name():
+    repo = _memory_repo()
+    _seed_document(repo)
+    _insert_stat_chunk(repo, "chk_azulria", _azulria_metadata())
+
+    result = repo.get_stat_block("doc_test", "AZULRIA")
+    assert isinstance(result, ChunkRecord)
+    assert result.id == "chk_azulria"
+
+    result_ci = repo.get_stat_block("doc_test", "azulria")
+    assert isinstance(result_ci, ChunkRecord)
+
+    result_sub = repo.get_stat_block("doc_test", "pretresse 7")
+    assert isinstance(result_sub, ChunkRecord)
+
+    assert repo.get_stat_block("doc_test", "UNKNOWN") is None
+
+
+def test_get_stat_block_ambiguous():
+    repo = _memory_repo()
+    _seed_document(repo)
+    _insert_stat_chunk(repo, "chk_a", _azulria_metadata(), page_start=15)
+    _insert_stat_chunk(repo, "chk_b", _azulria_metadata(), page_start=16)
+
+    result = repo.get_stat_block("doc_test", "azulria")
+    assert isinstance(result, list)
+    assert len(result) == 2
+    assert {c.id for c in result} == {"chk_a", "chk_b"}
+
+
+def test_chunk_to_stat_block_detail():
+    chunk = ChunkRecord(
+        id="chk_azulria",
+        campaign_id="momie",
+        document_id="doc_test",
+        page_start=15,
+        page_end=15,
+        text="stat text",
+        chunk_type_hint="stat_block",
+        token_count=10,
+        source_spans=[SourceSpan(page=15, page_block_ids=["pb_1"])],
+        metadata=_azulria_metadata(),
+    )
+    detail = chunk_to_stat_block_detail(chunk)
+    assert detail["name"] == "AZULRIA"
+    assert detail["nc"] == 4
+    assert detail["chunk_id"] == "chk_azulria"
+    assert detail["pages"] == {"start": 15, "end": 15}
+    assert detail["game_system"] == "cof2"
+    assert "raw_text" not in detail
+    assert "block_refs" not in detail
+    assert len(detail["source_refs"]) == 1
+    assert detail["source_refs"][0]["chunk_id"] == "chk_azulria"
+    assert detail["source_refs"][0]["page_block_ids"] == ["pb_1"]

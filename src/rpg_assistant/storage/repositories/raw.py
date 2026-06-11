@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timezone
 from typing import Any
 
+from rpg_assistant.ingestion.raw.stat_blocks.matching import matches_stat_block_name
 from rpg_assistant.models.raw import (
     CampaignRecord,
     ChunkRecord,
@@ -13,6 +14,7 @@ from rpg_assistant.models.raw import (
     PageRecord,
     SectionRecord,
     SourceSpan,
+    StatBlockIndexEntry,
 )
 from rpg_assistant.models.raw import BBox
 from rpg_assistant.storage.db import DatabaseConnection
@@ -483,6 +485,68 @@ class RawRepository:
             if chunk.section_id:
                 result.setdefault(chunk.section_id, []).append(chunk)
         return result
+
+    def list_stat_blocks(self, document_id: str) -> list[StatBlockIndexEntry]:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                f"""
+                SELECT id, page_start, page_end,
+                       {self.dialect.stat_block_name_expr()},
+                       {self.dialect.stat_block_nc_expr()}
+                FROM chunks
+                WHERE document_id = %s AND chunk_type_hint = 'stat_block'
+                ORDER BY page_start, id
+                """,
+                (document_id,),
+            )
+            rows = cur.fetchall()
+        entries: list[StatBlockIndexEntry] = []
+        for row in rows:
+            name = row[3]
+            if not name:
+                continue
+            nc = row[4]
+            if nc is not None and not isinstance(nc, int):
+                try:
+                    nc = int(nc)
+                except (TypeError, ValueError):
+                    nc = None
+            entries.append(
+                StatBlockIndexEntry(
+                    name=name,
+                    nc=nc,
+                    chunk_id=row[0],
+                    pages={"start": row[1], "end": row[2]},
+                )
+            )
+        return entries
+
+    def get_stat_block(
+        self, document_id: str, name: str
+    ) -> ChunkRecord | list[ChunkRecord] | None:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, campaign_id, document_id, section_id, page_start, page_end,
+                       text, chunk_type, chunk_type_hint, token_count,
+                       source_spans_json, metadata_json, needs_rechunk
+                FROM chunks
+                WHERE document_id = %s AND chunk_type_hint = 'stat_block'
+                ORDER BY page_start, id
+                """,
+                (document_id,),
+            )
+            rows = cur.fetchall()
+        matches = [
+            self._row_to_chunk(row)
+            for row in rows
+            if matches_stat_block_name(name, parse_json(row[11]).get("stat_block") or {})
+        ]
+        if not matches:
+            return None
+        if len(matches) == 1:
+            return matches[0]
+        return matches
 
     def get_chunk(self, chunk_id: str) -> ChunkRecord | None:
         with self.conn.cursor() as cur:

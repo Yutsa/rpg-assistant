@@ -72,7 +72,7 @@ def _memory_repo() -> RawRepository:
 
 def test_list_campaigns_and_documents():
     repo = _memory_repo()
-    repo.ensure_campaign("momie", title="Mondanités et Momie", game_system="D&D 5e")
+    repo.ensure_campaign("momie", title="Mondanités et Momie", game_system="cof2")
     repo.upsert_document(
         "doc_1",
         campaign_id="momie",

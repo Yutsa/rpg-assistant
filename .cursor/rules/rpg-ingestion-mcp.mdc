@@ -8,7 +8,7 @@ alwaysApply: true
 Pour toute question sur les PDF ingérés, les chunks, sections, entités ou le MVP d'ingestion :
 
 1. Appelle les outils du serveur MCP **`rpg-assistant`** (pas de requêtes SQL ad hoc).
-2. Lecture : `list_sections` → `list_chunks` → `get_chunk` ; `get_ingestion_status` pour les stats.
+2. Lecture : `list_sections` → `list_chunks` → `get_chunk` ; fiches COF2 : `list_stat_blocks` → `get_stat_block` ; `get_ingestion_status` pour les stats.
 3. Vérification visuelle : `prepare_visual_ingestion_review` → lire les `image_path` → comparer avec sections/chunks ; prompt `ingestion://prompts/visual_ingestion_review`.
 4. Écriture sémantique : `submit_chunk_classifications`, `submit_entities` (avec `source_refs`), `validate_semantic_layer`.
 5. Ressources MCP pour les schémas : `ingestion://schemas/chunk_classification`, `ingestion://prompts/entity_extraction`.

@@ -16,7 +16,9 @@ Quand l'utilisateur veut voir ce qui a été ingéré :
 2. `list_sections(document_id)` — structure du document (titres, pages).
 3. `list_chunks(document_id, section_id=..., limit=...)` — aperçus des morceaux.
 4. `get_chunk(chunk_id)` — texte complet, spans source, métadonnées.
-5. `get_source_excerpt(page_block_ids)` — vérifier le texte source PDF (bbox).
+5. `list_stat_blocks(document_id)` — index léger des fiches monstre/PNJ (name, nc, chunk_id, pages).
+6. `get_stat_block(document_id, name)` — fiche structurée + `source_refs` ; recherche insensible à la casse et aux accents sur `name` ou `subtitle`.
+7. `get_source_excerpt(page_block_ids)` — vérifier le texte source PDF (bbox).
 
 Pour le statut d'un import : `get_ingestion_status(ingestion_run_id)`.
 
@@ -47,6 +49,7 @@ Schémas et prompt de référence : ressources MCP `ingestion://schemas/*` et `i
 
 - Petit test / une campagne : MCP `import_pdf`.
 - Gros PDF ou batch : CLI `uv run rpg-ingest raw extract <pdf> --campaign-id <id>`.
+- Pour les scénarios **Chroniques Oubliées Fantasy 2**, passer `game_system=cof2` à l'import (détection et parsing des fiches monstre/PNJ ; chunks `stat_block` avec métadonnées structurées dans `ChunkRecord.metadata`).
 
 Demande confirmation avant `import_pdf` ou toute soumission sémantique si l'utilisateur n'a pas explicitement demandé d'écrire en base.
 

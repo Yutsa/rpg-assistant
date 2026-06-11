@@ -7,6 +7,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, Field
 
+from rpg_assistant.ingestion.raw.stat_blocks.serialize import chunk_to_stat_block_detail
 from rpg_assistant.ingestion.feedback.visual_review import (
     VISUAL_INGESTION_REVIEW_PROMPT,
     VisualReviewError,
@@ -191,6 +192,43 @@ def get_chunk(chunk_id: str) -> str:
     if not chunk:
         return json.dumps({"error": f"Unknown chunk_id: {chunk_id}"})
     return json.dumps(chunk.model_dump(), indent=2)
+
+
+@mcp.tool()
+def list_stat_blocks(document_id: str) -> str:
+    """Light index of stat blocks: name, nc, chunk_id, pages."""
+    with get_connection() as conn:
+        repo = RawRepository(conn)
+        entries = repo.list_stat_blocks(document_id)
+    return json.dumps([e.model_dump() for e in entries], indent=2)
+
+
+@mcp.tool()
+def get_stat_block(document_id: str, name: str) -> str:
+    """Structured stat block with source_refs. Case/accent-insensitive match on name or subtitle."""
+    with get_connection() as conn:
+        repo = RawRepository(conn)
+        result = repo.get_stat_block(document_id, name)
+    if result is None:
+        return json.dumps(
+            {"error": f"Unknown stat block: {name}", "hint": "Use list_stat_blocks"},
+            indent=2,
+        )
+    if isinstance(result, list):
+        candidates = [
+            {
+                "name": (c.metadata.get("stat_block") or {}).get("name", ""),
+                "nc": (c.metadata.get("stat_block") or {}).get("nc"),
+                "chunk_id": c.id,
+                "pages": {"start": c.page_start, "end": c.page_end},
+            }
+            for c in result
+        ]
+        return json.dumps(
+            {"error": "Ambiguous stat block", "candidates": candidates},
+            indent=2,
+        )
+    return json.dumps(chunk_to_stat_block_detail(result), indent=2)
 
 
 @mcp.tool()
