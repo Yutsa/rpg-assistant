@@ -138,7 +138,7 @@ def _open_connection(database_url: str) -> DatabaseConnection:
         db_path = _sqlite_database_path(database_url)
         if db_path != ":memory:":
             Path(db_path).parent.mkdir(parents=True, exist_ok=True)
-        connection = sqlite3.connect(db_path)
+        connection = sqlite3.connect(db_path, check_same_thread=False)
         connection.execute("PRAGMA foreign_keys = ON")
         return _SqliteConnection(connection, dialect)
 

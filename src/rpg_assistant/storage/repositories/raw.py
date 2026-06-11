@@ -128,6 +128,11 @@ class RawRepository:
                 values,
             )
 
+    def campaign_exists(self, campaign_id: str) -> bool:
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT 1 FROM campaigns WHERE id = %s", (campaign_id,))
+            return cur.fetchone() is not None
+
     def list_campaigns(self) -> list[CampaignRecord]:
         with self.conn.cursor() as cur:
             cur.execute(
@@ -585,6 +590,33 @@ class RawRepository:
         with self.conn.cursor() as cur:
             cur.execute("SELECT 1 FROM chunks WHERE id = %s", (chunk_id,))
             return cur.fetchone() is not None
+
+    def list_page_blocks(self, document_id: str, page_number: int) -> list[PageBlockRecord]:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, document_id, page_id, page_number, block_index, text,
+                       bbox_json, metadata_json
+                FROM page_blocks
+                WHERE document_id = %s AND page_number = %s
+                ORDER BY block_index
+                """,
+                (document_id, page_number),
+            )
+            rows = cur.fetchall()
+        return [
+            PageBlockRecord(
+                id=r[0],
+                document_id=r[1],
+                page_id=r[2],
+                page_number=r[3],
+                block_index=r[4],
+                text=r[5],
+                bbox=BBox(**parse_json(r[6])),
+                metadata=parse_json(r[7]) or {},
+            )
+            for r in rows
+        ]
 
     def get_page_blocks(self, block_ids: list[str]) -> list[PageBlockRecord]:
         if not block_ids:
