@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 
 from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
 from rpg_assistant.models.raw import SectionRecord
@@ -13,12 +14,39 @@ CHAPTER_RE = re.compile(
 NUMBERED_HEADING_RE = re.compile(r"^(\d+(?:\.\d+)*)\s+(.+)$")
 ALL_CAPS_RE = re.compile(r"^[A-Z0-9][A-Z0-9\s\-:,'\.]{2,}$")
 
+MIN_BOLD_HEADING_LEN = 3
 
-def _is_heading_candidate(block: LayoutBlock, page_median_font: float) -> bool:
+
+@dataclass
+class SectionDetectionResult:
+    sections: list[SectionRecord]
+    heading_anchors: list[tuple[int, int]]
+
+
+def _is_drop_cap_false_heading(
+    block: LayoutBlock, page_blocks: list[LayoutBlock], block_idx: int
+) -> bool:
+    text = block.text.strip()
+    if len(text) != 1 or not text.isupper():
+        return False
+    if block_idx + 1 >= len(page_blocks):
+        return False
+    nxt_text = page_blocks[block_idx + 1].text.lstrip()
+    return bool(nxt_text) and nxt_text[0].islower()
+
+
+def _is_heading_candidate(
+    block: LayoutBlock,
+    page_median_font: float,
+    page_blocks: list[LayoutBlock],
+    block_idx: int,
+) -> bool:
     text = block.text.strip()
     if not text or len(text) > 120:
         return False
     if len(text.split()) > 14:
+        return False
+    if _is_drop_cap_false_heading(block, page_blocks, block_idx):
         return False
 
     meta = block.metadata
@@ -31,7 +59,11 @@ def _is_heading_candidate(block: LayoutBlock, page_median_font: float) -> bool:
         return True
     if ALL_CAPS_RE.match(text) and len(text) >= 4 and max_font >= page_median_font:
         return True
-    if is_bold and max_font >= page_median_font * 1.15 and len(text) <= 80:
+    if (
+        is_bold
+        and max_font >= page_median_font * 1.15
+        and MIN_BOLD_HEADING_LEN <= len(text) <= 80
+    ):
         return True
     return False
 
@@ -68,12 +100,12 @@ def detect_sections(
     *,
     campaign_id: str,
     document_id: str,
-) -> list[SectionRecord]:
+) -> SectionDetectionResult:
     headings: list[tuple[int, int, str, int]] = []
     for page in pages:
         median = _page_median_font(page.blocks)
-        for block in page.blocks:
-            if _is_heading_candidate(block, median):
+        for block_idx, block in enumerate(page.blocks):
+            if _is_heading_candidate(block, median, page.blocks, block_idx):
                 level = _heading_level(
                     block.text.strip(),
                     block.metadata.get("max_font_size") or median,
@@ -84,24 +116,24 @@ def detect_sections(
                 )
 
     if not headings:
-        return [
-            SectionRecord(
-                id=new_id("sec"),
-                campaign_id=campaign_id,
-                document_id=document_id,
-                title="Document",
-                level=1,
-                page_start=pages[0].page_number if pages else 1,
-                page_end=pages[-1].page_number if pages else 1,
-            )
-        ]
+        fallback = SectionRecord(
+            id=new_id("sec"),
+            campaign_id=campaign_id,
+            document_id=document_id,
+            title="Document",
+            level=1,
+            page_start=pages[0].page_number if pages else 1,
+            page_end=pages[-1].page_number if pages else 1,
+        )
+        return SectionDetectionResult(sections=[fallback], heading_anchors=[])
 
     headings.sort(key=lambda h: (h[0], h[1]))
     page_count = pages[-1].page_number if pages else 1
     sections: list[SectionRecord] = []
+    anchors: list[tuple[int, int]] = []
     stack: list[tuple[int, str]] = []
 
-    for index, (page_num, _block_idx, title, level) in enumerate(headings):
+    for index, (page_num, block_idx, title, level) in enumerate(headings):
         while stack and stack[-1][0] >= level:
             stack.pop()
         parent_id = stack[-1][1] if stack else None
@@ -122,6 +154,7 @@ def detect_sections(
                 page_end=page_end,
             )
         )
+        anchors.append((page_num, block_idx))
         stack.append((level, section_id))
 
-    return sections
+    return SectionDetectionResult(sections=sections, heading_anchors=anchors)

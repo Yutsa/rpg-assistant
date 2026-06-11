@@ -40,6 +40,10 @@ def _chunk_type_hint(text: str, blocks: list[LayoutBlock]) -> str:
     return "lore"
 
 
+def _block_position(page_number: int, block_index: int) -> tuple[int, int]:
+    return (page_number, block_index)
+
+
 def _blocks_for_page_range(
     pages: list[LayoutPage], page_start: int, page_end: int
 ) -> list[tuple[LayoutPage, LayoutBlock]]:
@@ -50,6 +54,47 @@ def _blocks_for_page_range(
         for block in page.blocks:
             result.append((page, block))
     return result
+
+
+def _blocks_for_section_content(
+    pages: list[LayoutPage],
+    heading_anchor: tuple[int, int],
+    next_heading_anchor: tuple[int, int] | None,
+) -> list[tuple[LayoutPage, LayoutBlock]]:
+    """Return content blocks strictly between two heading anchors."""
+    result: list[tuple[LayoutPage, LayoutBlock]] = []
+    for page in pages:
+        for block in page.blocks:
+            pos = _block_position(page.page_number, block.block_index)
+            if pos <= heading_anchor:
+                continue
+            if next_heading_anchor is not None and pos >= next_heading_anchor:
+                continue
+            result.append((page, block))
+    return result
+
+
+def chunk_block_signature(chunk: ChunkRecord) -> frozenset[str]:
+    block_ids: list[str] = []
+    for span in chunk.source_spans:
+        block_ids.extend(span.page_block_ids)
+    return frozenset(block_ids)
+
+
+def chunk_uniqueness_stats(chunks: list[ChunkRecord]) -> dict[str, float | int]:
+    if not chunks:
+        return {
+            "chunk_unique_block_signature_count": 0,
+            "duplicate_chunk_count": 0,
+            "chunk_unique_block_signature_ratio": 1.0,
+        }
+    signatures = [chunk_block_signature(chunk) for chunk in chunks]
+    unique_count = len(set(signatures))
+    return {
+        "chunk_unique_block_signature_count": unique_count,
+        "duplicate_chunk_count": len(chunks) - unique_count,
+        "chunk_unique_block_signature_ratio": unique_count / len(chunks),
+    }
 
 
 def _split_blocks_into_chunks(
@@ -127,6 +172,7 @@ def build_chunks(
     *,
     campaign_id: str,
     document_id: str,
+    heading_anchors: list[tuple[int, int]] | None = None,
     max_tokens: int = DEFAULT_MAX_TOKENS,
 ) -> list[ChunkRecord]:
     if not pages:
@@ -153,10 +199,23 @@ def build_chunks(
             chunk_index += 1
         return chunks
 
-    for section in sections:
-        block_items = _blocks_for_page_range(
-            pages, section.page_start, section.page_end
-        )
+    use_anchors = (
+        heading_anchors is not None and len(heading_anchors) == len(sections)
+    )
+
+    for section_index, section in enumerate(sections):
+        if use_anchors:
+            anchor = heading_anchors[section_index]
+            next_anchor = (
+                heading_anchors[section_index + 1]
+                if section_index + 1 < len(heading_anchors)
+                else None
+            )
+            block_items = _blocks_for_section_content(pages, anchor, next_anchor)
+        else:
+            block_items = _blocks_for_page_range(
+                pages, section.page_start, section.page_end
+            )
         if not block_items:
             continue
         groups = _split_blocks_into_chunks(block_items, max_tokens)

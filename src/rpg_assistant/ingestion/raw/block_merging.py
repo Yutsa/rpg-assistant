@@ -59,6 +59,11 @@ def _visually_adjacent(
     return -MAX_VERTICAL_OVERLAP <= gap <= max_gap
 
 
+def _shares_text_line(previous: LayoutBlock, nxt: LayoutBlock) -> bool:
+    overlap = min(previous.bbox.y1, nxt.bbox.y1) - max(previous.bbox.y0, nxt.bbox.y0)
+    return overlap > 0
+
+
 def _same_column(
     previous: LayoutBlock,
     nxt: LayoutBlock,
@@ -85,19 +90,35 @@ def _looks_like_heading(block: LayoutBlock) -> bool:
     return len(text) < 50 and text.isupper()
 
 
+def _is_drop_cap_pair(previous: LayoutBlock, nxt: LayoutBlock) -> bool:
+    text = previous.text.strip()
+    if len(text) != 1 or not text.isupper():
+        return False
+    if not _continues_sentence(nxt.text):
+        return False
+    if previous.page_number != nxt.page_number:
+        return False
+    font_size = previous.metadata.get("max_font_size") or 0
+    if font_size < 12:
+        return False
+    return nxt.bbox.x0 >= previous.bbox.x0 - 5
+
+
 def _merge_kind(previous: LayoutBlock, nxt: LayoutBlock) -> MergeKind | None:
     if previous.page_number != nxt.page_number:
         return None
     if _looks_like_heading(nxt):
         return None
+    if not _continues_sentence(nxt.text):
+        return None
+    if _ends_with_hyphen(previous.text):
+        if _shares_text_line(previous, nxt) or _visually_adjacent(previous, nxt):
+            return "hyphenation"
+        return None
     if not _visually_adjacent(previous, nxt):
         return None
     if not _same_column(previous, nxt):
         return None
-    if not _continues_sentence(nxt.text):
-        return None
-    if _ends_with_hyphen(previous.text):
-        return "hyphenation"
     if _ends_with_strong_punctuation(previous.text):
         return None
     if _starts_new_unit(nxt.text):
@@ -169,6 +190,55 @@ def _merge_page_blocks(blocks: list[LayoutBlock]) -> tuple[list[LayoutBlock], in
         merged.append(current)
         index = next_index
     return merged, merged_count
+
+
+def _merge_drop_cap_pair(previous: LayoutBlock, nxt: LayoutBlock) -> LayoutBlock:
+    bbox = merge_block_bboxes([previous, nxt])
+    assert bbox is not None
+    return LayoutBlock(
+        page_number=previous.page_number,
+        block_index=previous.block_index,
+        text=previous.text.strip() + nxt.text.lstrip(),
+        bbox=bbox,
+        metadata=_merge_metadata(previous, nxt),
+    )
+
+
+def _merge_drop_caps_on_page(blocks: list[LayoutBlock]) -> tuple[list[LayoutBlock], int]:
+    if len(blocks) < 2:
+        return blocks, 0
+
+    merged: list[LayoutBlock] = []
+    merged_count = 0
+    index = 0
+    while index < len(blocks):
+        current = blocks[index]
+        if index + 1 < len(blocks) and _is_drop_cap_pair(current, blocks[index + 1]):
+            current = _merge_drop_cap_pair(current, blocks[index + 1])
+            merged_count += 1
+            index += 2
+        else:
+            index += 1
+        merged.append(current)
+    return merged, merged_count
+
+
+def merge_drop_caps(pages: list[LayoutPage]) -> BlockMergeResult:
+    """Merge decorative drop-cap letters with the following body text block."""
+    if not pages:
+        return BlockMergeResult(pages=[], merged_block_count=0)
+
+    merged_pages: list[LayoutPage] = []
+    merged_block_count = 0
+    for page in pages:
+        blocks, page_merged = _merge_drop_caps_on_page(page.blocks)
+        merged_block_count += page_merged
+        merged_pages.append(rebuild_layout_page(page, blocks))
+
+    return BlockMergeResult(
+        pages=merged_pages,
+        merged_block_count=merged_block_count,
+    )
 
 
 def merge_fragmented_blocks(pages: list[LayoutPage]) -> BlockMergeResult:

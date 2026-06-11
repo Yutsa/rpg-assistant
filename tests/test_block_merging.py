@@ -1,4 +1,4 @@
-from rpg_assistant.ingestion.raw.block_merging import merge_fragmented_blocks
+from rpg_assistant.ingestion.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
 from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
 from rpg_assistant.models.raw import BBox
 
@@ -122,6 +122,36 @@ def test_chains_multiple_merges_on_page_14_fragment():
     assert len(result.pages[0].blocks) == 2
     assert "ressentez immédiatement une aura de terreur en" in result.pages[0].blocks[0].text
     assert result.pages[0].blocks[1].text.startswith("émaner.")
+
+
+def test_hyphenation_merge_without_strict_column_overlap():
+    blocks = [
+        _block(5, 0, "col-", x0=40.0, x1=90.0, y0=10.0, y1=20.0),
+        _block(5, 1, "lection organisée", x0=200.0, x1=280.0, y0=10.0, y1=20.0),
+    ]
+    result = merge_fragmented_blocks([_page(blocks)])
+
+    assert result.merged_block_count == 1
+    assert result.pages[0].blocks[0].text == "collection organisée"
+
+
+def test_drop_cap_merge_joins_letter_with_following_text():
+    blocks = [
+        _block(5, 0, "S", font_size=24, bold=True, x0=40.0, x1=55.0, y0=100.0, y1=140.0),
+        _block(
+            5,
+            1,
+            "i beaucoup ont oublié que les momies existent.",
+            x0=60.0,
+            x1=380.0,
+            y0=110.0,
+            y1=150.0,
+        ),
+    ]
+    result = merge_drop_caps([_page(blocks)])
+
+    assert result.merged_block_count == 1
+    assert result.pages[0].blocks[0].text.startswith("Si beaucoup ont oublié")
 
 
 def test_reindexes_blocks_after_merge():

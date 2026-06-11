@@ -6,14 +6,14 @@ from typing import Any
 
 import pymupdf
 
-from rpg_assistant.ingestion.raw.chunking import build_chunks
+from rpg_assistant.ingestion.raw.chunking import build_chunks, chunk_uniqueness_stats
 from rpg_assistant.ingestion.raw.coverage import (
     DEFAULT_COVERAGE_THRESHOLD,
     document_coverage_ratio,
     is_scanned_or_unusable,
     page_text_coverage_ratio,
 )
-from rpg_assistant.ingestion.raw.block_merging import merge_fragmented_blocks
+from rpg_assistant.ingestion.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
 from rpg_assistant.ingestion.raw.filtering import filter_watermark_blocks
 from rpg_assistant.ingestion.raw.layout import extract_layout_pages
 from rpg_assistant.ingestion.raw.sections import detect_sections
@@ -86,6 +86,8 @@ def run(
         layout_pages = filter_result.pages
         merge_result = merge_fragmented_blocks(layout_pages)
         layout_pages = merge_result.pages
+        drop_cap_result = merge_drop_caps(layout_pages)
+        layout_pages = drop_cap_result.pages
         page_ratios = [
             page_text_coverage_ratio(p.text, p.width, p.height) for p in layout_pages
         ]
@@ -158,11 +160,16 @@ def run(
                     )
                 )
 
-        sections: list[SectionRecord] = detect_sections(
+        section_result = detect_sections(
             layout_pages, campaign_id=campaign_id, document_id=document_id
         )
+        sections = section_result.sections
         chunks: list[ChunkRecord] = build_chunks(
-            layout_pages, sections, campaign_id=campaign_id, document_id=document_id
+            layout_pages,
+            sections,
+            campaign_id=campaign_id,
+            document_id=document_id,
+            heading_anchors=section_result.heading_anchors,
         )
 
         repo.insert_pages(pages)
@@ -170,6 +177,7 @@ def run(
         repo.insert_sections(sections)
         repo.insert_chunks(chunks)
 
+        uniqueness = chunk_uniqueness_stats(chunks)
         stats = {
             "page_count": len(pages),
             "block_count": len(blocks),
@@ -179,6 +187,11 @@ def run(
             "needs_rechunk_count": sum(1 for c in chunks if c.needs_rechunk),
             "watermark_blocks_removed": filter_result.removed_block_count,
             "merged_block_count": merge_result.merged_block_count,
+            "drop_cap_merged_count": drop_cap_result.merged_block_count,
+            "singleton_heading_count": sum(
+                1 for section in sections if len(section.title.strip()) == 1
+            ),
+            **uniqueness,
         }
         repo.update_ingestion_run(
             run_id,
