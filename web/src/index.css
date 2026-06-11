@@ -114,6 +114,8 @@ button {
 }
 
 .card {
+  display: block;
+  min-width: 0;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -124,6 +126,7 @@ button {
 .card h2,
 .card h3 {
   margin: 0 0 0.5rem;
+  overflow-wrap: anywhere;
 }
 
 .muted {
