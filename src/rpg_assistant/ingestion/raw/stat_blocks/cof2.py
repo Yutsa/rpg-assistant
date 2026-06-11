@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
+from rpg_assistant.ingestion.raw.reading_order import is_page_number_label
 from rpg_assistant.ingestion.raw.stat_blocks.text_utils import has_icon_glyphs, strip_layout_glyphs
 from rpg_assistant.ingestion.raw.stat_blocks.types import (
     BlockRef,
@@ -49,9 +50,6 @@ CHAPTER_RE = re.compile(
     re.IGNORECASE,
 )
 NUMBERED_HEADING_RE = re.compile(r"^(\d+(?:\.\d+)*)\s+(.+)$")
-RUNNING_PAGE_HEADER_RE = re.compile(r"^PAGE\s+\d+\s*$", re.IGNORECASE)
-
-
 def _normalized(block: LayoutBlock) -> str:
     return strip_layout_glyphs(block.text)
 
@@ -79,15 +77,11 @@ def _is_type_label(text: str) -> bool:
     return normalized in TYPE_LABEL_WORDS
 
 
-def _is_running_page_header(text: str) -> bool:
-    return bool(RUNNING_PAGE_HEADER_RE.match(text.strip()))
-
-
 def _is_icon_prefixed_name(block: LayoutBlock) -> bool:
     if not has_icon_glyphs(block.text):
         return False
     text = _normalized(block)
-    if not text or _is_running_page_header(text):
+    if not text or is_page_number_label(text):
         return False
     return ALL_CAPS_NAME_RE.match(text) or _has_nc(text)
 
@@ -96,7 +90,7 @@ def _is_stat_header_block(block: LayoutBlock, page_blocks: list[LayoutBlock], id
     if _is_icon_prefixed_name(block):
         return True
     text = _normalized(block)
-    if not text or _is_running_page_header(text):
+    if not text or is_page_number_label(text):
         return False
     if _has_nc(text):
         return True
@@ -237,7 +231,7 @@ class Cof2StatBlockProfile:
         if role in {"header", "stats", "icon"}:
             return True
         text = _normalized(block)
-        if not text or _is_running_page_header(text):
+        if not text or is_page_number_label(text):
             return False
         if _has_nc(text):
             return True

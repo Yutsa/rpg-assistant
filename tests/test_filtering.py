@@ -64,16 +64,16 @@ def test_unique_body_text_preserved():
     assert result.pages[0].blocks[0].text == BODY
 
 
-def test_varying_page_numbers_preserved():
+def test_page_number_labels_removed():
     pages = [
         _page(page_number, [_block(page_number, 0, f"PAGE {page_number}")])
         for page_number in range(1, 21)
     ]
     result = filter_watermark_blocks(pages)
 
-    assert result.removed_block_count == 0
+    assert result.removed_block_count == 20
     assert len(result.pages) == 20
-    assert result.pages[2].blocks[0].text == "PAGE 3"
+    assert all(page.blocks == [] for page in result.pages)
 
 
 def test_single_page_drm_watermark_removed_by_regex():

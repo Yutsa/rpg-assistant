@@ -24,7 +24,7 @@ TITLE_CASE_WORD_RE = re.compile(
     r"(?:\s+(?:[a-zàâäéèêëïîôùûüÿç][\w'\u2019\-]+|[A-Z]{2,})){1,5}$",
     re.UNICODE,
 )
-PAGE_FOOTER_RE = re.compile(r"PAGE\s+\d+\s*$", re.IGNORECASE)
+PAGE_NUMBER_LABEL_RE = re.compile(r"^PAGE\s+\d+\s*$", re.IGNORECASE)
 CHAPTER_RE = re.compile(
     r"^(?:chapter|chapitre|part|partie)\s+(\d+|[IVXLC]+)\b",
     re.IGNORECASE,
@@ -184,11 +184,19 @@ def is_vertical_running_header(block: LayoutBlock, page: LayoutPage) -> bool:
     return bool(text) and len(text) <= 80 and len(text.split()) <= 12
 
 
+def is_page_number_label(text: str) -> bool:
+    return bool(PAGE_NUMBER_LABEL_RE.match(_strip_glyphs(text).strip()))
+
+
+def is_page_number_label_block(block: LayoutBlock) -> bool:
+    return is_page_number_label(block.text)
+
+
 def is_page_footer_block(block: LayoutBlock, page: LayoutPage, *, footer_ratio: float = 0.08) -> bool:
     footer_limit = page.height * (1.0 - footer_ratio)
     if block.bbox.y0 <= footer_limit:
         return False
-    return bool(PAGE_FOOTER_RE.search(_strip_glyphs(block.text)))
+    return is_page_number_label(block.text)
 
 
 def is_page_banner_heading(
@@ -343,7 +351,7 @@ def page_is_sparse(page: LayoutPage, *, max_blocks: int = 2) -> bool:
     body_blocks = [
         b
         for b in page.blocks
-        if not is_page_footer_block(b, page)
+        if not is_page_number_label_block(b)
         and not is_vertical_running_header(b, page)
     ]
     return len(body_blocks) <= max_blocks

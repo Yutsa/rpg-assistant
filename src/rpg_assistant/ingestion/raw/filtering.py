@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage, rebuild_layout_page
 from rpg_assistant.ingestion.raw.reading_order import (
     is_decorative_spread_title,
-    is_page_footer_block,
+    is_page_number_label_block,
     is_spread_title_pair,
     is_vertical_running_header,
     page_median_font,
@@ -100,7 +100,7 @@ def _is_layout_noise_block(
     *,
     config: WatermarkFilterConfig,
 ) -> bool:
-    if is_page_footer_block(block, page, footer_ratio=config.footer_margin_ratio):
+    if is_page_number_label_block(block):
         return True
     if is_vertical_running_header(block, page):
         return True
