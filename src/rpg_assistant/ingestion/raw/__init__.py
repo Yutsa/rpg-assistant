@@ -1,3 +1,1 @@
-from rpg_assistant.ingestion.raw.importer import ImportResult, run
-
-__all__ = ["ImportResult", "run"]
+"""Raw PDF ingestion pipeline — import submodules directly (e.g. ``importer``)."""

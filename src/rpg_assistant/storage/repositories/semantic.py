@@ -3,10 +3,12 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from rpg_assistant.models.raw import BBox
 from rpg_assistant.models.semantic import (
     ChunkClassification,
     EntityRecord,
     EntityRelationRecord,
+    EntitySourceRef,
 )
 from rpg_assistant.storage.db import DatabaseConnection
 from rpg_assistant.storage.dialect import parse_json
@@ -229,6 +231,138 @@ class SemanticRepository:
                 }
                 for r in cur.fetchall()
             ]
+
+    def list_entities(
+        self,
+        campaign_id: str,
+        entity_type: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[EntityRecord]:
+        clauses = ["campaign_id = %s"]
+        params: list[Any] = [campaign_id]
+        if entity_type:
+            clauses.append("type = %s")
+            params.append(entity_type)
+        params.extend([limit, offset])
+        with self.conn.cursor() as cur:
+            cur.execute(
+                f"""
+                SELECT id, type, name, aliases_json, summary, confidence
+                FROM entities
+                WHERE {' AND '.join(clauses)}
+                ORDER BY name, id
+                LIMIT %s OFFSET %s
+                """,
+                params,
+            )
+            rows = cur.fetchall()
+        return [
+            EntityRecord(
+                entity_id=r[0],
+                type=r[1],
+                name=r[2],
+                aliases=parse_json(r[3]) or [],
+                summary=r[4] or "",
+                confidence=r[5] if r[5] is not None else 0.5,
+                source_refs=[],
+            )
+            for r in rows
+        ]
+
+    def get_entity(self, entity_id: str) -> EntityRecord | None:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, type, name, aliases_json, summary,
+                       player_safe_json, gm_only_json, metadata_json, confidence
+                FROM entities WHERE id = %s
+                """,
+                (entity_id,),
+            )
+            row = cur.fetchone()
+        if not row:
+            return None
+        entity = EntityRecord(
+            entity_id=row[0],
+            type=row[1],
+            name=row[2],
+            aliases=parse_json(row[3]) or [],
+            summary=row[4] or "",
+            player_safe=parse_json(row[5]) or {},
+            gm_only=parse_json(row[6]) or {},
+            metadata=parse_json(row[7]) or {},
+            confidence=row[8] if row[8] is not None else 0.5,
+            source_refs=self._load_entity_source_refs(entity_id),
+        )
+        return entity
+
+    def _load_entity_source_refs(self, entity_id: str) -> list[EntitySourceRef]:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT document_id, chunk_id, page_number, evidence_excerpt,
+                       page_block_ids_json, bbox_json
+                FROM entity_source_refs
+                WHERE entity_id = %s
+                ORDER BY page_number, id
+                """,
+                (entity_id,),
+            )
+            rows = cur.fetchall()
+        refs: list[EntitySourceRef] = []
+        for row in rows:
+            bbox_data = parse_json(row[5])
+            refs.append(
+                EntitySourceRef(
+                    document_id=row[0],
+                    page=row[2],
+                    chunk_id=row[1],
+                    page_block_ids=parse_json(row[4]) or [],
+                    bbox=BBox(**bbox_data) if bbox_data else None,
+                    evidence_excerpt=row[3],
+                )
+            )
+        return refs
+
+    def _row_to_relation(self, row: tuple) -> EntityRelationRecord:
+        refs_data = parse_json(row[4]) or []
+        return EntityRelationRecord(
+            from_entity_id=row[1],
+            relation_type=row[2],
+            to_entity_id=row[3],
+            source_refs=[EntitySourceRef(**r) for r in refs_data],
+            confidence=row[5] if row[5] is not None else 0.5,
+            metadata=parse_json(row[6]) or {},
+        )
+
+    def list_relations_for_entity(
+        self, entity_id: str
+    ) -> dict[str, list[EntityRelationRecord]]:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, from_entity_id, relation_type, to_entity_id,
+                       source_refs_json, confidence, metadata_json
+                FROM entity_relations
+                WHERE from_entity_id = %s
+                ORDER BY relation_type, to_entity_id
+                """,
+                (entity_id,),
+            )
+            outgoing = [self._row_to_relation(r) for r in cur.fetchall()]
+            cur.execute(
+                """
+                SELECT id, from_entity_id, relation_type, to_entity_id,
+                       source_refs_json, confidence, metadata_json
+                FROM entity_relations
+                WHERE to_entity_id = %s
+                ORDER BY relation_type, from_entity_id
+                """,
+                (entity_id,),
+            )
+            incoming = [self._row_to_relation(r) for r in cur.fetchall()]
+        return {"outgoing": outgoing, "incoming": incoming}
 
     def get_semantic_summary(self, campaign_id: str) -> dict[str, Any]:
         with self.conn.cursor() as cur:
