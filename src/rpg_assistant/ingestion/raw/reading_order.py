@@ -20,13 +20,20 @@ TITLE_CASE_MIN_WORDS = 2
 
 ALL_CAPS_RE = re.compile(r"^[A-Z0-9ÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-Z0-9ÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ\s\-:,'\.]{2,}$")
 TITLE_CASE_WORD_RE = re.compile(
-    r"^[A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][\w''\-]+(?:\s+[a-zàâäéèêëïîôùûüÿç][\w''\-]+){1,5}$",
+    r"^[A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][\w'\u2019\-]+"
+    r"(?:\s+(?:[a-zàâäéèêëïîôùûüÿç][\w'\u2019\-]+|[A-Z]{2,})){1,5}$",
     re.UNICODE,
 )
 PAGE_FOOTER_RE = re.compile(r"PAGE\s+\d+\s*$", re.IGNORECASE)
 CHAPTER_RE = re.compile(
     r"^(?:chapter|chapitre|part|partie)\s+(\d+|[IVXLC]+)\b",
     re.IGNORECASE,
+)
+LIST_ITEM_MARKER_RE = re.compile(
+    r"^[\u0090-\u0095\u2022\u25AA-\u25C6\u25E6\-–—]\s*",
+)
+LIST_ITEM_NAME_RE = re.compile(
+    r"^[\wÀ-ÿ][\wÀ-ÿ\s'\-]{0,40}\u202f:",
 )
 
 META_BOX_HEADINGS = frozenset(
@@ -46,6 +53,22 @@ def _strip_glyphs(text: str) -> str:
 def spatial_sort_key(block: LayoutBlock) -> tuple[int, float, float]:
     y_bucket = round(block.bbox.y0 / SPATIAL_Y_TOLERANCE) * SPATIAL_Y_TOLERANCE
     return (block.page_number, y_bucket, block.bbox.x0)
+
+
+def is_same_y_band(left: LayoutBlock, right: LayoutBlock) -> bool:
+    left_bucket = round(left.bbox.y0 / SPATIAL_Y_TOLERANCE) * SPATIAL_Y_TOLERANCE
+    right_bucket = round(right.bbox.y0 / SPATIAL_Y_TOLERANCE) * SPATIAL_Y_TOLERANCE
+    return left_bucket == right_bucket
+
+
+def column_side(block: LayoutBlock, page_width: float) -> str:
+    center = (block.bbox.x0 + block.bbox.x1) / 2
+    return "left" if center < page_width / 2 else "right"
+
+
+def column_major_sort_key(page: LayoutPage, block: LayoutBlock) -> tuple[int, int, float, float]:
+    side = 0 if column_side(block, page.width) == "left" else 1
+    return (block.page_number, side, block.bbox.y0, block.bbox.x0)
 
 
 def horizontal_overlap_ratio(left: LayoutBlock, right: LayoutBlock) -> float:
@@ -186,6 +209,44 @@ def is_meta_box_heading(text: str) -> bool:
 
 def is_chapter_heading(text: str) -> bool:
     return bool(CHAPTER_RE.match(_strip_glyphs(text).strip()))
+
+
+def is_list_item_block(block: LayoutBlock) -> bool:
+    text = _strip_glyphs(block.text).strip()
+    if not text:
+        return False
+    if LIST_ITEM_MARKER_RE.match(text):
+        return True
+    if block.metadata.get("is_bold") and len(text.split()) <= 6:
+        return False
+    if LIST_ITEM_NAME_RE.match(text) and len(text) <= 80:
+        return True
+    return False
+
+
+def heading_visual_tier(
+    text: str,
+    block: LayoutBlock,
+    *,
+    median_font: float,
+) -> str:
+    """Classify heading style: meta box, chapter/part, subordinate title-case, or other."""
+    if is_meta_box_heading(text):
+        return "meta"
+    if is_chapter_heading(text):
+        return "chapter"
+    if is_title_case_heading(text, block, median_font=median_font):
+        return "subordinate"
+    return "other"
+
+
+def is_subordinate_to_chapter(
+    text: str,
+    block: LayoutBlock,
+    *,
+    median_font: float,
+) -> bool:
+    return heading_visual_tier(text, block, median_font=median_font) == "subordinate"
 
 
 def find_block(

@@ -114,6 +114,53 @@ def test_mondanites_chunk_quality():
     assert "vestiges d'un temple" not in en_quelques_chunks[0].text
 
     grandes_lignes = next(s for s in section_result.sections if s.title == "Les grandes lignes")
+    assert grandes_lignes.parent_section_id == partie.id
+    histoire_mj = next(
+        s
+        for s in section_result.sections
+        if "histoire pour le MJ" in s.title.replace("\u2019", "'")
+    )
+    assert histoire_mj.parent_section_id == partie.id
     lgl_chunks = [c for c in chunks if c.section_id == grandes_lignes.id]
     assert lgl_chunks
     assert any("vestiges" in chunk.text and "abattoirs" in chunk.text for chunk in lgl_chunks)
+    assert all("Depuis lors" not in chunk.text for chunk in lgl_chunks)
+
+    mj_chunks = [c for c in chunks if c.section_id == histoire_mj.id]
+    assert mj_chunks
+    mj_text = mj_chunks[0].text
+    assert "Depuis lors" in mj_text
+    assert "La tombe resta inviolée" in mj_text
+    assert mj_text.index("Taless Rhann") < mj_text.index("La tombe resta")
+    assert mj_text.index("La tombe resta") < mj_text.index("Depuis lors")
+
+    acteurs = next(
+        s
+        for s in section_result.sections
+        if "différents acteurs" in s.title.replace("\u2019", "'").lower()
+    )
+    acteurs_chunks = [c for c in chunks if c.section_id == acteurs.id]
+    assert acteurs_chunks
+    acteurs_text = " ".join(c.text for c in acteurs_chunks)
+    assert "Kalian" in acteurs_text
+
+    mj_page8_text = " ".join(
+        c.text for c in mj_chunks if c.page_start <= 8 <= c.page_end
+    )
+    if mj_page8_text:
+        assert "Il est temps pour les PJ" in mj_page8_text or "temps pour les PJ" in mj_text
+
+    false_intro = [
+        s for s in section_result.sections if s.title == "Introduction" and s.page_start == 8
+    ]
+    assert not false_intro
+    intro_page8_chunks = [
+        c
+        for c in chunks
+        if c.page_start <= 8 <= c.page_end
+        and any(
+            s.title == "Introduction" and s.id == c.section_id
+            for s in section_result.sections
+        )
+    ]
+    assert not intro_page8_chunks

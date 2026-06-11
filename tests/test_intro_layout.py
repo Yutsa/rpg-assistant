@@ -118,6 +118,16 @@ def _mondanites_intro_pages() -> list[LayoutPage]:
             font_size=9.5,
         ),
         _block(
+            7,
+            3,
+            "Depuis lors, le visage des royaumes des Terres\nd'Osgild a bien évolué.",
+            x0=248,
+            y0=46,
+            x1=433,
+            y1=115,
+            font_size=9.5,
+        ),
+        _block(
             7, 1, "L'histoire pour le MJ", x0=43, y0=123, x1=177, y1=138, font_size=13, bold=True
         ),
         _block(
@@ -127,7 +137,27 @@ def _mondanites_intro_pages() -> list[LayoutPage]:
             x0=43,
             y0=140,
             x1=227,
-            y1=357,
+            y1=250,
+            font_size=9.5,
+        ),
+        _block(
+            7,
+            4,
+            "La tombe resta inviolée pendant plusieurs mil-\nlénaires. Cependant, sous la pression",
+            x0=43,
+            y0=358,
+            x1=227,
+            y1=450,
+            font_size=9.5,
+        ),
+        _block(
+            7,
+            5,
+            "Elsirianne Horsbi est une érudite de Piémont.",
+            x0=248,
+            y0=138,
+            x1=433,
+            y1=250,
             font_size=9.5,
         ),
     ]
@@ -158,10 +188,11 @@ def test_intro_layout_sections_have_no_false_parents():
     by_title = {section.title: section for section in result.sections}
     assert by_title["EN QUELQUES MOTS"].parent_section_id is None
     assert by_title["FICHE TECHNIQUE"].parent_section_id is None
-    assert by_title["Les grandes lignes"].parent_section_id is None
     partie = next(s for s in result.sections if s.title.startswith("PARTIE I"))
     assert partie.parent_section_id is None
     assert by_title["EN QUELQUES MOTS"].parent_section_id != partie.id
+    assert by_title["Les grandes lignes"].parent_section_id == partie.id
+    assert by_title["L'histoire pour le MJ"].parent_section_id == partie.id
 
 
 def test_intro_layout_chunks_partition_sidebar_and_continuation():
@@ -198,7 +229,19 @@ def test_intro_layout_chunks_partition_sidebar_and_continuation():
     assert len(grandes_lignes) == 1
     assert "cabinet de curiosités" in grandes_lignes[0].text
     assert "vestiges d'un temple" in grandes_lignes[0].text
+    assert "Depuis lors" not in grandes_lignes[0].text
     assert grandes_lignes[0].page_end == 7
+
+    histoire_mj = by_section[sec_by_title["L'histoire pour le MJ"]]
+    assert len(histoire_mj) == 1
+    mj_text = histoire_mj[0].text
+    assert "Depuis lors" in mj_text
+    assert "La tombe resta inviolée" in mj_text
+    assert "Taless Rhann" in mj_text
+    assert "Elsirianne Horsbi" in mj_text
+    assert mj_text.index("Taless Rhann") < mj_text.index("La tombe resta")
+    assert mj_text.index("La tombe resta") < mj_text.index("Depuis lors")
+    assert mj_text.index("Depuis lors") < mj_text.index("Elsirianne Horsbi")
 
     partie_id = next(s.id for s in section_result.sections if s.title.startswith("PARTIE I"))
     partie_chunks = by_section[partie_id]

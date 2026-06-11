@@ -132,6 +132,70 @@ def test_detect_sections_rejects_decorative_spread_title():
     assert "EN QUELQUES MOTS" in titles
 
 
+def test_detect_sections_nests_subordinates_under_chapter():
+    pages = [
+        LayoutPage(
+            page_number=5,
+            width=510,
+            height=650,
+            text="",
+            blocks=[
+                _block(
+                    5,
+                    0,
+                    "Les grandes lignes",
+                    13,
+                    bold=True,
+                    x0=248,
+                    y0=389,
+                    x1=368,
+                    y1=404,
+                ),
+                _block(
+                    5,
+                    1,
+                    "PARTIE I :\nL'HISTOIRE EN UN COUP D'ŒIL",
+                    14,
+                    bold=True,
+                    x0=43,
+                    y0=459,
+                    x1=225,
+                    y1=489,
+                ),
+                _block(5, 2, "Corps de la partie.", 9, x0=43, y0=493, x1=227, y1=551),
+                _block(5, 3, "Les PJ sont invités.", 9, x0=248, y0=406, x1=433, y1=567),
+            ],
+        ),
+        LayoutPage(
+            page_number=7,
+            width=510,
+            height=650,
+            text="",
+            blocks=[
+                _block(
+                    7,
+                    0,
+                    "L'histoire pour le MJ",
+                    13,
+                    bold=True,
+                    x0=43,
+                    y0=123,
+                    x1=177,
+                    y1=138,
+                ),
+                _block(7, 1, "Secrets pour le MJ.", 9, x0=43, y0=140, x1=227, y1=357),
+            ],
+        ),
+    ]
+    result = detect_sections(pages, campaign_id="camp_test", document_id="doc_test")
+    partie = next(s for s in result.sections if s.title.startswith("PARTIE I"))
+    grandes_lignes = next(s for s in result.sections if s.title == "Les grandes lignes")
+    histoire_mj = next(s for s in result.sections if s.title == "L'histoire pour le MJ")
+    assert partie.parent_section_id is None
+    assert grandes_lignes.parent_section_id == partie.id
+    assert histoire_mj.parent_section_id == partie.id
+
+
 def test_detect_sections_finds_title_case_heading():
     pages = [
         LayoutPage(
@@ -147,6 +211,193 @@ def test_detect_sections_finds_title_case_heading():
     ]
     result = detect_sections(pages, campaign_id="camp_test", document_id="doc_test")
     assert [section.title for section in result.sections] == ["Les grandes lignes"]
+
+
+def test_detect_sections_no_false_preamble_when_chapter_in_parallel_column():
+    """Left-column body above a right-column PARTIE must not spawn Introduction."""
+    pages = [
+        LayoutPage(
+            page_number=8,
+            width=510,
+            height=650,
+            text="",
+            blocks=[
+                _block(
+                    8,
+                    0,
+                    "Il est temps pour les PJ de découvrir la vérité.",
+                    9.5,
+                    x0=43,
+                    y0=46,
+                    x1=227,
+                    y1=90,
+                ),
+                _block(
+                    8,
+                    1,
+                    "Les différents acteurs",
+                    13,
+                    bold=True,
+                    x0=43,
+                    y0=250,
+                    x1=200,
+                    y1=265,
+                ),
+                _block(
+                    8,
+                    2,
+                    "• Kalian : marchand ambitieux.",
+                    9.5,
+                    x0=43,
+                    y0=270,
+                    x1=227,
+                    y1=300,
+                ),
+                _block(
+                    8,
+                    3,
+                    "• Hector : garde du corps.",
+                    9.5,
+                    x0=248,
+                    y0=46,
+                    x1=433,
+                    y1=76,
+                ),
+                _block(
+                    8,
+                    4,
+                    "• Elsirianne : érudite de Piémont.",
+                    9.5,
+                    x0=248,
+                    y0=80,
+                    x1=433,
+                    y1=110,
+                ),
+                _block(
+                    8,
+                    5,
+                    "PARTIE II :\nL'ENQUÊTE",
+                    14,
+                    bold=True,
+                    x0=248,
+                    y0=459,
+                    x1=400,
+                    y1=489,
+                ),
+                _block(
+                    8,
+                    6,
+                    "Corps de la partie II.",
+                    9.5,
+                    x0=248,
+                    y0=493,
+                    x1=433,
+                    y1=551,
+                ),
+            ],
+        )
+    ]
+    result = detect_sections(pages, campaign_id="camp_test", document_id="doc_test")
+    titles = [section.title for section in result.sections]
+    assert "Introduction" not in titles
+    assert "Les différents acteurs" in titles
+    assert any(title.startswith("PARTIE II") for title in titles)
+
+
+def test_detect_sections_keeps_same_page_subordinates_under_first_chapter():
+    """Subordinates between two chapters on one page stay under the earlier chapter."""
+    pages = [
+        LayoutPage(
+            page_number=5,
+            width=510,
+            height=650,
+            text="",
+            blocks=[
+                _block(
+                    5,
+                    0,
+                    "PARTIE I :\nL'HISTOIRE",
+                    14,
+                    bold=True,
+                    x0=43,
+                    y0=100,
+                    x1=225,
+                    y1=130,
+                ),
+                _block(
+                    5,
+                    1,
+                    "Les grandes lignes",
+                    15,
+                    bold=True,
+                    x0=248,
+                    y0=150,
+                    x1=368,
+                    y1=165,
+                ),
+                _block(5, 2, "Corps partie I.", 9, x0=43, y0=170, x1=227, y1=220),
+                _block(
+                    5,
+                    3,
+                    "PARTIE II :\nL'ENQUÊTE",
+                    14,
+                    bold=True,
+                    x0=248,
+                    y0=400,
+                    x1=400,
+                    y1=430,
+                ),
+                _block(5, 4, "Corps partie II.", 9, x0=248, y0=440, x1=433, y1=500),
+            ],
+        )
+    ]
+    result = detect_sections(pages, campaign_id="camp_test", document_id="doc_test")
+    partie_i = next(s for s in result.sections if s.title.startswith("PARTIE I"))
+    partie_ii = next(s for s in result.sections if s.title.startswith("PARTIE II"))
+    grandes_lignes = next(s for s in result.sections if s.title == "Les grandes lignes")
+    assert grandes_lignes.parent_section_id == partie_i.id
+    assert grandes_lignes.parent_section_id != partie_ii.id
+
+
+def test_detect_sections_nests_numbered_heading_under_pre_chapter_title_case():
+    pages = [
+        LayoutPage(
+            page_number=16,
+            width=510,
+            height=650,
+            text="",
+            blocks=[
+                _block(
+                    16,
+                    0,
+                    "Les abattoirs",
+                    15,
+                    bold=True,
+                    x0=43,
+                    y0=200,
+                    x1=150,
+                    y1=215,
+                ),
+                _block(
+                    16,
+                    1,
+                    "1 - Cave de l'abattoir",
+                    13,
+                    bold=True,
+                    x0=43,
+                    y0=230,
+                    x1=200,
+                    y1=245,
+                ),
+                _block(16, 2, "Description de la cave.", 9, x0=43, y0=250, x1=227, y1=300),
+            ],
+        )
+    ]
+    result = detect_sections(pages, campaign_id="camp_test", document_id="doc_test")
+    abattoirs = next(s for s in result.sections if s.title == "Les abattoirs")
+    cave = next(s for s in result.sections if s.title.startswith("1"))
+    assert abattoirs.parent_section_id is None
+    assert cave.parent_section_id == abattoirs.id
 
 
 def test_detect_sections_rejects_two_character_bold_headings():

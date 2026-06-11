@@ -325,6 +325,22 @@ class RawRepository:
     def insert_sections(self, sections: list[SectionRecord]) -> None:
         if not sections:
             return
+        by_id = {section.id: section for section in sections}
+        ordered: list[SectionRecord] = []
+        inserted: set[str] = set()
+
+        def append_parent_first(section: SectionRecord) -> None:
+            if section.id in inserted:
+                return
+            parent_id = section.parent_section_id
+            if parent_id and parent_id in by_id:
+                append_parent_first(by_id[parent_id])
+            ordered.append(section)
+            inserted.add(section.id)
+
+        for section in sections:
+            append_parent_first(section)
+
         with self.conn.cursor() as cur:
             cur.executemany(
                 """
@@ -333,6 +349,7 @@ class RawRepository:
                      page_start, page_end)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (id) DO UPDATE SET
+                    parent_section_id = EXCLUDED.parent_section_id,
                     title = EXCLUDED.title,
                     level = EXCLUDED.level,
                     page_start = EXCLUDED.page_start,
@@ -349,7 +366,7 @@ class RawRepository:
                         s.page_start,
                         s.page_end,
                     )
-                    for s in sections
+                    for s in ordered
                 ],
             )
 

@@ -6,8 +6,11 @@ from dataclasses import dataclass, field
 from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
 from rpg_assistant.ingestion.raw.reading_order import (
     find_block,
+    heading_visual_tier,
     is_chapter_heading,
     is_decorative_spread_title,
+    is_in_column_band,
+    is_list_item_block,
     is_meta_box_heading,
     is_spread_title_pair,
     is_title_case_heading,
@@ -110,12 +113,11 @@ def _heading_level(
     *,
     page_median_font: float,
 ) -> int:
-    if is_meta_box_heading(text) or is_title_case_heading(
-        text, block, median_font=page_median_font
-    ):
+    tier = heading_visual_tier(text, block, median_font=page_median_font)
+    if tier == "meta" or tier == "chapter":
         return 1
-    if CHAPTER_RE.match(text):
-        return 1
+    if tier == "subordinate":
+        return 2
     numbered = NUMBERED_HEADING_RE.match(text)
     if numbered:
         depth = numbered.group(1).count(".") + 1
@@ -157,9 +159,21 @@ def _detect_preamble_sections(
         for block_idx, block in enumerate(page.blocks):
             if (page.page_number, block_idx) in heading_positions:
                 continue
+            if not is_in_column_band(block, chapter_block):
+                continue
             if block.bbox.y0 >= chapter_block.bbox.y0:
                 continue
+            if any(
+                (page.page_number, idx) in heading_positions
+                and is_in_column_band(page.blocks[idx], chapter_block)
+                and page.blocks[idx].bbox.y0 > block.bbox.y0
+                and page.blocks[idx].bbox.y0 < chapter_block.bbox.y0
+                for idx in range(len(page.blocks))
+            ):
+                continue
             if block.metadata.get("stat_block_role") in {"header", "stats", "icon"}:
+                continue
+            if is_list_item_block(block):
                 continue
             if any(
                 block.bbox.y0 >= meta.bbox.y0 and is_meta_box_heading(meta.text)
@@ -193,6 +207,32 @@ def _detect_preamble_sections(
             break
 
     return preamble_sections, preamble_anchors, frozenset(content_only_ids)
+
+
+def _reparent_same_page_subordinates(
+    sections: list[SectionRecord],
+    *,
+    chapter_section_id: str,
+    chapter_page: int,
+    subordinate_section_ids: frozenset[str],
+) -> None:
+    section_by_id = {section.id: section for section in sections}
+    for section in sections:
+        if section.page_start != chapter_page:
+            continue
+        if section.id == chapter_section_id:
+            continue
+        if section.id not in subordinate_section_ids:
+            continue
+        parent = (
+            section_by_id.get(section.parent_section_id)
+            if section.parent_section_id
+            else None
+        )
+        if parent is not None and parent.page_start == chapter_page:
+            continue
+        section.parent_section_id = chapter_section_id
+        section.level = 2
 
 
 def detect_sections(
@@ -238,19 +278,29 @@ def detect_sections(
     sections: list[SectionRecord] = []
     anchors: list[tuple[int, int]] = []
     stack: list[tuple[int, str]] = []
+    active_chapter_id: str | None = None
+    subordinate_section_ids: set[str] = set()
 
     for index, (page_num, block_idx, title, level) in enumerate(headings):
         block = find_block(pages, page_num, block_idx)
         median = page_medians.get(page_num, 12.0)
+        tier = (
+            heading_visual_tier(title, block, median_font=median)
+            if block is not None
+            else "other"
+        )
 
-        if is_chapter_heading(title) or (
-            block
-            and (is_meta_box_heading(title) or is_title_case_heading(title, block, median_font=median))
-        ):
+        if tier == "meta":
+            parent_id = None
+            level = 1
+        elif tier == "chapter":
             while stack:
                 stack.pop()
-            level = 1
             parent_id = None
+            level = 1
+        elif tier == "subordinate" and active_chapter_id is not None:
+            parent_id = active_chapter_id
+            level = 2
         else:
             while stack and stack[-1][0] >= level:
                 stack.pop()
@@ -274,7 +324,26 @@ def detect_sections(
             )
         )
         anchors.append((page_num, block_idx))
-        stack.append((level, section_id))
+
+        if tier == "chapter":
+            active_chapter_id = section_id
+            _reparent_same_page_subordinates(
+                sections,
+                chapter_section_id=section_id,
+                chapter_page=page_num,
+                subordinate_section_ids=frozenset(subordinate_section_ids),
+            )
+            subordinate_section_ids.clear()
+        elif tier == "subordinate":
+            subordinate_section_ids.add(section_id)
+
+        if tier == "meta":
+            pass
+        elif tier == "subordinate" and parent_id is not None:
+            pass
+        else:
+            stack_level = level - 1 if tier == "subordinate" and parent_id is None else level
+            stack.append((stack_level, section_id))
 
     heading_positions = {(page_num, block_idx) for page_num, block_idx, _, _ in headings}
     preamble_sections, preamble_anchors, preamble_ids = _detect_preamble_sections(
