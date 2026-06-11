@@ -115,6 +115,85 @@ def test_cof2_parse_attributes_and_nc():
     assert parsed.attributes["AGI"] == 1
     assert parsed.attributes["FOR"] == 3
     assert parsed.abilities[0].title == "PASSAGE DANS LA PIERRE"
+    assert parsed.abilities[0].text.startswith("Deux fois par jour")
+
+
+def _taless_pages() -> list[LayoutPage]:
+    return [
+        _page(
+            [
+                _block(15, 0, "W\nW\nTALESS RHANN", font_size=12, bold=True, y0=10),
+                _block(
+                    15,
+                    1,
+                    "Voir le profil de momie (Livre de règles, COF)\n"
+                    "Grâce à son talisman, Taless a plusieurs pouvoirs supplémentaires.",
+                    font_size=10,
+                    y0=40,
+                ),
+                _block(
+                    15,
+                    2,
+                    "TORNADE DE SABLE :\n"
+                    "Deux fois par jour, sur 10 m de rayon autour de lui, des rafales de sable perturbent toute\n"
+                    "action. Toute créature voulant l'attaquer subit un dé malus.",
+                    font_size=10,
+                    bold=True,
+                    y0=80,
+                ),
+                _block(
+                    15,
+                    3,
+                    "MALÉDICTION PROPHÉTIQUE :\n"
+                    "Une fois par lune, la momie peut proférer une malédiction sur toutes les personnes l'entourant\n"
+                    "dans un rayon de 10 m. En cas d'échec, c'est la mort assurée à la prochaine pleine lune.",
+                    font_size=10,
+                    bold=True,
+                    y0=140,
+                ),
+                _block(
+                    15,
+                    4,
+                    "PASSAGE DANS LA PIERRE :\n"
+                    "Deux fois par jour, la momie peut utiliser le pouvoir de passe-muraille et se déplacer à\n"
+                    "travers la matière sur 10 m dans toutes les directions.",
+                    font_size=10,
+                    bold=True,
+                    y0=220,
+                ),
+                _block(
+                    15,
+                    5,
+                    "ANIMATION DES MORTS :\n"
+                    "Une fois par jour, la momie peut animer 12 cadavres humanoïdes de taille moyenne. Ils se\n"
+                    "comportent comme des zombies (cf. le profil dans le livre de règles de COF).",
+                    font_size=10,
+                    bold=True,
+                    y0=300,
+                ),
+            ]
+        )
+    ]
+
+
+def test_cof2_parse_taless_abilities():
+    profile = Cof2StatBlockProfile()
+    stat_result = annotate_stat_blocks(_taless_pages(), profile)
+    taless_span = next(
+        span
+        for span in stat_result.spans
+        if any("TALESS RHANN" in block.text for block in span.blocks)
+    )
+    parsed = profile.parse_span(taless_span)
+
+    assert parsed.name == "TALESS RHANN"
+    assert len(parsed.abilities) == 4
+    by_title = {ability.title: ability.text for ability in parsed.abilities}
+    assert "rafales de sable" in by_title["TORNADE DE SABLE"]
+    assert "pleine lune" in by_title["MALÉDICTION PROPHÉTIQUE"]
+    assert "passe-muraille" in by_title["PASSAGE DANS LA PIERRE"]
+    assert "12 cadavres" in by_title["ANIMATION DES MORTS"]
+    assert all(text.strip() for text in by_title.values())
 
 
 def test_cof2_parse_per_and_vol_separately():

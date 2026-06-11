@@ -135,6 +135,25 @@ def _is_ability_block(block: LayoutBlock) -> bool:
     return False
 
 
+def _parse_ability_block(text: str) -> StatAbility | None:
+    lines = [line.strip() for line in strip_layout_glyphs(text).splitlines() if line.strip()]
+    if not lines:
+        return None
+    first_match = ABILITY_TITLE_RE.match(lines[0])
+    if not first_match:
+        return None
+    title = first_match.group(1).strip()
+    if not title:
+        return None
+    body_parts: list[str] = []
+    inline_body = first_match.group(2).strip()
+    if inline_body:
+        body_parts.append(inline_body)
+    body_parts.extend(lines[1:])
+    body = "\n".join(body_parts).strip()
+    return StatAbility(title=title, text=body)
+
+
 def _is_stat_continuation(block: LayoutBlock) -> bool:
     text = _normalized(block)
     if not text:
@@ -354,17 +373,12 @@ class Cof2StatBlockProfile:
                 if key in COF_ATTRIBUTES:
                     attributes[key] = int(value) if sign == "+" else -int(value)
 
-            for line in text.splitlines():
-                ability_match = ABILITY_TITLE_RE.match(line.strip())
-                if ability_match:
-                    title = ability_match.group(1).strip()
-                    body = ability_match.group(2).strip()
-                    if title and title not in {a.title for a in abilities}:
-                        abilities.append(StatAbility(title=title, text=body))
-                elif ":" in line and line.strip().endswith(":"):
-                    title = line.strip()[:-1].strip()
-                    if title:
-                        abilities.append(StatAbility(title=title, text=""))
+        for block in span.blocks:
+            if block.metadata.get("stat_block_role") != "ability":
+                continue
+            ability = _parse_ability_block(self.normalize_block_text(block.text))
+            if ability and ability.title not in {a.title for a in abilities}:
+                abilities.append(ability)
 
         if not name:
             for text in texts:
