@@ -1,0 +1,84 @@
+from __future__ import annotations
+
+import json
+from typing import Any
+
+from sqlalchemy.engine import make_url
+
+DEFAULT_SQLITE_URL = "sqlite:///./data/rpg_assistant.db"
+DEFAULT_POSTGRES_URL = "postgresql://rpg:rpg@localhost:5432/rpg_assistant"
+
+
+def get_database_url_from_env(env_value: str | None) -> str:
+    if env_value:
+        return env_value
+    return DEFAULT_SQLITE_URL
+
+
+def detect_dialect(database_url: str) -> str:
+    return make_url(database_url).get_backend_name()
+
+
+def parse_json(value: Any) -> Any:
+    if value is None:
+        return None
+    if isinstance(value, (dict, list)):
+        return value
+    if isinstance(value, str):
+        return json.loads(value)
+    return value
+
+
+class Dialect:
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    @property
+    def is_sqlite(self) -> bool:
+        return self.name == "sqlite"
+
+    @property
+    def is_postgresql(self) -> bool:
+        return self.name == "postgresql"
+
+    def json_param(self, placeholder: str = "%s") -> str:
+        if self.is_postgresql:
+            return f"{placeholder}::jsonb"
+        return placeholder
+
+    def now_expr(self) -> str:
+        return "CURRENT_TIMESTAMP" if self.is_sqlite else "NOW()"
+
+    def merge_chunk_metadata_sql(self) -> str:
+        if self.is_postgresql:
+            return """
+                metadata_json = COALESCE(metadata_json, '{}'::jsonb) ||
+                    jsonb_build_object(
+                        'classification_confidence', %s,
+                        'ingestion_run_id', %s,
+                        'submitted_by', %s
+                    )
+            """
+        return """
+            metadata_json = json_patch(
+                COALESCE(metadata_json, '{}'),
+                json_object(
+                    'classification_confidence', %s,
+                    'ingestion_run_id', %s,
+                    'submitted_by', %s
+                )
+            )
+        """
+
+    def classified_chunks_expr(self) -> str:
+        if self.is_postgresql:
+            return "COUNT(*) FILTER (WHERE chunk_type IS NOT NULL)"
+        return "SUM(CASE WHEN chunk_type IS NOT NULL THEN 1 ELSE 0 END)"
+
+    def in_list_clause(self, column: str, values: list[Any]) -> tuple[str, list[Any]]:
+        if not values:
+            return "0 = 1", []
+        if self.is_postgresql:
+            return f"{column} = ANY(%s)", [values]
+        placeholders = ", ".join(["%s"] * len(values))
+        return f"{column} IN ({placeholders})", list(values)
