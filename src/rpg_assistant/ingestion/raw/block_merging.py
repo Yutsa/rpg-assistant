@@ -10,6 +10,7 @@ from rpg_assistant.ingestion.raw.layout import (
     merge_block_bboxes,
     rebuild_layout_page,
 )
+from rpg_assistant.ingestion.raw.reading_order import horizontal_overlap_ratio
 from rpg_assistant.ingestion.raw.stat_blocks.profile import StatBlockProfile
 
 HYPHEN_CHARS = "-‐‑–—"
@@ -363,6 +364,71 @@ def merge_drop_caps(pages: list[LayoutPage]) -> BlockMergeResult:
     )
 
 
+def _cross_page_compatible_style(previous: LayoutBlock, nxt: LayoutBlock) -> bool:
+    prev_size = previous.metadata.get("avg_font_size") or previous.metadata.get("max_font_size")
+    next_size = nxt.metadata.get("avg_font_size") or nxt.metadata.get("max_font_size")
+    if prev_size is None or next_size is None:
+        return False
+    return abs(prev_size - next_size) <= STYLE_FONT_SIZE_TOLERANCE
+
+
+def _cross_page_merge_kind(
+    previous: LayoutBlock,
+    nxt: LayoutBlock,
+    *,
+    page_width: float,
+) -> MergeKind | None:
+    if previous.page_number + 1 != nxt.page_number:
+        return None
+    if _ends_with_strong_punctuation(previous.text):
+        return None
+    if not _continues_sentence(nxt.text):
+        return None
+    if not _cross_page_compatible_style(previous, nxt):
+        return None
+    same_column = horizontal_overlap_ratio(previous, nxt) >= DEFAULT_MIN_COLUMN_OVERLAP
+    wrap_around = (
+        previous.bbox.x0 >= page_width * 0.45
+        and nxt.bbox.x0 < page_width * 0.45
+    )
+    if not same_column and not wrap_around:
+        return None
+    return "line_break"
+
+
+def _merge_cross_page_blocks(pages: list[LayoutPage]) -> tuple[list[LayoutPage], int]:
+    if len(pages) < 2:
+        return pages, 0
+
+    merged_count = 0
+    page_blocks: list[list[LayoutBlock]] = [list(page.blocks) for page in pages]
+    for index in range(len(pages) - 1):
+        if not page_blocks[index] or not page_blocks[index + 1]:
+            continue
+        previous = page_blocks[index][-1]
+        nxt = page_blocks[index + 1][0]
+        kind = _cross_page_merge_kind(
+            previous, nxt, page_width=pages[index].width
+        )
+        if kind is None:
+            continue
+        merged = _merge_two_blocks(previous, nxt, kind=kind)
+        page_blocks[index].pop()
+        page_blocks[index + 1][0] = LayoutBlock(
+            page_number=nxt.page_number,
+            block_index=nxt.block_index,
+            text=merged.text,
+            bbox=nxt.bbox,
+            metadata=merged.metadata,
+        )
+        merged_count += 1
+
+    return [
+        rebuild_layout_page(page, blocks)
+        for page, blocks in zip(pages, page_blocks, strict=True)
+    ], merged_count
+
+
 def merge_fragmented_blocks(
     pages: list[LayoutPage],
     *,
@@ -381,7 +447,9 @@ def merge_fragmented_blocks(
         merged_block_count += page_merged
         merged_pages.append(rebuild_layout_page(page, blocks))
 
+    cross_merged_pages, cross_merged_count = _merge_cross_page_blocks(merged_pages)
+
     return BlockMergeResult(
-        pages=merged_pages,
-        merged_block_count=merged_block_count,
+        pages=cross_merged_pages,
+        merged_block_count=merged_block_count + cross_merged_count,
     )

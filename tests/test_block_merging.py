@@ -226,6 +226,48 @@ def test_drop_cap_merge_joins_letter_with_following_text():
     assert result.pages[0].blocks[0].text.startswith("Si beaucoup ont oublié")
 
 
+def test_cross_page_merge_joins_wrap_around_fragment_on_next_page():
+    page_six = _page(
+        [
+            _block(6, 0, "Ekhidna envoya ses enfants.", x0=248.0, x1=424.0, y0=91.0, y1=280.0),
+            _block(6, 1, "Au", x0=248.0, x1=260.0, y0=285.0, y1=295.0),
+        ]
+    )
+    page_six = LayoutPage(
+        page_number=6,
+        width=510.0,
+        height=650.0,
+        text=page_six.text,
+        blocks=page_six.blocks,
+    )
+    page_seven = _page(
+        [
+            _block(
+                7,
+                0,
+                "cours de cette surveillance que l'aigle poursuit un serpent.",
+                x0=42.0,
+                x1=227.0,
+                y0=45.0,
+                y1=103.0,
+            ),
+        ]
+    )
+    page_seven = LayoutPage(
+        page_number=7,
+        width=510.0,
+        height=650.0,
+        text=page_seven.text,
+        blocks=page_seven.blocks,
+    )
+    result = merge_fragmented_blocks([page_six, page_seven])
+
+    assert result.merged_block_count >= 1
+    page_seven_blocks = result.pages[1].blocks
+    assert page_seven_blocks[0].text.startswith("Au cours de cette surveillance")
+    assert len(result.pages[0].blocks) == 1
+
+
 def test_reindexes_blocks_after_merge():
     blocks = [
         _block(1, 0, "mot coupé‑", y0=10.0, y1=20.0),

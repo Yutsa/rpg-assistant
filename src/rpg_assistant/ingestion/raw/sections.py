@@ -114,7 +114,7 @@ def _heading_level(
     page_median_font: float,
 ) -> int:
     tier = heading_visual_tier(text, block, median_font=page_median_font)
-    if tier == "meta" or tier == "chapter":
+    if tier in {"meta", "chapter", "banner"}:
         return 1
     if tier == "subordinate":
         return 2
@@ -283,9 +283,10 @@ def detect_sections(
 
     for index, (page_num, block_idx, title, level) in enumerate(headings):
         block = find_block(pages, page_num, block_idx)
+        page = next(p for p in pages if p.page_number == page_num)
         median = page_medians.get(page_num, 12.0)
         tier = (
-            heading_visual_tier(title, block, median_font=median)
+            heading_visual_tier(title, block, median_font=median, page=page)
             if block is not None
             else "other"
         )
@@ -293,7 +294,7 @@ def detect_sections(
         if tier == "meta":
             parent_id = None
             level = 1
-        elif tier == "chapter":
+        elif tier in {"chapter", "banner"}:
             while stack:
                 stack.pop()
             parent_id = None
@@ -325,7 +326,7 @@ def detect_sections(
         )
         anchors.append((page_num, block_idx))
 
-        if tier == "chapter":
+        if tier in {"chapter", "banner"}:
             active_chapter_id = section_id
             _reparent_same_page_subordinates(
                 sections,
@@ -388,3 +389,19 @@ def detect_sections(
         heading_anchors=anchors,
         content_only_section_ids=content_only_ids,
     )
+
+
+def refine_section_page_ends(
+    sections: list[SectionRecord],
+    chunks: list,
+) -> None:
+    """Tighten section page_end from assigned chunk spans."""
+    page_ends: dict[str, int] = {}
+    for chunk in chunks:
+        if chunk.section_id is None:
+            continue
+        current = page_ends.get(chunk.section_id, 0)
+        page_ends[chunk.section_id] = max(current, chunk.page_end)
+    for section in sections:
+        if section.id in page_ends:
+            section.page_end = page_ends[section.id]

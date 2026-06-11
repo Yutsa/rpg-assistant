@@ -43,6 +43,11 @@ META_BOX_HEADINGS = frozenset(
     }
 )
 
+PAGE_BANNER_PREFIXES = ("INTRODUCTION", "IMPLICATION", "CONCLUSION")
+
+CONDITIONAL_HOOK_RE = re.compile(r"^Si\s+", re.IGNORECASE)
+CONDITIONAL_HOOK_MAX_WORDS = 10
+
 
 def _strip_glyphs(text: str) -> str:
     return "".join(
@@ -186,6 +191,46 @@ def is_page_footer_block(block: LayoutBlock, page: LayoutPage, *, footer_ratio: 
     return bool(PAGE_FOOTER_RE.search(_strip_glyphs(block.text)))
 
 
+def is_page_banner_heading(
+    text: str,
+    block: LayoutBlock,
+    page: LayoutPage,
+) -> bool:
+    cleaned = _strip_glyphs(text).strip()
+    if not cleaned:
+        return False
+    first_line = cleaned.split("\n")[0].strip()
+    upper = first_line.upper()
+    if not any(upper.startswith(prefix) for prefix in PAGE_BANNER_PREFIXES):
+        return False
+    if block.bbox.y0 > page.height * DECORATIVE_TOP_RATIO:
+        return False
+    letters = [char for char in first_line if char.isalpha()]
+    if not letters:
+        return False
+    upper_ratio = sum(1 for char in letters if char.isupper()) / len(letters)
+    return upper_ratio >= 0.8
+
+
+def is_conditional_hook_heading(
+    text: str,
+    block: LayoutBlock,
+    *,
+    median_font: float,
+) -> bool:
+    cleaned = _strip_glyphs(text).strip()
+    if not cleaned or not CONDITIONAL_HOOK_RE.match(cleaned):
+        return False
+    if len(cleaned.split()) > CONDITIONAL_HOOK_MAX_WORDS:
+        return False
+    if not block.metadata.get("is_bold"):
+        return False
+    max_font = block.metadata.get("max_font_size") or 0
+    if max_font >= median_font * 1.5:
+        return False
+    return max_font >= median_font * 1.05
+
+
 def is_title_case_heading(
     text: str,
     block: LayoutBlock,
@@ -198,7 +243,16 @@ def is_title_case_heading(
     max_font = block.metadata.get("max_font_size") or 0
     if max_font < median_font * 1.05:
         return False
+    if is_conditional_hook_heading(text, block, median_font=median_font):
+        return True
     words = cleaned.split()
+    if len(words) == 1:
+        return (
+            block.metadata.get("is_bold", False)
+            and max_font >= median_font * 1.05
+            and cleaned[0].isupper()
+            and any(char.islower() for char in cleaned[1:])
+        )
     if not (TITLE_CASE_MIN_WORDS <= len(words) <= TITLE_CASE_MAX_WORDS):
         return False
     return bool(TITLE_CASE_WORD_RE.match(cleaned))
@@ -207,6 +261,11 @@ def is_title_case_heading(
 def is_meta_box_heading(text: str) -> bool:
     normalized = _strip_glyphs(text).strip().upper()
     return normalized in META_BOX_HEADINGS
+
+
+def is_all_caps_heading_text(text: str) -> bool:
+    first_line = _strip_glyphs(text).split("\n")[0].strip()
+    return bool(ALL_CAPS_RE.match(first_line))
 
 
 def is_chapter_heading(text: str) -> bool:
@@ -231,10 +290,13 @@ def heading_visual_tier(
     block: LayoutBlock,
     *,
     median_font: float,
+    page: LayoutPage | None = None,
 ) -> str:
-    """Classify heading style: meta box, chapter/part, subordinate title-case, or other."""
+    """Classify heading style: meta box, chapter/part, page banner, subordinate, or other."""
     if is_meta_box_heading(text):
         return "meta"
+    if page is not None and is_page_banner_heading(text, block, page):
+        return "banner"
     if is_chapter_heading(text):
         return "chapter"
     if is_title_case_heading(text, block, median_font=median_font):

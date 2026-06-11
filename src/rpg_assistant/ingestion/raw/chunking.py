@@ -11,6 +11,7 @@ from rpg_assistant.ingestion.raw.reading_order import (
     column_side,
     find_block,
     heading_visual_tier,
+    is_all_caps_heading_text,
     is_chapter_heading,
     is_in_column_band,
     is_in_heading_content_zone,
@@ -134,6 +135,8 @@ def _block_in_parallel_column(
     heading_refs: list[_HeadingRef],
     owner: _HeadingRef,
 ) -> bool:
+    if owner.tier == "banner":
+        return False
     if is_in_column_band(block, heading):
         return False
     for ref in heading_refs:
@@ -236,7 +239,10 @@ def _intervening_heading_blocks(
             and sections[ref.section_index].parent_section_id == owner_parent
             and ref.section_index != owner.section_index
         ):
-            continue
+            if is_all_caps_heading_text(ref.title):
+                continue
+            if not is_in_column_band(ref.block, owner.block):
+                continue
         other = ref.block
         if other.bbox.y0 <= heading.bbox.y0:
             continue
@@ -597,10 +603,46 @@ def _split_at_heading_boundaries(
     return groups
 
 
+def _split_at_subordinate_heading_boundaries(
+    block_items: list[tuple[LayoutPage, LayoutBlock]],
+    heading_refs: list[_HeadingRef],
+    *,
+    section_index: int,
+) -> list[list[tuple[LayoutPage, LayoutBlock]]]:
+    if not block_items:
+        return []
+    groups: list[list[tuple[LayoutPage, LayoutBlock]]] = []
+    current: list[tuple[LayoutPage, LayoutBlock]] = []
+    for page, block in block_items:
+        if current:
+            prev_page, prev_block = current[-1]
+            for ref in heading_refs:
+                if ref.section_index == section_index:
+                    continue
+                if ref.tier != "subordinate":
+                    continue
+                if ref.page_number != page.page_number:
+                    continue
+                if ref.block.bbox.y0 <= prev_block.bbox.y0:
+                    continue
+                if ref.block.bbox.y0 >= block.bbox.y0:
+                    continue
+                if is_in_column_band(block, ref.block):
+                    groups.append(current)
+                    current = []
+                    break
+        current.append((page, block))
+    if current:
+        groups.append(current)
+    return groups if groups else [block_items]
+
+
 def _group_blocks_for_chunking(
     block_items: list[tuple[LayoutPage, LayoutBlock]],
     max_tokens: int,
     heading_positions: set[tuple[int, int]] | None = None,
+    heading_refs: list[_HeadingRef] | None = None,
+    section_index: int | None = None,
 ) -> list[list[tuple[LayoutPage, LayoutBlock]]]:
     groups: list[list[tuple[LayoutPage, LayoutBlock]]] = []
     for stat_id, stat_group in _partition_by_stat_boundaries(block_items):
@@ -612,6 +654,16 @@ def _group_blocks_for_chunking(
                 if heading_positions
                 else [stat_group]
             )
+            if heading_refs is not None and section_index is not None:
+                segments = [
+                    sub_segment
+                    for segment in segments
+                    for sub_segment in _split_at_subordinate_heading_boundaries(
+                        segment,
+                        heading_refs,
+                        section_index=section_index,
+                    )
+                ]
             for segment in segments:
                 groups.extend(_split_blocks_into_chunks(segment, max_tokens))
     return groups
@@ -767,7 +819,10 @@ def build_chunks(
         page = next(p for p in pages if p.page_number == page_num)
         median = page_median_font(page.blocks)
         tier = heading_visual_tier(
-            sections[section_index].title, block, median_font=median
+            sections[section_index].title,
+            block,
+            median_font=median,
+            page=page,
         )
         heading_refs.append(
             _HeadingRef(
@@ -833,7 +888,11 @@ def build_chunks(
         if not block_items:
             continue
         groups = _group_blocks_for_chunking(
-            block_items, max_tokens, chunk_split_positions
+            block_items,
+            max_tokens,
+            chunk_split_positions,
+            heading_refs=heading_refs,
+            section_index=section_index,
         )
         for group in groups:
             chunks.append(

@@ -17,7 +17,7 @@ from rpg_assistant.ingestion.raw.coverage import (
 from rpg_assistant.ingestion.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
 from rpg_assistant.ingestion.raw.filtering import filter_watermark_blocks
 from rpg_assistant.ingestion.raw.layout import extract_layout_pages
-from rpg_assistant.ingestion.raw.sections import detect_sections
+from rpg_assistant.ingestion.raw.sections import detect_sections, refine_section_page_ends
 from rpg_assistant.models.raw import (
     ChunkRecord,
     IngestionRunRecord,
@@ -181,6 +181,7 @@ def run(
             stat_spans=stat_result.spans,
             profile=stat_profile,
         )
+        refine_section_page_ends(sections, chunks)
 
         repo.insert_pages(pages)
         repo.insert_page_blocks(blocks)
