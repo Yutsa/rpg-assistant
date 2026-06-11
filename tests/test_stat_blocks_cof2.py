@@ -1,43 +1,11 @@
 from rpg_assistant.ingestion.raw.chunking import build_chunks
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
+from rpg_assistant.ingestion.raw.layout import LayoutPage
 from rpg_assistant.ingestion.raw.sections import detect_sections
 from rpg_assistant.ingestion.raw.stat_blocks import annotate_stat_blocks
 from rpg_assistant.ingestion.raw.stat_blocks.cof2 import Cof2StatBlockProfile
 from rpg_assistant.ingestion.raw.stat_blocks.registry import resolve_profile
 from rpg_assistant.ingestion.raw.stat_blocks.text_utils import strip_layout_glyphs
-from rpg_assistant.models.raw import BBox
-
-
-def _block(
-    page: int,
-    index: int,
-    text: str,
-    *,
-    font_size: float = 11.0,
-    bold: bool = False,
-    y0: float = 0.0,
-) -> LayoutBlock:
-    return LayoutBlock(
-        page_number=page,
-        block_index=index,
-        text=text,
-        bbox=BBox(x0=0, y0=y0, x1=100, y1=y0 + 20),
-        metadata={
-            "max_font_size": font_size,
-            "avg_font_size": font_size,
-            "is_bold": bold,
-        },
-    )
-
-
-def _page(blocks: list[LayoutBlock]) -> LayoutPage:
-    return LayoutPage(
-        page_number=blocks[0].page_number,
-        width=612,
-        height=792,
-        text="\n\n".join(block.text for block in blocks),
-        blocks=blocks,
-    )
+from tests.fixtures.layout import make_block as _block, make_page as _page
 
 
 def _cof2_pages() -> list[LayoutPage]:

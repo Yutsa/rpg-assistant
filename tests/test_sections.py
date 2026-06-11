@@ -1,6 +1,6 @@
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
+from rpg_assistant.ingestion.raw.layout import LayoutPage
 from rpg_assistant.ingestion.raw.sections import detect_sections
-from rpg_assistant.models.raw import BBox
+from tests.fixtures.layout import make_block
 
 
 def _block(
@@ -9,23 +9,9 @@ def _block(
     text: str,
     font_size: float,
     bold: bool = False,
-    *,
-    x0: float = 0,
-    y0: float = 0,
-    x1: float = 100,
-    y1: float = 20,
-) -> LayoutBlock:
-    return LayoutBlock(
-        page_number=page,
-        block_index=index,
-        text=text,
-        bbox=BBox(x0=x0, y0=y0, x1=x1, y1=y1),
-        metadata={
-            "max_font_size": font_size,
-            "avg_font_size": font_size,
-            "is_bold": bold,
-        },
-    )
+    **kwargs,
+):
+    return make_block(page, index, text, font_size=font_size, bold=bold, **kwargs)
 
 
 def test_detect_sections_finds_chapter_headings():

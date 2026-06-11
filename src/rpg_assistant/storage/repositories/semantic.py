@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from rpg_assistant.models.raw import BBox
@@ -11,12 +10,8 @@ from rpg_assistant.models.semantic import (
     EntitySourceRef,
 )
 from rpg_assistant.storage.db import DatabaseConnection
-from rpg_assistant.storage.dialect import parse_json
+from rpg_assistant.storage.dialect import dump_json, parse_json
 from rpg_assistant.storage.ids import new_id
-
-
-def _json_dumps(value: Any) -> str:
-    return json.dumps(value, default=str)
 
 
 class SemanticRepository:
@@ -91,11 +86,11 @@ class SemanticRepository:
                         campaign_id,
                         entity.type,
                         entity.name,
-                        _json_dumps(entity.aliases),
+                        dump_json(entity.aliases),
                         entity.summary,
-                        _json_dumps(entity.player_safe),
-                        _json_dumps(entity.gm_only),
-                        _json_dumps(
+                        dump_json(entity.player_safe),
+                        dump_json(entity.gm_only),
+                        dump_json(
                             {
                                 **entity.metadata,
                                 "ingestion_run_id": ingestion_run_id,
@@ -127,8 +122,8 @@ class SemanticRepository:
                             ref.chunk_id,
                             ref.page,
                             ref.evidence_excerpt,
-                            _json_dumps(ref.page_block_ids),
-                            _json_dumps(ref.bbox.model_dump() if ref.bbox else None),
+                            dump_json(ref.page_block_ids),
+                            dump_json(ref.bbox.model_dump() if ref.bbox else None),
                         ),
                     )
                 inserted.append(entity.entity_id)
@@ -160,9 +155,9 @@ class SemanticRepository:
                         rel.from_entity_id,
                         rel.relation_type,
                         rel.to_entity_id,
-                        _json_dumps([r.model_dump() for r in rel.source_refs]),
+                        dump_json([r.model_dump() for r in rel.source_refs]),
                         rel.confidence,
-                        _json_dumps(
+                        dump_json(
                             {
                                 **rel.metadata,
                                 "ingestion_run_id": ingestion_run_id,
