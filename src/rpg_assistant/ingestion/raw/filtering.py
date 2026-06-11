@@ -4,6 +4,13 @@ import re
 from dataclasses import dataclass, field
 
 from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage, rebuild_layout_page
+from rpg_assistant.ingestion.raw.reading_order import (
+    is_decorative_spread_title,
+    is_page_footer_block,
+    is_spread_title_pair,
+    is_vertical_running_header,
+    page_median_font,
+)
 
 DRM_EMAIL_ORDER_RE = re.compile(
     r"\S+@\S+\.\S+.*\d{6}/\d+/\d+|\d{6}/\d+/\d+.*\S+@\S+\.\S+",
@@ -68,6 +75,38 @@ def _text_page_map(pages: list[LayoutPage]) -> dict[str, set[int]]:
     return mapping
 
 
+def _is_decorative_title_block(
+    block: LayoutBlock,
+    page: LayoutPage,
+    block_idx: int,
+) -> bool:
+    median = page_median_font(page.blocks)
+    if is_decorative_spread_title(block, page, median_font=median):
+        return True
+    if block_idx > 0 and is_spread_title_pair(
+        page.blocks[block_idx - 1],
+        block,
+        page,
+        median_font=median,
+    ):
+        return True
+    return False
+
+
+def _is_layout_noise_block(
+    block: LayoutBlock,
+    page: LayoutPage,
+    block_idx: int,
+    *,
+    config: WatermarkFilterConfig,
+) -> bool:
+    if is_page_footer_block(block, page, footer_ratio=config.footer_margin_ratio):
+        return True
+    if is_vertical_running_header(block, page):
+        return True
+    return _is_decorative_title_block(block, page, block_idx)
+
+
 def _should_remove_block(
     block: LayoutBlock,
     page: LayoutPage,
@@ -116,9 +155,18 @@ def filter_watermark_blocks(
 
     for page in pages:
         kept_blocks: list[LayoutBlock] = []
-        for block in page.blocks:
+        for block_idx, block in enumerate(page.blocks):
             normalized = _normalize_block_text(block.text)
             distinct_page_count = len(text_pages.get(normalized, set()))
+            if _is_layout_noise_block(block, page, block_idx, config=cfg):
+                removed_block_count += 1
+                if (
+                    normalized
+                    and normalized not in removed_patterns
+                    and len(removed_patterns) < cfg.max_removed_patterns
+                ):
+                    removed_patterns.append(normalized)
+                continue
             if _should_remove_block(
                 block,
                 page,

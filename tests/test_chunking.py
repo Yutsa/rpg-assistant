@@ -60,6 +60,7 @@ def test_build_chunks_partitions_blocks_between_headings_on_same_page():
         campaign_id="camp_test",
         document_id="doc_test",
         heading_anchors=section_result.heading_anchors,
+        content_only_section_ids=section_result.content_only_section_ids,
     )
 
     assert len(chunks) == 3
@@ -94,6 +95,7 @@ def test_build_chunks_covers_all_blocks_without_duplicates():
         campaign_id="camp_test",
         document_id="doc_test",
         heading_anchors=section_result.heading_anchors,
+        content_only_section_ids=section_result.content_only_section_ids,
     )
 
     heading_positions = set(section_result.heading_anchors)

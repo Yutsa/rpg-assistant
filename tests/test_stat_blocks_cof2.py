@@ -272,6 +272,7 @@ def test_chunk_metadata_stat_block():
         campaign_id="momie",
         document_id="doc_test",
         heading_anchors=section_result.heading_anchors,
+        content_only_section_ids=section_result.content_only_section_ids,
         stat_spans=stat_result.spans,
         profile=profile,
     )

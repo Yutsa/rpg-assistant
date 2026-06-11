@@ -3,12 +3,23 @@ from rpg_assistant.ingestion.raw.sections import detect_sections
 from rpg_assistant.models.raw import BBox
 
 
-def _block(page: int, index: int, text: str, font_size: float, bold: bool = False) -> LayoutBlock:
+def _block(
+    page: int,
+    index: int,
+    text: str,
+    font_size: float,
+    bold: bool = False,
+    *,
+    x0: float = 0,
+    y0: float = 0,
+    x1: float = 100,
+    y1: float = 20,
+) -> LayoutBlock:
     return LayoutBlock(
         page_number=page,
         block_index=index,
         text=text,
-        bbox=BBox(x0=0, y0=0, x1=100, y1=20),
+        bbox=BBox(x0=x0, y0=y0, x1=x1, y1=y1),
         metadata={
             "max_font_size": font_size,
             "avg_font_size": font_size,
@@ -97,6 +108,45 @@ def test_detect_sections_keeps_three_character_bold_headings():
     ]
     result = detect_sections(pages, campaign_id="camp_test", document_id="doc_test")
     assert [section.title for section in result.sections] == ["Fin"]
+
+
+def test_detect_sections_rejects_decorative_spread_title():
+    pages = [
+        LayoutPage(
+            page_number=5,
+            width=510,
+            height=650,
+            text="",
+            blocks=[
+                _block(5, 0, "MONDANITÉS", 42, bold=True, x0=104, y0=36, x1=384, y1=88),
+                _block(5, 1, "ET MOMIE", 42, bold=True, x0=139, y0=82, x1=333, y1=134),
+                _block(5, 2, "EN QUELQUES MOTS", 11, bold=True, x0=78, y0=219, x1=190, y1=232),
+                _block(5, 3, "Résumé.", 9, x0=48, y0=237, x1=222, y1=300),
+            ],
+        )
+    ]
+    result = detect_sections(pages, campaign_id="camp_test", document_id="doc_test")
+    titles = [section.title for section in result.sections]
+    assert "MONDANITÉS" not in titles
+    assert "ET MOMIE" not in titles
+    assert "EN QUELQUES MOTS" in titles
+
+
+def test_detect_sections_finds_title_case_heading():
+    pages = [
+        LayoutPage(
+            page_number=5,
+            width=510,
+            height=650,
+            text="",
+            blocks=[
+                _block(5, 0, "Les grandes lignes", 13, bold=True),
+                _block(5, 1, "Les PJ sont invités.", 9),
+            ],
+        )
+    ]
+    result = detect_sections(pages, campaign_id="camp_test", document_id="doc_test")
+    assert [section.title for section in result.sections] == ["Les grandes lignes"]
 
 
 def test_detect_sections_rejects_two_character_bold_headings():

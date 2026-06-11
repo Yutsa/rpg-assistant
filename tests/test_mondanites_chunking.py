@@ -45,12 +45,20 @@ def test_mondanites_chunk_quality():
         campaign_id="momie",
         document_id="doc_mondanites",
         heading_anchors=section_result.heading_anchors,
+        content_only_section_ids=section_result.content_only_section_ids,
         stat_spans=stat_result.spans,
         profile=profile,
     )
 
     uniqueness = chunk_uniqueness_stats(chunks)
-    heading_positions = set(section_result.heading_anchors)
+    content_only_anchors = {
+        anchor
+        for section, anchor in zip(
+            section_result.sections, section_result.heading_anchors, strict=True
+        )
+        if section.id in section_result.content_only_section_ids
+    }
+    heading_positions = set(section_result.heading_anchors) - content_only_anchors
     content_block_ids = {
         page_block_id(page.page_number, block.block_index)
         for page in pages
@@ -85,3 +93,27 @@ def test_mondanites_chunk_quality():
     }
     assert len(page_five_chunks) <= 5
     assert len(page_five_signatures) == len(page_five_chunks)
+
+    intro_sections = [
+        section
+        for section in section_result.sections
+        if section.page_start <= 7 and section.page_end >= 5
+    ]
+    intro_titles = [section.title for section in intro_sections]
+    assert not any(title == "ET MOMIE" for title in intro_titles)
+    assert not any(title == "MONDANITÉS" for title in intro_titles)
+
+    en_quelques = next(s for s in section_result.sections if s.title == "EN QUELQUES MOTS")
+    partie = next(s for s in section_result.sections if s.title.startswith("PARTIE I"))
+    assert en_quelques.parent_section_id is None
+    assert en_quelques.parent_section_id != partie.id
+
+    en_quelques_chunks = [c for c in chunks if c.section_id == en_quelques.id]
+    assert len(en_quelques_chunks) == 1
+    assert "Pendant une soirée" in en_quelques_chunks[0].text
+    assert "vestiges d'un temple" not in en_quelques_chunks[0].text
+
+    grandes_lignes = next(s for s in section_result.sections if s.title == "Les grandes lignes")
+    lgl_chunks = [c for c in chunks if c.section_id == grandes_lignes.id]
+    assert lgl_chunks
+    assert any("vestiges" in chunk.text and "abattoirs" in chunk.text for chunk in lgl_chunks)

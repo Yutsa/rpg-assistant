@@ -177,6 +177,7 @@ def run(
             campaign_id=campaign_id,
             document_id=document_id,
             heading_anchors=section_result.heading_anchors,
+            content_only_section_ids=section_result.content_only_section_ids,
             stat_spans=stat_result.spans,
             profile=stat_profile,
         )

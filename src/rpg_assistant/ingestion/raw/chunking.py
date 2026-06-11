@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 
 import tiktoken
 
 from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage, merge_block_bboxes
+from rpg_assistant.ingestion.raw.reading_order import (
+    find_block,
+    is_in_heading_content_zone,
+    page_is_sparse,
+    spatial_sort_key,
+)
 from rpg_assistant.ingestion.raw.stat_blocks.profile import StatBlockProfile
 from rpg_assistant.ingestion.raw.stat_blocks.types import StatBlockSpan
 from rpg_assistant.models.raw import ChunkRecord, SectionRecord, SourceSpan
@@ -12,6 +19,16 @@ from rpg_assistant.storage.ids import chunk_id, page_block_id
 
 DEFAULT_MAX_TOKENS = 1200
 ENCODING_NAME = "cl100k_base"
+
+
+@dataclass(frozen=True)
+class _HeadingRef:
+    section_index: int
+    page_number: int
+    block_index: int
+    block: LayoutBlock
+    title: str
+    is_content_only: bool
 
 
 def _get_encoding() -> tiktoken.Encoding:
@@ -44,10 +61,6 @@ def _chunk_type_hint(
     return "lore"
 
 
-def _block_position(page_number: int, block_index: int) -> tuple[int, int]:
-    return (page_number, block_index)
-
-
 def _blocks_for_page_range(
     pages: list[LayoutPage], page_start: int, page_end: int
 ) -> list[tuple[LayoutPage, LayoutBlock]]:
@@ -60,22 +73,190 @@ def _blocks_for_page_range(
     return result
 
 
-def _blocks_for_section_content(
+def _first_heading_y_on_page(
+    page: LayoutPage, heading_positions: set[tuple[int, int]]
+) -> float | None:
+    ys = [
+        block.bbox.y0
+        for block in page.blocks
+        if (page.page_number, block.block_index) in heading_positions
+    ]
+    return min(ys) if ys else None
+
+
+def _intervening_heading_blocks(
+    heading: LayoutBlock,
+    block: LayoutBlock,
+    page: LayoutPage,
+    heading_refs: list[_HeadingRef],
+) -> list[LayoutBlock]:
+    between: list[LayoutBlock] = []
+    for ref in heading_refs:
+        if ref.page_number != page.page_number:
+            continue
+        if ref.block_index == heading.block_index and ref.page_number == heading.page_number:
+            continue
+        other = ref.block
+        if other.bbox.y0 <= heading.bbox.y0:
+            continue
+        if other.bbox.y0 >= block.bbox.y0:
+            continue
+        if is_in_heading_content_zone(block, other, heading_text=ref.title):
+            between.append(other)
+    return between
+
+
+def _gap_pages_between(
+    pages: list[LayoutPage], from_page: int, to_page: int
+) -> list[LayoutPage]:
+    return [
+        page
+        for page in pages
+        if from_page < page.page_number < to_page and page_is_sparse(page)
+    ]
+
+
+def _last_text_page_before(
+    pages: list[LayoutPage], page_number: int
+) -> int | None:
+    probe = page_number - 1
+    while probe >= 1:
+        page = next((p for p in pages if p.page_number == probe), None)
+        if page is None:
+            return None
+        if page_is_sparse(page):
+            probe -= 1
+            continue
+        return probe
+    return None
+
+
+def _blocks_for_section_spatial(
     pages: list[LayoutPage],
-    heading_anchor: tuple[int, int],
-    next_heading_anchor: tuple[int, int] | None,
+    heading_ref: _HeadingRef,
+    heading_refs: list[_HeadingRef],
+    heading_positions: set[tuple[int, int]],
+    *,
+    continuation_by_page: dict[int, int | None],
+    claimed: set[tuple[int, int]] | None = None,
 ) -> list[tuple[LayoutPage, LayoutBlock]]:
-    """Return content blocks strictly between two heading anchors."""
+    heading = heading_ref.block
     result: list[tuple[LayoutPage, LayoutBlock]] = []
+    taken = claimed or set()
+
+    for page in pages:
+        if page.page_number < heading_ref.page_number:
+            continue
+        for block in page.blocks:
+            pos = (page.page_number, block.block_index)
+            if pos in taken:
+                continue
+            if (
+                heading_ref.is_content_only
+                and pos == (heading_ref.page_number, heading_ref.block_index)
+            ):
+                result.append((page, block))
+                continue
+            if pos in heading_positions:
+                continue
+
+            if page.page_number == heading_ref.page_number:
+                if not heading_ref.is_content_only and block.bbox.y0 <= heading.bbox.y0:
+                    continue
+                if not is_in_heading_content_zone(
+                    block, heading, heading_text=heading_ref.title
+                ):
+                    continue
+                if _intervening_heading_blocks(heading, block, page, heading_refs):
+                    continue
+            else:
+                last_text_page = _last_text_page_before(pages, page.page_number)
+                gap_pages = (
+                    _gap_pages_between(pages, last_text_page, page.page_number)
+                    if last_text_page is not None
+                    else []
+                )
+                first_heading_y = _first_heading_y_on_page(page, heading_positions)
+                is_continuation = (
+                    continuation_by_page.get(page.page_number) == heading_ref.section_index
+                    and bool(gap_pages)
+                    and (first_heading_y is None or block.bbox.y0 < first_heading_y)
+                )
+                if not is_continuation:
+                    continue
+
+            result.append((page, block))
+
+    result.sort(key=lambda item: spatial_sort_key(item[1]))
+    return result
+
+
+def _nearest_heading_ref(
+    block: LayoutBlock,
+    heading_refs: list[_HeadingRef],
+) -> _HeadingRef | None:
+    block_key = spatial_sort_key(block)
+    best: _HeadingRef | None = None
+    best_key: tuple[int, float, float] | None = None
+    for ref in heading_refs:
+        ref_key = spatial_sort_key(ref.block)
+        if ref_key > block_key:
+            continue
+        if best is None or ref_key > best_key:
+            best = ref
+            best_key = ref_key
+    return best
+
+
+def _assign_orphan_blocks(
+    pages: list[LayoutPage],
+    section_blocks: list[list[tuple[LayoutPage, LayoutBlock]]],
+    heading_refs: list[_HeadingRef],
+    heading_positions: set[tuple[int, int]],
+    claimed: set[tuple[int, int]],
+) -> None:
     for page in pages:
         for block in page.blocks:
-            pos = _block_position(page.page_number, block.block_index)
-            if pos <= heading_anchor:
+            pos = (page.page_number, block.block_index)
+            if pos in claimed or pos in heading_positions:
                 continue
-            if next_heading_anchor is not None and pos >= next_heading_anchor:
+            nearest = _nearest_heading_ref(block, heading_refs)
+            if nearest is None:
                 continue
-            result.append((page, block))
-    return result
+            section_blocks[nearest.section_index].append((page, block))
+            claimed.add(pos)
+
+
+def _continuation_owner_by_page(
+    pages: list[LayoutPage],
+    section_blocks: list[list[tuple[LayoutPage, LayoutBlock]]],
+) -> dict[int, int | None]:
+    owners: dict[int, int | None] = {}
+    for page in pages:
+        if page_is_sparse(page):
+            continue
+        last_text_page = _last_text_page_before(pages, page.page_number)
+        if last_text_page is None:
+            continue
+        gap_pages = _gap_pages_between(pages, last_text_page, page.page_number)
+        if not gap_pages:
+            continue
+
+        best_index: int | None = None
+        best_y = -1.0
+        for section_index, block_items in enumerate(section_blocks):
+            prev_blocks = [
+                block for pg, block in block_items if pg.page_number == last_text_page
+            ]
+            if not prev_blocks:
+                continue
+            last_y = max(block.bbox.y1 for block in prev_blocks)
+            if last_y > best_y:
+                best_y = last_y
+                best_index = section_index
+        owners[page.page_number] = best_index
+
+    return owners
 
 
 def chunk_block_signature(chunk: ChunkRecord) -> frozenset[str]:
@@ -230,6 +411,7 @@ def build_chunks(
     campaign_id: str,
     document_id: str,
     heading_anchors: list[tuple[int, int]] | None = None,
+    content_only_section_ids: frozenset[str] | None = None,
     max_tokens: int = DEFAULT_MAX_TOKENS,
     stat_spans: list[StatBlockSpan] | None = None,
     profile: StatBlockProfile | None = None,
@@ -240,6 +422,7 @@ def build_chunks(
     span_by_id = {span.id: span for span in (stat_spans or [])}
     chunks: list[ChunkRecord] = []
     chunk_index = 0
+    content_only = content_only_section_ids or frozenset()
 
     if len(sections) <= 1 and sections[0].title == "Document":
         block_items = _blocks_for_page_range(
@@ -265,19 +448,86 @@ def build_chunks(
         heading_anchors is not None and len(heading_anchors) == len(sections)
     )
 
-    for section_index, section in enumerate(sections):
-        if use_anchors:
-            anchor = heading_anchors[section_index]
-            next_anchor = (
-                heading_anchors[section_index + 1]
-                if section_index + 1 < len(heading_anchors)
-                else None
-            )
-            block_items = _blocks_for_section_content(pages, anchor, next_anchor)
-        else:
+    if not use_anchors:
+        for section in sections:
             block_items = _blocks_for_page_range(
                 pages, section.page_start, section.page_end
             )
+            if not block_items:
+                continue
+            groups = _group_blocks_for_chunking(block_items, max_tokens)
+            for group in groups:
+                chunks.append(
+                    _make_chunk(
+                        campaign_id=campaign_id,
+                        document_id=document_id,
+                        section_id=section.id,
+                        index=chunk_index,
+                        block_groups=group,
+                        needs_rechunk=len(groups) == 1 and len(group) > 40,
+                        profile=profile,
+                        stat_spans=span_by_id,
+                    )
+                )
+                chunk_index += 1
+        return chunks
+
+    heading_positions = set(heading_anchors)
+    heading_refs: list[_HeadingRef] = []
+    for section_index, (page_num, block_idx) in enumerate(heading_anchors):
+        block = find_block(pages, page_num, block_idx)
+        if block is None:
+            continue
+        heading_refs.append(
+            _HeadingRef(
+                section_index=section_index,
+                page_number=page_num,
+                block_index=block_idx,
+                block=block,
+                title=sections[section_index].title,
+                is_content_only=sections[section_index].id in content_only,
+            )
+        )
+
+    section_blocks: list[list[tuple[LayoutPage, LayoutBlock]]] = [[] for _ in sections]
+    claimed: set[tuple[int, int]] = set()
+    sorted_refs = sorted(heading_refs, key=lambda ref: spatial_sort_key(ref.block))
+
+    for ref in sorted_refs:
+        same_page_blocks = _blocks_for_section_spatial(
+            pages,
+            ref,
+            heading_refs,
+            heading_positions,
+            continuation_by_page={},
+            claimed=claimed,
+        )
+        section_blocks[ref.section_index].extend(same_page_blocks)
+        for page, block in same_page_blocks:
+            claimed.add((page.page_number, block.block_index))
+
+    continuation_by_page = _continuation_owner_by_page(pages, section_blocks)
+    for ref in sorted_refs:
+        continuation_blocks = _blocks_for_section_spatial(
+            pages,
+            ref,
+            heading_refs,
+            heading_positions,
+            continuation_by_page=continuation_by_page,
+            claimed=claimed,
+        )
+        section_blocks[ref.section_index].extend(continuation_blocks)
+        for page, block in continuation_blocks:
+            claimed.add((page.page_number, block.block_index))
+
+    _assign_orphan_blocks(
+        pages, section_blocks, heading_refs, heading_positions, claimed
+    )
+    for block_items in section_blocks:
+        block_items.sort(key=lambda item: spatial_sort_key(item[1]))
+
+    for section_index, section in enumerate(sections):
+        block_items = section_blocks[section_index]
         if not block_items:
             continue
         groups = _group_blocks_for_chunking(block_items, max_tokens)
