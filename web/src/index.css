@@ -338,16 +338,21 @@ button {
 }
 
 .pdf-overlay rect {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 1;
+}
+
+.pdf-overlay rect.source-highlight {
   fill: var(--highlight);
   stroke: #c98d1a;
-  stroke-width: 1;
 }
 
 .pdf-overlay rect.hoverable {
   pointer-events: all;
 }
 
-.pdf-overlay rect:hover {
+.pdf-overlay rect.source-highlight:hover {
   fill: var(--highlight-hover);
 }
 

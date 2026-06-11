@@ -71,13 +71,16 @@ export function BboxOverlay({
       {rects.map((item) => (
         <rect
           key={item.key}
-          className={item.label ? "hoverable" : undefined}
+          className={[
+            item.highlighted ? "source-highlight" : undefined,
+            item.label ? "hoverable" : undefined,
+          ]
+            .filter(Boolean)
+            .join(" ") || undefined}
           x={item.rect.left}
           y={item.rect.top}
           width={item.rect.width}
           height={item.rect.height}
-          fill={item.highlighted ? "var(--highlight)" : "transparent"}
-          stroke={item.highlighted ? "#c98d1a" : "transparent"}
           strokeWidth={1}
           onMouseEnter={() => item.label && setHovered(item.key)}
           onMouseLeave={() => setHovered(null)}
