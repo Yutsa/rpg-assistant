@@ -1,3 +1,5 @@
+import pytest
+
 from rpg_assistant.ingestion.raw.coverage import (
     DEFAULT_COVERAGE_THRESHOLD,
     document_coverage_ratio,
@@ -17,7 +19,7 @@ def test_page_text_coverage_nonzero():
 
 
 def test_document_coverage_average():
-    assert document_coverage_ratio([0.2, 0.4, 0.6]) == 0.4
+    assert document_coverage_ratio([0.2, 0.4, 0.6]) == pytest.approx(0.4)
 
 
 def test_scanned_pdf_rejected():

@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import sqlite3
 from contextlib import contextmanager
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Generator, Protocol
 
@@ -15,6 +16,22 @@ from rpg_assistant.storage.dialect import (
     detect_dialect,
     get_database_url_from_env,
 )
+
+
+def _adapt_sqlite_datetime(val: datetime) -> str:
+    return val.isoformat(" ")
+
+
+def _adapt_sqlite_date(val: date) -> str:
+    return val.isoformat()
+
+
+def _register_sqlite_datetime_adapters() -> None:
+    sqlite3.register_adapter(datetime, _adapt_sqlite_datetime)
+    sqlite3.register_adapter(date, _adapt_sqlite_date)
+
+
+_register_sqlite_datetime_adapters()
 
 
 class DatabaseConnection(Protocol):
