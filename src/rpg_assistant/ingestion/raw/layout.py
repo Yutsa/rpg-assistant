@@ -26,6 +26,30 @@ class LayoutPage:
     blocks: list[LayoutBlock] = field(default_factory=list)
 
 
+def rebuild_layout_page(page: LayoutPage, blocks: list[LayoutBlock]) -> LayoutPage:
+    for index, block in enumerate(blocks):
+        block.block_index = index
+        block.page_number = page.page_number
+    return LayoutPage(
+        page_number=page.page_number,
+        width=page.width,
+        height=page.height,
+        text="\n\n".join(block.text for block in blocks),
+        blocks=blocks,
+    )
+
+
+def merge_block_bboxes(blocks: list[LayoutBlock]) -> BBox | None:
+    if not blocks:
+        return None
+    return BBox(
+        x0=min(block.bbox.x0 for block in blocks),
+        y0=min(block.bbox.y0 for block in blocks),
+        x1=max(block.bbox.x1 for block in blocks),
+        y1=max(block.bbox.y1 for block in blocks),
+    )
+
+
 def _bbox_from_tuple(coords: tuple[float, ...]) -> BBox:
     return BBox(x0=coords[0], y0=coords[1], x1=coords[2], y1=coords[3])
 

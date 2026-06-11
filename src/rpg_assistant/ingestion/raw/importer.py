@@ -13,6 +13,7 @@ from rpg_assistant.ingestion.raw.coverage import (
     is_scanned_or_unusable,
     page_text_coverage_ratio,
 )
+from rpg_assistant.ingestion.raw.block_merging import merge_fragmented_blocks
 from rpg_assistant.ingestion.raw.filtering import filter_watermark_blocks
 from rpg_assistant.ingestion.raw.layout import extract_layout_pages
 from rpg_assistant.ingestion.raw.sections import detect_sections
@@ -83,6 +84,8 @@ def run(
         layout_pages = extract_layout_pages(document)
         filter_result = filter_watermark_blocks(layout_pages)
         layout_pages = filter_result.pages
+        merge_result = merge_fragmented_blocks(layout_pages)
+        layout_pages = merge_result.pages
         page_ratios = [
             page_text_coverage_ratio(p.text, p.width, p.height) for p in layout_pages
         ]
@@ -175,6 +178,7 @@ def run(
             "text_coverage_ratio": avg_coverage,
             "needs_rechunk_count": sum(1 for c in chunks if c.needs_rechunk),
             "watermark_blocks_removed": filter_result.removed_block_count,
+            "merged_block_count": merge_result.merged_block_count,
         }
         repo.update_ingestion_run(
             run_id,

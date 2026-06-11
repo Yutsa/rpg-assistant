@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
+from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage, rebuild_layout_page
 
 DRM_EMAIL_ORDER_RE = re.compile(
     r"\S+@\S+\.\S+.*\d{6}/\d+/\d+|\d{6}/\d+/\d+.*\S+@\S+\.\S+",
@@ -98,19 +98,6 @@ def _should_remove_block(
     return has_email or in_band
 
 
-def _rebuild_page(page: LayoutPage, blocks: list[LayoutBlock]) -> LayoutPage:
-    for index, block in enumerate(blocks):
-        block.block_index = index
-        block.page_number = page.page_number
-    return LayoutPage(
-        page_number=page.page_number,
-        width=page.width,
-        height=page.height,
-        text="\n\n".join(block.text for block in blocks),
-        blocks=blocks,
-    )
-
-
 def filter_watermark_blocks(
     pages: list[LayoutPage],
     *,
@@ -149,7 +136,7 @@ def filter_watermark_blocks(
                     removed_patterns.append(normalized)
                 continue
             kept_blocks.append(block)
-        filtered_pages.append(_rebuild_page(page, kept_blocks))
+        filtered_pages.append(rebuild_layout_page(page, kept_blocks))
 
     return WatermarkFilterResult(
         pages=filtered_pages,

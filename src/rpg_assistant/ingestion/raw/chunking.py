@@ -4,8 +4,8 @@ import re
 
 import tiktoken
 
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
-from rpg_assistant.models.raw import BBox, ChunkRecord, SectionRecord, SourceSpan
+from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage, merge_block_bboxes
+from rpg_assistant.models.raw import ChunkRecord, SectionRecord, SourceSpan
 from rpg_assistant.storage.ids import chunk_id, page_block_id
 
 DEFAULT_MAX_TOKENS = 1200
@@ -21,17 +21,6 @@ def _get_encoding() -> tiktoken.Encoding:
 
 def estimate_tokens(text: str) -> int:
     return len(_get_encoding().encode(text))
-
-
-def _merge_bbox(blocks: list[LayoutBlock]) -> BBox | None:
-    if not blocks:
-        return None
-    return BBox(
-        x0=min(b.bbox.x0 for b in blocks),
-        y0=min(b.bbox.y0 for b in blocks),
-        x1=max(b.bbox.x1 for b in blocks),
-        y1=max(b.bbox.y1 for b in blocks),
-    )
 
 
 def _chunk_type_hint(text: str, blocks: list[LayoutBlock]) -> str:
@@ -112,7 +101,7 @@ def _make_chunk(
                 page_block_ids=[
                     page_block_id(page_num, b.block_index) for b in page_blocks
                 ],
-                bbox=_merge_bbox(page_blocks),
+                bbox=merge_block_bboxes(page_blocks),
             )
         )
 
