@@ -164,3 +164,19 @@ def test_mondanites_chunk_quality():
         )
     ]
     assert not intro_page8_chunks
+
+    drame = next(
+        s
+        for s in section_result.sections
+        if "cabinet de curiosit" in s.title.replace("\u2019", "'").lower()
+    )
+    partie_ii = next(
+        s for s in section_result.sections if s.title.startswith("PARTIE II")
+    )
+    drame_chunks = [c for c in chunks if c.section_id == drame.id]
+    partie_ii_chunks = [c for c in chunks if c.section_id == partie_ii.id]
+    drame_text = " ".join(c.text for c in drame_chunks)
+    partie_ii_text = " ".join(c.text for c in partie_ii_chunks)
+    assert "La salle mesure" in drame_text
+    assert "La salle mesure" not in partie_ii_text
+    assert "Le manoir Horsbi" in drame_text

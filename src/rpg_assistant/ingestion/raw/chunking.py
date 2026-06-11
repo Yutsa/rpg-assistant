@@ -326,7 +326,7 @@ def _blocks_for_section_spatial(
                     page, heading, block, heading_refs, heading_ref
                 )
                 if not heading_ref.is_content_only and block.bbox.y0 <= heading.bbox.y0:
-                    if not in_parallel and not in_parallel_list:
+                    if not in_parallel and not in_parallel_list and not in_zone:
                         continue
                 if not in_zone and not in_parallel and not in_parallel_list:
                     continue

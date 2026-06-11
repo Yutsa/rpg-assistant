@@ -101,7 +101,9 @@ def is_in_heading_content_zone(
     heading_text: str | None = None,
     min_overlap: float = MIN_COLUMN_OVERLAP,
 ) -> bool:
-    if block.bbox.y0 <= heading.bbox.y1:
+    # Reject only blocks entirely above the heading. In bi-column layouts the
+    # parallel column often starts slightly higher than the heading box.
+    if block.bbox.y1 <= heading.bbox.y0:
         return False
     if horizontal_overlap_ratio(block, heading) < min_overlap:
         return False
