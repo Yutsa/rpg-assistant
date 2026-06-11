@@ -203,6 +203,104 @@ class RawRepository:
             for r in rows
         ]
 
+    def get_document(self, document_id: str) -> DocumentRecord | None:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT d.id, d.campaign_id, d.filename, d.page_count, d.content_hash,
+                       d.created_at,
+                       (SELECT COUNT(*) FROM sections s WHERE s.document_id = d.id),
+                       (SELECT COUNT(*) FROM chunks ch WHERE ch.document_id = d.id),
+                       (
+                           SELECT ir.id
+                           FROM ingestion_runs ir
+                           WHERE ir.document_id = d.id AND ir.stage = 'raw'
+                           ORDER BY ir.started_at DESC
+                           LIMIT 1
+                       ),
+                       (
+                           SELECT ir.status
+                           FROM ingestion_runs ir
+                           WHERE ir.document_id = d.id AND ir.stage = 'raw'
+                           ORDER BY ir.started_at DESC
+                           LIMIT 1
+                       )
+                FROM documents d
+                WHERE d.id = %s
+                """,
+                (document_id,),
+            )
+            row = cur.fetchone()
+        if not row:
+            return None
+        return DocumentRecord(
+            id=row[0],
+            campaign_id=row[1],
+            filename=row[2],
+            page_count=row[3] or 0,
+            content_hash=row[4],
+            created_at=row[5],
+            section_count=row[6] or 0,
+            chunk_count=row[7] or 0,
+            latest_ingestion_run_id=row[8],
+            latest_ingestion_status=row[9],
+        )
+
+    def get_page(self, document_id: str, page_number: int) -> PageRecord | None:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, document_id, page_number, text, extraction_method,
+                       has_text, text_coverage_ratio, width, height
+                FROM pages
+                WHERE document_id = %s AND page_number = %s
+                """,
+                (document_id, page_number),
+            )
+            row = cur.fetchone()
+        if not row:
+            return None
+        return PageRecord(
+            id=row[0],
+            document_id=row[1],
+            page_number=row[2],
+            text=row[3],
+            extraction_method=row[4] or "pymupdf",
+            has_text=bool(row[5]),
+            text_coverage_ratio=row[6] or 0.0,
+            width=row[7],
+            height=row[8],
+        )
+
+    def list_page_blocks_for_page(
+        self, document_id: str, page_number: int
+    ) -> list[PageBlockRecord]:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, document_id, page_id, page_number, block_index, text,
+                       bbox_json, metadata_json
+                FROM page_blocks
+                WHERE document_id = %s AND page_number = %s
+                ORDER BY block_index
+                """,
+                (document_id, page_number),
+            )
+            rows = cur.fetchall()
+        return [
+            PageBlockRecord(
+                id=r[0],
+                document_id=r[1],
+                page_id=r[2],
+                page_number=r[3],
+                block_index=r[4],
+                text=r[5],
+                bbox=BBox(**parse_json(r[6])),
+                metadata=parse_json(r[7]) or {},
+            )
+            for r in rows
+        ]
+
     def get_latest_raw_run(self, document_id: str) -> IngestionRunRecord | None:
         with self.conn.cursor() as cur:
             cur.execute(
