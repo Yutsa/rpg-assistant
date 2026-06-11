@@ -14,6 +14,7 @@ def _block(
     y1: float = 120.0,
     font_size: float = 9.5,
     bold: bool = False,
+    italic: bool = False,
 ) -> LayoutBlock:
     return LayoutBlock(
         page_number=page_number,
@@ -25,6 +26,7 @@ def _block(
             "max_font_size": font_size,
             "avg_font_size": font_size,
             "is_bold": bold,
+            "is_italic": italic,
         },
     )
 
@@ -65,9 +67,18 @@ def test_line_break_merge_joins_sentence_fragments():
     )
 
 
-def test_does_not_merge_across_columns():
+def test_wrap_around_merge_joins_illustration_continuation():
     blocks = [
-        _block(14, 0, "aura de terreur en", x0=134.0, x1=213.5, y0=148.2, y1=160.3),
+        _block(
+            14,
+            0,
+            "aura de terreur en",
+            x0=51.0,
+            x1=218.8,
+            y0=45.5,
+            y1=160.3,
+            italic=True,
+        ),
         _block(
             14,
             1,
@@ -76,12 +87,16 @@ def test_does_not_merge_across_columns():
             x1=424.3,
             y0=45.6,
             y1=103.3,
+            italic=True,
         ),
     ]
     result = merge_fragmented_blocks([_page(blocks)])
 
-    assert result.merged_block_count == 0
-    assert len(result.pages[0].blocks) == 2
+    assert result.merged_block_count == 1
+    assert len(result.pages[0].blocks) == 1
+    assert result.pages[0].blocks[0].text == (
+        "aura de terreur en émaner. Proférant des menaces dans une langue."
+    )
 
 
 def test_does_not_merge_after_strong_punctuation():
@@ -103,9 +118,10 @@ def test_chains_multiple_merges_on_page_14_fragment():
             "La créature se retourne vers vous et vous ressen‑",
             y0=45.5,
             y1=137.5,
+            italic=True,
         ),
-        _block(14, 1, "tez immédiatement une", x0=123.0, y0=136.8, y1=148.9),
-        _block(14, 2, "aura de terreur en", x0=134.0, y0=148.2, y1=160.3),
+        _block(14, 1, "tez immédiatement une", x0=123.0, y0=136.8, y1=148.9, italic=True),
+        _block(14, 2, "aura de terreur en", x0=134.0, y0=148.2, y1=160.3, italic=True),
         _block(
             14,
             3,
@@ -114,14 +130,70 @@ def test_chains_multiple_merges_on_page_14_fragment():
             x1=424.3,
             y0=45.6,
             y1=103.3,
+            italic=True,
         ),
     ]
     result = merge_fragmented_blocks([_page(blocks)])
 
-    assert result.merged_block_count == 2
+    assert result.merged_block_count == 3
+    assert len(result.pages[0].blocks) == 1
+    assert "ressentez immédiatement une aura de terreur en émaner." in result.pages[0].blocks[0].text
+
+
+def test_wrap_around_merge_page_15_stat_block():
+    blocks = [
+        _block(
+            15,
+            0,
+            "PASSAGE DANS LA PIERRE :\nDeux fois par jour, la momie peut se déplacer dans toutes les",
+            x0=51.0,
+            x1=213.8,
+            y0=512.0,
+            y1=559.8,
+            bold=True,
+        ),
+        _block(
+            15,
+            1,
+            "directions. Elle peut emmener une personne avec elle grâce à ce pouvoir.",
+            x0=260.8,
+            x1=426.3,
+            y0=45.7,
+            y1=70.2,
+        ),
+    ]
+    result = merge_fragmented_blocks([_page(blocks)])
+
+    assert result.merged_block_count == 1
+    assert len(result.pages[0].blocks) == 1
+    assert "dans toutes les directions." in result.pages[0].blocks[0].text
+
+
+def test_does_not_merge_cross_column_unrelated():
+    blocks = [
+        _block(
+            14,
+            0,
+            "Les renforts arrivent enfin.",
+            x0=51.0,
+            x1=218.8,
+            y0=500.0,
+            y1=560.0,
+        ),
+        _block(
+            14,
+            1,
+            "ensuite la scène continue.",
+            x0=256.5,
+            x1=424.3,
+            y0=45.6,
+            y1=103.3,
+        ),
+    ]
+    result = merge_fragmented_blocks([_page(blocks)])
+
+    assert result.merged_block_count == 0
     assert len(result.pages[0].blocks) == 2
-    assert "ressentez immédiatement une aura de terreur en" in result.pages[0].blocks[0].text
-    assert result.pages[0].blocks[1].text.startswith("émaner.")
 
 
 def test_hyphenation_merge_without_strict_column_overlap():

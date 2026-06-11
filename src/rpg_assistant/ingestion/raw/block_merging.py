@@ -19,6 +19,11 @@ NEW_UNIT_START_RE = re.compile(r"^[\s«•\-–—*]+|[A-Z][A-Z\s]{3,}")
 DEFAULT_MAX_VERTICAL_GAP = 15.0
 DEFAULT_MIN_COLUMN_OVERLAP = 0.25
 MAX_VERTICAL_OVERLAP = 5.0
+WRAP_TOP_ALIGN_TOLERANCE = 20.0
+WRAP_MIN_EXTEND_PAST = 10.0
+WRAP_VERTICAL_JUMP = 20.0
+STYLE_FONT_SIZE_TOLERANCE = 1.5
+COLUMN_CENTER_RATIO = 0.5
 
 MergeKind = Literal["hyphenation", "line_break"]
 
@@ -79,6 +84,60 @@ def _same_column(
     return overlap / narrower >= min_overlap_ratio
 
 
+def _column_center(block: LayoutBlock) -> float:
+    return (block.bbox.x0 + block.bbox.x1) / 2
+
+
+def _is_left_column(block: LayoutBlock, *, page_width: float) -> bool:
+    return _column_center(block) < page_width * COLUMN_CENTER_RATIO
+
+
+def _is_right_column(block: LayoutBlock, *, page_width: float) -> bool:
+    return _column_center(block) > page_width * COLUMN_CENTER_RATIO
+
+
+def _compatible_style(previous: LayoutBlock, nxt: LayoutBlock) -> bool:
+    if previous.metadata.get("is_italic") == nxt.metadata.get("is_italic"):
+        return True
+    if _looks_like_heading(nxt):
+        return False
+    prev_size = previous.metadata.get("avg_font_size") or previous.metadata.get("max_font_size")
+    next_size = nxt.metadata.get("avg_font_size") or nxt.metadata.get("max_font_size")
+    if prev_size is None or next_size is None:
+        return False
+    return abs(prev_size - next_size) <= STYLE_FONT_SIZE_TOLERANCE
+
+
+def _is_wrap_around_pair(
+    previous: LayoutBlock,
+    nxt: LayoutBlock,
+    *,
+    page_width: float,
+) -> bool:
+    if _same_column(previous, nxt):
+        return False
+    if not _is_left_column(previous, page_width=page_width):
+        return False
+    if not _is_right_column(nxt, page_width=page_width):
+        return False
+    if not _compatible_style(previous, nxt):
+        return False
+    if _ends_with_strong_punctuation(previous.text):
+        return False
+    if not _continues_sentence(nxt.text):
+        return False
+    if _starts_new_unit(nxt.text) or _looks_like_heading(nxt):
+        return False
+
+    aligned_tops = abs(previous.bbox.y0 - nxt.bbox.y0) <= WRAP_TOP_ALIGN_TOLERANCE
+    prev_extends_past_next = previous.bbox.y1 > nxt.bbox.y1 + WRAP_MIN_EXTEND_PAST
+    beside_illustration = (
+        aligned_tops and prev_extends_past_next and _shares_text_line(previous, nxt)
+    )
+    bottom_to_top = nxt.bbox.y0 < previous.bbox.y0 - WRAP_VERTICAL_JUMP
+    return beside_illustration or bottom_to_top
+
+
 def _looks_like_heading(block: LayoutBlock) -> bool:
     text = block.text.strip()
     if not text:
@@ -104,7 +163,12 @@ def _is_drop_cap_pair(previous: LayoutBlock, nxt: LayoutBlock) -> bool:
     return nxt.bbox.x0 >= previous.bbox.x0 - 5
 
 
-def _merge_kind(previous: LayoutBlock, nxt: LayoutBlock) -> MergeKind | None:
+def _merge_kind(
+    previous: LayoutBlock,
+    nxt: LayoutBlock,
+    *,
+    page_width: float,
+) -> MergeKind | None:
     if previous.page_number != nxt.page_number:
         return None
     if _looks_like_heading(nxt):
@@ -115,6 +179,8 @@ def _merge_kind(previous: LayoutBlock, nxt: LayoutBlock) -> MergeKind | None:
         if _shares_text_line(previous, nxt) or _visually_adjacent(previous, nxt):
             return "hyphenation"
         return None
+    if _is_wrap_around_pair(previous, nxt, page_width=page_width):
+        return "line_break"
     if not _visually_adjacent(previous, nxt):
         return None
     if not _same_column(previous, nxt):
@@ -170,7 +236,11 @@ def _merge_two_blocks(
     )
 
 
-def _merge_page_blocks(blocks: list[LayoutBlock]) -> tuple[list[LayoutBlock], int]:
+def _merge_page_blocks(
+    blocks: list[LayoutBlock],
+    *,
+    page_width: float,
+) -> tuple[list[LayoutBlock], int]:
     if len(blocks) < 2:
         return blocks, 0
 
@@ -181,7 +251,7 @@ def _merge_page_blocks(blocks: list[LayoutBlock]) -> tuple[list[LayoutBlock], in
         current = blocks[index]
         next_index = index + 1
         while next_index < len(blocks):
-            kind = _merge_kind(current, blocks[next_index])
+            kind = _merge_kind(current, blocks[next_index], page_width=page_width)
             if kind is None:
                 break
             current = _merge_two_blocks(current, blocks[next_index], kind=kind)
@@ -249,7 +319,7 @@ def merge_fragmented_blocks(pages: list[LayoutPage]) -> BlockMergeResult:
     merged_pages: list[LayoutPage] = []
     merged_block_count = 0
     for page in pages:
-        blocks, page_merged = _merge_page_blocks(page.blocks)
+        blocks, page_merged = _merge_page_blocks(page.blocks, page_width=page.width)
         merged_block_count += page_merged
         merged_pages.append(rebuild_layout_page(page, blocks))
 
