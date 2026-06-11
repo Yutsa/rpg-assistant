@@ -196,6 +196,34 @@ class RawRepository:
             for r in rows
         ]
 
+    def get_latest_raw_run(self, document_id: str) -> IngestionRunRecord | None:
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT id, campaign_id, document_id, stage, status, error_message,
+                       stats, started_at, finished_at
+                FROM ingestion_runs
+                WHERE document_id = %s AND stage = 'raw' AND status = 'completed'
+                ORDER BY started_at DESC
+                LIMIT 1
+                """,
+                (document_id,),
+            )
+            row = cur.fetchone()
+        if not row:
+            return None
+        return IngestionRunRecord(
+            id=row[0],
+            campaign_id=row[1],
+            document_id=row[2],
+            stage=row[3],
+            status=row[4],
+            error_message=row[5],
+            stats=parse_json(row[6]) or {},
+            started_at=row[7],
+            finished_at=row[8],
+        )
+
     def get_ingestion_run(self, run_id: str) -> IngestionRunRecord | None:
         with self.conn.cursor() as cur:
             cur.execute(
@@ -427,6 +455,34 @@ class RawRepository:
             )
             rows = cur.fetchall()
         return [self._row_to_chunk(r) for r in rows]
+
+    def list_chunks_for_sections(
+        self,
+        document_id: str,
+        section_ids: list[str],
+    ) -> dict[str, list[ChunkRecord]]:
+        if not section_ids:
+            return {}
+        in_clause, in_params = self.dialect.in_list_clause("section_id", section_ids)
+        with self.conn.cursor() as cur:
+            cur.execute(
+                f"""
+                SELECT id, campaign_id, document_id, section_id, page_start, page_end,
+                       text, chunk_type, chunk_type_hint, token_count,
+                       source_spans_json, metadata_json, needs_rechunk
+                FROM chunks
+                WHERE document_id = %s AND {in_clause}
+                ORDER BY section_id, page_start, id
+                """,
+                [document_id, *in_params],
+            )
+            rows = cur.fetchall()
+        result: dict[str, list[ChunkRecord]] = {sid: [] for sid in section_ids}
+        for row in rows:
+            chunk = self._row_to_chunk(row)
+            if chunk.section_id:
+                result.setdefault(chunk.section_id, []).append(chunk)
+        return result
 
     def get_chunk(self, chunk_id: str) -> ChunkRecord | None:
         with self.conn.cursor() as cur:

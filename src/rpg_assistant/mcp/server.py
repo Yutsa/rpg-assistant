@@ -7,6 +7,11 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, Field
 
+from rpg_assistant.ingestion.feedback.visual_review import (
+    VISUAL_INGESTION_REVIEW_PROMPT,
+    VisualReviewError,
+    prepare_visual_ingestion_review as run_visual_review,
+)
 from rpg_assistant.ingestion.raw.importer import run as import_run
 from rpg_assistant.ingestion.semantic.schemas import (
     CHUNK_CLASSIFICATION_JSON_SCHEMA,
@@ -189,6 +194,35 @@ def get_chunk(chunk_id: str) -> str:
 
 
 @mcp.tool()
+def prepare_visual_ingestion_review(
+    document_id: str,
+    pdf_path: str | None = None,
+    section_count: int = 3,
+    chunks_per_section: int = 2,
+    seed: int | None = None,
+    dpi: int = 150,
+    max_pages: int = 15,
+) -> str:
+    """Sample random sections/chunks and render matching PDF pages for visual review."""
+    try:
+        with get_connection() as conn:
+            repo = RawRepository(conn)
+            payload = run_visual_review(
+                repo,
+                document_id,
+                pdf_path=pdf_path,
+                section_count=section_count,
+                chunks_per_section=chunks_per_section,
+                seed=seed,
+                dpi=dpi,
+                max_pages=max_pages,
+            )
+    except VisualReviewError as exc:
+        return json.dumps({"error": str(exc)})
+    return json.dumps(payload, indent=2, default=str)
+
+
+@mcp.tool()
 def get_source_excerpt(page_block_ids: list[str]) -> str:
     """Return text and bounding boxes for page blocks (source verification)."""
     with get_connection() as conn:
@@ -336,6 +370,11 @@ def resource_chunk_classification_schema() -> str:
 @mcp.resource("ingestion://prompts/entity_extraction")
 def resource_entity_extraction_prompt() -> str:
     return ENTITY_EXTRACTION_PROMPT
+
+
+@mcp.resource("ingestion://prompts/visual_ingestion_review")
+def resource_visual_ingestion_review_prompt() -> str:
+    return VISUAL_INGESTION_REVIEW_PROMPT
 
 
 def main() -> None:

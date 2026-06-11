@@ -179,6 +179,7 @@ def run(
 
         uniqueness = chunk_uniqueness_stats(chunks)
         stats = {
+            "source_pdf_path": str(pdf_path.resolve()),
             "page_count": len(pages),
             "block_count": len(blocks),
             "section_count": len(sections),

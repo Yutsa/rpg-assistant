@@ -20,6 +20,15 @@ Quand l'utilisateur veut voir ce qui a été ingéré :
 
 Pour le statut d'un import : `get_ingestion_status(ingestion_run_id)`.
 
+## Vérification visuelle (boucle de feedback)
+
+Pour comparer le rendu visuel du PDF avec les sections et chunks extraits :
+
+1. `prepare_visual_ingestion_review(document_id, seed=42)` — échantillonne des sections/chunks aléatoires et rend les pages PDF correspondantes en PNG. Le chemin source est résolu depuis le dernier import (`source_pdf_path` dans les stats du run) ; passer `pdf_path` si besoin.
+2. Lire chaque `image_path` retourné (outil Read — vision).
+3. Comparer avec les sections/chunks du JSON retourné.
+4. Produire un rapport structuré (`section_id`, `chunk_id`, `issue`, sévérité). Checklist : ressource `ingestion://prompts/visual_ingestion_review`.
+
 Réponds en français si l'utilisateur parle français. Cite des extraits courts et indique `chunk_id` / pages pour que l'utilisateur puisse retrouver la source.
 
 ## Tester le MVP sémantique (écriture)
