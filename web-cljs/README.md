@@ -7,6 +7,8 @@ Le front React existant reste la référence fonctionnelle ; ce dossier cohabite
 ## Stack
 
 - **Replicant** — rendu hiccup → DOM, UI en fonctions pures
+- **Silk** + **lambdaisland/uri** — routing bidirectionnel ([tutoriel Replicant](https://replicant.fun/tutorials/routing/))
+- **`js/fetch`** — appels HTTP JSON ([tutoriel network reads](https://replicant.fun/tutorials/network-reads/))
 - **shadow-cljs** — compilation et serveur de dev
 - **tools.deps** — gestion des dépendances Clojure
 
@@ -68,8 +70,8 @@ web-cljs/
       core.cljs    # point d'entrée, boucle render
       state.cljs   # atom global
       events.cljs  # dispatch Replicant
-      api.cljs     # fetch JSON
-      routes.cljs  # routing History API
+      api.cljs     # js/fetch JSON
+      router.cljs  # Silk + History API (clics + popstate)
       views/       # hiccup par écran
 ```
 

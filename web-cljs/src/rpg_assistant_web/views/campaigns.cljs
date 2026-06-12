@@ -21,12 +21,10 @@
 
 (defn- campaign-card [campaign]
   (let [id (or (:id campaign) (:campaign-id campaign))
-        title (or (:title campaign) id)
-        path (str "/campaigns/" id)]
-    [:a.card {:key id
-              :href path
-              :on {:click [[:dom/prevent-default]
-                            [:navigate path]]}}
+        title (or (:title campaign) id)]
+    [:ui/a.card {:key id
+                 :ui/location {:location/page-id :pages/campaign-documents
+                                :location/params {:campaign-id id}}}
      [:h3 title]
      [:p.muted
       (str (:document_count campaign 0) " document(s)")

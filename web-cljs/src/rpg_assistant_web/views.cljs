@@ -4,34 +4,35 @@
             [rpg-assistant-web.views.shell :as shell]))
 
 (defn page-view [state]
-  (let [route (:route state)
-        body (case (:page route)
-               :campaigns (campaigns/campaigns-view state)
-               :campaign-documents
+  (let [location (:location state)
+        params (:location/params location {})
+        body (case (:location/page-id location)
+               :pages/campaigns (campaigns/campaigns-view state)
+
+               :pages/campaign-documents
                (placeholder/placeholder-view
-                (str "Documents — " (:campaign-id route))
+                (str "Documents — " (:campaign-id params))
                 "Sélection de document à implémenter.")
 
-               :document-explorer
+               (:pages/document-explorer :pages/document-chunk)
                (placeholder/placeholder-view
-                (str "Exploration — " (:document-id route))
+                (str "Exploration — " (:document-id params))
                 "Arbre de sections, chunks et panneau PDF à implémenter.")
 
-               :stat-blocks
+               :pages/stat-blocks
                (placeholder/placeholder-view
-                (str "Fiches stats — " (:document-id route))
+                (str "Fiches stats — " (:document-id params))
                 "Index des fiches COF2 à implémenter.")
 
-               :stat-block-detail
+               :pages/stat-block-detail
                (placeholder/placeholder-view
-                (:stat-block-name route)
-                (str "Document " (:document-id route)))
+                (:stat-block-name params)
+                (str "Document " (:document-id params)))
 
-               :not-found
                (placeholder/placeholder-view
                 "Page introuvable"
                 "Cette URL ne correspond à aucune vue."))]
-    (shell/shell-view route body)))
+    (shell/shell-view location body)))
 
 (defn render [state]
   (page-view state))
