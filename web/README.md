@@ -1,11 +1,11 @@
 # RPG Assistant — Webapp
 
-Interface React pour explorer une campagne importée : sections, chunks, fiches COF2 et vue PDF avec surlignages bbox.
+Interface ClojureScript (UIx + si-frame) pour explorer une campagne importée : sections, chunks, fiches COF2 et vue PDF avec surlignages bbox.
 
 ## Prérequis
 
 - Python 3.11+ avec `uv` (backend)
-- Node.js 20+ et npm (frontend)
+- Node.js 20+, npm, Clojure CLI (frontend)
 - Base migrée : `uv run alembic upgrade head`
 - Au moins un import raw, par ex. campagne `momie` :
 
@@ -21,7 +21,7 @@ Terminal 1 — API FastAPI sur le port 8000 :
 uv run rpg-web
 ```
 
-Terminal 2 — Vite avec proxy `/api` → `http://127.0.0.1:8000` :
+Terminal 2 — shadow-cljs avec proxy `/api` → `http://127.0.0.1:8000` :
 
 ```bash
 cd web
@@ -31,7 +31,7 @@ npm run dev
 
 Ouvrir [http://localhost:5173](http://localhost:5173).
 
-Le client HTTP utilise par défaut le préfixe `/api` (voir `vite.config.ts`). Variable optionnelle : `VITE_API_BASE`.
+En dev, le client HTTP utilise le préfixe `/api` (proxy shadow-cljs). En build release, les appels sont relatifs à la racine (même origine que `rpg-web`).
 
 ## Production locale (un seul processus)
 
@@ -48,10 +48,20 @@ Si le fichier PDF a été déplacé, l'UI propose un champ de chemin absolu. La 
 
 Réimporter via la CLI met à jour `source_pdf_path` dans les stats du run raw.
 
-## Tests frontend
+## Tests d'acceptation (Playwright)
 
 ```bash
-cd web && npm test
+cd web
+npm run build
+npm run test:e2e:install   # une fois par machine
+npm run test:e2e
 ```
 
-Test Vitest sur la conversion bbox → viewport (`src/utils/bbox.test.ts`).
+Le serveur de test (`tests/e2e/serve.py`) charge des données en mémoire et sert le build statique sur le port 8765.
+
+## Stack frontend
+
+- [UIx](https://github.com/pitch-io/uix) — React en ClojureScript
+- [si-frame](https://github.com/metosin/si-frame) — état global (panneau PDF)
+- shadow-cljs — compilation et dev server
+- react-router-dom v6 — routage

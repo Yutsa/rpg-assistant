@@ -7,6 +7,9 @@ __pycache__/
 dist/
 web/dist/
 web/node_modules/
+web/.shadow-cljs/
+web/.cpcache/
+web/test-results/
 build/
 .pytest_cache/
 data/

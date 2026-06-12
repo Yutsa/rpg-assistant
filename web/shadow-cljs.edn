@@ -1,0 +1,17 @@
+{:deps true
+ :nrepl {:port 8777}
+ :npm-deps {"react" "19.2.0"
+            "react-dom" "19.2.0"
+            "react-router-dom" "6.28.0"
+            "react-refresh" "0.17.0"
+            "process" "0.11.10"}
+ :dev-http {5173 {:root "public"
+                  :proxy-url {"^/api" {:target "http://127.0.0.1:8000"
+                                       :rewrite-prefix "/api"}}}}
+ :builds
+ {:app {:target :browser
+        :output-dir "dist/assets"
+        :asset-path "/assets"
+        :modules {:main {:init-fn rpg-assistant.web.core/start}}
+        :devtools {:preloads [uix.preload]}
+        :compiler-options {:output-feature-set :es8}}}}
