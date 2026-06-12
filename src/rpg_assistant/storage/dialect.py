@@ -98,3 +98,8 @@ class Dialect:
         if self.is_postgresql:
             return "(metadata_json->'stat_block'->>'nc')::int AS stat_block_nc"
         return "CAST(json_extract(metadata_json, '$.stat_block.nc') AS INTEGER) AS stat_block_nc"
+
+    def stat_block_lookup_match_sql(self) -> str:
+        name_key = self.stat_block_json_path("_lookup_name")
+        subtitle_key = self.stat_block_json_path("_lookup_subtitle")
+        return f"({name_key} = %s OR {subtitle_key} = %s)"
