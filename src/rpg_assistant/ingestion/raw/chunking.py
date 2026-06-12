@@ -22,6 +22,7 @@ from rpg_assistant.ingestion.raw.reading_order import (
     page_median_font,
     spatial_sort_key,
 )
+from rpg_assistant.ingestion.raw.stat_blocks.matching import enrich_chunk_metadata
 from rpg_assistant.ingestion.raw.stat_blocks.profile import StatBlockProfile
 from rpg_assistant.ingestion.raw.stat_blocks.types import StatBlockSpan
 from rpg_assistant.models.raw import ChunkRecord, SectionRecord, SourceSpan
@@ -692,10 +693,12 @@ def _make_chunk(
         text = parsed.raw_text or "\n\n".join(
             profile.normalize_block_text(block.text) for _, block in block_groups
         )
-        metadata = {
-            "stat_block": parsed.model_dump(),
-            "game_system": parsed.game_system,
-        }
+        metadata = enrich_chunk_metadata(
+            {
+                "stat_block": parsed.model_dump(),
+                "game_system": parsed.game_system,
+            }
+        )
         chunk_hint = "stat_block"
     else:
         text = "\n\n".join(block.text for _, block in block_groups)

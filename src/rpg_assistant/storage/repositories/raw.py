@@ -3,7 +3,11 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from rpg_assistant.ingestion.raw.stat_blocks.matching import matches_stat_block_name
+from rpg_assistant.ingestion.raw.stat_blocks.matching import (
+    enrich_chunk_metadata,
+    matches_stat_block_name,
+    normalize_stat_block_key,
+)
 from rpg_assistant.models.raw import (
     CampaignRecord,
     ChunkRecord,
@@ -483,7 +487,11 @@ class RawRepository:
                         c.chunk_type_hint,
                         c.token_count,
                         dump_json([s.model_dump() for s in c.source_spans]),
-                        dump_json(c.metadata),
+                        dump_json(
+                            enrich_chunk_metadata(c.metadata)
+                            if c.chunk_type_hint == "stat_block"
+                            else c.metadata
+                        ),
                         c.needs_rechunk,
                     )
                     for c in chunks
@@ -621,6 +629,54 @@ class RawRepository:
     def get_stat_block(
         self, document_id: str, name: str
     ) -> ChunkRecord | list[ChunkRecord] | None:
+        key = normalize_stat_block_key(name)
+        if not key:
+            return None
+
+        lookup_match = self.dialect.stat_block_lookup_match_sql()
+        with self.conn.cursor() as cur:
+            cur.execute(
+                f"""
+                SELECT id, campaign_id, document_id, section_id, page_start, page_end,
+                       text, chunk_type, chunk_type_hint, token_count,
+                       source_spans_json, metadata_json, needs_rechunk
+                FROM chunks
+                WHERE document_id = %s AND chunk_type_hint = 'stat_block'
+                  AND {lookup_match}
+                ORDER BY page_start, id
+                """,
+                (document_id, key, key),
+            )
+            rows = cur.fetchall()
+
+        if not rows and self._stat_blocks_use_lookup_keys(document_id):
+            return None
+
+        if not rows:
+            rows = self._legacy_stat_block_rows(document_id, name)
+
+        matches = [self._row_to_chunk(row) for row in rows]
+        if not matches:
+            return None
+        if len(matches) == 1:
+            return matches[0]
+        return matches
+
+    def _stat_blocks_use_lookup_keys(self, document_id: str) -> bool:
+        lookup_name = self.dialect.stat_block_json_path("_lookup_name")
+        with self.conn.cursor() as cur:
+            cur.execute(
+                f"""
+                SELECT 1 FROM chunks
+                WHERE document_id = %s AND chunk_type_hint = 'stat_block'
+                  AND {lookup_name} IS NOT NULL AND {lookup_name} != ''
+                LIMIT 1
+                """,
+                (document_id,),
+            )
+            return cur.fetchone() is not None
+
+    def _legacy_stat_block_rows(self, document_id: str, name: str) -> list[tuple]:
         with self.conn.cursor() as cur:
             cur.execute(
                 """
@@ -634,16 +690,13 @@ class RawRepository:
                 (document_id,),
             )
             rows = cur.fetchall()
-        matches = [
-            self._row_to_chunk(row)
+        return [
+            row
             for row in rows
-            if matches_stat_block_name(name, parse_json(row[11]).get("stat_block") or {})
+            if matches_stat_block_name(
+                name, parse_json(row[11]).get("stat_block") or {}
+            )
         ]
-        if not matches:
-            return None
-        if len(matches) == 1:
-            return matches[0]
-        return matches
 
     def get_chunk(self, chunk_id: str) -> ChunkRecord | None:
         with self.conn.cursor() as cur:

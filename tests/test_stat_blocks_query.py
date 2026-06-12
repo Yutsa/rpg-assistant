@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 from rpg_assistant.ingestion.raw.stat_blocks.matching import (
+    enrich_chunk_metadata,
     matches_stat_block_name,
     normalize_stat_block_key,
 )
@@ -144,6 +145,25 @@ def test_get_stat_block_by_name():
     assert isinstance(result_sub, ChunkRecord)
 
     assert repo.get_stat_block("doc_test", "UNKNOWN") is None
+
+
+def test_get_stat_block_sql_lookup_keys():
+    repo = _memory_repo()
+    _seed_document(repo)
+    _insert_stat_chunk(repo, "chk_azulria", enrich_chunk_metadata(_azulria_metadata()))
+
+    assert repo._stat_blocks_use_lookup_keys("doc_test") is True
+    assert repo.get_stat_block("doc_test", "pretresse 7").id == "chk_azulria"
+    assert repo.get_stat_block("doc_test", "UNKNOWN") is None
+
+
+def test_get_stat_block_legacy_fallback_without_lookup_keys():
+    repo = _memory_repo()
+    _seed_document(repo)
+    _insert_stat_chunk(repo, "chk_azulria", _azulria_metadata())
+
+    assert repo._stat_blocks_use_lookup_keys("doc_test") is False
+    assert repo.get_stat_block("doc_test", "pretresse 7").id == "chk_azulria"
 
 
 def test_get_stat_block_ambiguous():
