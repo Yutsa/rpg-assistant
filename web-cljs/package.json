@@ -1,0 +1,14 @@
+{
+  "name": "rpg-assistant-web-cljs",
+  "private": true,
+  "version": "0.1.0",
+  "description": "RPG Assistant — front-end expérimental ClojureScript + Replicant",
+  "scripts": {
+    "dev": "shadow-cljs watch app",
+    "build": "shadow-cljs release app && mkdir -p dist/css && cp public/index.html dist/ && cp -r public/css dist/",
+    "test": "shadow-cljs compile test"
+  },
+  "devDependencies": {
+    "shadow-cljs": "^3.2.1"
+  }
+}
