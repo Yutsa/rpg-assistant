@@ -14,7 +14,7 @@ from rpg_assistant.ingestion.feedback.visual_review import (
 from rpg_assistant.models.raw import ChunkRecord, SectionRecord, SourceSpan
 from rpg_assistant.models.raw import IngestionRunRecord
 from rpg_assistant.storage.repositories.raw import RawRepository
-from tests.test_campaign_discovery import _memory_repo
+from tests.fixtures.db import memory_repo as _memory_repo
 
 
 def _section(section_id: str, title: str, page_start: int, page_end: int) -> SectionRecord:

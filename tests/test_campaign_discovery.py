@@ -1,73 +1,7 @@
 from __future__ import annotations
 
-import sqlite3
-
 from rpg_assistant.models.raw import IngestionRunRecord
-from rpg_assistant.storage.db import _SqliteConnection
-from rpg_assistant.storage.dialect import Dialect
-from rpg_assistant.storage.repositories.raw import RawRepository
-
-
-def _memory_repo() -> RawRepository:
-    connection = sqlite3.connect(":memory:")
-    connection.execute("PRAGMA foreign_keys = ON")
-    # Minimal tables for discovery queries
-    connection.executescript(
-        """
-        CREATE TABLE campaigns (
-            id TEXT PRIMARY KEY,
-            title TEXT NOT NULL DEFAULT '',
-            game_system TEXT NOT NULL DEFAULT '',
-            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-        );
-        CREATE TABLE documents (
-            id TEXT PRIMARY KEY,
-            campaign_id TEXT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
-            filename TEXT NOT NULL,
-            page_count INTEGER NOT NULL DEFAULT 0,
-            content_hash TEXT NOT NULL,
-            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-        );
-        CREATE TABLE ingestion_runs (
-            id TEXT PRIMARY KEY,
-            campaign_id TEXT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
-            document_id TEXT REFERENCES documents(id) ON DELETE SET NULL,
-            stage TEXT NOT NULL DEFAULT 'raw',
-            status TEXT NOT NULL DEFAULT 'pending',
-            error_message TEXT,
-            stats TEXT NOT NULL DEFAULT '{}',
-            started_at TEXT,
-            finished_at TEXT
-        );
-        CREATE TABLE sections (
-            id TEXT PRIMARY KEY,
-            campaign_id TEXT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
-            document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
-            parent_section_id TEXT,
-            title TEXT NOT NULL,
-            level INTEGER NOT NULL,
-            page_start INTEGER NOT NULL,
-            page_end INTEGER NOT NULL
-        );
-        CREATE TABLE chunks (
-            id TEXT PRIMARY KEY,
-            campaign_id TEXT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
-            document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
-            section_id TEXT,
-            page_start INTEGER NOT NULL,
-            page_end INTEGER NOT NULL,
-            text TEXT NOT NULL DEFAULT '',
-            chunk_type TEXT,
-            chunk_type_hint TEXT,
-            token_count INTEGER NOT NULL DEFAULT 0,
-            source_spans_json TEXT NOT NULL DEFAULT '[]',
-            metadata_json TEXT NOT NULL DEFAULT '{}',
-            needs_rechunk INTEGER NOT NULL DEFAULT 0
-        );
-        """
-    )
-    return RawRepository(_SqliteConnection(connection, Dialect("sqlite")))
+from tests.fixtures.db import memory_repo as _memory_repo
 
 
 def test_list_campaigns_and_documents():

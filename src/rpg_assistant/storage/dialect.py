@@ -6,7 +6,6 @@ from typing import Any
 from sqlalchemy.engine import make_url
 
 DEFAULT_SQLITE_URL = "sqlite:///./data/rpg_assistant.db"
-DEFAULT_POSTGRES_URL = "postgresql://rpg:rpg@localhost:5432/rpg_assistant"
 
 
 def get_database_url_from_env(env_value: str | None) -> str:
@@ -27,6 +26,10 @@ def parse_json(value: Any) -> Any:
     if isinstance(value, str):
         return json.loads(value)
     return value
+
+
+def dump_json(value: Any) -> str:
+    return json.dumps(value, default=str)
 
 
 class Dialect:

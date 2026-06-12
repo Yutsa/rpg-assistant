@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
 from typing import Any
 
@@ -18,21 +17,11 @@ from rpg_assistant.models.raw import (
 )
 from rpg_assistant.models.raw import BBox
 from rpg_assistant.storage.db import DatabaseConnection
-from rpg_assistant.storage.dialect import parse_json
+from rpg_assistant.storage.dialect import dump_json, parse_json
 
 
 def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
-
-
-def _json_dumps(value: Any) -> str:
-    return json.dumps(value, default=str)
-
-
-def _parse_bbox(data: dict | None) -> BBox | None:
-    if not data:
-        return None
-    return BBox(**data)
 
 
 class RawRepository:
@@ -87,7 +76,7 @@ class RawRepository:
                     run.stage,
                     run.status,
                     run.error_message,
-                    _json_dumps(run.stats),
+                    dump_json(run.stats),
                     run.started_at or _utcnow(),
                 ),
             )
@@ -115,7 +104,7 @@ class RawRepository:
             values.append(error_message)
         if stats is not None:
             fields.append(f"stats = {self.dialect.json_param()}")
-            values.append(_json_dumps(stats))
+            values.append(dump_json(stats))
         if finished:
             fields.append("finished_at = %s")
             values.append(_utcnow())
@@ -287,19 +276,7 @@ class RawRepository:
                 (document_id, page_number),
             )
             rows = cur.fetchall()
-        return [
-            PageBlockRecord(
-                id=r[0],
-                document_id=r[1],
-                page_id=r[2],
-                page_number=r[3],
-                block_index=r[4],
-                text=r[5],
-                bbox=BBox(**parse_json(r[6])),
-                metadata=parse_json(r[7]) or {},
-            )
-            for r in rows
-        ]
+        return [self._row_to_page_block(r) for r in rows]
 
     def get_latest_raw_run(self, document_id: str) -> IngestionRunRecord | None:
         with self.conn.cursor() as cur:
@@ -418,8 +395,8 @@ class RawRepository:
                         b.page_number,
                         b.block_index,
                         b.text,
-                        _json_dumps(b.bbox.model_dump()),
-                        _json_dumps(b.metadata),
+                        dump_json(b.bbox.model_dump()),
+                        dump_json(b.metadata),
                     )
                     for b in blocks
                 ],
@@ -505,8 +482,8 @@ class RawRepository:
                         c.chunk_type,
                         c.chunk_type_hint,
                         c.token_count,
-                        _json_dumps([s.model_dump() for s in c.source_spans]),
-                        _json_dumps(c.metadata),
+                        dump_json([s.model_dump() for s in c.source_spans]),
+                        dump_json(c.metadata),
                         c.needs_rechunk,
                     )
                     for c in chunks
@@ -685,36 +662,26 @@ class RawRepository:
         return self._row_to_chunk(row)
 
     def chunk_exists(self, chunk_id: str) -> bool:
-        with self.conn.cursor() as cur:
-            cur.execute("SELECT 1 FROM chunks WHERE id = %s", (chunk_id,))
-            return cur.fetchone() is not None
+        return chunk_id in self.chunks_exist([chunk_id])
 
-    def list_page_blocks(self, document_id: str, page_number: int) -> list[PageBlockRecord]:
+    def chunks_exist(self, chunk_ids: list[str]) -> set[str]:
+        if not chunk_ids:
+            return set()
+        in_clause, in_params = self.dialect.in_list_clause("id", chunk_ids)
+        with self.conn.cursor() as cur:
+            cur.execute(f"SELECT id FROM chunks WHERE {in_clause}", in_params)
+            return {r[0] for r in cur.fetchall()}
+
+    def section_ids_with_chunks(self, document_id: str) -> set[str]:
         with self.conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT id, document_id, page_id, page_number, block_index, text,
-                       bbox_json, metadata_json
-                FROM page_blocks
-                WHERE document_id = %s AND page_number = %s
-                ORDER BY block_index
+                SELECT DISTINCT section_id FROM chunks
+                WHERE document_id = %s AND section_id IS NOT NULL
                 """,
-                (document_id, page_number),
+                (document_id,),
             )
-            rows = cur.fetchall()
-        return [
-            PageBlockRecord(
-                id=r[0],
-                document_id=r[1],
-                page_id=r[2],
-                page_number=r[3],
-                block_index=r[4],
-                text=r[5],
-                bbox=BBox(**parse_json(r[6])),
-                metadata=parse_json(r[7]) or {},
-            )
-            for r in rows
-        ]
+            return {r[0] for r in cur.fetchall()}
 
     def get_page_blocks(self, block_ids: list[str]) -> list[PageBlockRecord]:
         if not block_ids:
@@ -731,19 +698,7 @@ class RawRepository:
                 in_params,
             )
             rows = cur.fetchall()
-        return [
-            PageBlockRecord(
-                id=r[0],
-                document_id=r[1],
-                page_id=r[2],
-                page_number=r[3],
-                block_index=r[4],
-                text=r[5],
-                bbox=BBox(**parse_json(r[6])),
-                metadata=parse_json(r[7]) or {},
-            )
-            for r in rows
-        ]
+        return [self._row_to_page_block(r) for r in rows]
 
     def page_block_ids_exist(self, block_ids: list[str], document_id: str) -> set[str]:
         if not block_ids:
@@ -764,6 +719,18 @@ class RawRepository:
             cur.execute("SELECT document_id FROM chunks WHERE id = %s", (chunk_id,))
             row = cur.fetchone()
         return row[0] if row else None
+
+    def _row_to_page_block(self, row: tuple) -> PageBlockRecord:
+        return PageBlockRecord(
+            id=row[0],
+            document_id=row[1],
+            page_id=row[2],
+            page_number=row[3],
+            block_index=row[4],
+            text=row[5],
+            bbox=BBox(**parse_json(row[6])),
+            metadata=parse_json(row[7]) or {},
+        )
 
     def _row_to_chunk(self, row: tuple) -> ChunkRecord:
         spans_data = parse_json(row[10]) or []

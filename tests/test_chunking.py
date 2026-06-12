@@ -3,41 +3,8 @@ from rpg_assistant.ingestion.raw.chunking import (
     chunk_block_signature,
     chunk_uniqueness_stats,
 )
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
 from rpg_assistant.ingestion.raw.sections import detect_sections
-from rpg_assistant.models.raw import BBox
-
-
-def _block(
-    page: int,
-    index: int,
-    text: str,
-    *,
-    font_size: float = 11.0,
-    bold: bool = False,
-    y0: float = 0.0,
-) -> LayoutBlock:
-    return LayoutBlock(
-        page_number=page,
-        block_index=index,
-        text=text,
-        bbox=BBox(x0=0, y0=y0, x1=100, y1=y0 + 20),
-        metadata={
-            "max_font_size": font_size,
-            "avg_font_size": font_size,
-            "is_bold": bold,
-        },
-    )
-
-
-def _page(blocks: list[LayoutBlock]) -> LayoutPage:
-    return LayoutPage(
-        page_number=blocks[0].page_number,
-        width=612,
-        height=792,
-        text="\n\n".join(block.text for block in blocks),
-        blocks=blocks,
-    )
+from tests.fixtures.layout import make_block as _block, make_page as _page
 
 
 def test_build_chunks_partitions_blocks_between_headings_on_same_page():
@@ -45,11 +12,11 @@ def test_build_chunks_partitions_blocks_between_headings_on_same_page():
         _page(
             [
                 _block(5, 0, "EN QUELQUES MOTS", font_size=14, bold=True, y0=10),
-                _block(5, 1, "Résumé court.", y0=40),
+                _block(5, 1, "Résumé court.", font_size=11, y0=40),
                 _block(5, 2, "FICHE TECHNIQUE", font_size=14, bold=True, y0=70),
-                _block(5, 3, "Niveau 5", y0=100),
+                _block(5, 3, "Niveau 5", font_size=11, y0=100),
                 _block(5, 4, "LES GRANDES LIGNES", font_size=13, bold=True, y0=130),
-                _block(5, 5, "Contenu principal.", y0=160),
+                _block(5, 5, "Contenu principal.", font_size=11, y0=160),
             ]
         )
     ]
@@ -77,14 +44,14 @@ def test_build_chunks_covers_all_blocks_without_duplicates():
         _page(
             [
                 _block(1, 0, "Chapter 1", font_size=18, bold=True, y0=10),
-                _block(1, 1, "First paragraph.", y0=40),
-                _block(1, 2, "Second paragraph.", y0=70),
+                _block(1, 1, "First paragraph.", font_size=11, y0=40),
+                _block(1, 2, "Second paragraph.", font_size=11, y0=70),
             ]
         ),
         _page(
             [
                 _block(2, 0, "Chapter 2", font_size=18, bold=True, y0=10),
-                _block(2, 1, "Third paragraph.", y0=40),
+                _block(2, 1, "Third paragraph.", font_size=11, y0=40),
             ]
         ),
     ]

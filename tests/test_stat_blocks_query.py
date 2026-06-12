@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import sqlite3
 
 from rpg_assistant.ingestion.raw.stat_blocks.matching import (
     matches_stat_block_name,
@@ -9,49 +8,7 @@ from rpg_assistant.ingestion.raw.stat_blocks.matching import (
 )
 from rpg_assistant.ingestion.raw.stat_blocks.serialize import chunk_to_stat_block_detail
 from rpg_assistant.models.raw import ChunkRecord, SourceSpan
-from rpg_assistant.storage.db import _SqliteConnection
-from rpg_assistant.storage.dialect import Dialect
-from rpg_assistant.storage.repositories.raw import RawRepository
-
-
-def _memory_repo() -> RawRepository:
-    connection = sqlite3.connect(":memory:")
-    connection.execute("PRAGMA foreign_keys = ON")
-    connection.executescript(
-        """
-        CREATE TABLE campaigns (
-            id TEXT PRIMARY KEY,
-            title TEXT NOT NULL DEFAULT '',
-            game_system TEXT NOT NULL DEFAULT '',
-            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-        );
-        CREATE TABLE documents (
-            id TEXT PRIMARY KEY,
-            campaign_id TEXT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
-            filename TEXT NOT NULL,
-            page_count INTEGER NOT NULL DEFAULT 0,
-            content_hash TEXT NOT NULL,
-            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-        );
-        CREATE TABLE chunks (
-            id TEXT PRIMARY KEY,
-            campaign_id TEXT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
-            document_id TEXT NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
-            section_id TEXT,
-            page_start INTEGER NOT NULL,
-            page_end INTEGER NOT NULL,
-            text TEXT NOT NULL DEFAULT '',
-            chunk_type TEXT,
-            chunk_type_hint TEXT,
-            token_count INTEGER NOT NULL DEFAULT 0,
-            source_spans_json TEXT NOT NULL DEFAULT '[]',
-            metadata_json TEXT NOT NULL DEFAULT '{}',
-            needs_rechunk INTEGER NOT NULL DEFAULT 0
-        );
-        """
-    )
-    return RawRepository(_SqliteConnection(connection, Dialect("sqlite")))
+from tests.fixtures.db import memory_repo as _memory_repo
 
 
 def _azulria_metadata() -> dict:

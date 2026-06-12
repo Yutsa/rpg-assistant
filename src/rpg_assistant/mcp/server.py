@@ -7,7 +7,11 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, Field
 
-from rpg_assistant.ingestion.raw.stat_blocks.serialize import chunk_to_stat_block_detail
+from rpg_assistant.ingestion.raw.stat_blocks.serialize import (
+    chunk_to_list_item,
+    chunk_to_stat_block_detail,
+    stat_block_ambiguity_candidates,
+)
 from rpg_assistant.ingestion.feedback.visual_review import (
     VISUAL_INGESTION_REVIEW_PROMPT,
     VisualReviewError,
@@ -166,20 +170,7 @@ def list_chunks(
             limit=limit,
             offset=offset,
         )
-    payload = [
-        {
-            "id": c.id,
-            "section_id": c.section_id,
-            "page_start": c.page_start,
-            "page_end": c.page_end,
-            "chunk_type": c.chunk_type,
-            "chunk_type_hint": c.chunk_type_hint,
-            "token_count": c.token_count,
-            "needs_rechunk": c.needs_rechunk,
-            "text_preview": c.text[:200],
-        }
-        for c in chunks
-    ]
+    payload = [chunk_to_list_item(c) for c in chunks]
     return json.dumps(payload, indent=2)
 
 
@@ -215,17 +206,11 @@ def get_stat_block(document_id: str, name: str) -> str:
             indent=2,
         )
     if isinstance(result, list):
-        candidates = [
-            {
-                "name": (c.metadata.get("stat_block") or {}).get("name", ""),
-                "nc": (c.metadata.get("stat_block") or {}).get("nc"),
-                "chunk_id": c.id,
-                "pages": {"start": c.page_start, "end": c.page_end},
-            }
-            for c in result
-        ]
         return json.dumps(
-            {"error": "Ambiguous stat block", "candidates": candidates},
+            {
+                "error": "Ambiguous stat block",
+                "candidates": stat_block_ambiguity_candidates(result),
+            },
             indent=2,
         )
     return json.dumps(chunk_to_stat_block_detail(result), indent=2)

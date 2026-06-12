@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import re
 from dataclasses import dataclass, field
 from typing import Any
@@ -83,8 +82,11 @@ def validate_semantic_layer(conn: DatabaseConnection, campaign_id: str) -> Valid
             """,
             (campaign_id,),
         )
-        for entity_id, chunk_id in cur.fetchall():
-            if not raw_repo.chunk_exists(chunk_id):
+        entity_chunk_refs = cur.fetchall()
+        entity_chunk_ids = {chunk_id for _, chunk_id in entity_chunk_refs}
+        existing_entity_chunks = raw_repo.chunks_exist(list(entity_chunk_ids))
+        for entity_id, chunk_id in entity_chunk_refs:
+            if chunk_id not in existing_entity_chunks:
                 result.valid = False
                 result.errors.append(
                     ValidationError(
@@ -227,7 +229,15 @@ def validate_semantic_layer(conn: DatabaseConnection, campaign_id: str) -> Valid
             """,
             (campaign_id,),
         )
-        for relation_id, source_refs in cur.fetchall():
+        relation_rows = cur.fetchall()
+        relation_chunk_ids = {
+            ref.get("chunk_id")
+            for _, source_refs in relation_rows
+            for ref in (parse_json(source_refs) or [])
+            if ref.get("chunk_id")
+        }
+        existing_relation_chunks = raw_repo.chunks_exist(list(relation_chunk_ids))
+        for relation_id, source_refs in relation_rows:
             refs = parse_json(source_refs) or []
             if not refs:
                 result.warnings.append(
@@ -241,7 +251,7 @@ def validate_semantic_layer(conn: DatabaseConnection, campaign_id: str) -> Valid
                 continue
             for ref in refs:
                 chunk_id = ref.get("chunk_id")
-                if chunk_id and not raw_repo.chunk_exists(chunk_id):
+                if chunk_id and chunk_id not in existing_relation_chunks:
                     result.valid = False
                     result.errors.append(
                         ValidationError(
@@ -253,7 +263,3 @@ def validate_semantic_layer(conn: DatabaseConnection, campaign_id: str) -> Valid
                     )
 
     return result
-
-
-def validation_result_json(result: ValidationResult) -> str:
-    return json.dumps(result.to_dict(), indent=2)

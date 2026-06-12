@@ -65,6 +65,12 @@ class ChunkListItem(BaseModel):
     needs_rechunk: bool = False
     text_preview: str
 
+    @classmethod
+    def from_record(cls, chunk: ChunkRecord, *, preview_len: int = 200) -> ChunkListItem:
+        from rpg_assistant.ingestion.raw.stat_blocks.serialize import chunk_to_list_item
+
+        return cls(**chunk_to_list_item(chunk, preview_len=preview_len))
+
 
 class ChunkOut(BaseModel):
     id: str

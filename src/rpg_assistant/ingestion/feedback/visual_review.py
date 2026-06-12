@@ -108,18 +108,22 @@ def build_visual_review_sample(
     chunks_per_section: int = 2,
     seed: int | None = None,
     max_pages: int = 15,
+    sections_preselected: bool = False,
 ) -> VisualReviewSample:
-    eligible = [
-        section
-        for section in sections
-        if chunks_by_section.get(section.id)
-    ]
-    if not eligible:
-        raise VisualReviewError("No sections with chunks available for visual review.")
-
     rng = random.Random(seed)
-    pick_count = min(section_count, len(eligible))
-    picked_sections = rng.sample(eligible, pick_count)
+    if sections_preselected:
+        picked_sections = sections
+    else:
+        eligible = [
+            section
+            for section in sections
+            if chunks_by_section.get(section.id)
+        ]
+        if not eligible:
+            raise VisualReviewError("No sections with chunks available for visual review.")
+
+        pick_count = min(section_count, len(eligible))
+        picked_sections = rng.sample(eligible, pick_count)
 
     samples: list[SectionSample] = []
     all_pages: set[int] = set()
@@ -217,13 +221,21 @@ def prepare_visual_ingestion_review(
     if not sections:
         raise VisualReviewError(f"No sections found for document {document_id}.")
 
+    chunked_ids = repo.section_ids_with_chunks(document_id)
+    eligible = [section for section in sections if section.id in chunked_ids]
+    if not eligible:
+        raise VisualReviewError("No sections with chunks available for visual review.")
+
+    rng = random.Random(seed)
+    picked_sections = rng.sample(eligible, min(section_count, len(eligible)))
     sample = build_visual_review_sample(
-        sections,
-        repo.list_chunks_for_sections(document_id, [s.id for s in sections]),
-        section_count=section_count,
+        picked_sections,
+        repo.list_chunks_for_sections(document_id, [s.id for s in picked_sections]),
+        section_count=len(picked_sections),
         chunks_per_section=chunks_per_section,
         seed=seed,
         max_pages=max_pages,
+        sections_preselected=True,
     )
 
     page_images = render_pdf_pages(

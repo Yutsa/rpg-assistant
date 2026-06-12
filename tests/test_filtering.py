@@ -1,6 +1,6 @@
 from rpg_assistant.ingestion.raw.filtering import filter_watermark_blocks
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
-from rpg_assistant.models.raw import BBox
+from rpg_assistant.ingestion.raw.layout import LayoutPage
+from tests.fixtures.layout import make_block as _make_block
 
 WATERMARK = (
     "Edouard WILLISSECK - edouard.willisseck@gmail.com - 202606/1783361/3032841"
@@ -8,30 +8,23 @@ WATERMARK = (
 BODY = "Elsirianne Horsbi est une erudite de Piemont."
 
 
-def _block(
-    page_number: int,
-    block_index: int,
-    text: str,
-    *,
-    y0: float = 100.0,
-    y1: float = 120.0,
-) -> LayoutBlock:
-    return LayoutBlock(
-        page_number=page_number,
-        block_index=block_index,
-        text=text,
-        bbox=BBox(x0=10.0, y0=y0, x1=400.0, y1=y1),
+def _block(page_number: int, block_index: int, text: str, *, y0: float = 100.0, y1: float = 120.0):
+    return _make_block(
+        page_number,
+        block_index,
+        text,
+        font_size=None,
+        x0=10.0,
+        y0=y0,
+        x1=400.0,
+        y1=y1,
     )
 
 
-def _page(page_number: int, blocks: list[LayoutBlock], *, height: float = 800.0) -> LayoutPage:
-    return LayoutPage(
-        page_number=page_number,
-        width=600.0,
-        height=height,
-        text="\n\n".join(block.text for block in blocks),
-        blocks=blocks,
-    )
+def _page(page_number: int, blocks, *, height: float = 800.0) -> LayoutPage:
+    from tests.fixtures.layout import make_page
+
+    return make_page(blocks, page_number=page_number, width=600.0, height=height)
 
 
 def _document_with_repeated_watermark(page_count: int, watermark_pages: int) -> list[LayoutPage]:

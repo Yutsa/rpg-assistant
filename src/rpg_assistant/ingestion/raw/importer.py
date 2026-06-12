@@ -133,11 +133,8 @@ def run(
 
         pages: list[PageRecord] = []
         blocks: list[PageBlockRecord] = []
-        for layout_page in layout_pages:
+        for layout_page, ratio in zip(layout_pages, page_ratios, strict=True):
             page_id = f"page_{document_id}_{layout_page.page_number:04d}"
-            ratio = page_text_coverage_ratio(
-                layout_page.text, layout_page.width, layout_page.height
-            )
             pages.append(
                 PageRecord(
                     id=page_id,

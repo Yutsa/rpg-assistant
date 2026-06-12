@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import re
 from dataclasses import dataclass
 
@@ -41,6 +42,7 @@ class _HeadingRef:
     tier: str = "other"
 
 
+@functools.lru_cache(maxsize=1)
 def _get_encoding() -> tiktoken.Encoding:
     return tiktoken.get_encoding(ENCODING_NAME)
 

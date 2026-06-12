@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import FileResponse
 
-from rpg_assistant.api.deps import get_raw_repo
+from rpg_assistant.api.deps import get_raw_repo, require_document
 from rpg_assistant.api.errors import not_found, pdf_not_found
 from rpg_assistant.api.schemas import PageBlockOut, PageMetaOut
 from rpg_assistant.ingestion.feedback.visual_review import VisualReviewError, resolve_pdf_path
@@ -13,18 +13,13 @@ from rpg_assistant.storage.repositories.raw import RawRepository
 router = APIRouter(prefix="/documents", tags=["pages"])
 
 
-def _require_document(repo: RawRepository, document_id: str) -> None:
-    if repo.get_document(document_id) is None:
-        raise not_found(f"Unknown document: {document_id}")
-
-
 @router.get("/{document_id}/pages/{page_number}", response_model=PageMetaOut)
 def get_page_meta(
     document_id: str,
     page_number: int,
     repo: RawRepository = Depends(get_raw_repo),
 ) -> PageMetaOut:
-    _require_document(repo, document_id)
+    require_document(repo, document_id)
     page = repo.get_page(document_id, page_number)
     if page is None:
         raise not_found(f"Unknown page {page_number} for document {document_id}")
@@ -43,7 +38,7 @@ def list_page_blocks(
     page_number: int,
     repo: RawRepository = Depends(get_raw_repo),
 ) -> list[PageBlockOut]:
-    _require_document(repo, document_id)
+    require_document(repo, document_id)
     blocks = repo.list_page_blocks_for_page(document_id, page_number)
     return [
         PageBlockOut(
@@ -66,7 +61,7 @@ def render_page(
     pdf_path: str | None = None,
     repo: RawRepository = Depends(get_raw_repo),
 ) -> FileResponse:
-    _require_document(repo, document_id)
+    require_document(repo, document_id)
     try:
         resolved_pdf = resolve_pdf_path(repo, document_id, pdf_path)
     except VisualReviewError as exc:
