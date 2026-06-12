@@ -647,15 +647,18 @@ class RawRepository:
                 """,
                 (document_id, key, key),
             )
-            rows = cur.fetchall()
+            sql_rows = cur.fetchall()
 
-        if not rows and self._stat_blocks_use_lookup_keys(document_id):
-            return None
+        matches_by_id: dict[str, ChunkRecord] = {}
+        for row in sql_rows:
+            chunk = self._row_to_chunk(row)
+            matches_by_id[chunk.id] = chunk
 
-        if not rows:
-            rows = self._legacy_stat_block_rows(document_id, name)
+        for row in self._legacy_stat_block_rows_without_lookup_keys(document_id, name):
+            chunk = self._row_to_chunk(row)
+            matches_by_id.setdefault(chunk.id, chunk)
 
-        matches = [self._row_to_chunk(row) for row in rows]
+        matches = sorted(matches_by_id.values(), key=lambda c: (c.page_start, c.id))
         if not matches:
             return None
         if len(matches) == 1:
@@ -676,15 +679,19 @@ class RawRepository:
             )
             return cur.fetchone() is not None
 
-    def _legacy_stat_block_rows(self, document_id: str, name: str) -> list[tuple]:
+    def _legacy_stat_block_rows_without_lookup_keys(
+        self, document_id: str, name: str
+    ) -> list[tuple]:
+        lookup_name = self.dialect.stat_block_json_path("_lookup_name")
         with self.conn.cursor() as cur:
             cur.execute(
-                """
+                f"""
                 SELECT id, campaign_id, document_id, section_id, page_start, page_end,
                        text, chunk_type, chunk_type_hint, token_count,
                        source_spans_json, metadata_json, needs_rechunk
                 FROM chunks
                 WHERE document_id = %s AND chunk_type_hint = 'stat_block'
+                  AND ({lookup_name} IS NULL OR {lookup_name} = '')
                 ORDER BY page_start, id
                 """,
                 (document_id,),

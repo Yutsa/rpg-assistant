@@ -157,6 +157,17 @@ def test_get_stat_block_sql_lookup_keys():
     assert repo.get_stat_block("doc_test", "UNKNOWN") is None
 
 
+def test_get_stat_block_mixed_lookup_and_legacy_chunks():
+    repo = _memory_repo()
+    _seed_document(repo)
+    _insert_stat_chunk(repo, "chk_new", enrich_chunk_metadata(_azulria_metadata()), page_start=15)
+    _insert_stat_chunk(repo, "chk_legacy", _azulria_metadata(), page_start=16)
+
+    result = repo.get_stat_block("doc_test", "azulria")
+    assert isinstance(result, list)
+    assert {c.id for c in result} == {"chk_new", "chk_legacy"}
+
+
 def test_get_stat_block_legacy_fallback_without_lookup_keys():
     repo = _memory_repo()
     _seed_document(repo)
