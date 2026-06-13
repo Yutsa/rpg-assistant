@@ -10,6 +10,8 @@ web/node_modules/
 web/.shadow-cljs/
 web/.cpcache/
 web/test-results/
+# Legacy cljs scratch tree (superseded by web/; local build artifacts only)
+web-cljs/
 build/
 .pytest_cache/
 data/

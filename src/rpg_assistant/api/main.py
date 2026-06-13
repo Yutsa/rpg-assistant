@@ -14,6 +14,20 @@ from rpg_assistant.api.routers import campaigns, chunks, documents, pages, stat_
 WEB_DIST = Path(__file__).resolve().parents[3] / "web" / "dist"
 
 
+def _register_api_routes(app: FastAPI) -> None:
+    app.add_exception_handler(ApiError, api_error_handler)
+
+    app.include_router(campaigns.router)
+    app.include_router(documents.router)
+    app.include_router(chunks.router)
+    app.include_router(stat_blocks.router)
+    app.include_router(pages.router)
+
+    @app.get("/health")
+    def health() -> dict[str, str]:
+        return {"status": "ok"}
+
+
 def create_app() -> FastAPI:
     app = FastAPI(title="RPG Assistant", version="0.1.0")
 
@@ -28,17 +42,12 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    app.add_exception_handler(ApiError, api_error_handler)
+    _register_api_routes(app)
 
-    app.include_router(campaigns.router)
-    app.include_router(documents.router)
-    app.include_router(chunks.router)
-    app.include_router(stat_blocks.router)
-    app.include_router(pages.router)
-
-    @app.get("/health")
-    def health() -> dict[str, str]:
-        return {"status": "ok"}
+    # Built SPA and e2e server call /api/*; keep root routes for direct API clients.
+    api_prefixed = FastAPI(title="RPG Assistant API", version="0.1.0")
+    _register_api_routes(api_prefixed)
+    app.mount("/api", api_prefixed)
 
     if WEB_DIST.is_dir():
         assets_dir = WEB_DIST / "assets"
@@ -47,7 +56,7 @@ def create_app() -> FastAPI:
 
         @app.get("/{full_path:path}")
         async def spa_fallback(full_path: str) -> FileResponse:
-            if full_path.startswith(("campaigns", "documents", "chunks", "health")):
+            if full_path.startswith(("api", "campaigns", "documents", "chunks", "health")):
                 raise HTTPException(status_code=404, detail="Not found")
             candidate = WEB_DIST / full_path
             if full_path and candidate.is_file():
