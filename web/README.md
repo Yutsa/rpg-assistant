@@ -59,6 +59,19 @@ npm run test:e2e
 
 Le serveur de test (`tests/e2e/serve.py`) charge des données en mémoire et sert le build statique sur le port 8765.
 
+### Captures d'écran (régression visuelle)
+
+Les snapshots Playwright sont versionnés dans `web/e2e/screenshots/` :
+
+```bash
+cd web
+npm run build
+npm run test:e2e:screenshots          # compare aux références
+npm run test:e2e:screenshots:update   # régénère les PNG après changement UI
+```
+
+Vues couvertes : campagnes, documents, explorateur, chunks, panneau PDF, fiches COF2.
+
 ## Stack frontend
 
 - [UIx](https://github.com/pitch-io/uix) — React en ClojureScript

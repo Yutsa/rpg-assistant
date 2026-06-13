@@ -7,9 +7,17 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   workers: 1,
   reporter: "list",
+  snapshotPathTemplate: "{testDir}/screenshots/{arg}{ext}",
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+      animations: "disabled",
+    },
+  },
   use: {
     baseURL: "http://127.0.0.1:8765",
     trace: "on-first-retry",
+    viewport: { width: 1280, height: 800 },
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {

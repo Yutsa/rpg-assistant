@@ -8,6 +8,8 @@
     "build": "shadow-cljs release app && node scripts/postbuild.mjs",
     "preview": "npx serve dist -p 5173",
     "test:e2e": "playwright test",
+    "test:e2e:screenshots": "playwright test e2e/screenshots.spec.ts",
+    "test:e2e:screenshots:update": "playwright test e2e/screenshots.spec.ts --update-snapshots",
     "test:e2e:install": "playwright install chromium"
   },
   "devDependencies": {
