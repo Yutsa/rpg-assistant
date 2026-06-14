@@ -11,36 +11,64 @@
     [:pages/campaign-documents [["campaigns" :campaign-id]]]
     [:pages/campaigns []]]))
 
+(defn- normalize-path
+  "Normalise les chemins issus du navigateur (index.html, slash final, etc.)."
+  [path]
+  (let [path (or path "/")]
+    (cond
+      (= path "/index.html") "/"
+      (and (not= path "/") (.endsWith path "/"))
+      (subs path 0 (dec (count path)))
+
+      :else path)))
+
+(defn- path-from-url [url]
+  (-> url
+      (cond-> (string? url) uri/uri)
+      :path
+      normalize-path))
+
 (defn url->location
   "Convertit un chemin ou une URL en carte :location/* (cf. tutoriel Replicant routing)."
   [routes url]
-  (let [uri (cond-> url (string? url) uri/uri)
-        path (or (:path uri) "/")]
+  (let [path (path-from-url url)]
     (when-let [arrived (silk/arrive routes path)]
-      (let [query-params (uri/query-map uri)
-            hash-params (some-> uri :fragment uri/query-string->map)]
-        (cond-> {:location/page-id (:domkm.silk/name arrived)
-                 :location/params (dissoc arrived
-                                          :domkm.silk/name
-                                          :domkm.silk/pattern
-                                          :domkm.silk/routes
-                                          :domkm.silk/url)}
-          (seq query-params) (assoc :location/query-params query-params)
-          (seq hash-params) (assoc :location/hash-params hash-params))))))
+      (let [page-id (:domkm.silk/name arrived)
+            params (dissoc arrived
+                           :domkm.silk/name
+                           :domkm.silk/pattern
+                           :domkm.silk/routes
+                           :domkm.silk/url)
+            matched-path (or (not-empty (silk/depart routes page-id params)) "/")]
+        (when (= path (normalize-path matched-path))
+          (let [uri (cond-> url (string? url) uri/uri)
+                query-params (uri/query-map uri)
+                hash-params (some-> uri :fragment uri/query-string->map)]
+            (cond-> {:location/page-id page-id
+                     :location/params params}
+              (seq query-params) (assoc :location/query-params query-params)
+              (seq hash-params) (assoc :location/hash-params hash-params))))))))
 
 (defn location->url
   "Génère l'URL pour une :location/* (routing bidirectionnel via Silk)."
   [routes {:location/keys [page-id params query-params hash-params]}]
-  (cond-> (silk/depart routes page-id params)
-    (seq query-params)
-    (str "?" (uri/map->query-string query-params))
+  (let [path (or (not-empty (silk/depart routes page-id params)) "/")]
+    (cond-> path
+      (seq query-params)
+      (str "?" (uri/map->query-string query-params))
 
-    (seq hash-params)
-    (str "#" (uri/map->query-string hash-params))))
+      (seq hash-params)
+      (str "#" (uri/map->query-string hash-params)))))
+
+(defn current-location-for-path
+  "Résout une :location/* depuis un chemin navigateur."
+  [path]
+  (or (url->location routes path)
+      (when (= (normalize-path path) "/")
+        {:location/page-id :pages/campaigns})))
 
 (defn current-location []
-  (or (url->location routes (.-pathname js/location))
-      {:location/page-id :pages/campaigns}))
+  (current-location-for-path (.-pathname js/location)))
 
 (defn breadcrumbs
   "Fil d'Ariane sous forme de :location/* pour l'alias :ui/a."

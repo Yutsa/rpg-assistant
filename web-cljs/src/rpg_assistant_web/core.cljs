@@ -13,9 +13,10 @@
 
 (defn routing-anchor [attrs children]
   (let [routes (-> attrs :replicant/alias-data :routes)
-        href (when-let [loc (:ui/location attrs)]
-               (router/location->url routes loc))]
-    (into [:a (cond-> attrs href (assoc :href href))]
+        loc (:ui/location attrs)]
+    (into [:a (cond-> attrs
+                loc
+                (assoc :href (router/location->url routes loc)))]
           children)))
 
 (defn- find-target-href [e]
@@ -23,18 +24,22 @@
           (.closest "a")
           (.getAttribute "href")))
 
+(defn- sync-location! []
+  (swap! state/store assoc :location (router/current-location)))
+
 (defn- route-click [e]
   (let [href (find-target-href e)]
     (when-let [location (router/url->location router/routes href)]
       (.preventDefault e)
-      (.pushState js/history nil "" href)
-      (swap! state/store assoc :location location)
-      (render!))))
+      (let [url (router/location->url router/routes location)]
+        (.pushState js/history nil "" url)
+        (swap! state/store assoc :location location)
+        (render!)))))
 
 (defn- on-popstate [_e]
   ;; Le navigateur a changé d'URL (Retour / Avancer) sans recharger la page :
   ;; on resynchronise :location dans le store puis on re-rend toute l'UI.
-  (swap! state/store assoc :location (router/current-location))
+  (sync-location!)
   (render!))
 
 (defn- install-routing! []
@@ -49,13 +54,19 @@
     (install-routing!)
     true))
 
+(defn- normalize-browser-url! []
+  (when (= "/index.html" (.-pathname js/location))
+    (.replaceState js/history nil "" "/")))
+
 (defn ^{:dev/after-load true :export true} reload! []
+  (sync-location!)
   (render!))
 
 (defn ^:export init! []
   routing-installed?
   (events/set-render! render!)
   (r/set-dispatch! events/dispatch-event!)
-  (swap! state/store assoc :location (router/current-location))
+  (normalize-browser-url!)
+  (sync-location!)
   (events/load-campaigns!)
   (render!))
