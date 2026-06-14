@@ -61,7 +61,7 @@ Demande confirmation avant `import_pdf` ou toute soumission sémantique si l'uti
 
 ## Cursor Cloud specific instructions
 
-Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP). Pas de service web ni de GUI : deux surfaces seulement, la **CLI** `rpg-ingest` et le **serveur MCP** `rpg-assistant-mcp` (stdio). Le script d'update (`uv sync`) est déjà lancé au démarrage ; il ne crée pas la base ni le `.env`.
+Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Pas de GUI : trois surfaces, la **CLI** `rpg-ingest`, le **serveur MCP** `rpg-assistant-mcp` (stdio), et l'**API HTTP** `rpg-api` (FastAPI). Le script d'update (`uv sync`) est déjà lancé au démarrage ; il ne crée pas la base ni le `.env`.
 
 - **Setup runtime (à faire une fois par VM, hors update script)** : `cp .env.example .env` puis `uv run alembic upgrade head` pour créer `data/rpg_assistant.db` (SQLite par défaut, aucun Docker requis). Sans ça, CLI/MCP échouent (table manquante).
 - **Tests** : lancer `uv run python -m pytest`, **pas** `uv run pytest`. `tests/test_visual_review.py` fait `from tests.test_campaign_discovery import ...`, ce qui exige la racine du repo sur `sys.path` ; seul `python -m pytest` (qui ajoute le CWD) le fournit. Avec `pytest` direct la collecte échoue (`ModuleNotFoundError: No module named 'tests'`).

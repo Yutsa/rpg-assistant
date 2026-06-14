@@ -111,6 +111,16 @@ uv run rpg-ingest raw extract path/to/campaign.pdf --campaign-id camp_my_adventu
 uv run rpg-ingest raw status --ingestion-run-id run_xxxxxxxxxxxx
 ```
 
+### HTTP API
+
+Read-only REST API over the ingested data (campaigns, documents, sections, chunks, stat blocks, PDF page renders):
+
+```bash
+uv run rpg-api
+```
+
+Server listens on [http://127.0.0.1:8000](http://127.0.0.1:8000). OpenAPI docs at `/docs`.
+
 ### MCP server (Cursor / Claude Desktop)
 
 Add `.cursor/mcp.json` (example included) or configure your MCP client:

@@ -29,7 +29,7 @@ dev = [
 [project.scripts]
 rpg-ingest = "rpg_assistant.cli.ingest:main"
 rpg-assistant-mcp = "rpg_assistant.mcp.server:main"
-rpg-web = "rpg_assistant.api.main:run"
+rpg-api = "rpg_assistant.api.main:run"
 
 [tool.setuptools.packages.find]
 where = ["src"]

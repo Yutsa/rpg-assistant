@@ -6,7 +6,7 @@ The ingestion system transforms a campaign PDF into a structured, source-backed,
 
 The output should be usable by two consumers:
 
-- A web interface for human game masters.
+- An HTTP API for programmatic access and external tools.
 - A retrieval layer for an AI GM.
 
 The goal is not to store a large PDF and chat over it. The goal is to create a playable representation of the campaign: entities, relationships, secrets, clues, scenes, source references, and runtime-ready context packets.
@@ -99,7 +99,7 @@ Example page block:
 }
 ```
 
-The UI can later use these coordinates to open the original PDF at the correct page and draw a highlight over the source region.
+Clients (API, MCP tools) can use these coordinates to open the original PDF at the correct page and draw a highlight over the source region.
 
 ### 2. Document Structure Detection
 
@@ -314,7 +314,7 @@ Relations should be source-backed. Low-confidence relations should go to a revie
 
 ### 7. Spoiler and Reveal Modeling
 
-This is critical for both the human GM workspace and the AI GM.
+This is critical for both human-facing tools and the AI GM.
 
 Separate:
 
@@ -940,7 +940,7 @@ Planned work (Stage 1 extension):
 - Detect image-heavy pages during raw import (low text coverage + large embedded images).
 - Extract images with page number and bounding box; store as document assets linked to `page_id`.
 - Classify asset type (`map`, `handout`, `illustration`) — manually or via semantic layer later.
-- Surface assets in the GM workspace alongside chunks and source references.
+- Expose assets via the API alongside chunks and source references.
 
 Handouts with a text layer are already covered by chunking; this item targets **graphical** assets only. Full-document OCR remains out of scope.
 
@@ -950,6 +950,6 @@ Handouts with a text layer are already covered by chunking; this item targets **
 - Should the first app be local-first to reduce copyright and privacy concerns?
 - How much rules-system awareness should ingestion include?
 - Should scene packets be generated ahead of time or dynamically at runtime?
-- Is a graph UI important for the MVP, or only for later exploration?
+- Is relationship graph exploration important for the MVP, or only for later?
 - Should campaign state be per party, per solo run, or both?
 - Should source highlighting be page-level in MVP or should region-level highlights ship early?
