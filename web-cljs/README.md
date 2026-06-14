@@ -93,3 +93,13 @@ Tests d'acceptation Playwright (nécessite `npm run build` dans `web-cljs`) :
 uv run playwright install chromium
 uv run python -m pytest tests/acceptance/
 ```
+
+## Données de démo
+
+Pour peupler la base locale avec une campagne fictive exploitable dans l'UI :
+
+```bash
+uv run rpg-ingest demo seed
+```
+
+Cela crée la campagne **Momie** (sections, chunks, fiches COF2, PDF de démo dans `data/demo/`).

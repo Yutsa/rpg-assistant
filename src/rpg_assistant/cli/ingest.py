@@ -5,6 +5,7 @@ import json
 import sys
 from pathlib import Path
 
+from rpg_assistant.dev.demo_seed import seed_demo_data
 from rpg_assistant.ingestion.raw.importer import run
 from rpg_assistant.storage.db import get_connection
 from rpg_assistant.storage.repositories.raw import RawRepository
@@ -31,6 +32,18 @@ def _cmd_raw_status(args: argparse.Namespace) -> int:
         print(f"Ingestion run not found: {args.ingestion_run_id}", file=sys.stderr)
         return 1
     print(json.dumps(run_record.model_dump(), indent=2, default=str))
+    return 0
+
+
+def _cmd_demo_seed(args: argparse.Namespace) -> int:
+    result = seed_demo_data(reset=not args.keep_existing)
+    print(
+        "Demo data seeded:\n"
+        f"  campaign: {result['campaign_id']}\n"
+        f"  document: {result['document_id']}\n"
+        f"  pdf:      {result['pdf_path']}\n"
+        "\nOpen http://127.0.0.1:8000 and explore the Momie campaign."
+    )
     return 0
 
 
@@ -62,6 +75,16 @@ def build_parser() -> argparse.ArgumentParser:
     status = raw_sub.add_parser("status", help="Show ingestion run status")
     status.add_argument("--ingestion-run-id", required=True)
     status.set_defaults(func=_cmd_raw_status)
+
+    demo = sub.add_parser("demo", help="Demo / development helpers")
+    demo_sub = demo.add_subparsers(dest="demo_command", required=True)
+    seed = demo_sub.add_parser("seed", help="Insert fake exploration data for local UI testing")
+    seed.add_argument(
+        "--keep-existing",
+        action="store_true",
+        help="Do not reset the demo campaign before seeding",
+    )
+    seed.set_defaults(func=_cmd_demo_seed)
 
     return parser
 
