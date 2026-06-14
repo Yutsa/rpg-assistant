@@ -81,4 +81,7 @@ web-cljs/
 cd web-cljs && npm test
 ```
 
-(Tests cljs à ajouter au fil de la migration.)
+- **`router_test.cljs`** — tests unitaires du routeur Silk (aller-retour URL, chemins invalides)
+- **`navigation_test.cljs`** — tests d'acceptation navigation : URL → location → rendu, clics simulés, fil d'Ariane
+
+Les tests d'acceptation couvrent notamment la régression où une URL profonde (`/campaigns/momie`, `/documents/...`) affichait à tort la liste des campagnes.

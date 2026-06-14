@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "shadow-cljs watch app",
     "build": "shadow-cljs release app && mkdir -p dist/css && cp public/index.html dist/ && cp -r public/css dist/",
-    "test": "shadow-cljs compile test"
+    "test": "npx shadow-cljs compile test && node out/node-tests.js"
   },
   "devDependencies": {
     "shadow-cljs": "^3.2.1"
