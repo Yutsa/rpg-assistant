@@ -392,8 +392,8 @@ class SemanticRepository:
         total, classified = chunk_row or (0, 0)
         return {
             "campaign_id": campaign_id,
-            "chunks_total": total,
-            "chunks_classified": classified,
+            "chunks_total": total or 0,
+            "chunks_classified": classified or 0,
             "entities": entity_count,
             "relations": relation_count,
             "low_confidence_entities": low_confidence,

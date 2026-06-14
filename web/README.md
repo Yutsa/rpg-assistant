@@ -50,8 +50,21 @@ Réimporter via la CLI met à jour `source_pdf_path` dans les stats du run raw.
 
 ## Tests frontend
 
+Tests unitaires (Vitest) :
+
 ```bash
 cd web && npm test
 ```
 
-Test Vitest sur la conversion bbox → viewport (`src/utils/bbox.test.ts`).
+Couverture actuelle : conversion bbox → viewport (`src/utils/bbox.test.ts`).
+
+Tests d'acceptation (Playwright) — nécessitent Java/uv pour le seed et le backend :
+
+```bash
+cd web
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
+
+Les tests démarrent automatiquement l'API (`rpg-web` sur le port 8000) et Vite (port 5173), avec une base SQLite dédiée (`data/e2e_test.db`) peuplée par `e2e/seed_db.py`. Scénarios couverts : campagnes, documents, explorateur (sections/chunks), panneau PDF, fiches COF2 (filtre, détail, ambiguïté), fil d'Ariane et navigation.
