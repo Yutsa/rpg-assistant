@@ -1,33 +1,31 @@
 (ns rpg-assistant-web.views
-  (:require [rpg-assistant-web.views.campaigns :as campaigns]
+  (:require [rpg-assistant-web.views.campaign-documents :as campaign-documents]
+            [rpg-assistant-web.views.campaigns :as campaigns]
+            [rpg-assistant-web.views.document-explorer :as document-explorer]
             [rpg-assistant-web.views.placeholder :as placeholder]
-            [rpg-assistant-web.views.shell :as shell]))
+            [rpg-assistant-web.views.shell :as shell]
+            [rpg-assistant-web.views.stat-block-detail :as stat-block-detail]
+            [rpg-assistant-web.views.stat-blocks :as stat-blocks]))
 
 (defn page-view [state]
   (let [location (:location state)
         params (:location/params location {})
         body (case (:location/page-id location)
-               :pages/campaigns (campaigns/campaigns-view state)
+               :pages/campaigns
+               (campaigns/campaigns-view state)
 
                :pages/campaign-documents
-               (placeholder/placeholder-view
-                (str "Documents — " (:campaign-id params))
-                "Sélection de document à implémenter.")
+               (campaign-documents/campaign-documents-view state (:campaign-id params))
 
                (:pages/document-explorer :pages/document-chunk)
-               (placeholder/placeholder-view
-                (str "Exploration — " (:document-id params))
-                "Arbre de sections, chunks et panneau PDF à implémenter.")
+               (document-explorer/document-explorer-view state location)
 
                :pages/stat-blocks
-               (placeholder/placeholder-view
-                (str "Fiches stats — " (:document-id params))
-                "Index des fiches COF2 à implémenter.")
+               (stat-blocks/stat-blocks-view state (:document-id params))
 
                :pages/stat-block-detail
-               (placeholder/placeholder-view
-                (:stat-block-name params)
-                (str "Document " (:document-id params)))
+               (stat-block-detail/stat-block-detail-view
+                state (:document-id params) (:stat-block-name params))
 
                (placeholder/placeholder-view
                 "Page introuvable"

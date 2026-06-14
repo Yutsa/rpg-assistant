@@ -1,8 +1,6 @@
 # RPG Assistant — front-end ClojureScript (Replicant)
 
-Branche expérimentale : rewrite du front-end React (`web/`) en **ClojureScript** avec [Replicant](https://replicant.fun/).
-
-Le front React existant reste la référence fonctionnelle ; ce dossier cohabite en parallèle le temps de la migration.
+Front-end de l'explorateur de campagne, en **ClojureScript** avec [Replicant](https://replicant.fun/).
 
 ## Stack
 
@@ -17,7 +15,7 @@ Le front React existant reste la référence fonctionnelle ; ce dossier cohabite
 - Java 11+ (JDK 21 recommandé)
 - [Clojure CLI](https://clojure.org/guides/install_clojure)
 - Node.js 20+
-- Backend FastAPI migré : `uv run alembic upgrade head`
+- Backend FastAPI : `uv run alembic upgrade head`
 
 ## Développement (deux processus)
 
@@ -49,14 +47,19 @@ npm run build
 
 Les artefacts sont dans `web-cljs/dist/` (`index.html`, `css/`, `js/compiled/`).
 
-## État de la migration
+L'API `rpg-web` sert ce dossier sur [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-| Vue React | Statut cljs |
-|-----------|-------------|
-| Liste campagnes | ✅ squelette fonctionnel |
-| Documents d'une campagne | 🔲 placeholder |
-| Explorateur (sections/chunks/PDF) | 🔲 placeholder |
-| Fiches stats COF2 | 🔲 placeholder |
+## Fonctionnalités
+
+| Vue | Statut |
+|-----|--------|
+| Liste campagnes | ✅ |
+| Documents d'une campagne | ✅ |
+| Explorateur (sections/chunks/PDF) | ✅ |
+| Fiches stats COF2 | ✅ |
+| Navigation mobile (onglets) | ✅ |
+| Panneau PDF + surlignage bbox | ✅ |
+| Override chemin PDF (`localStorage`) | ✅ |
 
 ## Structure
 
@@ -67,18 +70,26 @@ web-cljs/
   public/          # HTML + CSS statiques
   src/
     rpg_assistant_web/
-      core.cljs    # point d'entrée, boucle render
+      core.cljs    # point d'entrée, boucle render, routing
       state.cljs   # atom global
-      events.cljs  # dispatch Replicant
+      events.cljs  # dispatch Replicant + chargements
       api.cljs     # js/fetch JSON
-      router.cljs  # Silk + History API (clics + popstate)
+      router.cljs  # Silk + History API
       views/       # hiccup par écran
+      utils/       # bbox, pdf-path
 ```
 
 ## Tests
+
+Tests unitaires ClojureScript (bbox, router) :
 
 ```bash
 cd web-cljs && npm test
 ```
 
-(Tests cljs à ajouter au fil de la migration.)
+Tests d'acceptation Playwright (nécessite `npm run build` dans `web-cljs`) :
+
+```bash
+uv run playwright install chromium
+uv run python -m pytest tests/acceptance/
+```

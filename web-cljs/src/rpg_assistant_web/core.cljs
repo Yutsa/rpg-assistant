@@ -27,20 +27,18 @@
   (let [href (find-target-href e)]
     (when-let [location (router/url->location router/routes href)]
       (.preventDefault e)
-      (.pushState js/history nil "" href)
-      (swap! state/store assoc :location location)
-      (render!))))
+      (let [current (router/current-location)
+            replace? (router/essentially-same? location current)]
+        (if replace?
+          (.replaceState js/history nil "" href)
+          (.pushState js/history nil "" href))
+        (events/on-location-changed! location replace?)))))
 
 (defn- on-popstate [_e]
-  ;; Le navigateur a changé d'URL (Retour / Avancer) sans recharger la page :
-  ;; on resynchronise :location dans le store puis on re-rend toute l'UI.
-  (swap! state/store assoc :location (router/current-location))
-  (render!))
+  (events/on-location-changed! (router/current-location) false))
 
 (defn- install-routing! []
-  ;; Clics sur les liens internes → pushState + render (tutoriel Replicant routing).
   (js/document.body.addEventListener "click" route-click)
-  ;; Bouton Retour / Avancer → popstate → resync :location + render.
   (.addEventListener js/window "popstate" on-popstate))
 
 (defonce routing-installed?
@@ -56,6 +54,5 @@
   routing-installed?
   (events/set-render! render!)
   (r/set-dispatch! events/dispatch-event!)
-  (swap! state/store assoc :location (router/current-location))
-  (events/load-campaigns!)
+  (events/on-location-changed! (router/current-location) false)
   (render!))

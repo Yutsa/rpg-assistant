@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from rpg_assistant.api.errors import ApiError, api_error_handler
 from rpg_assistant.api.routers import campaigns, chunks, documents, pages, stat_blocks
 
-WEB_DIST = Path(__file__).resolve().parents[3] / "web" / "dist"
+WEB_DIST = Path(__file__).resolve().parents[3] / "web-cljs" / "dist"
 
 
 def create_app() -> FastAPI:
@@ -49,8 +49,6 @@ def create_app() -> FastAPI:
 
         @app.get("/{full_path:path}")
         async def spa_fallback(full_path: str) -> FileResponse:
-            if full_path.startswith(("campaigns", "documents", "chunks", "health")):
-                raise HTTPException(status_code=404, detail="Not found")
             candidate = WEB_DIST / full_path
             if full_path and candidate.is_file():
                 return FileResponse(candidate)

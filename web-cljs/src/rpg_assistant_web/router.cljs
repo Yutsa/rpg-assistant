@@ -38,6 +38,22 @@
     (seq hash-params)
     (str "#" (uri/map->query-string hash-params))))
 
+(defn essentially-same?
+  "Deux locations identiques hors hash (pour replaceState sur query params)."
+  [l1 l2]
+  (and (= (:location/page-id l1) (:location/page-id l2))
+       (= (not-empty (:location/params l1))
+          (not-empty (:location/params l2)))
+       (= (not-empty (:location/query-params l1))
+          (not-empty (:location/query-params l2)))))
+
+(defn query-param
+  "Lit un paramètre de requête (clés string ou keyword)."
+  [location key]
+  (let [params (:location/query-params location {})
+        k (if (string? key) key (name key))]
+    (or (get params k) (get params (keyword k)))))
+
 (defn current-location []
   (or (url->location routes (.-pathname js/location))
       {:location/page-id :pages/campaigns}))
