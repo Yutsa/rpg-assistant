@@ -1,0 +1,30 @@
+.chunk-list {
+  display: flex;
+  flex-direction: column;
+
+  .chunk-item {
+    cursor: pointer;
+    border-radius: 0.5rem;
+
+    &.selected {
+      background: var(--mat-sys-secondary-container, #e8def8);
+    }
+  }
+
+  .preview {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant, #49454f);
+  }
+}

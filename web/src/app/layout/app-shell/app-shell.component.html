@@ -1,0 +1,18 @@
+<div class="app-shell">
+  <mat-toolbar color="primary" class="toolbar" data-testid="app-toolbar">
+    <a routerLink="/campaigns" class="brand" data-testid="app-brand">RPG Assistant</a>
+    <nav class="breadcrumbs" aria-label="Fil d'Ariane" data-testid="breadcrumbs">
+      @for (item of breadcrumbs(); track item.link.join('/'); let last = $last) {
+        @if (!last) {
+          <a [routerLink]="item.link">{{ item.label }}</a>
+          <span class="sep" aria-hidden="true">›</span>
+        } @else {
+          <span class="current">{{ item.label }}</span>
+        }
+      }
+    </nav>
+  </mat-toolbar>
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

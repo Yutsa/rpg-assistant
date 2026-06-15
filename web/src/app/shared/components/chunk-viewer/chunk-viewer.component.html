@@ -1,0 +1,13 @@
+<article class="chunk-viewer" data-testid="chunk-viewer">
+  <header>
+    <h2>Chunk</h2>
+    <div class="meta">
+      <app-page-range-badge [pageStart]="chunk().page_start" [pageEnd]="chunk().page_end" />
+      @if (chunk().chunk_type_hint) {
+        <span class="type-badge">{{ chunk().chunk_type_hint }}</span>
+      }
+      <span class="tokens">{{ chunk().token_count }} tokens</span>
+    </div>
+  </header>
+  <pre class="chunk-text" data-testid="chunk-text">{{ chunk().text }}</pre>
+</article>

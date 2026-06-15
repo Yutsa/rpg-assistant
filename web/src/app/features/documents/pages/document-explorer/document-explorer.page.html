@@ -1,0 +1,62 @@
+<section class="explorer" data-testid="document-explorer-page">
+  @if (loading()) {
+    <div class="loading" data-testid="loading-spinner">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <app-empty-state [title]="error()!" data-testid="document-error" />
+  } @else {
+    <aside class="panel sections-panel">
+      <h2>Sections</h2>
+      <app-section-tree
+        [nodes]="sectionTree()"
+        [selectedSectionId]="selectedSectionId()"
+        (sectionSelected)="onSectionSelected($event)"
+      />
+    </aside>
+
+    <section class="panel content-panel">
+      <mat-tab-group
+        [selectedIndex]="activeTab()"
+        (selectedIndexChange)="onTabChange($event)"
+        data-testid="content-tabs"
+      >
+        <mat-tab label="Chunks">
+          @if (chunks().length === 0) {
+            <app-empty-state title="Aucun chunk" message="Aucun chunk pour cette sélection." />
+          } @else {
+            <app-chunk-list
+              [chunks]="chunks()"
+              [selectedChunkId]="selectedChunkId()"
+              [hasMore]="hasMoreChunks()"
+              (chunkSelected)="onChunkSelected($event)"
+              (loadMore)="loadMoreChunks()"
+            />
+          }
+        </mat-tab>
+        <mat-tab label="Stat blocks">
+          @if (statBlocks().length === 0) {
+            <app-empty-state title="Aucune fiche" message="Ce document ne contient pas de stat blocks." />
+          } @else {
+            <app-stat-block-list
+              [statBlocks]="statBlocks()"
+              [selectedName]="selectedStatBlockName()"
+              (statBlockSelected)="onStatBlockSelected($event)"
+            />
+          }
+        </mat-tab>
+      </mat-tab-group>
+    </section>
+
+    <aside class="panel detail-panel" data-testid="detail-panel">
+      <h2>Détail</h2>
+      <router-outlet />
+      @if (!selectedChunkId() && !selectedStatBlockName()) {
+        <app-empty-state
+          title="Sélectionnez un élément"
+          message="Choisissez un chunk ou une fiche pour afficher le détail."
+        />
+      }
+    </aside>
+  }
+</section>

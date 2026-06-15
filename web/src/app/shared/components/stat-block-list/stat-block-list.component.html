@@ -1,0 +1,23 @@
+<div class="stat-block-list" data-testid="stat-block-list">
+  <mat-nav-list aria-label="Fiches stat block">
+    @for (block of statBlocks(); track block.chunk_id) {
+      <a
+        mat-list-item
+        class="stat-block-item"
+        [class.selected]="selectedName() === block.name"
+        [attr.data-testid]="'stat-block-item-' + block.name"
+        (click)="statBlockSelected.emit(block.name)"
+        (keydown.enter)="statBlockSelected.emit(block.name)"
+        tabindex="0"
+      >
+        <span matListItemTitle>{{ block.name }}</span>
+        <span matListItemLine class="meta">
+          @if (block.nc != null) {
+            <span>NC {{ block.nc }}</span>
+          }
+          <app-page-range-badge [pageStart]="block.pages.start" [pageEnd]="block.pages.end" />
+        </span>
+      </a>
+    }
+  </mat-nav-list>
+</div>

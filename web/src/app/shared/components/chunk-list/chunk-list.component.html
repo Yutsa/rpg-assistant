@@ -1,0 +1,29 @@
+<div class="chunk-list" data-testid="chunk-list">
+  <mat-nav-list aria-label="Chunks">
+    @for (chunk of chunks(); track chunk.id) {
+      <a
+        mat-list-item
+        class="chunk-item"
+        [class.selected]="selectedChunkId() === chunk.id"
+        [attr.data-testid]="'chunk-item-' + chunk.id"
+        (click)="chunkSelected.emit(chunk.id)"
+        (keydown.enter)="chunkSelected.emit(chunk.id)"
+        tabindex="0"
+      >
+        <span matListItemTitle class="preview">{{ chunk.text_preview }}</span>
+        <span matListItemLine class="meta">
+          <app-page-range-badge [pageStart]="chunk.page_start" [pageEnd]="chunk.page_end" />
+          @if (chunk.chunk_type_hint) {
+            <span>{{ chunk.chunk_type_hint }}</span>
+          }
+          <span>{{ chunk.token_count }} tok.</span>
+        </span>
+      </a>
+    }
+  </mat-nav-list>
+  @if (hasMore()) {
+    <button type="button" mat-button data-testid="chunk-load-more" (click)="loadMore.emit()">
+      Charger plus
+    </button>
+  }
+</div>

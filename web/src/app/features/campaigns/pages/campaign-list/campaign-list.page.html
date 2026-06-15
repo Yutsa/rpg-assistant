@@ -1,0 +1,42 @@
+<section class="page" data-testid="campaign-list-page">
+  <header>
+    <h1>Campagnes</h1>
+    <p>Parcourez les aventures ingérées et leurs documents.</p>
+  </header>
+
+  @if (loading()) {
+    <div class="loading" data-testid="loading-spinner">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <app-empty-state [title]="error()!" />
+  } @else if (campaigns().length === 0) {
+    <app-empty-state
+      title="Aucune campagne"
+      message="Importez un PDF pour commencer."
+    />
+  } @else {
+    <div class="campaign-grid" data-testid="campaign-grid">
+      @for (campaign of campaigns(); track campaign.id) {
+        <a
+          class="campaign-card"
+          [routerLink]="['/campaigns', campaign.id]"
+          [attr.data-testid]="'campaign-card-' + campaign.id"
+        >
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>{{ campaign.title || campaign.id }}</mat-card-title>
+              <mat-card-subtitle>{{ campaign.id }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>{{ campaign.document_count }} document(s)</p>
+              @if (campaign.game_system) {
+                <span class="system-badge">{{ campaign.game_system }}</span>
+              }
+            </mat-card-content>
+          </mat-card>
+        </a>
+      }
+    </div>
+  }
+</section>

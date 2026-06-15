@@ -6,7 +6,12 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-web/
+web/node_modules/
+web/dist/
+web/.angular/
+web/test-results/
+web/playwright-report/
+web/blob-report/
 web-cljs/
 .pytest_cache/
 data/
