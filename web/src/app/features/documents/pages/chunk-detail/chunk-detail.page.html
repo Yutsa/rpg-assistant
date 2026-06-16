@@ -1,0 +1,11 @@
+@if (loading()) {
+  <div class="loading" data-testid="loading-spinner">
+    <mat-spinner diameter="32" />
+  </div>
+} @else if (error()) {
+  <app-empty-state [title]="error() ?? ''" data-testid="chunk-error" />
+} @else {
+  @if (chunk(); as value) {
+    <app-chunk-viewer [chunk]="value" />
+  }
+}

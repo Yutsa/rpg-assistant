@@ -1,0 +1,21 @@
+<nav class="section-tree" aria-label="Sections du document" data-testid="section-tree">
+  <button
+    type="button"
+    mat-button
+    class="all-sections"
+    [class.selected]="selectedSectionId() === null"
+    data-testid="section-all"
+    (click)="sectionSelected.emit(null)"
+  >
+    Toutes les sections
+  </button>
+  <ul>
+    @for (node of nodes(); track node.id) {
+      <app-section-tree-node
+        [node]="node"
+        [selectedSectionId]="selectedSectionId()"
+        (sectionSelected)="sectionSelected.emit($event)"
+      />
+    }
+  </ul>
+</nav>

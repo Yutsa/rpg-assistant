@@ -1,0 +1,42 @@
+<article class="stat-block-viewer" data-testid="stat-block-viewer">
+  <header>
+    <h2 data-testid="stat-block-name">{{ statBlock().name }}</h2>
+    @if (statBlock().subtitle) {
+      <p class="subtitle">{{ statBlock().subtitle }}</p>
+    }
+    <div class="meta">
+      @if (statBlock().nc != null) {
+        <span class="nc" data-testid="stat-block-nc">NC {{ statBlock().nc }}</span>
+      }
+      <app-page-range-badge
+        [pageStart]="statBlock().pages.start"
+        [pageEnd]="statBlock().pages.end"
+      />
+    </div>
+  </header>
+
+  @if (statBlock().attributes) {
+    <section>
+      <h3>Attributs</h3>
+      <dl class="attributes" data-testid="stat-block-attributes">
+        @for (entry of statBlock().attributes | keyvalue; track entry.key) {
+          <div>
+            <dt>{{ entry.key }}</dt>
+            <dd>{{ entry.value }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+  }
+
+  @if (statBlock().abilities?.length) {
+    <section>
+      <h3>Capacités</h3>
+      <mat-chip-set aria-label="Capacités">
+        @for (ability of statBlock().abilities; track ability) {
+          <mat-chip>{{ ability }}</mat-chip>
+        }
+      </mat-chip-set>
+    </section>
+  }
+</article>

@@ -1,0 +1,25 @@
+@if (loading()) {
+  <div class="loading" data-testid="loading-spinner">
+    <mat-spinner diameter="32" />
+  </div>
+} @else if (candidates().length > 0) {
+  <div class="ambiguity" data-testid="stat-block-ambiguity">
+    <p>{{ error() }}</p>
+    @for (candidate of candidates(); track candidate.chunk_id) {
+      <button
+        type="button"
+        mat-button
+        [attr.data-testid]="'stat-block-candidate-' + candidate.name"
+        (click)="selectCandidate(candidate.name)"
+      >
+        {{ candidate.name }} (NC {{ candidate.nc }})
+      </button>
+    }
+  </div>
+} @else if (error()) {
+  <app-empty-state [title]="error() ?? ''" data-testid="stat-block-error" />
+} @else {
+  @if (statBlock(); as value) {
+    <app-stat-block-viewer [statBlock]="value" />
+  }
+}

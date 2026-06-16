@@ -1,0 +1,24 @@
+<li class="section-node" [style.--depth]="node().level">
+  <button
+    type="button"
+    mat-button
+    class="section-button"
+    [class.selected]="selectedSectionId() === node().id"
+    [attr.data-testid]="'section-' + node().id"
+    [attr.aria-current]="selectedSectionId() === node().id ? 'true' : null"
+    (click)="sectionSelected.emit(node().id)"
+  >
+    {{ node().title }}
+  </button>
+  @if (node().children.length) {
+    <ul class="children">
+      @for (child of node().children; track child.id) {
+        <app-section-tree-node
+          [node]="child"
+          [selectedSectionId]="selectedSectionId()"
+          (sectionSelected)="sectionSelected.emit($event)"
+        />
+      }
+    </ul>
+  }
+</li>

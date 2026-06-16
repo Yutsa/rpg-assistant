@@ -1,0 +1,21 @@
+.section-node {
+  list-style: none;
+}
+
+.section-button {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+  padding-left: calc(0.5rem + (var(--depth, 1) - 1) * 0.75rem);
+  border-radius: 0.375rem;
+
+  &.selected {
+    background: var(--mat-sys-secondary-container, #e8def8);
+    color: var(--mat-sys-on-secondary-container, #1d192b);
+  }
+}
+
+.children {
+  margin: 0;
+  padding: 0;
+}

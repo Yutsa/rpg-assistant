@@ -1,0 +1,18 @@
+.stat-block-list {
+  .stat-block-item {
+    cursor: pointer;
+    border-radius: 0.5rem;
+
+    &.selected {
+      background: var(--mat-sys-secondary-container, #e8def8);
+    }
+  }
+
+  .meta {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant, #49454f);
+  }
+}

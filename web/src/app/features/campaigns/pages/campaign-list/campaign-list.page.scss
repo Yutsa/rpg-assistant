@@ -1,0 +1,54 @@
+.page {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  header {
+    margin-bottom: 1.5rem;
+
+    h1 {
+      margin: 0 0 0.25rem;
+    }
+
+    p {
+      margin: 0;
+      color: var(--mat-sys-on-surface-variant, #49454f);
+    }
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.campaign-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+
+.campaign-card {
+  text-decoration: none;
+  color: inherit;
+
+  mat-card {
+    height: 100%;
+    transition: box-shadow 0.2s ease;
+  }
+
+  &:hover mat-card {
+    box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+  }
+}
+
+.system-badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: var(--mat-sys-primary-container, #d3e3fd);
+  color: var(--mat-sys-on-primary-container, #001c3a);
+}

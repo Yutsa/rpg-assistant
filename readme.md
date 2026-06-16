@@ -121,6 +121,34 @@ uv run rpg-api
 
 Server listens on [http://127.0.0.1:8000](http://127.0.0.1:8000). OpenAPI docs at `/docs`.
 
+CORS is enabled for the Angular dev server (`http://localhost:4200` by default). Override with `CORS_ORIGINS` (comma-separated) if needed.
+
+### Frontend (Angular)
+
+The web UI lives in `web/` and proxies API calls to `rpg-api` during development.
+
+**Prerequisites:** Node.js **22.22.3+** (see `web/.nvmrc`) and npm.
+
+```bash
+cd web
+npm install
+npm start
+```
+
+Open [http://localhost:4200](http://localhost:4200). Start `uv run rpg-api` in another terminal so the proxy (`/api` → `http://127.0.0.1:8000`) can reach the backend.
+
+**E2E tests (Playwright):**
+
+```bash
+cd web
+npx playwright install chromium
+npm run test:e2e              # integration + acceptance
+npm run test:e2e:integration
+npm run test:e2e:acceptance
+```
+
+Tests seed a deterministic SQLite database (`data/e2e_rpg_assistant.db`) via `scripts/seed_e2e_db.py` and start both the API and Angular dev server automatically.
+
 ### MCP server (Cursor / Claude Desktop)
 
 Add `.cursor/mcp.json` (example included) or configure your MCP client:
