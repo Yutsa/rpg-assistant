@@ -127,7 +127,7 @@ CORS is enabled for the Angular dev server (`http://localhost:4200` by default).
 
 The web UI lives in `web/` and proxies API calls to `rpg-api` during development.
 
-**Prerequisites:** Node.js 20+ and npm.
+**Prerequisites:** Node.js **22.22.3+** (see `web/.nvmrc`) and npm.
 
 ```bash
 cd web
