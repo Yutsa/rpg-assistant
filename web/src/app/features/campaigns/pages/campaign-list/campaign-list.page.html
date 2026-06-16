@@ -9,7 +9,7 @@
       <mat-spinner diameter="40" />
     </div>
   } @else if (error()) {
-    <app-empty-state [title]="error()!" />
+    <app-empty-state [title]="error() ?? ''" />
   } @else if (campaigns().length === 0) {
     <app-empty-state
       title="Aucune campagne"

@@ -4,7 +4,7 @@
       <mat-spinner diameter="40" />
     </div>
   } @else if (error()) {
-    <app-empty-state [title]="error()!" data-testid="document-error" />
+    <app-empty-state [title]="error() ?? ''" data-testid="document-error" />
   } @else {
     <aside class="panel sections-panel">
       <h2>Sections</h2>
@@ -18,7 +18,7 @@
     <section class="panel content-panel">
       <mat-tab-group
         [selectedIndex]="activeTab()"
-        (selectedIndexChange)="onTabChange($event)"
+        (selectedIndexChange)="activeTab.set($event)"
         data-testid="content-tabs"
       >
         <mat-tab label="Chunks">

@@ -1,6 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { CampaignApiService } from '../../../../core/services/campaign-api.service';
 import { Chunk } from '../../../../core/models/campaign.models';
@@ -22,16 +24,25 @@ export class ChunkDetailPage {
   readonly chunk = signal<Chunk | null>(null);
 
   constructor() {
-    const chunkId = this.route.snapshot.paramMap.get('chunkId') ?? '';
-    this.api.getChunk(chunkId).subscribe({
-      next: (chunk) => {
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('chunkId') ?? ''),
+        tap(() => {
+          this.loading.set(true);
+          this.error.set(null);
+        }),
+        switchMap((chunkId) =>
+          this.api.getChunk(chunkId).pipe(
+            map((chunk) => ({ chunk, error: null as string | null })),
+            catchError(() => of({ chunk: null, error: 'Chunk introuvable.' })),
+          ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe(({ chunk, error }) => {
         this.chunk.set(chunk);
+        this.error.set(error);
         this.loading.set(false);
-      },
-      error: () => {
-        this.error.set('Chunk introuvable.');
-        this.loading.set(false);
-      },
-    });
+      });
   }
 }

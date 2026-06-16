@@ -5,7 +5,7 @@
     class="all-sections"
     [class.selected]="selectedSectionId() === null"
     data-testid="section-all"
-    (click)="selectAll()"
+    (click)="sectionSelected.emit(null)"
   >
     Toutes les sections
   </button>

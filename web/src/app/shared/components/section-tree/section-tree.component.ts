@@ -14,8 +14,4 @@ export class SectionTreeComponent {
   readonly nodes = input.required<SectionNode[]>();
   readonly selectedSectionId = input<string | null>(null);
   readonly sectionSelected = output<string | null>();
-
-  selectAll(): void {
-    this.sectionSelected.emit(null);
-  }
 }

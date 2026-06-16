@@ -19,7 +19,7 @@
     <section>
       <h3>Attributs</h3>
       <dl class="attributes" data-testid="stat-block-attributes">
-        @for (entry of statBlock().attributes! | keyvalue; track entry.key) {
+        @for (entry of statBlock().attributes | keyvalue; track entry.key) {
           <div>
             <dt>{{ entry.key }}</dt>
             <dd>{{ entry.value }}</dd>

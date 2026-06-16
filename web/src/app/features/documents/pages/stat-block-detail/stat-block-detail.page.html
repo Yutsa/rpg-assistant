@@ -17,7 +17,7 @@
     }
   </div>
 } @else if (error()) {
-  <app-empty-state [title]="error()!" data-testid="stat-block-error" />
+  <app-empty-state [title]="error() ?? ''" data-testid="stat-block-error" />
 } @else {
   @if (statBlock(); as value) {
     <app-stat-block-viewer [statBlock]="value" />

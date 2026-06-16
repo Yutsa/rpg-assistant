@@ -103,11 +103,6 @@ export interface StatBlockDetail {
   }>;
 }
 
-export interface StatBlockAmbiguity {
-  error: string;
-  candidates: StatBlockIndex[];
-}
-
 export interface SectionNode extends Section {
   children: SectionNode[];
 }

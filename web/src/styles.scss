@@ -25,6 +25,12 @@ body {
   color: var(--mat-sys-on-surface, #1d1b20);
 }
 
+.page-loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
 body.e2e-no-animations *,
 body.e2e-no-animations *::before,
 body.e2e-no-animations *::after {

@@ -3,10 +3,10 @@
     type="button"
     mat-button
     class="section-button"
-    [class.selected]="isSelected()"
+    [class.selected]="selectedSectionId() === node().id"
     [attr.data-testid]="'section-' + node().id"
-    [attr.aria-current]="isSelected() ? 'true' : null"
-    (click)="selectSection(node().id)"
+    [attr.aria-current]="selectedSectionId() === node().id ? 'true' : null"
+    (click)="sectionSelected.emit(node().id)"
   >
     {{ node().title }}
   </button>
