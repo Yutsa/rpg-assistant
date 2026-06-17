@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import sqlite3
 
-from rpg_assistant.storage.db import _SqliteConnection
-from rpg_assistant.storage.dialect import Dialect
-from rpg_assistant.storage.repositories.raw import RawRepository
+from rpg_core.storage.db import _SqliteConnection
+from rpg_core.storage.dialect import Dialect
+from rpg_core.storage.repositories.raw import RawRepository
 
 _BASE_SCHEMA = """
 CREATE TABLE campaigns (

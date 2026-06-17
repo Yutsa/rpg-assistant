@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rpg-mcp"
+version = "0.1.0"
+description = "MCP server for RPG Assistant ingestion and semantic layer"
+requires-python = ">=3.11"
+dependencies = [
+    "rpg-core",
+    "rpg-ingest",
+    "mcp>=1.0",
+]
+
+[project.scripts]
+rpg-assistant-mcp = "rpg_mcp.server:main"
+
+[tool.uv.sources]
+rpg-core = { workspace = true }
+rpg-ingest = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]

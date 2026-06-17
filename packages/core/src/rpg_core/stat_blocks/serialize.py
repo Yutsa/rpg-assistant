@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from rpg_assistant.models.raw import ChunkRecord
+from rpg_core.models.raw import ChunkRecord
 
 _DETAIL_FIELDS = ("name", "subtitle", "nc", "attributes", "abilities", "game_system")
 

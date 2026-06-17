@@ -1,39 +1,39 @@
-[build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "rpg-assistant"
 version = "0.1.0"
 description = "Campaign PDF ingestion with deterministic raw extraction and MCP semantic layer"
 readme = "readme.md"
 requires-python = ">=3.11"
-dependencies = [
-    "pymupdf>=1.24",
-    "psycopg[binary]>=3.1",
-    "pydantic>=2.5",
-    "mcp>=1.0",
-    "alembic>=1.13",
-    "sqlalchemy>=2.0",
-    "tiktoken>=0.7",
-    "fastapi>=0.115",
-    "uvicorn[standard]>=0.30",
-]
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/*"]
 
 [dependency-groups]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
+    "alembic>=1.13",
+    "rpg-core",
+    "rpg-ingest",
+    "rpg-mcp",
+    "rpg-api",
 ]
 
-[project.scripts]
-rpg-ingest = "rpg_assistant.cli.ingest:main"
-rpg-assistant-mcp = "rpg_assistant.mcp.server:main"
-rpg-api = "rpg_assistant.api.main:run"
-
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.uv.sources]
+rpg-core = { workspace = true }
+rpg-ingest = { workspace = true }
+rpg-mcp = { workspace = true }
+rpg-api = { workspace = true }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = [
+    "packages/core/src",
+    "packages/ingest/src",
+    "packages/mcp/src",
+    "packages/api/src",
+]

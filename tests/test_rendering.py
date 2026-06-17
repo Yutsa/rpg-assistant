@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pymupdf
 
-from rpg_assistant.ingestion.raw.rendering import render_pdf_pages
+from rpg_ingest.raw.rendering import render_pdf_pages
 
 
 def _make_test_pdf(path: Path, pages: list[str]) -> None:

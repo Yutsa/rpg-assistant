@@ -27,10 +27,9 @@ def main() -> int:
         check=True,
     )
 
-    sys.path.insert(0, str(REPO_ROOT / "src"))
-    from rpg_assistant.models.raw import ChunkRecord, SectionRecord
-    from rpg_assistant.storage.db import _open_connection
-    from rpg_assistant.storage.repositories.raw import RawRepository
+    from rpg_core.models.raw import ChunkRecord, SectionRecord
+    from rpg_core.storage.db import _open_connection
+    from rpg_core.storage.repositories.raw import RawRepository
 
     repo = RawRepository(_open_connection(DATABASE_URL))
     repo.ensure_campaign("campaign_e2e", title="Campagne E2E", game_system="cof2")

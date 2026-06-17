@@ -1,5 +1,5 @@
-from rpg_assistant.ingestion.raw.filtering import filter_watermark_blocks
-from rpg_assistant.ingestion.raw.layout import LayoutPage
+from rpg_ingest.raw.filtering import filter_watermark_blocks
+from rpg_ingest.raw.layout import LayoutPage
 from tests.fixtures.layout import make_block as _make_block
 
 WATERMARK = (

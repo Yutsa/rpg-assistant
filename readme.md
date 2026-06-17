@@ -76,6 +76,20 @@ The ingestion pipeline has two layers:
 - **Raw (deterministic):** PDF → pages, blocks with bbox, sections, chunks. No LLM.
 - **Semantic (agent-driven):** External agents submit classifications, entities, and relations via MCP. Validated deterministically in code.
 
+### Monorepo layout
+
+```
+packages/
+  core/     # rpg-core — models, storage, stat-block utilities
+  ingest/   # rpg-ingest — PDF pipeline + CLI (rpg-ingest)
+  mcp/      # rpg-mcp — MCP server (rpg-assistant-mcp)
+  api/      # rpg-api — REST API (rpg-api)
+apps/
+  web/      # Angular frontend
+migrations/ # Alembic (shared database schema)
+tests/      # pytest suite (all packages)
+```
+
 ### Prerequisites
 
 - [uv](https://docs.astral.sh/uv/) — install with `curl -LsSf https://astral.sh/uv/install.sh | sh`
@@ -125,12 +139,12 @@ CORS is enabled for the Angular dev server (`http://localhost:4200` by default).
 
 ### Frontend (Angular)
 
-The web UI lives in `web/` and proxies API calls to `rpg-api` during development.
+The web UI lives in `apps/web/` and proxies API calls to `rpg-api` during development.
 
-**Prerequisites:** Node.js **22.22.3+** (see `web/.nvmrc`) and npm.
+**Prerequisites:** Node.js **22.22.3+** (see `apps/web/.nvmrc`) and npm.
 
 ```bash
-cd web
+cd apps/web
 npm install
 npm start
 ```
@@ -140,7 +154,7 @@ Open [http://localhost:4200](http://localhost:4200). Start `uv run rpg-api` in a
 **E2E tests (Playwright):**
 
 ```bash
-cd web
+cd apps/web
 npx playwright install chromium
 npm run test:e2e              # integration + acceptance
 npm run test:e2e:integration
@@ -181,4 +195,4 @@ Restart Cursor after editing `.cursor/mcp.json`, then check **Settings → Tools
 4. Validate: `validate_semantic_layer` — fix errors and resubmit.
 5. Relations: `submit_relations`, then `get_semantic_summary`.
 
-Read `docs/technical-ingestion.md` for the full data model. The exploratory script `script/count_pdf_tokens.py` is unchanged.
+Read `docs/technical-ingestion.md` for the full data model. The exploratory script `packages/ingest/scripts/count_pdf_tokens.py` is unchanged.

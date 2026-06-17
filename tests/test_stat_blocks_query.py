@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import json
 
-from rpg_assistant.ingestion.raw.stat_blocks.matching import (
+from rpg_core.stat_blocks.matching import (
     enrich_chunk_metadata,
     matches_stat_block_name,
     normalize_stat_block_key,
 )
-from rpg_assistant.ingestion.raw.stat_blocks.serialize import chunk_to_stat_block_detail
-from rpg_assistant.models.raw import ChunkRecord, SourceSpan
+from rpg_core.stat_blocks.serialize import chunk_to_stat_block_detail
+from rpg_core.models.raw import ChunkRecord, SourceSpan
 from tests.fixtures.db import memory_repo as _memory_repo
 
 

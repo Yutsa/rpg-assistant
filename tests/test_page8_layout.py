@@ -1,9 +1,9 @@
 """Synthetic page-8 bi-column layout: MJ story continuation, actors, PARTIE II."""
 
-from rpg_assistant.ingestion.raw.chunking import build_chunks
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage, rebuild_layout_page
-from rpg_assistant.ingestion.raw.sections import detect_sections
-from rpg_assistant.models.raw import BBox
+from rpg_ingest.raw.chunking import build_chunks
+from rpg_ingest.raw.layout import LayoutBlock, LayoutPage, rebuild_layout_page
+from rpg_ingest.raw.sections import detect_sections
+from rpg_core.models.raw import BBox
 
 
 def _block(

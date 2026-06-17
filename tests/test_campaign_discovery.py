@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from rpg_assistant.models.raw import IngestionRunRecord
+from rpg_core.models.raw import IngestionRunRecord
 from tests.fixtures.db import memory_repo as _memory_repo
 
 

@@ -1,5 +1,5 @@
-from rpg_assistant.ingestion.raw.layout import LayoutBlock
-from rpg_assistant.models.raw import BBox
+from rpg_ingest.raw.layout import LayoutBlock
+from rpg_core.models.raw import BBox
 
 
 def test_layout_block_stores_bbox_and_metadata():

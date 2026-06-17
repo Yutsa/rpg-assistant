@@ -1,9 +1,9 @@
-from rpg_assistant.ingestion.raw.chunking import (
+from rpg_ingest.raw.chunking import (
     build_chunks,
     chunk_block_signature,
     chunk_uniqueness_stats,
 )
-from rpg_assistant.ingestion.raw.sections import detect_sections
+from rpg_ingest.raw.sections import detect_sections
 from tests.fixtures.layout import make_block as _block, make_page as _page
 
 

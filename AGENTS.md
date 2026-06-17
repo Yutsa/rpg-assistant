@@ -2,6 +2,18 @@
 
 Ce dépôt ingère des PDF d'aventures RPG en deux couches : **raw** (déterministe) puis **semantic** (soumise par agent via MCP).
 
+## Structure du monorepo
+
+| Dossier | Package | Rôle |
+|---------|---------|------|
+| `packages/core` | `rpg-core` | Modèles Pydantic, couche storage, utilitaires fiches |
+| `packages/ingest` | `rpg-ingest` | Pipeline PDF + CLI `rpg-ingest` |
+| `packages/mcp` | `rpg-mcp` | Serveur MCP `rpg-assistant-mcp` |
+| `packages/api` | `rpg-api` | API REST FastAPI |
+| `apps/web` | — | Frontend Angular |
+
+Workspace `uv` à la racine : `uv sync` installe tous les packages en mode editable.
+
 ## Serveur MCP `rpg-assistant`
 
 Utilise **toujours** le serveur MCP `rpg-assistant` pour consulter ou enrichir les données ingérées. Ne réimplémente pas l'ingestion ni n'interroge la base à la main sauf pour du debug explicite demandé par l'utilisateur.
@@ -67,5 +79,5 @@ Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Pas d
 - **Tests** : lancer `uv run python -m pytest`, **pas** `uv run pytest`. `tests/test_visual_review.py` fait `from tests.test_campaign_discovery import ...`, ce qui exige la racine du repo sur `sys.path` ; seul `python -m pytest` (qui ajoute le CWD) le fournit. Avec `pytest` direct la collecte échoue (`ModuleNotFoundError: No module named 'tests'`).
 - **Test ignoré** : `test_mondanites_chunking` est `skipped` car il dépend d'un PDF COF2 propriétaire absent du repo (`/home/edouard/Téléchargements/...`). C'est normal. Les autres tests génèrent leurs PDF à la volée via `pymupdf`.
 - **Aucun linter configuré** (pas de ruff/flake8/black/mypy ni de hooks pre-commit/husky).
-- **Ingestion** : `import_pdf` / `rpg-ingest raw extract` rejette un PDF si `text_coverage_ratio < 0.3` (heuristique ≈ `len(texte)*50 / aire_page`, voir `ingestion/raw/coverage.py`). Pour un PDF de test synthétique, viser ≳ 2900 caractères par page A4, sinon utiliser `--coverage-threshold 0.0`.
+- **Ingestion** : `import_pdf` / `rpg-ingest raw extract` rejette un PDF si `text_coverage_ratio < 0.3` (heuristique ≈ `len(texte)*50 / aire_page`, voir `packages/ingest/src/rpg_ingest/raw/coverage.py`). Pour un PDF de test synthétique, viser ≳ 2900 caractères par page A4, sinon utiliser `--coverage-threshold 0.0`.
 - **Aucun PDF de la campagne de référence `momie` n'est commité** ; la base de dev démarre vide après migration.

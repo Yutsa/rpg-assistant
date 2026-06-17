@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
-from rpg_assistant.models.raw import BBox
+from rpg_ingest.raw.layout import LayoutBlock, LayoutPage
+from rpg_core.models.raw import BBox
 
 
 def make_block(

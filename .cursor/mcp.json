@@ -12,6 +12,14 @@
       "env": {
         "DATABASE_URL": "sqlite:///./data/rpg_assistant.db"
       }
+    },
+    "angular-cli": {
+      "type": "stdio",
+      "command": "/home/edouard/.nvm/versions/node/v22.22.3/bin/npx",
+      "args": ["-y", "@angular/cli", "mcp"],
+      "env": {
+        "PATH": "/home/edouard/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/bin"
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
-from rpg_assistant.ingestion.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage
-from rpg_assistant.models.raw import BBox
+from rpg_ingest.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
+from rpg_ingest.raw.layout import LayoutBlock, LayoutPage
+from rpg_core.models.raw import BBox
 
 
 def _block(

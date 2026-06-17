@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from typing import Any
 
-from rpg_assistant.models.raw import BBox
-from rpg_assistant.models.semantic import (
+from rpg_core.models.raw import BBox
+from rpg_core.models.semantic import (
     ChunkClassification,
     EntityRecord,
     EntityRelationRecord,
     EntitySourceRef,
 )
-from rpg_assistant.storage.db import DatabaseConnection
-from rpg_assistant.storage.dialect import dump_json, parse_json
-from rpg_assistant.storage.ids import new_id
+from rpg_core.storage.db import DatabaseConnection
+from rpg_core.storage.dialect import dump_json, parse_json
+from rpg_core.storage.ids import new_id
 
 
 class SemanticRepository:

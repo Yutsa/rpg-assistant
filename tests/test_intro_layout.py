@@ -1,10 +1,10 @@
 """Tests for COF2-style intro pages (sidebar boxes, illustration gap, title case)."""
 
-from rpg_assistant.ingestion.raw.chunking import build_chunks
-from rpg_assistant.ingestion.raw.filtering import filter_watermark_blocks
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage, rebuild_layout_page
-from rpg_assistant.ingestion.raw.sections import detect_sections
-from rpg_assistant.models.raw import BBox
+from rpg_ingest.raw.chunking import build_chunks
+from rpg_ingest.raw.filtering import filter_watermark_blocks
+from rpg_ingest.raw.layout import LayoutBlock, LayoutPage, rebuild_layout_page
+from rpg_ingest.raw.sections import detect_sections
+from rpg_core.models.raw import BBox
 
 
 def _block(

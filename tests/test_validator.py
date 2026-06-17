@@ -1,5 +1,5 @@
-from rpg_assistant.ingestion.semantic.schemas import CHUNK_TYPES, ENTITY_TYPES
-from rpg_assistant.ingestion.semantic.validator import ValidationResult, _contains_gm_only_leak
+from rpg_ingest.semantic.schemas import CHUNK_TYPES, ENTITY_TYPES
+from rpg_ingest.semantic.validator import ValidationResult, _contains_gm_only_leak
 
 
 def test_chunk_types_include_core_labels():

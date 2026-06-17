@@ -7,9 +7,9 @@ import pymupdf
 import pytest
 from fastapi.testclient import TestClient
 
-from rpg_assistant.api.deps import get_raw_repo, get_semantic_repo
-from rpg_assistant.api.main import create_app
-from rpg_assistant.models.raw import (
+from rpg_api.deps import get_raw_repo, get_semantic_repo
+from rpg_api.main import create_app
+from rpg_core.models.raw import (
     BBox,
     ChunkRecord,
     IngestionRunRecord,
@@ -118,7 +118,7 @@ def api_client() -> TestClient:
         ]
     )
 
-    from rpg_assistant.storage.repositories.semantic import SemanticRepository
+    from rpg_core.storage.repositories.semantic import SemanticRepository
 
     def _override_raw_repo():
         return repo

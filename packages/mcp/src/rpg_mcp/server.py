@@ -7,18 +7,18 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, Field
 
-from rpg_assistant.ingestion.raw.stat_blocks.serialize import (
+from rpg_core.stat_blocks.serialize import (
     chunk_to_list_item,
     chunk_to_stat_block_detail,
     stat_block_ambiguity_candidates,
 )
-from rpg_assistant.ingestion.feedback.visual_review import (
+from rpg_ingest.feedback.visual_review import (
     VISUAL_INGESTION_REVIEW_PROMPT,
     VisualReviewError,
     prepare_visual_ingestion_review as run_visual_review,
 )
-from rpg_assistant.ingestion.raw.importer import run as import_run
-from rpg_assistant.ingestion.semantic.schemas import (
+from rpg_ingest.raw.importer import run as import_run
+from rpg_ingest.semantic.schemas import (
     CHUNK_CLASSIFICATION_JSON_SCHEMA,
     CHUNK_TYPES,
     ENTITY_EXTRACTION_PROMPT,
@@ -26,18 +26,18 @@ from rpg_assistant.ingestion.semantic.schemas import (
     ENTITY_TYPES,
     RELATION_TYPES,
 )
-from rpg_assistant.ingestion.semantic.validator import (
+from rpg_ingest.semantic.validator import (
     validate_semantic_layer as run_semantic_validation,
 )
-from rpg_assistant.models.semantic import (
+from rpg_core.models.semantic import (
     ChunkClassification,
     EntityRecord,
     EntityRelationRecord,
     EntitySourceRef,
 )
-from rpg_assistant.storage.db import get_connection
-from rpg_assistant.storage.repositories.raw import RawRepository
-from rpg_assistant.storage.repositories.semantic import SemanticRepository
+from rpg_core.storage.db import get_connection
+from rpg_core.storage.repositories.raw import RawRepository
+from rpg_core.storage.repositories.semantic import SemanticRepository
 
 mcp = FastMCP("rpg-assistant")
 
@@ -82,7 +82,7 @@ class RelationInput(BaseModel):
 def _to_entity_source_ref(ref: EntitySourceRefInput) -> EntitySourceRef:
     bbox = None
     if ref.bbox:
-        from rpg_assistant.models.raw import BBox
+        from rpg_core.models.raw import BBox
 
         bbox = BBox(**ref.bbox)
     return EntitySourceRef(

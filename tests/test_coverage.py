@@ -1,6 +1,6 @@
 import pytest
 
-from rpg_assistant.ingestion.raw.coverage import (
+from rpg_ingest.raw.coverage import (
     DEFAULT_COVERAGE_THRESHOLD,
     document_coverage_ratio,
     is_scanned_or_unusable,

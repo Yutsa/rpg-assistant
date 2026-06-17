@@ -10,7 +10,7 @@ from typing import Any, Generator, Protocol
 import psycopg
 from sqlalchemy.engine import make_url
 
-from rpg_assistant.storage.dialect import (
+from rpg_core.storage.dialect import (
     DEFAULT_SQLITE_URL,
     Dialect,
     detect_dialect,

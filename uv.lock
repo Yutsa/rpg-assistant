@@ -2,6 +2,15 @@ version = 1
 revision = 3
 requires-python = ">=3.11"
 
+[manifest]
+members = [
+    "rpg-api",
+    "rpg-assistant",
+    "rpg-core",
+    "rpg-ingest",
+    "rpg-mcp",
+]
+
 [[package]]
 name = "alembic"
 version = "1.18.4"
@@ -1394,44 +1403,102 @@ wheels = [
 ]
 
 [[package]]
-name = "rpg-assistant"
+name = "rpg-api"
 version = "0.1.0"
-source = { editable = "." }
+source = { editable = "packages/api" }
 dependencies = [
-    { name = "alembic" },
     { name = "fastapi" },
-    { name = "mcp" },
-    { name = "psycopg", extra = ["binary"] },
-    { name = "pydantic" },
-    { name = "pymupdf" },
-    { name = "sqlalchemy" },
-    { name = "tiktoken" },
+    { name = "rpg-core" },
+    { name = "rpg-ingest" },
     { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-    { name = "pytest-cov" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "alembic", specifier = ">=1.13" },
     { name = "fastapi", specifier = ">=0.115" },
-    { name = "mcp", specifier = ">=1.0" },
-    { name = "psycopg", extras = ["binary"], specifier = ">=3.1" },
-    { name = "pydantic", specifier = ">=2.5" },
-    { name = "pymupdf", specifier = ">=1.24" },
-    { name = "sqlalchemy", specifier = ">=2.0" },
-    { name = "tiktoken", specifier = ">=0.7" },
+    { name = "rpg-core", editable = "packages/core" },
+    { name = "rpg-ingest", editable = "packages/ingest" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30" },
 ]
 
+[[package]]
+name = "rpg-assistant"
+version = "0.1.0"
+source = { virtual = "." }
+
+[package.dev-dependencies]
+dev = [
+    { name = "alembic" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "rpg-api" },
+    { name = "rpg-core" },
+    { name = "rpg-ingest" },
+    { name = "rpg-mcp" },
+]
+
+[package.metadata]
+
 [package.metadata.requires-dev]
 dev = [
+    { name = "alembic", specifier = ">=1.13" },
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-cov", specifier = ">=5.0" },
+    { name = "rpg-api", editable = "packages/api" },
+    { name = "rpg-core", editable = "packages/core" },
+    { name = "rpg-ingest", editable = "packages/ingest" },
+    { name = "rpg-mcp", editable = "packages/mcp" },
+]
+
+[[package]]
+name = "rpg-core"
+version = "0.1.0"
+source = { editable = "packages/core" }
+dependencies = [
+    { name = "psycopg", extra = ["binary"] },
+    { name = "pydantic" },
+    { name = "sqlalchemy" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.1" },
+    { name = "pydantic", specifier = ">=2.5" },
+    { name = "sqlalchemy", specifier = ">=2.0" },
+]
+
+[[package]]
+name = "rpg-ingest"
+version = "0.1.0"
+source = { editable = "packages/ingest" }
+dependencies = [
+    { name = "pymupdf" },
+    { name = "rpg-core" },
+    { name = "tiktoken" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "pymupdf", specifier = ">=1.24" },
+    { name = "rpg-core", editable = "packages/core" },
+    { name = "tiktoken", specifier = ">=0.7" },
+]
+
+[[package]]
+name = "rpg-mcp"
+version = "0.1.0"
+source = { editable = "packages/mcp" }
+dependencies = [
+    { name = "mcp" },
+    { name = "rpg-core" },
+    { name = "rpg-ingest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "mcp", specifier = ">=1.0" },
+    { name = "rpg-core", editable = "packages/core" },
+    { name = "rpg-ingest", editable = "packages/ingest" },
 ]
 
 [[package]]

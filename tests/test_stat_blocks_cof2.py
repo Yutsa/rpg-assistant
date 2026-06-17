@@ -1,10 +1,10 @@
-from rpg_assistant.ingestion.raw.chunking import build_chunks
-from rpg_assistant.ingestion.raw.layout import LayoutPage
-from rpg_assistant.ingestion.raw.sections import detect_sections
-from rpg_assistant.ingestion.raw.stat_blocks import annotate_stat_blocks
-from rpg_assistant.ingestion.raw.stat_blocks.cof2 import Cof2StatBlockProfile
-from rpg_assistant.ingestion.raw.stat_blocks.registry import resolve_profile
-from rpg_assistant.ingestion.raw.stat_blocks.text_utils import strip_layout_glyphs
+from rpg_ingest.raw.chunking import build_chunks
+from rpg_ingest.raw.layout import LayoutPage
+from rpg_ingest.raw.sections import detect_sections
+from rpg_ingest.raw.stat_blocks import annotate_stat_blocks
+from rpg_ingest.raw.stat_blocks.cof2 import Cof2StatBlockProfile
+from rpg_ingest.raw.stat_blocks.registry import resolve_profile
+from rpg_ingest.raw.stat_blocks.text_utils import strip_layout_glyphs
 from tests.fixtures.layout import make_block as _block, make_page as _page
 
 

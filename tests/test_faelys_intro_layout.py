@@ -1,10 +1,10 @@
 """COF2 Le Dernier Faelys: intro page 6 banner + L'histoire bi-column wrap."""
 
-from rpg_assistant.ingestion.raw.block_merging import merge_fragmented_blocks
-from rpg_assistant.ingestion.raw.chunking import build_chunks
-from rpg_assistant.ingestion.raw.layout import LayoutBlock, LayoutPage, rebuild_layout_page
-from rpg_assistant.ingestion.raw.sections import detect_sections
-from rpg_assistant.models.raw import BBox
+from rpg_ingest.raw.block_merging import merge_fragmented_blocks
+from rpg_ingest.raw.chunking import build_chunks
+from rpg_ingest.raw.layout import LayoutBlock, LayoutPage, rebuild_layout_page
+from rpg_ingest.raw.sections import detect_sections
+from rpg_core.models.raw import BBox
 
 
 def _block(

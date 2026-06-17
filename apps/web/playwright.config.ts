@@ -2,7 +2,7 @@ import path from 'node:path';
 import { defineConfig, devices } from '@playwright/test';
 
 const isCi = Boolean(process.env.CI);
-const repoRoot = path.resolve(__dirname, '..');
+const repoRoot = path.resolve(__dirname, '../..');
 const dbPath = path.join(repoRoot, 'data', 'e2e_rpg_assistant.db');
 
 export default defineConfig({
@@ -48,7 +48,7 @@ export default defineConfig({
     },
     {
       command: 'npm run start -- --host 127.0.0.1 --port 4200 --proxy-config proxy.conf.json',
-      cwd: path.join(repoRoot, 'web'),
+      cwd: path.join(repoRoot, 'apps', 'web'),
       url: 'http://127.0.0.1:4200',
       reuseExistingServer: !isCi,
       timeout: 180_000,

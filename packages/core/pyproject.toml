@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rpg-core"
+version = "0.1.0"
+description = "Shared models and storage for RPG Assistant"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.5",
+    "psycopg[binary]>=3.1",
+    "sqlalchemy>=2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

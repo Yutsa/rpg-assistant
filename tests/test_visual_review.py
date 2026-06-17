@@ -6,14 +6,14 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from rpg_assistant.ingestion.feedback.visual_review import (
+from rpg_ingest.feedback.visual_review import (
     VisualReviewError,
     build_visual_review_sample,
     resolve_pdf_path,
 )
-from rpg_assistant.models.raw import ChunkRecord, SectionRecord, SourceSpan
-from rpg_assistant.models.raw import IngestionRunRecord
-from rpg_assistant.storage.repositories.raw import RawRepository
+from rpg_core.models.raw import ChunkRecord, SectionRecord, SourceSpan
+from rpg_core.models.raw import IngestionRunRecord
+from rpg_core.storage.repositories.raw import RawRepository
 from tests.fixtures.db import memory_repo as _memory_repo
 
 
@@ -192,7 +192,7 @@ def test_get_latest_raw_run_and_list_chunks_for_sections() -> None:
 
 
 def test_import_persists_source_pdf_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    from rpg_assistant.ingestion.raw.importer import run as import_run
+    from rpg_ingest.raw.importer import run as import_run
 
     db_path = tmp_path / "test.db"
     monkeypatch.setenv("DATABASE_URL", f"sqlite:///{db_path}")

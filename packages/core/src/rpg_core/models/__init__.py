@@ -1,4 +1,4 @@
-from rpg_assistant.models.raw import (
+from rpg_core.models.raw import (
     BBox,
     CampaignRecord,
     ChunkRecord,
@@ -9,7 +9,7 @@ from rpg_assistant.models.raw import (
     SectionRecord,
     SourceSpan,
 )
-from rpg_assistant.models.semantic import (
+from rpg_core.models.semantic import (
     ChunkClassification,
     EntityRecord,
     EntityRelationRecord,

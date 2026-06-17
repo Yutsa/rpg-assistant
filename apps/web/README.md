@@ -1,6 +1,6 @@
 # Web
 
-Angular 22 application for browsing ingested RPG campaigns.
+Angular 22 application for browsing ingested RPG campaigns. Lives in `apps/web/` within the monorepo.
 
 **Prerequisites:** Node.js **22.22.3+** (see `.nvmrc`) and npm.
 

@@ -3,12 +3,12 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from rpg_assistant.ingestion.raw.stat_blocks.matching import (
+from rpg_core.stat_blocks.matching import (
     enrich_chunk_metadata,
     matches_stat_block_name,
     normalize_stat_block_key,
 )
-from rpg_assistant.models.raw import (
+from rpg_core.models.raw import (
     CampaignRecord,
     ChunkRecord,
     DocumentRecord,
@@ -19,9 +19,9 @@ from rpg_assistant.models.raw import (
     SourceSpan,
     StatBlockIndexEntry,
 )
-from rpg_assistant.models.raw import BBox
-from rpg_assistant.storage.db import DatabaseConnection
-from rpg_assistant.storage.dialect import dump_json, parse_json
+from rpg_core.models.raw import BBox
+from rpg_core.storage.db import DatabaseConnection
+from rpg_core.storage.dialect import dump_json, parse_json
 
 
 def _utcnow() -> datetime:

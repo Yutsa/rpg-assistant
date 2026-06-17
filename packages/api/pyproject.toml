@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rpg-api"
+version = "0.1.0"
+description = "REST API for RPG Assistant ingested data"
+requires-python = ">=3.11"
+dependencies = [
+    "rpg-core",
+    "rpg-ingest",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+]
+
+[project.scripts]
+rpg-api = "rpg_api.main:run"
+
+[tool.uv.sources]
+rpg-core = { workspace = true }
+rpg-ingest = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]

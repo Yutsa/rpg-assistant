@@ -1,5 +1,5 @@
-from rpg_assistant.ingestion.raw.layout import LayoutPage
-from rpg_assistant.ingestion.raw.sections import detect_sections
+from rpg_ingest.raw.layout import LayoutPage
+from rpg_ingest.raw.sections import detect_sections
 from tests.fixtures.layout import make_block
 
 

@@ -3,13 +3,13 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from rpg_assistant.ingestion.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
-from rpg_assistant.ingestion.raw.chunking import build_chunks, chunk_uniqueness_stats
-from rpg_assistant.ingestion.raw.filtering import filter_watermark_blocks
-from rpg_assistant.ingestion.raw.layout import extract_layout_pages
-from rpg_assistant.ingestion.raw.sections import detect_sections
-from rpg_assistant.ingestion.raw.stat_blocks import annotate_stat_blocks, resolve_profile
-from rpg_assistant.storage.ids import page_block_id
+from rpg_ingest.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
+from rpg_ingest.raw.chunking import build_chunks, chunk_uniqueness_stats
+from rpg_ingest.raw.filtering import filter_watermark_blocks
+from rpg_ingest.raw.layout import extract_layout_pages
+from rpg_ingest.raw.sections import detect_sections
+from rpg_ingest.raw.stat_blocks import annotate_stat_blocks, resolve_profile
+from rpg_core.storage.ids import page_block_id
 
 MONDANITES_PDF = Path(
     "/home/edouard/Téléchargements/COF2_10_Mondanites_Et_Momies_web_v1a.pdf"

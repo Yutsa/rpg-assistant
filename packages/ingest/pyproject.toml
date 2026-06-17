@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rpg-ingest"
+version = "0.1.0"
+description = "Deterministic PDF ingestion pipeline and CLI"
+requires-python = ">=3.11"
+dependencies = [
+    "rpg-core",
+    "pymupdf>=1.24",
+    "tiktoken>=0.7",
+]
+
+[project.scripts]
+rpg-ingest = "rpg_ingest.cli.ingest:main"
+
+[tool.uv.sources]
+rpg-core = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]

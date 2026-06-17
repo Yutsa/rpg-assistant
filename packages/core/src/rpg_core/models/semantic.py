@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from rpg_assistant.models.raw import BBox
+from rpg_core.models.raw import BBox
 
 
 class EntitySourceRef(BaseModel):
