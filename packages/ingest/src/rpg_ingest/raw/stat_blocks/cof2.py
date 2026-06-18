@@ -38,12 +38,13 @@ RULEBOOK_PROFILE_PATTERNS = (
         re.IGNORECASE,
     ),
 )
+APOSTROPHE_CHARS = r"'\u2019"
 ABILITY_TITLE_RE = re.compile(
-    r"^([A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-']+?)\s*(?:\([A-Z]\))?\s*:\s*(.*)$",
+    rf"^([A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-{APOSTROPHE_CHARS}]+?)\s*(?:\([A-Z]\))?\s*:\s*(.*)$",
     re.DOTALL,
 )
 INLINE_ABILITY_TITLE_RE = re.compile(
-    r"(?<![A-Za-zÀ-ÿ])([A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-']+?)\s*(?:\([A-Z]\))?\s*:\s*",
+    rf"(?<![A-Za-zÀ-ÿ])(?<![DdLl][{APOSTROPHE_CHARS}])([A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-{APOSTROPHE_CHARS}]+?)\s*(?:\([A-Z]\))?\s*:\s*",
 )
 INLINE_ABILITY_SKIP_RE = re.compile(
     r"\b(AGI|FOR|CON|INT|PER|CHA)\s*[+-]"
@@ -160,6 +161,10 @@ def _extract_rulebook_reference(text: str) -> RulebookReference | None:
     return None
 
 
+def _normalize_ability_title(title: str) -> str:
+    return title.replace("\u2019", "'").replace("\u2018", "'").strip()
+
+
 def _parse_ability_block(text: str) -> StatAbility | None:
     lines = [line.strip() for line in strip_layout_glyphs(text).splitlines() if line.strip()]
     if not lines:
@@ -167,7 +172,7 @@ def _parse_ability_block(text: str) -> StatAbility | None:
     first_match = ABILITY_TITLE_RE.match(lines[0])
     if not first_match:
         return None
-    title = first_match.group(1).strip()
+    title = _normalize_ability_title(first_match.group(1))
     if not title or INLINE_ABILITY_SKIP_RE.search(title):
         return None
     body_parts: list[str] = []
@@ -186,7 +191,7 @@ def _parse_abilities_from_inline_text(text: str) -> list[StatAbility]:
     matches = list(INLINE_ABILITY_TITLE_RE.finditer(search_text))
     abilities: list[StatAbility] = []
     for index, match in enumerate(matches):
-        title = match.group(1).strip()
+        title = _normalize_ability_title(match.group(1))
         if not title or INLINE_ABILITY_SKIP_RE.search(title):
             continue
         body_start = match.end()

@@ -272,6 +272,51 @@ def _parallel_subordinate_list_item(
     return True
 
 
+def _parallel_subordinate_list_owner(
+    page: LayoutPage,
+    block: LayoutBlock,
+    heading_refs: list[_HeadingRef],
+) -> int | None:
+    for ref in heading_refs:
+        if ref.page_number != page.page_number:
+            continue
+        if _parallel_subordinate_list_item(
+            page, ref.block, block, heading_refs, ref
+        ):
+            return ref.section_index
+    return None
+
+
+def _parallel_column_owner(
+    page: LayoutPage,
+    block: LayoutBlock,
+    heading_refs: list[_HeadingRef],
+) -> int | None:
+    for ref in heading_refs:
+        if ref.page_number != page.page_number:
+            continue
+        if ref.tier == "banner":
+            continue
+        if _block_in_parallel_column(page, ref.block, block, heading_refs, ref):
+            return ref.section_index
+    return None
+
+
+def _same_page_heading_zone_owner(
+    page: LayoutPage,
+    block: LayoutBlock,
+    heading_refs: list[_HeadingRef],
+) -> int | None:
+    for ref in heading_refs:
+        if ref.page_number != page.page_number:
+            continue
+        if is_in_heading_content_zone(
+            block, ref.block, heading_text=ref.title
+        ):
+            return ref.section_index
+    return None
+
+
 def _intervening_heading_blocks(
     heading: LayoutBlock,
     block: LayoutBlock,
@@ -360,6 +405,14 @@ def _opposite_column_wrap_owners(
             for block in heading_page.blocks
         )
         if not has_body:
+            continue
+        if any(
+            other.page_number == ref.page_number
+            and column_side(other.block, heading_page.width) == opposite
+            and other.tier in {"chapter", "banner"}
+            and other.block.bbox.y0 > ref.block.bbox.y0
+            for other in heading_refs
+        ):
             continue
 
         next_page_num = ref.page_number + 1
@@ -515,8 +568,17 @@ def _column_continuation_owners(
         existing = owners.get(key)
         if existing is None:
             owners[key] = section_index
-        elif sections[section_index].page_start >= sections[existing].page_start:
+        elif sections[section_index].page_start > sections[existing].page_start:
             owners[key] = section_index
+        elif sections[section_index].page_start == sections[existing].page_start:
+            candidate_tier = heading_refs[section_index].tier
+            incumbent_tier = heading_refs[existing].tier
+            if candidate_tier in {"chapter", "banner"} and incumbent_tier == "subordinate":
+                owners[key] = section_index
+            elif candidate_tier == "subordinate" and incumbent_tier in {"chapter", "banner"}:
+                pass
+            elif section_index > existing:
+                owners[key] = section_index
 
     return owners
 
@@ -574,6 +636,7 @@ def _blocks_for_section_spatial(
                 in_parallel_list = _parallel_subordinate_list_item(
                     page, heading, block, heading_refs, heading_ref
                 )
+                preserve_parallel_list = in_parallel_list
                 col_owner_blocked = _parallel_blocked_by_column_owner(
                     page,
                     block,
@@ -584,7 +647,8 @@ def _blocks_for_section_spatial(
                 )
                 if col_owner_blocked:
                     in_parallel = False
-                    in_parallel_list = False
+                    if not preserve_parallel_list:
+                        in_parallel_list = False
                 elif column_continuation_owners:
                     col_side = column_side(block, page.width)
                     owner = column_continuation_owners.get(
@@ -595,7 +659,8 @@ def _blocks_for_section_spatial(
                         and owner != heading_ref.section_index
                     ):
                         in_parallel = False
-                        in_parallel_list = False
+                        if not preserve_parallel_list:
+                            in_parallel_list = False
                 if not heading_ref.is_content_only and block.bbox.y0 <= heading.bbox.y0:
                     if not in_parallel and not in_parallel_list and not in_zone:
                         continue
@@ -670,6 +735,23 @@ def _blocks_for_section_spatial(
                             is_column_continuation = False
                             break
                 if not is_sparse_continuation and not is_column_continuation:
+                    continue
+                parallel_list_owner = _parallel_subordinate_list_owner(
+                    page, block, heading_refs
+                )
+                if (
+                    parallel_list_owner is not None
+                    and parallel_list_owner != heading_ref.section_index
+                    and not is_sparse_continuation
+                ):
+                    continue
+                zone_owner = _same_page_heading_zone_owner(page, block, heading_refs)
+                if (
+                    zone_owner is not None
+                    and zone_owner != heading_ref.section_index
+                    and is_column_continuation
+                    and not is_sparse_continuation
+                ):
                     continue
                 if not _continuation_claims_block(
                     block,
@@ -1148,6 +1230,37 @@ def _group_blocks_for_chunking(
     return groups
 
 
+def _expand_stat_block_group(
+    block_groups: list[tuple[LayoutPage, LayoutBlock]],
+    stat_spans: dict[str, StatBlockSpan],
+    pages: list[LayoutPage],
+) -> list[tuple[LayoutPage, LayoutBlock]]:
+    stat_id = next(
+        (
+            block.metadata.get("stat_block_id")
+            for _, block in block_groups
+            if block.metadata.get("stat_block_id")
+        ),
+        None,
+    )
+    if not stat_id or stat_id not in stat_spans:
+        return block_groups
+    pages_by_number = {page.page_number: page for page in pages}
+    existing = {(page.page_number, block.block_index) for page, block in block_groups}
+    expanded = list(block_groups)
+    for block in stat_spans[stat_id].blocks:
+        pos = (block.page_number, block.block_index)
+        if pos in existing:
+            continue
+        page = pages_by_number.get(block.page_number)
+        if page is None:
+            continue
+        expanded.append((page, block))
+        existing.add(pos)
+    expanded.sort(key=lambda item: column_major_sort_key(item[0], item[1]))
+    return expanded
+
+
 def _make_chunk(
     *,
     campaign_id: str,
@@ -1246,13 +1359,14 @@ def build_chunks(
             pages, sections[0].page_start, sections[0].page_end
         )
         for group in _group_blocks_for_chunking(block_items, max_tokens, None):
+            expanded_group = _expand_stat_block_group(group, span_by_id, pages)
             chunks.append(
                 _make_chunk(
                     campaign_id=campaign_id,
                     document_id=document_id,
                     section_id=sections[0].id,
                     index=chunk_index,
-                    block_groups=group,
+                    block_groups=expanded_group,
                     needs_rechunk=len(group) < 2,
                     profile=profile,
                     stat_spans=span_by_id,
@@ -1274,13 +1388,14 @@ def build_chunks(
                 continue
             groups = _group_blocks_for_chunking(block_items, max_tokens, None)
             for group in groups:
+                expanded_group = _expand_stat_block_group(group, span_by_id, pages)
                 chunks.append(
                     _make_chunk(
                         campaign_id=campaign_id,
                         document_id=document_id,
                         section_id=section.id,
                         index=chunk_index,
-                        block_groups=group,
+                        block_groups=expanded_group,
                         needs_rechunk=len(groups) == 1 and len(group) > 40,
                         profile=profile,
                         stat_spans=span_by_id,
@@ -1391,13 +1506,14 @@ def build_chunks(
             pages=pages,
         )
         for group in groups:
+            expanded_group = _expand_stat_block_group(group, span_by_id, pages)
             chunks.append(
                 _make_chunk(
                     campaign_id=campaign_id,
                     document_id=document_id,
                     section_id=section.id,
                     index=chunk_index,
-                    block_groups=group,
+                    block_groups=expanded_group,
                     needs_rechunk=len(groups) == 1 and len(group) > 40,
                     profile=profile,
                     stat_spans=span_by_id,
