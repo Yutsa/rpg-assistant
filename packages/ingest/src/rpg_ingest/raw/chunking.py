@@ -23,6 +23,7 @@ from rpg_ingest.raw.reading_order import (
     spatial_sort_key,
 )
 from rpg_core.stat_blocks.matching import enrich_chunk_metadata
+from rpg_core.text.reflow import reflow_chunk_text
 from rpg_ingest.raw.stat_blocks.profile import StatBlockProfile
 from rpg_ingest.raw.stat_blocks.types import StatBlockSpan
 from rpg_core.models.raw import ChunkRecord, SectionRecord, SourceSpan
@@ -703,6 +704,8 @@ def _make_chunk(
     else:
         text = "\n\n".join(block.text for _, block in block_groups)
         chunk_hint = _chunk_type_hint(text, blocks_only, profile=profile)
+
+    text = reflow_chunk_text(text)
 
     page_numbers = [page.page_number for page, _ in block_groups]
     page_start = min(page_numbers)

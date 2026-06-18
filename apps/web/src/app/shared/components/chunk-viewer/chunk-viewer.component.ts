@@ -1,7 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 
 import { Chunk } from '../../../core/models/campaign.models';
-import { reflowChunkText } from '../../../core/utils/reflow-chunk-text';
 import { PageRangeBadgeComponent } from '../page-range-badge/page-range-badge.component';
 
 @Component({
@@ -14,8 +13,8 @@ export class ChunkViewerComponent {
   readonly chunk = input.required<Chunk>();
 
   readonly paragraphs = computed(() =>
-    reflowChunkText(this.chunk().text)
-      .split('\n\n')
+    this.chunk()
+      .text.split('\n\n')
       .filter(Boolean),
   );
 }
