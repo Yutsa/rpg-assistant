@@ -19,6 +19,13 @@ def stat_block_ambiguity_candidates(chunks: list[ChunkRecord]) -> list[dict[str,
     ]
 
 
+def _truncate_preview(text: str, preview_len: int) -> str:
+    if len(text) <= preview_len:
+        return text
+    snippet = text[: preview_len - 1].rstrip()
+    return f"{snippet}…"
+
+
 def chunk_to_list_item(chunk: ChunkRecord, *, preview_len: int = 200) -> dict[str, Any]:
     return {
         "id": chunk.id,
@@ -29,7 +36,7 @@ def chunk_to_list_item(chunk: ChunkRecord, *, preview_len: int = 200) -> dict[st
         "chunk_type_hint": chunk.chunk_type_hint,
         "token_count": chunk.token_count,
         "needs_rechunk": chunk.needs_rechunk,
-        "text_preview": chunk.text[:preview_len],
+        "text_preview": _truncate_preview(chunk.text, preview_len),
     }
 
 

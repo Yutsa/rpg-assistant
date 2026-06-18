@@ -1,13 +1,12 @@
 import { Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
 
 import { ChunkListItem } from '../../../core/models/campaign.models';
 import { PageRangeBadgeComponent } from '../page-range-badge/page-range-badge.component';
 
 @Component({
   selector: 'app-chunk-list',
-  imports: [MatListModule, MatButtonModule, PageRangeBadgeComponent],
+  imports: [MatButtonModule, PageRangeBadgeComponent],
   templateUrl: './chunk-list.component.html',
   styleUrl: './chunk-list.component.scss',
 })

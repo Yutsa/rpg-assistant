@@ -9,5 +9,9 @@
       <span class="tokens">{{ chunk().token_count }} tokens</span>
     </div>
   </header>
-  <pre class="chunk-text" data-testid="chunk-text">{{ chunk().text }}</pre>
+  <div class="chunk-text" data-testid="chunk-text">
+    @for (paragraph of paragraphs(); track $index) {
+      <p>{{ paragraph }}</p>
+    }
+  </div>
 </article>

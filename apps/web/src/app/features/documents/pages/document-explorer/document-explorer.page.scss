@@ -1,6 +1,6 @@
 .explorer {
   display: grid;
-  grid-template-columns: minmax(14rem, 18rem) minmax(16rem, 1fr) minmax(18rem, 24rem);
+  grid-template-columns: minmax(14rem, 18rem) minmax(14rem, 22rem) minmax(28rem, 1fr);
   gap: 0;
   min-height: calc(100vh - 4rem);
   border-top: 1px solid var(--mat-sys-outline-variant, #cac4d0);
