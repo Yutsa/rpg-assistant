@@ -8,6 +8,7 @@ from rpg_ingest.raw.stat_blocks.text_utils import has_icon_glyphs, strip_layout_
 from rpg_ingest.raw.stat_blocks.types import (
     BlockRef,
     ParsedStatBlock,
+    RulebookReference,
     StatAbility,
     StatBlockSpan,
 )
@@ -24,8 +25,18 @@ STATS_LINE_START_RE = re.compile(
     r"^(AGI|FOR|CON|INT|PER|CHA|VOL)\s*[+-]?\s*\d", re.IGNORECASE
 )
 STAT_BLOCK_BODY_RE = re.compile(
-    r"\b(DEF|PV|Init|PM)\b|Voie de|Voir le profil",
+    r"\b(DEF|PV|Init|PM)\b|Voie de|Voir le profil|Utilisez le profil",
     re.IGNORECASE,
+)
+RULEBOOK_PROFILE_PATTERNS = (
+    re.compile(
+        r"Voir le profil de (.+?) \((?:Livre de règles, )?COF\)",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"Utilisez le profil du?\s+(.+?)\s+que vous trouverez dans le livre de règles de COF",
+        re.IGNORECASE,
+    ),
 )
 ABILITY_TITLE_RE = re.compile(r"^([A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-']+)\s*:\s*(.*)$", re.DOTALL)
 ALL_CAPS_NAME_RE = re.compile(r"^[A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-,'\.]{1,58}$")
@@ -127,6 +138,15 @@ def _is_ability_block(block: LayoutBlock) -> bool:
         ):
             return True
     return False
+
+
+def _extract_rulebook_reference(text: str) -> RulebookReference | None:
+    normalized = re.sub(r"\s+", " ", strip_layout_glyphs(text))
+    for pattern in RULEBOOK_PROFILE_PATTERNS:
+        match = pattern.search(normalized)
+        if match:
+            return RulebookReference(profile_name=match.group(1).strip())
+    return None
 
 
 def _parse_ability_block(text: str) -> StatAbility | None:
@@ -381,6 +401,8 @@ class Cof2StatBlockProfile:
                     name = candidate.split(",")[0].strip()
                     break
 
+        rulebook_reference = _extract_rulebook_reference(combined)
+
         block_refs = [
             BlockRef(page_number=block.page_number, block_index=block.block_index)
             for block in span.blocks
@@ -391,6 +413,7 @@ class Cof2StatBlockProfile:
             nc=nc,
             attributes=attributes,
             abilities=abilities,
+            rulebook_reference=rulebook_reference,
             raw_text=combined,
             block_refs=block_refs,
             game_system=self.profile_id,

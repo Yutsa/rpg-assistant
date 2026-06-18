@@ -25,6 +25,7 @@ from rpg_ingest.raw.reading_order import (
 from rpg_core.stat_blocks.matching import enrich_chunk_metadata
 from rpg_core.text.reflow import reflow_chunk_text
 from rpg_ingest.raw.stat_blocks.profile import StatBlockProfile
+from rpg_ingest.raw.stat_blocks.text_utils import strip_layout_glyphs
 from rpg_ingest.raw.stat_blocks.types import StatBlockSpan
 from rpg_core.models.raw import ChunkRecord, SectionRecord, SourceSpan
 from rpg_core.storage.ids import chunk_id, page_block_id
@@ -532,6 +533,157 @@ def chunk_block_signature(chunk: ChunkRecord) -> frozenset[str]:
     return frozenset(block_ids)
 
 
+def _chunk_block_count(chunk: ChunkRecord) -> int:
+    return sum(len(span.page_block_ids) for span in chunk.source_spans)
+
+
+def _stat_block_header_position(
+    pages: list[LayoutPage], stat_id: str
+) -> tuple[int, int] | None:
+    for page in pages:
+        for block in page.blocks:
+            if (
+                block.metadata.get("stat_block_id") == stat_id
+                and block.metadata.get("stat_block_role") == "header"
+            ):
+                return (page.page_number, block.block_index)
+    return None
+
+
+def _chunk_contains_position(chunk: ChunkRecord, pos: tuple[int, int]) -> bool:
+    page_num, block_idx = pos
+    target_id = page_block_id(chunk.document_id, page_num, block_idx)
+    return any(target_id in span.page_block_ids for span in chunk.source_spans)
+
+
+def _resolve_stat_block_section_id(
+    pages: list[LayoutPage],
+    sections: list[SectionRecord],
+    header_pos: tuple[int, int],
+    default_section_id: str | None,
+) -> str | None:
+    page_num, header_idx = header_pos
+    page = next((p for p in pages if p.page_number == page_num), None)
+    if page is None:
+        return default_section_id
+
+    header_block = next((b for b in page.blocks if b.block_index == header_idx), None)
+    if header_block is None:
+        return default_section_id
+
+    header_side = column_side(header_block, page.width)
+    preceding_text_parts: list[str] = []
+    for block in page.blocks:
+        if block.block_index >= header_idx:
+            continue
+        if column_side(block, page.width) != header_side:
+            continue
+        if block.metadata.get("stat_block_role") == "header":
+            continue
+        preceding_text_parts.append(strip_layout_glyphs(block.text))
+
+    preceding_text = " ".join(preceding_text_parts).lower()
+    if not preceding_text.strip():
+        return default_section_id
+
+    best_section: SectionRecord | None = None
+    best_score = 0
+    for section in sections:
+        if section.page_start > page_num or section.page_end < page_num:
+            continue
+        title_norm = strip_layout_glyphs(section.title).lower()
+        if title_norm and title_norm in preceding_text:
+            score = len(title_norm) + 10
+            if score > best_score:
+                best_score = score
+                best_section = section
+            continue
+        words = [word for word in re.split(r"\W+", title_norm) if len(word) >= 3]
+        if not words:
+            continue
+        matched = sum(1 for word in words if word in preceding_text)
+        if matched >= min(2, len(words)) and matched > best_score:
+            best_score = matched
+            best_section = section
+
+    return best_section.id if best_section else default_section_id
+
+
+def _reassign_stat_block_sections(
+    chunks: list[ChunkRecord],
+    pages: list[LayoutPage],
+    sections: list[SectionRecord],
+) -> list[ChunkRecord]:
+    result: list[ChunkRecord] = []
+    for chunk in chunks:
+        if chunk.chunk_type_hint != "stat_block":
+            result.append(chunk)
+            continue
+        span_id = chunk.metadata.get("stat_block_span_id")
+        if not span_id:
+            result.append(chunk)
+            continue
+        header_pos = _stat_block_header_position(pages, span_id)
+        if not header_pos:
+            result.append(chunk)
+            continue
+        new_section_id = _resolve_stat_block_section_id(
+            pages, sections, header_pos, chunk.section_id
+        )
+        if new_section_id != chunk.section_id:
+            result.append(chunk.model_copy(update={"section_id": new_section_id}))
+        else:
+            result.append(chunk)
+    return result
+
+
+def _finalize_chunks(
+    chunks: list[ChunkRecord],
+    pages: list[LayoutPage],
+    sections: list[SectionRecord],
+) -> list[ChunkRecord]:
+    return _reassign_stat_block_sections(
+        _deduplicate_stat_block_chunks(chunks, pages),
+        pages,
+        sections,
+    )
+
+
+def _deduplicate_stat_block_chunks(
+    chunks: list[ChunkRecord],
+    pages: list[LayoutPage],
+) -> list[ChunkRecord]:
+    by_span: dict[str, list[ChunkRecord]] = {}
+    result: list[ChunkRecord] = []
+
+    for chunk in chunks:
+        if chunk.chunk_type_hint != "stat_block":
+            result.append(chunk)
+            continue
+        span_id = chunk.metadata.get("stat_block_span_id")
+        if not span_id:
+            result.append(chunk)
+            continue
+        by_span.setdefault(span_id, []).append(chunk)
+
+    for span_id, group in by_span.items():
+        if len(group) == 1:
+            result.append(group[0])
+            continue
+        winner = max(group, key=_chunk_block_count)
+        header_pos = _stat_block_header_position(pages, span_id)
+        if header_pos:
+            header_chunk = next(
+                (chunk for chunk in group if _chunk_contains_position(chunk, header_pos)),
+                None,
+            )
+            if header_chunk and header_chunk.section_id:
+                winner = winner.model_copy(update={"section_id": header_chunk.section_id})
+        result.append(winner)
+
+    return result
+
+
 def chunk_uniqueness_stats(chunks: list[ChunkRecord]) -> dict[str, float | int]:
     if not chunks:
         return {
@@ -698,6 +850,7 @@ def _make_chunk(
             {
                 "stat_block": parsed.model_dump(),
                 "game_system": parsed.game_system,
+                "stat_block_span_id": stat_id,
             }
         )
         chunk_hint = "stat_block"
@@ -783,7 +936,7 @@ def build_chunks(
                 )
             )
             chunk_index += 1
-        return chunks
+        return _finalize_chunks(chunks, pages, sections)
 
     use_anchors = (
         heading_anchors is not None and len(heading_anchors) == len(sections)
@@ -811,7 +964,7 @@ def build_chunks(
                     )
                 )
                 chunk_index += 1
-        return chunks
+        return _finalize_chunks(chunks, pages, sections)
 
     heading_positions = set(heading_anchors)
     content_only_anchors = {
@@ -918,4 +1071,4 @@ def build_chunks(
             )
             chunk_index += 1
 
-    return chunks
+    return _finalize_chunks(chunks, pages, sections)

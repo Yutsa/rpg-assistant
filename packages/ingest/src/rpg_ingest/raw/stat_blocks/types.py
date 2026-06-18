@@ -17,12 +17,18 @@ class StatAbility(BaseModel):
     text: str
 
 
+class RulebookReference(BaseModel):
+    profile_name: str
+    source_label: str = "Livre de règles, COF"
+
+
 class ParsedStatBlock(BaseModel):
     name: str
     subtitle: str | None = None
     nc: int | None = None
     attributes: dict[str, int] = Field(default_factory=dict)
     abilities: list[StatAbility] = Field(default_factory=list)
+    rulebook_reference: RulebookReference | None = None
     raw_text: str = ""
     block_refs: list[BlockRef] = Field(default_factory=list)
     game_system: str = ""

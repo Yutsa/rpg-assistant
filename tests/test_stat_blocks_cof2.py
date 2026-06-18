@@ -1,11 +1,47 @@
-from rpg_ingest.raw.chunking import build_chunks
+from rpg_ingest.raw.chunking import _deduplicate_stat_block_chunks, build_chunks
 from rpg_ingest.raw.layout import LayoutPage
 from rpg_ingest.raw.sections import detect_sections
 from rpg_ingest.raw.stat_blocks import annotate_stat_blocks
 from rpg_ingest.raw.stat_blocks.cof2 import Cof2StatBlockProfile
 from rpg_ingest.raw.stat_blocks.registry import resolve_profile
 from rpg_ingest.raw.stat_blocks.text_utils import strip_layout_glyphs
+from rpg_core.models.raw import ChunkRecord, SourceSpan
+from rpg_core.storage.ids import page_block_id
 from tests.fixtures.layout import make_block as _block, make_page as _page
+
+
+def _stat_chunk(
+    *,
+    chunk_id: str,
+    section_id: str,
+    span_id: str,
+    name: str,
+    block_page: int,
+    block_indices: list[int],
+) -> ChunkRecord:
+    return ChunkRecord(
+        id=chunk_id,
+        campaign_id="momie",
+        document_id="doc_test",
+        section_id=section_id,
+        page_start=block_page,
+        page_end=block_page,
+        text=name,
+        chunk_type_hint="stat_block",
+        token_count=10,
+        source_spans=[
+            SourceSpan(
+                page=block_page,
+                page_block_ids=[
+                    page_block_id("doc_test", block_page, idx) for idx in block_indices
+                ],
+            )
+        ],
+        metadata={
+            "stat_block_span_id": span_id,
+            "stat_block": {"name": name, "game_system": "cof2"},
+        },
+    )
 
 
 def _cof2_pages() -> list[LayoutPage]:
@@ -155,6 +191,8 @@ def test_cof2_parse_taless_abilities():
     parsed = profile.parse_span(taless_span)
 
     assert parsed.name == "TALESS RHANN"
+    assert parsed.rulebook_reference is not None
+    assert parsed.rulebook_reference.profile_name == "momie"
     assert len(parsed.abilities) == 4
     by_title = {ability.title: ability.text for ability in parsed.abilities}
     assert "rafales de sable" in by_title["TORNADE DE SABLE"]
@@ -262,3 +300,122 @@ def test_resolve_profile_by_game_system():
 def test_resolve_profile_auto_detect():
     profile = resolve_profile("", _cof2_pages())
     assert profile.profile_id == "cof2"
+
+
+def test_stat_block_dedup_keeps_header_section():
+    pages = _taless_pages()
+    for block in pages[0].blocks:
+        if "TALESS RHANN" in block.text:
+            block.metadata["stat_block_id"] = "sb_taless"
+            block.metadata["stat_block_role"] = "header"
+        elif block.metadata.get("stat_block_role") is None:
+            block.metadata["stat_block_id"] = "sb_taless"
+            block.metadata["stat_block_role"] = "body"
+
+    duplicate_a = _stat_chunk(
+        chunk_id="chunk_015_022",
+        section_id="sec_sand",
+        span_id="sb_taless",
+        name="TALESS RHANN",
+        block_page=15,
+        block_indices=[0, 1],
+    )
+    duplicate_b = _stat_chunk(
+        chunk_id="chunk_015_024",
+        section_id="sec_arcanes",
+        span_id="sb_taless",
+        name="TALESS RHANN",
+        block_page=15,
+        block_indices=[2, 3, 4, 5],
+    )
+    deduped = _deduplicate_stat_block_chunks(
+        [duplicate_a, duplicate_b],
+        pages,
+    )
+    taless_chunks = [
+        chunk
+        for chunk in deduped
+        if chunk.metadata.get("stat_block", {}).get("name") == "TALESS RHANN"
+    ]
+    assert len(taless_chunks) == 1
+    assert taless_chunks[0].id == "chunk_015_024"
+    assert taless_chunks[0].section_id == "sec_sand"
+
+
+def _fleurs_gardiennes_pages() -> list[LayoutPage]:
+    return [
+        _page(
+            [
+                _block(
+                    10,
+                    0,
+                    "Du haut du sanctuaire, les PJ découvrent le val de l'Orm.",
+                    font_size=10,
+                    y0=40,
+                ),
+                _block(
+                    10,
+                    1,
+                    "Un cercle de fleurs géantes entoure la colline.",
+                    font_size=10,
+                    y0=70,
+                ),
+                _block(10, 2, "W\nW\nLES FLEURS GARDIENNES", font_size=12, bold=True, y0=100),
+                _block(
+                    10,
+                    3,
+                    "Utilisez le profil du serpent constricteur que vous trouverez "
+                    "dans le livre de règles de COF.",
+                    font_size=10,
+                    y0=130,
+                ),
+                _block(
+                    10,
+                    4,
+                    "L'étreinte ne cause pas de DM. Immobile sur terre, cette plante dispose de la capacité Vol.",
+                    font_size=10,
+                    y0=160,
+                ),
+            ]
+        )
+    ]
+
+
+def test_cof2_parse_fleurs_gardiennes_rulebook_reference():
+    profile = Cof2StatBlockProfile()
+    stat_result = annotate_stat_blocks(_fleurs_gardiennes_pages(), profile)
+    fleurs_span = next(
+        span
+        for span in stat_result.spans
+        if any("FLEURS GARDIENNES" in block.text for block in span.blocks)
+    )
+    parsed = profile.parse_span(fleurs_span)
+
+    assert parsed.name == "LES FLEURS GARDIENNES"
+    assert parsed.rulebook_reference is not None
+    assert parsed.rulebook_reference.profile_name == "serpent constricteur"
+    assert "étreinte ne cause pas de DM" in parsed.raw_text
+
+
+def test_cof2_parse_fleurs_gardiennes_rulebook_reference_multiline():
+    profile = Cof2StatBlockProfile()
+    pages = [
+        _page(
+            [
+                _block(10, 0, "W\nW\nLES FLEURS GARDIENNES", font_size=12, bold=True, y0=10),
+                _block(
+                    10,
+                    1,
+                    "Utilisez le profil du serpent constricteur que\n"
+                    "vous trouverez dans le livre de règles de COF.",
+                    font_size=10,
+                    y0=40,
+                ),
+            ]
+        )
+    ]
+    stat_result = annotate_stat_blocks(pages, profile)
+    parsed = profile.parse_span(stat_result.spans[0])
+
+    assert parsed.rulebook_reference is not None
+    assert parsed.rulebook_reference.profile_name == "serpent constricteur"
