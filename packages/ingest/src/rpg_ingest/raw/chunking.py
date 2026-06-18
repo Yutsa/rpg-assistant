@@ -389,6 +389,45 @@ def _opposite_column_wrap_owners(
     return owners
 
 
+def _has_subordinate_heading_below_in_column(
+    ref: _HeadingRef,
+    heading_refs: list[_HeadingRef],
+    page: LayoutPage,
+) -> bool:
+    heading_side = column_side(ref.block, page.width)
+    for other in heading_refs:
+        if other.section_index == ref.section_index:
+            continue
+        if other.page_number != ref.page_number:
+            continue
+        if other.tier != "subordinate":
+            continue
+        if column_side(other.block, page.width) != heading_side:
+            continue
+        if other.block.bbox.y0 > ref.block.bbox.y0:
+            return True
+    return False
+
+
+def _column_continuation_owner_priority(
+    candidate: _HeadingRef,
+    incumbent_index: int,
+    heading_refs: list[_HeadingRef],
+    sections: list[SectionRecord],
+) -> bool:
+    """True when candidate should replace incumbent for same (page, column) continuation."""
+    incumbent = heading_refs[incumbent_index]
+    if sections[candidate.section_index].page_start > sections[incumbent_index].page_start:
+        return True
+    if sections[candidate.section_index].page_start < sections[incumbent_index].page_start:
+        return False
+    if candidate.tier == "subordinate" and incumbent.tier in {"chapter", "banner"}:
+        return True
+    if incumbent.tier == "subordinate" and candidate.tier in {"chapter", "banner"}:
+        return False
+    return False
+
+
 def _column_continuation_owners(
     pages: list[LayoutPage],
     section_blocks: list[list[tuple[LayoutPage, LayoutBlock]]],
@@ -448,6 +487,10 @@ def _column_continuation_owners(
         )
         if heading_page is None:
             continue
+        if ref.tier in {"chapter", "banner"} and _has_subordinate_heading_below_in_column(
+            ref, heading_refs, heading_page
+        ):
+            continue
         heading_side = column_side(ref.block, heading_page.width)
         for page in pages:
             if page.page_number <= ref.page_number:
@@ -461,7 +504,9 @@ def _column_continuation_owners(
             existing = owners.get(key)
             if existing is None:
                 owners[key] = ref.section_index
-            elif sections[ref.section_index].page_start > sections[existing].page_start:
+            elif _column_continuation_owner_priority(
+                ref, existing, heading_refs, sections
+            ):
                 owners[key] = ref.section_index
 
     for key, section_index in _opposite_column_wrap_owners(
@@ -595,6 +640,7 @@ def _blocks_for_section_spatial(
                         or block.bbox.y0 < page_first_heading_y
                     )
                 )
+                sparse_owner = continuation_by_page.get(page.page_number)
                 is_column_continuation = (
                     column_owner == heading_ref.section_index
                     and (
@@ -602,6 +648,12 @@ def _blocks_for_section_spatial(
                         or block.bbox.y0 < column_first_heading_y
                     )
                 )
+                if (
+                    sparse_owner is not None
+                    and sparse_owner != heading_ref.section_index
+                    and bool(gap_pages)
+                ):
+                    is_column_continuation = False
                 if is_column_continuation:
                     for ref in heading_refs:
                         if ref.page_number != page.page_number:

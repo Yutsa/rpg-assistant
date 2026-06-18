@@ -11,9 +11,11 @@ from rpg_ingest.raw.sections import detect_sections
 from rpg_ingest.raw.stat_blocks import annotate_stat_blocks, resolve_profile
 from rpg_core.storage.ids import page_block_id
 
-MONDANITES_PDF = Path(
-    "/home/edouard/Téléchargements/COF2_10_Mondanites_Et_Momies_web_v1a.pdf"
+MONDANITES_PDF_CANDIDATES = (
+    Path("/home/edouard/Téléchargements/COF2_10_Mondanites_Et_Momies_web_v1a.pdf"),
+    Path(__file__).resolve().parents[1] / "data" / "pdfs" / "COF2_10_Mondanites_Et_Momies_web_v1a.pdf",
 )
+MONDANITES_PDF = next((path for path in MONDANITES_PDF_CANDIDATES if path.is_file()), MONDANITES_PDF_CANDIDATES[0])
 
 
 def _referenced_block_ids(chunks) -> set[str]:
