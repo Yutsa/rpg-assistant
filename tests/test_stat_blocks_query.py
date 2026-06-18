@@ -124,6 +124,8 @@ def test_list_stat_blocks():
     assert entries[0].name == "AZULRIA"
     assert entries[0].nc == 4
     assert entries[0].chunk_id == "chk_azulria"
+    assert entries[0].section_id is None
+    assert entries[0].uses_rulebook is False
     assert entries[0].pages == {"start": 15, "end": 15}
     assert entries[1].name == "GOLEM"
     assert entries[1].pages == {"start": 18, "end": 19}
@@ -189,6 +191,44 @@ def test_get_stat_block_ambiguous():
     assert {c.id for c in result} == {"chk_a", "chk_b"}
 
 
+def test_get_stat_block_by_chunk_id():
+    repo = _memory_repo()
+    _seed_document(repo)
+    _insert_stat_chunk(repo, "chk_azulria", _azulria_metadata())
+
+    result = repo.get_stat_block_by_chunk_id("doc_test", "chk_azulria")
+    assert isinstance(result, ChunkRecord)
+    assert result.id == "chk_azulria"
+    assert repo.get_stat_block_by_chunk_id("doc_test", "missing") is None
+    assert repo.get_stat_block_by_chunk_id("doc_test", "chk_generic") is None
+
+
+def test_chunk_to_stat_block_detail_rulebook():
+    chunk = ChunkRecord(
+        id="chk_taless",
+        campaign_id="momie",
+        document_id="doc_test",
+        page_start=15,
+        page_end=15,
+        text="stat text",
+        chunk_type_hint="stat_block",
+        token_count=10,
+        metadata={
+            "stat_block": {
+                "name": "TALESS RHANN",
+                "abilities": [{"title": "TORNADE DE SABLE", "text": "Rafales."}],
+                "rulebook_reference": {
+                    "profile_name": "momie",
+                    "source_label": "Livre de règles, COF",
+                },
+                "game_system": "cof2",
+            }
+        },
+    )
+    detail = chunk_to_stat_block_detail(chunk)
+    assert detail["rulebook_reference"]["profile_name"] == "momie"
+
+
 def test_chunk_to_stat_block_detail():
     chunk = ChunkRecord(
         id="chk_azulria",
@@ -208,6 +248,7 @@ def test_chunk_to_stat_block_detail():
     assert detail["chunk_id"] == "chk_azulria"
     assert detail["pages"] == {"start": 15, "end": 15}
     assert detail["game_system"] == "cof2"
+    assert detail["text"] == "stat text"
     assert "raw_text" not in detail
     assert "block_refs" not in detail
     assert len(detail["source_refs"]) == 1

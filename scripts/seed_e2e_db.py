@@ -124,7 +124,7 @@ def main() -> int:
                         "name": "Gobelin",
                         "nc": 1,
                         "attributes": {"FOR": "10", "DEX": "14"},
-                        "abilities": ["Coup sournois"],
+                        "abilities": [{"title": "Coup sournois", "text": ""}],
                     }
                 },
             ),
@@ -143,7 +143,7 @@ def main() -> int:
                         "name": "Orc",
                         "nc": 3,
                         "attributes": {"FOR": "16", "DEX": "8"},
-                        "abilities": ["Furie"],
+                        "abilities": [{"title": "Furie", "text": ""}],
                     }
                 },
             ),

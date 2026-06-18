@@ -4,7 +4,15 @@ from typing import Any
 
 from rpg_core.models.raw import ChunkRecord
 
-_DETAIL_FIELDS = ("name", "subtitle", "nc", "attributes", "abilities", "game_system")
+_DETAIL_FIELDS = (
+    "name",
+    "subtitle",
+    "nc",
+    "attributes",
+    "abilities",
+    "rulebook_reference",
+    "game_system",
+)
 
 
 def stat_block_ambiguity_candidates(chunks: list[ChunkRecord]) -> list[dict[str, Any]]:
@@ -13,6 +21,10 @@ def stat_block_ambiguity_candidates(chunks: list[ChunkRecord]) -> list[dict[str,
             "name": (chunk.metadata.get("stat_block") or {}).get("name", ""),
             "nc": (chunk.metadata.get("stat_block") or {}).get("nc"),
             "chunk_id": chunk.id,
+            "section_id": chunk.section_id,
+            "uses_rulebook": bool(
+                (chunk.metadata.get("stat_block") or {}).get("rulebook_reference")
+            ),
             "pages": {"start": chunk.page_start, "end": chunk.page_end},
         }
         for chunk in chunks
@@ -52,6 +64,7 @@ def chunk_to_stat_block_detail(chunk: ChunkRecord) -> dict[str, Any]:
         if game_system:
             detail["game_system"] = game_system
     detail["chunk_id"] = chunk.id
+    detail["text"] = chunk.text
     detail["pages"] = {"start": chunk.page_start, "end": chunk.page_end}
     detail["source_refs"] = [
         {

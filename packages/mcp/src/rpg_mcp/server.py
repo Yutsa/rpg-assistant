@@ -187,7 +187,7 @@ def get_chunk(chunk_id: str) -> str:
 
 @mcp.tool()
 def list_stat_blocks(document_id: str) -> str:
-    """Light index of stat blocks: name, nc, chunk_id, pages."""
+    """Light index of stat blocks: name, nc, chunk_id, section_id, uses_rulebook, pages."""
     with get_connection() as conn:
         repo = RawRepository(conn)
         entries = repo.list_stat_blocks(document_id)

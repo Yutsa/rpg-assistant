@@ -85,7 +85,7 @@ def api_client() -> TestClient:
                         "name": "Gobelin",
                         "nc": 1,
                         "attributes": {"FOR": "10"},
-                        "abilities": ["Coup sournois"],
+                        "abilities": [{"title": "Coup sournois", "text": ""}],
                     }
                 },
             ),
@@ -168,6 +168,8 @@ def test_stat_blocks(api_client: TestClient) -> None:
     detail = api_client.get("/documents/doc_test/stat-blocks/Gobelin").json()
     assert detail["nc"] == 1
     assert detail["attributes"]["FOR"] == "10"
+    by_chunk = api_client.get("/documents/doc_test/stat-blocks/chunk_stat").json()
+    assert by_chunk["name"] == "Gobelin"
 
 
 def test_render_page_with_pdf(tmp_path: Path) -> None:

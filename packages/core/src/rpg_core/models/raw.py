@@ -57,6 +57,8 @@ class StatBlockIndexEntry(BaseModel):
     name: str
     nc: int | None = None
     chunk_id: str
+    section_id: str | None = None
+    uses_rulebook: bool = False
     pages: dict[str, int]
 
 

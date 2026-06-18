@@ -604,9 +604,10 @@ class RawRepository:
         with self.conn.cursor() as cur:
             cur.execute(
                 f"""
-                SELECT id, page_start, page_end,
+                SELECT id, section_id, page_start, page_end,
                        {self.dialect.stat_block_name_expr()},
-                       {self.dialect.stat_block_nc_expr()}
+                       {self.dialect.stat_block_nc_expr()},
+                       {self.dialect.stat_block_uses_rulebook_expr()}
                 FROM chunks
                 WHERE document_id = %s AND chunk_type_hint = 'stat_block'
                 ORDER BY page_start, id
@@ -616,24 +617,39 @@ class RawRepository:
             rows = cur.fetchall()
         entries: list[StatBlockIndexEntry] = []
         for row in rows:
-            name = row[3]
+            name = row[4]
             if not name:
                 continue
-            nc = row[4]
+            nc = row[5]
             if nc is not None and not isinstance(nc, int):
                 try:
                     nc = int(nc)
                 except (TypeError, ValueError):
                     nc = None
+            uses_rulebook = row[6]
+            if isinstance(uses_rulebook, str):
+                uses_rulebook = uses_rulebook.lower() in ("1", "true", "t")
             entries.append(
                 StatBlockIndexEntry(
                     name=name,
                     nc=nc,
                     chunk_id=row[0],
-                    pages={"start": row[1], "end": row[2]},
+                    section_id=row[1],
+                    uses_rulebook=bool(uses_rulebook),
+                    pages={"start": row[2], "end": row[3]},
                 )
             )
         return entries
+
+    def get_stat_block_by_chunk_id(
+        self, document_id: str, chunk_id: str
+    ) -> ChunkRecord | None:
+        chunk = self.get_chunk(chunk_id)
+        if chunk is None:
+            return None
+        if chunk.document_id != document_id or chunk.chunk_type_hint != "stat_block":
+            return None
+        return chunk
 
     def get_stat_block(
         self, document_id: str, name: str

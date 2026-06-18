@@ -29,16 +29,21 @@ def list_stat_blocks(
     ]
 
 
-@router.get("/{document_id}/stat-blocks/{name}", response_model=None)
+@router.get("/{document_id}/stat-blocks/{identifier}", response_model=None)
 def get_stat_block(
     document_id: str,
-    name: str,
+    identifier: str,
     repo: RawRepository = Depends(get_raw_repo),
 ) -> dict[str, Any] | JSONResponse:
     require_document(repo, document_id)
-    result = repo.get_stat_block(document_id, name)
+    if identifier.startswith("chunk_"):
+        result = repo.get_stat_block_by_chunk_id(document_id, identifier)
+        if result is None:
+            raise not_found(f"Unknown stat block chunk: {identifier}")
+        return chunk_to_stat_block_detail(result)
+    result = repo.get_stat_block(document_id, identifier)
     if result is None:
-        raise not_found(f"Unknown stat block: {name}")
+        raise not_found(f"Unknown stat block: {identifier}")
     if isinstance(result, list):
         return ambiguous_stat_block(stat_block_ambiguity_candidates(result))
     return chunk_to_stat_block_detail(result)

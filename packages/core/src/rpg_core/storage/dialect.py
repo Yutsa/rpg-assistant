@@ -99,6 +99,18 @@ class Dialect:
             return "(metadata_json->'stat_block'->>'nc')::int AS stat_block_nc"
         return "CAST(json_extract(metadata_json, '$.stat_block.nc') AS INTEGER) AS stat_block_nc"
 
+    def stat_block_uses_rulebook_expr(self) -> str:
+        if self.is_postgresql:
+            return (
+                "(metadata_json->'stat_block'->'rulebook_reference' IS NOT NULL "
+                "AND metadata_json->'stat_block'->'rulebook_reference' != 'null'::jsonb) "
+                "AS uses_rulebook"
+            )
+        return (
+            "(json_extract(metadata_json, '$.stat_block.rulebook_reference') IS NOT NULL) "
+            "AS uses_rulebook"
+        )
+
     def stat_block_lookup_match_sql(self) -> str:
         name_key = self.stat_block_json_path("_lookup_name")
         subtitle_key = self.stat_block_json_path("_lookup_subtitle")
