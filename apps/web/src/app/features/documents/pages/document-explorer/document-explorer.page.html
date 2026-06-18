@@ -40,7 +40,8 @@
           } @else {
             <app-stat-block-list
               [statBlocks]="statBlocks()"
-              [selectedName]="selectedStatBlockName()"
+              [selectedChunkId]="selectedStatBlockChunkId()"
+              [sectionTitles]="sectionTitleById()"
               (statBlockSelected)="onStatBlockSelected($event)"
             />
           }
@@ -51,7 +52,7 @@
     <aside class="panel detail-panel" data-testid="detail-panel">
       <h2>Détail</h2>
       <router-outlet />
-      @if (!selectedChunkId() && !selectedStatBlockName()) {
+      @if (!selectedChunkId() && !selectedStatBlockChunkId()) {
         <app-empty-state
           title="Sélectionnez un élément"
           message="Choisissez un chunk ou une fiche pour afficher le détail."

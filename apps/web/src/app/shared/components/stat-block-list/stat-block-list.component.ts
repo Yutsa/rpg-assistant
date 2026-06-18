@@ -12,6 +12,14 @@ import { PageRangeBadgeComponent } from '../page-range-badge/page-range-badge.co
 })
 export class StatBlockListComponent {
   readonly statBlocks = input.required<StatBlockIndex[]>();
-  readonly selectedName = input<string | null>(null);
+  readonly selectedChunkId = input<string | null>(null);
+  readonly sectionTitles = input<Record<string, string>>({});
   readonly statBlockSelected = output<string>();
+
+  sectionTitle(sectionId: string | null): string | null {
+    if (!sectionId) {
+      return null;
+    }
+    return this.sectionTitles()[sectionId] ?? null;
+  }
 }

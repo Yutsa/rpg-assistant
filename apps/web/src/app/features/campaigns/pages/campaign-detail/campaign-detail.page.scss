@@ -33,8 +33,43 @@ header {
 }
 
 .document-card {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
   text-decoration: none;
   color: inherit;
+
+  mat-card {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .document-card-filename,
+  .document-card-id {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  ::ng-deep .mat-mdc-card-header {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  ::ng-deep .mat-mdc-card-header-text {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  ::ng-deep .mat-mdc-card-title,
+  ::ng-deep .mat-mdc-card-subtitle {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+  }
 
   &:hover mat-card {
     box-shadow: 0 4px 12px rgb(0 0 0 / 12%);

@@ -16,5 +16,7 @@ export const E2E = {
   statBlocks: {
     gobelin: 'Gobelin',
     orc: 'Orc',
+    gobelinChunkId: 'chunk_stat_gobelin',
+    orcChunkId: 'chunk_stat_orc',
   },
 } as const;

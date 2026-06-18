@@ -4,8 +4,6 @@ import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { filter, map, startWith } from 'rxjs';
 
-import { decodeStatBlockName } from '../../core/utils/stat-block-route';
-
 interface BreadcrumbItem {
   label: string;
   link: string[];
@@ -45,8 +43,9 @@ export class AppShellComponent {
       items.push({ label: `Chunk ${parts[3]}`, link: ['/documents', parts[1], 'chunks', parts[3]] });
     }
     if (parts[2] === 'stat-blocks' && parts[3]) {
+      const label = parts[3].startsWith('chunk_') ? `Fiche ${parts[3]}` : decodeURIComponent(parts[3]);
       items.push({
-        label: decodeStatBlockName(parts[3]),
+        label,
         link: ['/documents', parts[1], 'stat-blocks', parts[3]],
       });
     }

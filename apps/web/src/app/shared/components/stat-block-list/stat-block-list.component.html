@@ -4,17 +4,24 @@
       <a
         mat-list-item
         class="stat-block-item"
-        [class.selected]="selectedName() === block.name"
-        [attr.data-testid]="'stat-block-item-' + block.name"
-        (click)="statBlockSelected.emit(block.name)"
-        (keydown.enter)="statBlockSelected.emit(block.name)"
+        [class.selected]="selectedChunkId() === block.chunk_id"
+        [attr.data-testid]="'stat-block-item-' + block.chunk_id"
+        (click)="statBlockSelected.emit(block.chunk_id)"
+        (keydown.enter)="statBlockSelected.emit(block.chunk_id)"
         tabindex="0"
       >
         <span matListItemTitle>{{ block.name }}</span>
         <span matListItemLine class="meta">
-          @if (block.nc != null) {
+          @if (block.uses_rulebook) {
+            <span class="rulebook-badge" data-testid="stat-block-rulebook-badge">Livre de règles</span>
+          } @else if (block.nc != null) {
             <span>NC {{ block.nc }}</span>
           }
+          @if (sectionTitle(block.section_id); as title) {
+            <span class="section" [attr.title]="title">{{ title }}</span>
+          }
+        </span>
+        <span matListItemMeta>
           <app-page-range-badge [pageStart]="block.pages.start" [pageEnd]="block.pages.end" />
         </span>
       </a>

@@ -28,8 +28,12 @@
         >
           <mat-card>
             <mat-card-header>
-              <mat-card-title>{{ doc.filename }}</mat-card-title>
-              <mat-card-subtitle>{{ doc.id }}</mat-card-subtitle>
+              <mat-card-title [attr.title]="doc.filename">
+                <span class="document-card-filename">{{ doc.filename }}</span>
+              </mat-card-title>
+              <mat-card-subtitle [attr.title]="doc.id">
+                <span class="document-card-id">{{ doc.id }}</span>
+              </mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
               <p>{{ doc.page_count }} pages · {{ doc.section_count }} sections · {{ doc.chunk_count }} chunks</p>

@@ -1,16 +1,39 @@
 import { KeyValuePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
-import { MatChipsModule } from '@angular/material/chips';
+import { Component, computed, input } from '@angular/core';
 
 import { StatBlockDetail } from '../../../core/models/campaign.models';
 import { PageRangeBadgeComponent } from '../page-range-badge/page-range-badge.component';
 
 @Component({
   selector: 'app-stat-block-viewer',
-  imports: [KeyValuePipe, MatChipsModule, PageRangeBadgeComponent],
+  imports: [KeyValuePipe, PageRangeBadgeComponent],
   templateUrl: './stat-block-viewer.component.html',
   styleUrl: './stat-block-viewer.component.scss',
 })
 export class StatBlockViewerComponent {
   readonly statBlock = input.required<StatBlockDetail>();
+
+  readonly showBodyText = computed(() => {
+    const block = this.statBlock();
+    const hasStructuredStats =
+      block.nc != null ||
+      (block.attributes != null && Object.keys(block.attributes).length > 0) ||
+      (block.abilities?.length ?? 0) > 0;
+    return !hasStructuredStats && !!this.bodyText();
+  });
+
+  readonly bodyText = computed(() => {
+    const text = this.statBlock().text?.trim();
+    if (!text) {
+      return '';
+    }
+    const name = this.statBlock().name?.trim();
+    if (!name) {
+      return text;
+    }
+    const withoutTitle = text.startsWith(name)
+      ? text.slice(name.length).trim()
+      : text;
+    return withoutTitle.replace(/^\n+/, '').trim();
+  });
 }

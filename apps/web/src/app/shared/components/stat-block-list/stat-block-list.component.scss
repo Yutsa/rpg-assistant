@@ -12,7 +12,23 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    min-width: 0;
+    overflow: hidden;
     font-size: 0.75rem;
     color: var(--mat-sys-on-surface-variant, #49454f);
+  }
+
+  .rulebook-badge {
+    flex-shrink: 0;
+    font-weight: 600;
+    color: var(--mat-sys-tertiary, #7d5260);
+  }
+
+  .section {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.8125rem;
   }
 }

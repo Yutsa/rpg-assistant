@@ -8,7 +8,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { CampaignApiService } from '../../../../core/services/campaign-api.service';
 import { ChunkListItem, SectionNode, StatBlockIndex } from '../../../../core/models/campaign.models';
 import { buildSectionTree } from '../../../../core/utils/section-tree';
-import { decodeStatBlockName, encodeStatBlockName } from '../../../../core/utils/stat-block-route';
 import { ChunkListComponent } from '../../../../shared/components/chunk-list/chunk-list.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SectionTreeComponent } from '../../../../shared/components/section-tree/section-tree.component';
@@ -47,7 +46,8 @@ export class DocumentExplorerPage {
   readonly activeTab = signal(0);
 
   readonly selectedChunkId = signal<string | null>(null);
-  readonly selectedStatBlockName = signal<string | null>(null);
+  readonly selectedStatBlockChunkId = signal<string | null>(null);
+  readonly sectionTitleById = signal<Record<string, string>>({});
 
   private chunkRequestGeneration = 0;
 
@@ -68,6 +68,9 @@ export class DocumentExplorerPage {
     this.api.listSections(documentId).subscribe({
       next: (sections) => {
         this.sectionTree.set(buildSectionTree(sections));
+        this.sectionTitleById.set(
+          Object.fromEntries(sections.map((section) => [section.id, section.title])),
+        );
         this.loading.set(false);
       },
       error: () => {
@@ -86,19 +89,22 @@ export class DocumentExplorerPage {
     const child = this.route.firstChild;
     if (!child) {
       this.selectedChunkId.set(null);
-      this.selectedStatBlockName.set(null);
+      this.selectedStatBlockChunkId.set(null);
       return;
     }
     const chunkId = child.snapshot.paramMap.get('chunkId');
-    const statName = child.snapshot.paramMap.get('name');
+    const statBlockId = child.snapshot.paramMap.get('statBlockId');
     if (chunkId) {
       this.selectedChunkId.set(chunkId);
-      this.selectedStatBlockName.set(null);
+      this.selectedStatBlockChunkId.set(null);
       this.activeTab.set(0);
-    } else if (statName) {
-      this.selectedStatBlockName.set(decodeStatBlockName(statName));
+    } else if (statBlockId) {
+      this.selectedStatBlockChunkId.set(statBlockId);
       this.selectedChunkId.set(null);
       this.activeTab.set(1);
+    } else {
+      this.selectedChunkId.set(null);
+      this.selectedStatBlockChunkId.set(null);
     }
   }
 
@@ -111,13 +117,8 @@ export class DocumentExplorerPage {
     void this.router.navigate(['/documents', this.documentId, 'chunks', chunkId]);
   }
 
-  onStatBlockSelected(name: string): void {
-    void this.router.navigate([
-      '/documents',
-      this.documentId,
-      'stat-blocks',
-      encodeStatBlockName(name),
-    ]);
+  onStatBlockSelected(chunkId: string): void {
+    void this.router.navigate(['/documents', this.documentId, 'stat-blocks', chunkId]);
   }
 
   loadMoreChunks(): void {

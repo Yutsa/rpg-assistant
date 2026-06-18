@@ -15,11 +15,18 @@
     </div>
   </header>
 
-  @if (statBlock().attributes) {
+  @if (statBlock().rulebook_reference; as ref) {
+    <div class="rulebook-banner" data-testid="stat-block-rulebook-banner">
+      Profil de base : {{ ref.profile_name }} — consulter le {{ ref.source_label }}
+    </div>
+  }
+
+  @if (statBlock().attributes; as attributes) {
+    @if ((attributes | keyvalue).length) {
     <section>
       <h3>Attributs</h3>
       <dl class="attributes" data-testid="stat-block-attributes">
-        @for (entry of statBlock().attributes | keyvalue; track entry.key) {
+        @for (entry of attributes | keyvalue; track entry.key) {
           <div>
             <dt>{{ entry.key }}</dt>
             <dd>{{ entry.value }}</dd>
@@ -27,16 +34,28 @@
         }
       </dl>
     </section>
+    }
   }
 
   @if (statBlock().abilities?.length) {
     <section>
       <h3>Capacités</h3>
-      <mat-chip-set aria-label="Capacités">
-        @for (ability of statBlock().abilities; track ability) {
-          <mat-chip>{{ ability }}</mat-chip>
+      <ul class="abilities" data-testid="stat-block-abilities">
+        @for (ability of statBlock().abilities; track ability.title) {
+          <li>
+            <strong>{{ ability.title }}</strong>
+            @if (ability.text) {
+              <span>: {{ ability.text }}</span>
+            }
+          </li>
         }
-      </mat-chip-set>
+      </ul>
+    </section>
+  }
+
+  @if (showBodyText()) {
+    <section class="body-text" data-testid="stat-block-body-text">
+      <p>{{ bodyText() }}</p>
     </section>
   }
 </article>

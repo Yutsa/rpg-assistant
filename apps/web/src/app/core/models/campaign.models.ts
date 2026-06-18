@@ -82,16 +82,30 @@ export interface StatBlockIndex {
   name: string;
   nc: number | null;
   chunk_id: string;
+  section_id: string | null;
+  uses_rulebook: boolean;
   pages: { start: number; end: number };
+}
+
+export interface RulebookReference {
+  profile_name: string;
+  source_label: string;
+}
+
+export interface StatAbility {
+  title: string;
+  text: string;
 }
 
 export interface StatBlockDetail {
   name?: string;
   subtitle?: string;
   nc?: number;
-  attributes?: Record<string, string>;
-  abilities?: string[];
+  attributes?: Record<string, string | number>;
+  abilities?: StatAbility[];
+  rulebook_reference?: RulebookReference;
   game_system?: string;
+  text?: string;
   chunk_id: string;
   pages: { start: number; end: number };
   source_refs?: Array<{

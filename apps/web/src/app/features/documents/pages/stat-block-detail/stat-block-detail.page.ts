@@ -8,7 +8,6 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { CampaignApiService } from '../../../../core/services/campaign-api.service';
 import { StatBlockDetail, StatBlockIndex } from '../../../../core/models/campaign.models';
-import { decodeStatBlockName, encodeStatBlockName } from '../../../../core/utils/stat-block-route';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { StatBlockViewerComponent } from '../../../../shared/components/stat-block-viewer/stat-block-viewer.component';
 
@@ -38,15 +37,15 @@ export class StatBlockDetailPage {
       .pipe(
         map((params) => ({
           documentId: this.route.parent?.snapshot.paramMap.get('documentId') ?? '',
-          name: decodeStatBlockName(params.get('name') ?? ''),
+          chunkId: params.get('statBlockId') ?? '',
         })),
         tap(() => {
           this.loading.set(true);
           this.error.set(null);
           this.candidates.set([]);
         }),
-        switchMap(({ documentId, name }) =>
-          this.api.getStatBlock(documentId, name).pipe(
+        switchMap(({ documentId, chunkId }) =>
+          this.api.getStatBlockByChunkId(documentId, chunkId).pipe(
             map((detail) => ({ detail, error: null as string | null, candidates: [] as StatBlockIndex[] })),
             catchError((err: HttpErrorResponse) => {
               const body = err.error as { candidates?: StatBlockIndex[] } | undefined;
@@ -71,13 +70,8 @@ export class StatBlockDetailPage {
       });
   }
 
-  selectCandidate(name: string): void {
+  selectCandidate(chunkId: string): void {
     const documentId = this.route.parent?.snapshot.paramMap.get('documentId') ?? '';
-    void this.router.navigate([
-      '/documents',
-      documentId,
-      'stat-blocks',
-      encodeStatBlockName(name),
-    ]);
+    void this.router.navigate(['/documents', documentId, 'stat-blocks', chunkId]);
   }
 }

@@ -59,7 +59,7 @@ test.describe('Stat block exploration acceptance', () => {
     const explorer = new DocumentExplorerPage(page);
     await explorer.goto(E2E.documentId);
     await explorer.openStatBlocksTab();
-    await explorer.statBlockItem(E2E.statBlocks.orc).click();
+    await explorer.statBlockItem(E2E.statBlocks.orcChunkId).click();
 
     await expect(page.getByTestId('stat-block-name')).toHaveText(E2E.statBlocks.orc);
     await expect(page.getByTestId('stat-block-nc')).toHaveText('NC 3');

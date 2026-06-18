@@ -17,8 +17,8 @@ export class DocumentExplorerPage {
     await expect(this.page.getByTestId('document-explorer-page')).toBeVisible();
   }
 
-  async gotoStatBlock(documentId: string, name: string): Promise<void> {
-    await this.page.goto(`/documents/${documentId}/stat-blocks/${encodeURIComponent(name)}`);
+  async gotoStatBlock(documentId: string, chunkId: string): Promise<void> {
+    await this.page.goto(`/documents/${documentId}/stat-blocks/${chunkId}`);
     await expect(this.page.getByTestId('document-explorer-page')).toBeVisible();
   }
 
@@ -30,8 +30,8 @@ export class DocumentExplorerPage {
     return this.page.getByTestId(`chunk-item-${chunkId}`);
   }
 
-  statBlockItem(name: string): Locator {
-    return this.page.getByTestId(`stat-block-item-${name}`);
+  statBlockItem(chunkId: string): Locator {
+    return this.page.getByTestId(`stat-block-item-${chunkId}`);
   }
 
   async openChunksTab(): Promise<void> {

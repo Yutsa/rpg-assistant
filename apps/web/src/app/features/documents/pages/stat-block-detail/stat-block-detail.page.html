@@ -9,10 +9,15 @@
       <button
         type="button"
         mat-button
-        [attr.data-testid]="'stat-block-candidate-' + candidate.name"
-        (click)="selectCandidate(candidate.name)"
+        [attr.data-testid]="'stat-block-candidate-' + candidate.chunk_id"
+        (click)="selectCandidate(candidate.chunk_id)"
       >
-        {{ candidate.name }} (NC {{ candidate.nc }})
+        {{ candidate.name }}
+        @if (candidate.uses_rulebook) {
+          (Livre de règles)
+        } @else if (candidate.nc != null) {
+          (NC {{ candidate.nc }})
+        }
       </button>
     }
   </div>

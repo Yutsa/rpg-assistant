@@ -74,4 +74,10 @@ export class CampaignApiService {
       `${API_URL}/documents/${documentId}/stat-blocks/${encodeStatBlockName(name)}`,
     );
   }
+
+  getStatBlockByChunkId(documentId: string, chunkId: string): Observable<StatBlockDetail> {
+    return this.http.get<StatBlockDetail>(
+      `${API_URL}/documents/${documentId}/stat-blocks/${chunkId}`,
+    );
+  }
 }

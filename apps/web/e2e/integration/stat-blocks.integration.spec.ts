@@ -15,10 +15,10 @@ test.describe('Stat blocks integration', () => {
     await explorer.goto(E2E.documentId);
     await explorer.openStatBlocksTab();
 
-    await expect(explorer.statBlockItem(E2E.statBlocks.gobelin)).toBeVisible();
-    await expect(explorer.statBlockItem(E2E.statBlocks.orc)).toBeVisible();
+    await expect(explorer.statBlockItem(E2E.statBlocks.gobelinChunkId)).toBeVisible();
+    await expect(explorer.statBlockItem(E2E.statBlocks.orcChunkId)).toBeVisible();
 
-    await explorer.statBlockItem(E2E.statBlocks.gobelin).click();
+    await explorer.statBlockItem(E2E.statBlocks.gobelinChunkId).click();
 
     await expect(page.getByTestId('stat-block-viewer')).toBeVisible();
     await expect(page.getByTestId('stat-block-name')).toHaveText(E2E.statBlocks.gobelin);

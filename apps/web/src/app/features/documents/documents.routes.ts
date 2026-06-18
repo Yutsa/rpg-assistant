@@ -10,7 +10,7 @@ export const DOCUMENT_ROUTES: Routes = [
     component: DocumentExplorerPage,
     children: [
       { path: 'chunks/:chunkId', component: ChunkDetailPage },
-      { path: 'stat-blocks/:name', component: StatBlockDetailPage },
+      { path: 'stat-blocks/:statBlockId', component: StatBlockDetailPage },
     ],
   },
 ];
