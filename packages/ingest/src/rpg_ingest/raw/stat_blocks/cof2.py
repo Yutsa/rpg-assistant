@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from rpg_ingest.raw.layout import LayoutBlock, LayoutPage
-from rpg_ingest.raw.reading_order import is_page_number_label
+from rpg_ingest.raw.reading_order import column_major_sort_key, column_side, is_page_number_label
 from rpg_ingest.raw.stat_blocks.text_utils import has_icon_glyphs, strip_layout_glyphs
 from rpg_ingest.raw.stat_blocks.types import (
     BlockRef,
@@ -214,8 +214,88 @@ def _ends_stat_block(
     if block.metadata.get("is_bold"):
         font = block.metadata.get("max_font_size") or 0
         if font >= 12 and not text.isupper():
-            return not STAT_BLOCK_BODY_RE.search(text)
+            if not STAT_BLOCK_BODY_RE.search(text):
+                following = page_blocks[idx + 1 :]
+                if any(_is_ability_block(candidate) for candidate in following):
+                    return False
+                return True
     return False
+
+
+def _is_narrative_interrupt_block(block: LayoutBlock) -> bool:
+    text = _normalized(block)
+    if not text or _is_ability_block(block) or _is_stats_line(text):
+        return False
+    if not block.metadata.get("is_bold"):
+        return False
+    if ":" in text or STAT_BLOCK_BODY_RE.search(text):
+        return False
+    if _extract_rulebook_reference(text):
+        return False
+    return len(text) <= 80
+
+
+def _interleave_ability_groups(
+    left_group: list[LayoutBlock],
+    right_group: list[LayoutBlock],
+) -> list[LayoutBlock]:
+    ordered: list[LayoutBlock] = []
+    right_index = 0
+    for left_index, left_block in enumerate(left_group):
+        ordered.append(left_block)
+        if right_index < len(right_group):
+            ordered.append(right_group[right_index])
+            right_index += 1
+    ordered.extend(right_group[right_index:])
+    return ordered
+
+
+def _ability_blocks_in_reading_order(span: StatBlockSpan) -> list[LayoutBlock]:
+    abilities_in_scan_order = [
+        block
+        for block in span.blocks
+        if block.metadata.get("stat_block_role") == "ability"
+    ]
+    if not abilities_in_scan_order:
+        return []
+
+    page_width = max(block.bbox.x1 for block in span.blocks) * 1.2
+    layout_page = LayoutPage(
+        page_number=span.page_start,
+        width=page_width,
+        height=1000.0,
+        text="",
+        blocks=[],
+    )
+
+    split_at: int | None = None
+    first_side = column_side(abilities_in_scan_order[0], page_width)
+    for index in range(1, len(abilities_in_scan_order)):
+        if column_side(abilities_in_scan_order[index], page_width) != first_side:
+            split_at = index
+            break
+
+    if split_at is not None:
+        leading_group = abilities_in_scan_order[:split_at]
+        trailing_group = abilities_in_scan_order[split_at:]
+        leading_group.sort(
+            key=lambda block: column_major_sort_key(layout_page, block)
+        )
+        trailing_group.sort(
+            key=lambda block: column_major_sort_key(layout_page, block)
+        )
+        if (
+            first_side == "right"
+            and column_side(trailing_group[0], page_width) == "left"
+        ):
+            if len(trailing_group) < len(leading_group):
+                return _interleave_ability_groups(trailing_group, leading_group)
+            return trailing_group + leading_group
+
+    abilities_in_scan_order.sort(
+        key=lambda block: column_major_sort_key(layout_page, block)
+    )
+    return abilities_in_scan_order
 
 
 class Cof2StatBlockProfile:
@@ -331,6 +411,12 @@ class Cof2StatBlockProfile:
                             span_blocks.append(nxt)
                             idx += 1
                             continue
+                        if _is_narrative_interrupt_block(nxt) and any(
+                            _is_ability_block(candidate)
+                            for candidate in blocks[idx + 1 :]
+                        ):
+                            idx += 1
+                            continue
                         if _is_stat_continuation(nxt) and span_blocks:
                             nxt.metadata["stat_block_id"] = span_id
                             nxt.metadata["stat_block_role"] = "body"
@@ -387,9 +473,7 @@ class Cof2StatBlockProfile:
                 if key in COF_ATTRIBUTES:
                     attributes[key] = int(value) if sign == "+" else -int(value)
 
-        for block in span.blocks:
-            if block.metadata.get("stat_block_role") != "ability":
-                continue
+        for block in _ability_blocks_in_reading_order(span):
             ability = _parse_ability_block(self.normalize_block_text(block.text))
             if ability and ability.title not in {a.title for a in abilities}:
                 abilities.append(ability)

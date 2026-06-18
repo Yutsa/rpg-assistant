@@ -14,9 +14,12 @@ from rpg_ingest.raw.reading_order import (
     heading_visual_tier,
     is_all_caps_heading_text,
     is_chapter_heading,
+    is_credits_heading,
+    is_editorial_credits_block,
     is_in_column_band,
     is_in_heading_content_zone,
     is_list_item_block,
+    is_meta_box_heading,
     is_same_y_band,
     page_is_sparse,
     page_median_font,
@@ -74,6 +77,51 @@ def _chunk_type_hint(
     if "map" in lowered[:200]:
         return "map"
     return "lore"
+
+
+def _section_accepts_editorial_credits(section: SectionRecord) -> bool:
+    return is_credits_heading(section.title)
+
+
+def _preface_page_numbers(
+    heading_ref: _HeadingRef,
+    heading_refs: list[_HeadingRef],
+) -> list[int]:
+    if heading_ref.tier != "meta" or is_credits_heading(heading_ref.title):
+        return []
+    previous_page = 0
+    for ref in heading_refs:
+        if ref.section_index == heading_ref.section_index:
+            break
+        previous_page = max(previous_page, ref.page_number)
+    if heading_ref.page_number <= previous_page + 1:
+        return []
+    return list(range(previous_page + 1, heading_ref.page_number))
+
+
+def _blocks_for_meta_preface(
+    pages: list[LayoutPage],
+    heading_ref: _HeadingRef,
+    heading_refs: list[_HeadingRef],
+    heading_positions: set[tuple[int, int]],
+    claimed: set[tuple[int, int]],
+) -> list[tuple[LayoutPage, LayoutBlock]]:
+    result: list[tuple[LayoutPage, LayoutBlock]] = []
+    heading = heading_ref.block
+    for page_number in _preface_page_numbers(heading_ref, heading_refs):
+        page = next((candidate for candidate in pages if candidate.page_number == page_number), None)
+        if page is None:
+            continue
+        for block in page.blocks:
+            pos = (page.page_number, block.block_index)
+            if pos in claimed or pos in heading_positions:
+                continue
+            if is_editorial_credits_block(block):
+                continue
+            if not is_in_column_band(block, heading):
+                continue
+            result.append((page, block))
+    return result
 
 
 def _blocks_for_page_range(
@@ -294,6 +342,8 @@ def _column_continuation_owners(
     for page in pages:
         if page_is_sparse(page):
             continue
+        if any(is_editorial_credits_block(block) for block in page.blocks):
+            continue
         last_text_page = _last_text_page_before(pages, page.page_number)
         if last_text_page is None:
             continue
@@ -363,8 +413,20 @@ def _blocks_for_section_spatial(
                 continue
             if pos in heading_positions:
                 continue
+            if (
+                is_editorial_credits_block(block)
+                and not _section_accepts_editorial_credits(sections[heading_ref.section_index])
+            ):
+                continue
 
             if page.page_number == heading_ref.page_number:
+                if _section_accepts_editorial_credits(sections[heading_ref.section_index]):
+                    if (
+                        block.bbox.y0 > heading.bbox.y0
+                        and is_in_column_band(block, heading)
+                    ):
+                        result.append((page, block))
+                        continue
                 in_zone = is_in_heading_content_zone(
                     block, heading, heading_text=heading_ref.title
                 )
@@ -400,6 +462,11 @@ def _blocks_for_section_spatial(
                 ):
                     continue
             else:
+                if (
+                    heading_ref.tier == "meta"
+                    and is_credits_heading(heading_ref.title)
+                ):
+                    continue
                 last_text_page = _last_text_page_before(pages, page.page_number)
                 gap_pages = (
                     _gap_pages_between(pages, last_text_page, page.page_number)
@@ -481,15 +548,30 @@ def _assign_orphan_blocks(
     heading_refs: list[_HeadingRef],
     heading_positions: set[tuple[int, int]],
     claimed: set[tuple[int, int]],
+    sections: list[SectionRecord],
 ) -> None:
     for page in pages:
         for block in page.blocks:
             pos = (page.page_number, block.block_index)
             if pos in claimed or pos in heading_positions:
                 continue
+            if is_editorial_credits_block(block):
+                continue
             nearest = _nearest_heading_ref(block, heading_refs)
             if nearest is None:
                 continue
+            if is_credits_heading(sections[nearest.section_index].title):
+                forward_refs = [
+                    ref
+                    for ref in heading_refs
+                    if (ref.page_number, ref.block.bbox.y0)
+                    > (block.page_number, block.bbox.y0)
+                ]
+                if forward_refs:
+                    nearest = min(
+                        forward_refs,
+                        key=lambda ref: (ref.page_number, ref.block.bbox.y0),
+                    )
             section_blocks[nearest.section_index].append((page, block))
             claimed.add(pos)
 
@@ -501,6 +583,8 @@ def _continuation_owner_by_page(
     owners: dict[int, int | None] = {}
     for page in pages:
         if page_is_sparse(page):
+            continue
+        if any(is_editorial_credits_block(block) for block in page.blocks):
             continue
         last_text_page = _last_text_page_before(pages, page.page_number)
         if last_text_page is None:
@@ -1016,6 +1100,16 @@ def build_chunks(
             column_continuation_owners=incremental_column_owners,
             claimed=claimed,
         )
+        preface_blocks = _blocks_for_meta_preface(
+            pages,
+            ref,
+            heading_refs,
+            heading_positions,
+            claimed,
+        )
+        section_blocks[ref.section_index].extend(preface_blocks)
+        for page, block in preface_blocks:
+            claimed.add((page.page_number, block.block_index))
         section_blocks[ref.section_index].extend(same_page_blocks)
         for page, block in same_page_blocks:
             claimed.add((page.page_number, block.block_index))
@@ -1040,7 +1134,7 @@ def build_chunks(
             claimed.add((page.page_number, block.block_index))
 
     _assign_orphan_blocks(
-        pages, section_blocks, heading_refs, heading_positions, claimed
+        pages, section_blocks, heading_refs, heading_positions, claimed, sections
     )
     for block_items in section_blocks:
         block_items.sort(key=lambda item: column_major_sort_key(item[0], item[1]))

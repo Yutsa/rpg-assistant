@@ -5,16 +5,19 @@ from dataclasses import dataclass, field
 
 from rpg_ingest.raw.layout import LayoutBlock, LayoutPage
 from rpg_ingest.raw.reading_order import (
+    MAX_SUBORDINATE_CHAPTER_PAGE_GAP,
     find_block,
     heading_visual_tier,
     is_chapter_heading,
     is_decorative_spread_title,
+    is_editorial_credits_block,
     is_in_column_band,
     is_list_item_block,
     is_meta_box_heading,
     is_spread_title_pair,
     is_title_case_heading,
     is_vertical_running_header,
+    normalize_section_title,
     page_median_font,
     spatially_sorted_headings,
 )
@@ -175,6 +178,8 @@ def _detect_preamble_sections(
                 continue
             if is_list_item_block(block):
                 continue
+            if is_editorial_credits_block(block):
+                continue
             if any(
                 block.bbox.y0 >= meta.bbox.y0 and is_meta_box_heading(meta.text)
                 for meta in meta_heading_blocks
@@ -300,8 +305,18 @@ def detect_sections(
             parent_id = None
             level = 1
         elif tier == "subordinate" and active_chapter_id is not None:
-            parent_id = active_chapter_id
-            level = 2
+            chapter_section = next(
+                section for section in sections if section.id == active_chapter_id
+            )
+            if (
+                page_num - chapter_section.page_start
+                <= MAX_SUBORDINATE_CHAPTER_PAGE_GAP
+            ):
+                parent_id = active_chapter_id
+                level = 2
+            else:
+                parent_id = None
+                level = 2
         else:
             while stack and stack[-1][0] >= level:
                 stack.pop()
@@ -318,7 +333,7 @@ def detect_sections(
                 campaign_id=campaign_id,
                 document_id=document_id,
                 parent_section_id=parent_id,
-                title=title,
+                title=normalize_section_title(title),
                 level=level,
                 page_start=page_num,
                 page_end=page_end,

@@ -38,10 +38,19 @@ LIST_ITEM_NAME_RE = re.compile(
 
 META_BOX_HEADINGS = frozenset(
     {
+        "CRÉDITS",
         "EN QUELQUES MOTS",
         "FICHE TECHNIQUE",
     }
 )
+
+EDITORIAL_CREDITS_MARKERS = (
+    "black book",
+    "tous droits réservés",
+    "tous droits reserves",
+)
+
+MAX_SUBORDINATE_CHAPTER_PAGE_GAP = 3
 
 PAGE_BANNER_PREFIXES = ("INTRODUCTION", "IMPLICATION", "CONCLUSION")
 
@@ -269,6 +278,36 @@ def is_title_case_heading(
 def is_meta_box_heading(text: str) -> bool:
     normalized = _strip_glyphs(text).strip().upper()
     return normalized in META_BOX_HEADINGS
+
+
+def is_credits_heading(text: str) -> bool:
+    return _strip_glyphs(text).strip().upper() == "CRÉDITS"
+
+
+def is_editorial_credits_text(text: str) -> bool:
+    lowered = _strip_glyphs(text).lower()
+    return any(marker in lowered for marker in EDITORIAL_CREDITS_MARKERS)
+
+
+def is_editorial_credits_block(block: LayoutBlock) -> bool:
+    return is_editorial_credits_text(block.text)
+
+
+def normalize_section_title(text: str) -> str:
+    stripped = _strip_glyphs(text).strip()
+    if "\n" in stripped and is_all_caps_heading_text(stripped):
+        return " ".join(stripped.split())
+    return stripped
+
+
+def is_encadre_title_line(block: LayoutBlock) -> bool:
+    text = _strip_glyphs(block.text).strip()
+    if not text or not block.metadata.get("is_bold"):
+        return False
+    first_line = text.split("\n", 1)[0].strip()
+    if len(first_line) < 4 or not first_line.isupper():
+        return False
+    return len(first_line.split()) <= 12
 
 
 def is_all_caps_heading_text(text: str) -> bool:

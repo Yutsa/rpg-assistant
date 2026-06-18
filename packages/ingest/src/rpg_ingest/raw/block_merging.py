@@ -10,7 +10,11 @@ from rpg_ingest.raw.layout import (
     merge_block_bboxes,
     rebuild_layout_page,
 )
-from rpg_ingest.raw.reading_order import horizontal_overlap_ratio
+from rpg_ingest.raw.reading_order import (
+    horizontal_overlap_ratio,
+    is_editorial_credits_text,
+    is_encadre_title_line,
+)
 from rpg_ingest.raw.stat_blocks.profile import StatBlockProfile
 
 HYPHEN_CHARS = "-‐‑–—"
@@ -196,6 +200,17 @@ def _is_drop_cap_pair(previous: LayoutBlock, nxt: LayoutBlock) -> bool:
     return nxt.bbox.x0 >= previous.bbox.x0 - 5
 
 
+def _merge_encadre_title_lines(
+    previous: LayoutBlock,
+    nxt: LayoutBlock,
+) -> MergeKind | None:
+    if not is_encadre_title_line(previous) or not is_encadre_title_line(nxt):
+        return None
+    if not _same_column(previous, nxt) or not _visually_adjacent(previous, nxt):
+        return None
+    return "line_break"
+
+
 def _merge_kind(
     previous: LayoutBlock,
     nxt: LayoutBlock,
@@ -207,6 +222,9 @@ def _merge_kind(
 ) -> MergeKind | None:
     if previous.page_number != nxt.page_number:
         return None
+    encadre_merge = _merge_encadre_title_lines(previous, nxt)
+    if encadre_merge is not None:
+        return encadre_merge
     if _looks_like_heading(
         nxt, page_blocks=page_blocks, block_idx=next_idx, profile=profile
     ):
@@ -404,6 +422,8 @@ def _merge_cross_page_blocks(pages: list[LayoutPage]) -> tuple[list[LayoutPage],
     page_blocks: list[list[LayoutBlock]] = [list(page.blocks) for page in pages]
     for index in range(len(pages) - 1):
         if not page_blocks[index] or not page_blocks[index + 1]:
+            continue
+        if any(is_editorial_credits_text(block.text) for block in page_blocks[index]):
             continue
         previous = page_blocks[index][-1]
         nxt = page_blocks[index + 1][0]
