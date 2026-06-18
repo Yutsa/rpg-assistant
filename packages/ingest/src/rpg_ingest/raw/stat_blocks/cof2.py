@@ -38,7 +38,18 @@ RULEBOOK_PROFILE_PATTERNS = (
         re.IGNORECASE,
     ),
 )
-ABILITY_TITLE_RE = re.compile(r"^([A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-']+)\s*:\s*(.*)$", re.DOTALL)
+ABILITY_TITLE_RE = re.compile(
+    r"^([A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-']+?)\s*(?:\([A-Z]\))?\s*:\s*(.*)$",
+    re.DOTALL,
+)
+INLINE_ABILITY_TITLE_RE = re.compile(
+    r"(?<![A-Za-zÀ-ÿ])([A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-']+?)\s*(?:\([A-Z]\))?\s*:\s*",
+)
+INLINE_ABILITY_SKIP_RE = re.compile(
+    r"\b(AGI|FOR|CON|INT|PER|CHA)\s*[+-]"
+    r"|\b(DEF|PV|NC|TAILLE|CRÉATURE|HUMAINE|HUMAIN)\b",
+    re.IGNORECASE,
+)
 ALL_CAPS_NAME_RE = re.compile(r"^[A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ][A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ0-9\s\-,'\.]{1,58}$")
 
 COF_ATTRIBUTES = frozenset({"AGI", "FOR", "CON", "INT", "PER", "CHA", "VOL"})
@@ -157,7 +168,7 @@ def _parse_ability_block(text: str) -> StatAbility | None:
     if not first_match:
         return None
     title = first_match.group(1).strip()
-    if not title:
+    if not title or INLINE_ABILITY_SKIP_RE.search(title):
         return None
     body_parts: list[str] = []
     inline_body = first_match.group(2).strip()
@@ -166,6 +177,23 @@ def _parse_ability_block(text: str) -> StatAbility | None:
     body_parts.extend(lines[1:])
     body = "\n".join(body_parts).strip()
     return StatAbility(title=title, text=body)
+
+
+def _parse_abilities_from_inline_text(text: str) -> list[StatAbility]:
+    normalized = strip_layout_glyphs(text)
+    init_match = re.search(r"\(I\)\s*Init\.", normalized)
+    search_text = normalized[init_match.end() :] if init_match else normalized
+    matches = list(INLINE_ABILITY_TITLE_RE.finditer(search_text))
+    abilities: list[StatAbility] = []
+    for index, match in enumerate(matches):
+        title = match.group(1).strip()
+        if not title or INLINE_ABILITY_SKIP_RE.search(title):
+            continue
+        body_start = match.end()
+        body_end = matches[index + 1].start() if index + 1 < len(matches) else len(search_text)
+        body = search_text[body_start:body_end].strip()
+        abilities.append(StatAbility(title=title, text=body))
+    return abilities
 
 
 def _is_stat_continuation(block: LayoutBlock) -> bool:
@@ -187,6 +215,10 @@ def _is_stat_continuation(block: LayoutBlock) -> bool:
         return True
     if len(text) <= 200 and block.metadata.get("is_bold"):
         return ":" in text
+    if re.match(r"^\d+ pour", text):
+        return True
+    if text.endswith(")") and len(text) <= 40:
+        return True
     return len(text) <= 120 and not CHAPTER_RE.match(text) and not NUMBERED_HEADING_RE.match(text)
 
 
@@ -477,6 +509,11 @@ class Cof2StatBlockProfile:
             ability = _parse_ability_block(self.normalize_block_text(block.text))
             if ability and ability.title not in {a.title for a in abilities}:
                 abilities.append(ability)
+
+        if not abilities or len(abilities) < len(_parse_abilities_from_inline_text(combined)):
+            for ability in _parse_abilities_from_inline_text(combined):
+                if ability.title not in {a.title for a in abilities}:
+                    abilities.append(ability)
 
         if not name:
             for text in texts:

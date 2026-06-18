@@ -347,3 +347,42 @@ def test_sombre_fee_chunk_metadata_includes_all_abilities():
     )
     titles = stat_block_ability_titles(result.chunks, "SOMBRE FÉE")
     assert titles == list(SOMBRE_FEE_ABILITIES)
+
+
+def _collapsed_fee_pages() -> list[LayoutPage]:
+    """Single merged block like real PDF extraction (all abilities inline)."""
+    return [
+        _page(
+            [
+                _block(
+                    15,
+                    0,
+                    (
+                        "FÉE | NC 0\n"
+                        "TAILLE MINUSCULE | AGI +4* | CON -2 | FOR -5 | PER +2* | | "
+                        "CHA +1* | INT +0 | VOL +4 | (S) DEF 20 (V) PV 5 (I) Init. 15 "
+                        "CHARME PERSONNE (L) : Une cible humanoïde doit réussir un test. "
+                        "DISTRACTION (G) : La fée danse et fait sa coquette. "
+                        "ÉTERNUEMENT (M) : La fée volette autour de sa cible. "
+                        "RÉSISTANCE AUX DM : La fée a une RD 5. "
+                        "VOL : La créature est capable de voler."
+                    ),
+                    font_size=10,
+                    bold=False,
+                    y0=40,
+                    x0=42,
+                    x1=227,
+                ),
+            ],
+            page_number=15,
+            width=510,
+            height=650,
+        )
+    ]
+
+
+def test_fee_parses_inline_abilities_from_collapsed_block():
+    """Real PDFs may merge header, stats and abilities into one block."""
+    pages = _collapsed_fee_pages()
+    titles = _ability_titles_from_spans(pages, "FÉE")
+    assert titles == list(FEE_ABILITIES)

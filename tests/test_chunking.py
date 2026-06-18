@@ -4,6 +4,7 @@ from rpg_ingest.raw.chunking import (
     chunk_uniqueness_stats,
 )
 from rpg_ingest.raw.sections import detect_sections
+from rpg_core.storage.ids import page_block_id
 from tests.fixtures.layout import make_block as _block, make_page as _page
 
 
@@ -73,7 +74,7 @@ def test_build_chunks_covers_all_blocks_without_duplicates():
         for block_id in span.page_block_ids
     }
     expected = {
-        f"block_{page.page_number:03d}_{block.block_index:03d}"
+        page_block_id("doc_test", page.page_number, block.block_index)
         for page in pages
         for block in page.blocks
         if (page.page_number, block.block_index) not in heading_positions

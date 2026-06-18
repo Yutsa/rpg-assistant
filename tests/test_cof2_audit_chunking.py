@@ -1,4 +1,4 @@
-"""COF2 audit regressions — chunking (issues 1 & 2)."""
+"""COF2 audit regressions — chunking (issues 1, 2, 8, 9 & 10)."""
 
 from __future__ import annotations
 
@@ -15,10 +15,12 @@ from tests.fixtures.cof2_audit_expectations import (
     MOMIE_SYNOPSIS_MARKERS,
     MOMIE_SYNOPSIS_SECTION,
 )
+from tests.fixtures.layout import make_block as _layout_block, make_page as _layout_page
 from tests.fixtures.pipeline import (
     chunk_texts_for_section,
     contains_any,
     run_raw_extraction_pipeline,
+    section_by_title,
 )
 
 
@@ -332,3 +334,258 @@ def test_faelys_cross_page_merge_does_not_join_credits_with_intro():
             contains_any(chunk.text, FAELYS_CREDITS_MARKERS)
             and contains_any(chunk.text, FAELYS_INTRO_MARKERS)
         ), "No chunk should mix credits and intro markers"
+
+
+def _faelys_palace_bridge_pages() -> list[LayoutPage]:
+    """Palace text on p.10 must not jump to p.12 when p.11 has narrative body."""
+    page_ten = [
+        _block(
+            10,
+            0,
+            "Le palais des fleurs de la reine Épitialm",
+            x0=42,
+            y0=55,
+            x1=300,
+            y1=72,
+            font_size=14,
+            bold=True,
+        ),
+        _block(
+            10,
+            1,
+            "La reine du val de l'Orm vit sur une colline couverte de hautes herbes.",
+            x0=42,
+            y0=80,
+            x1=227,
+            y1=200,
+        ),
+    ]
+    page_eleven = [
+        _block(
+            11,
+            0,
+            "Une fois que les PJ ont expliqué la raison de leur venue, la reine s'exprime doucement.",
+            x0=42,
+            y0=80,
+            x1=227,
+            y1=200,
+        ),
+    ]
+    page_twelve = [
+        _block(
+            12,
+            0,
+            "s'exprime d'une voix plus douce et énonce l'énigme suivante :",
+            x0=42,
+            y0=80,
+            x1=227,
+            y1=120,
+        ),
+        _block(
+            12,
+            1,
+            "« Dans les champs repoussés sous la terre sans famille. »",
+            x0=42,
+            y0=130,
+            x1=227,
+            y1=200,
+        ),
+    ]
+    return [
+        rebuild_layout_page(
+            LayoutPage(page_number=10, width=510, height=650, text="", blocks=[]),
+            page_ten,
+        ),
+        rebuild_layout_page(
+            LayoutPage(page_number=11, width=510, height=650, text="", blocks=[]),
+            page_eleven,
+        ),
+        rebuild_layout_page(
+            LayoutPage(page_number=12, width=510, height=650, text="", blocks=[]),
+            page_twelve,
+        ),
+    ]
+
+
+def _mille_pattes_truncation_pages() -> list[LayoutPage]:
+  return [
+      _layout_page(
+          [
+              _layout_block(
+                  12,
+                  0,
+                  "MILLE-PATTES | NC 3",
+                  font_size=12,
+                  bold=True,
+                  y0=40,
+                  x0=248,
+                  x1=424,
+              ),
+              _layout_block(
+                  12,
+                  1,
+                  "AGI +4 | FOR +3 | CON +3 | PER +2 | CHA -4 | INT -4 | VOL +0",
+                  font_size=10,
+                  y0=70,
+                  x0=248,
+                  x1=424,
+              ),
+              _layout_block(
+                  12,
+                  2,
+                  "Pinces +6 · DM 2d6+3+ poison (2d6, difficulté",
+                  font_size=10,
+                  y0=100,
+                  x0=248,
+                  x1=424,
+              ),
+              _layout_block(
+                  12,
+                  3,
+                  "12 pour ½ DM)",
+                  font_size=10,
+                  y0=120,
+                  x0=248,
+                  x1=424,
+              ),
+          ],
+          page_number=12,
+          width=510,
+          height=650,
+      )
+  ]
+
+
+def _centaure_column_pages() -> list[LayoutPage]:
+    page_fifteen = [
+        _block(
+            15,
+            0,
+            "Les fées connaissent les éléments suivants.",
+            x0=42,
+            y0=46,
+            x1=227,
+            y1=100,
+        ),
+        _block(
+            15,
+            1,
+            "Les centaures",
+            x0=248,
+            y0=48,
+            x1=400,
+            y1=65,
+            font_size=13,
+            bold=True,
+        ),
+        _block(
+            15,
+            2,
+            "Cette tribu sauvage est dirigée par Homade.",
+            x0=248,
+            y0=80,
+            x1=424,
+            y1=120,
+        ),
+    ]
+    page_sixteen = [
+        _block(
+            16,
+            0,
+            "Les centaures du val de l'Orm sont des chasseurs invétérés.",
+            x0=42,
+            y0=80,
+            x1=227,
+            y1=200,
+        ),
+        _block(
+            16,
+            1,
+            "Les champs repoussés",
+            x0=248,
+            y0=300,
+            x1=400,
+            y1=318,
+            font_size=13,
+            bold=True,
+        ),
+        _block(
+            16,
+            2,
+            "Le blé sauvage qui pousse ici donne une teinte dorée à la plaine.",
+            x0=248,
+            y0=330,
+            x1=424,
+            y1=420,
+        ),
+    ]
+    return [
+        rebuild_layout_page(
+            LayoutPage(page_number=15, width=510, height=650, text="", blocks=[]),
+            page_fifteen,
+        ),
+        rebuild_layout_page(
+            LayoutPage(page_number=16, width=510, height=650, text="", blocks=[]),
+            page_sixteen,
+        ),
+    ]
+
+
+def test_faelys_palace_chunk_includes_page_eleven():
+    """Audit issue 8 — narrative on p.11 must not be skipped when section continues."""
+    result = run_raw_extraction_pipeline(
+        _faelys_palace_bridge_pages(),
+        campaign_id="dernier-faelys",
+        document_id="doc_faelys_bridge",
+    )
+    all_text = "\n".join(chunk.text for chunk in result.chunks)
+    assert "colline couverte" in all_text
+    assert "raison de leur venue" in all_text
+    assert "énigme suivante" in all_text
+    bridging = [
+        chunk
+        for chunk in result.chunks
+        if chunk.page_start <= 10 and chunk.page_end >= 12
+    ]
+    for chunk in bridging:
+        pages = {span.page for span in chunk.source_spans}
+        assert 11 in pages, f"Chunk {chunk.id} bridges p.10–12 but omits p.11"
+
+
+def test_mille_pattes_stat_block_not_split():
+    """Audit issue 9 — MILLE-PATTES fiche must stay in one stat chunk."""
+    result = run_raw_extraction_pipeline(
+        _mille_pattes_truncation_pages(),
+        campaign_id="dernier-faelys",
+        document_id="doc_mille_pattes_audit",
+    )
+    stat_chunks = [
+        chunk for chunk in result.chunks if "MILLE-PATTES" in chunk.text
+    ]
+    assert len(stat_chunks) == 1
+    assert "12 pour" in stat_chunks[0].text
+    assert "difficulté" in stat_chunks[0].text
+    orphan_fragments = [
+        chunk for chunk in result.chunks if chunk.text.strip() == "12 pour ½ DM)"
+    ]
+    assert not orphan_fragments
+
+
+def test_centaure_narrative_stays_in_centaures_section():
+    """Audit issue 10 — left-column centaure narrative belongs to Les centaures."""
+    result = run_raw_extraction_pipeline(
+        _centaure_column_pages(),
+        campaign_id="dernier-faelys",
+        document_id="doc_centaure_column",
+    )
+    centaures = section_by_title(result.sections, "Les centaures")
+    champs = section_by_title(result.sections, "Les champs repoussés")
+    centaure_texts = chunk_texts_for_section(
+        result.chunks, result.sections, "Les centaures"
+    )
+    champs_texts = chunk_texts_for_section(
+        result.chunks, result.sections, "Les champs repoussés"
+    )
+    assert any("chasseurs invétérés" in text for text in centaure_texts)
+    assert not any("chasseurs invétérés" in text for text in champs_texts)
+    assert centaures.id != champs.id

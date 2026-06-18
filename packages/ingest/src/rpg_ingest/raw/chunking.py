@@ -21,7 +21,7 @@ from rpg_ingest.raw.reading_order import (
     is_list_item_block,
     is_meta_box_heading,
     is_same_y_band,
-    page_is_sparse,
+    page_is_decorative_only,
     page_median_font,
     spatial_sort_key,
 )
@@ -174,11 +174,14 @@ def _continuation_claims_block(
     if not above:
         return False
     above.sort(key=spatial_sort_key)
-    first_above = above[0]
-    continuation_side = column_side(first_above, page.width)
-    if is_same_y_band(block, first_above):
+    for first_above in above:
+        if first_above.metadata.get("stat_block_id"):
+            continue
+        continuation_side = column_side(first_above, page.width)
+        if is_same_y_band(block, first_above):
+            return column_side(block, page.width) == continuation_side
         return column_side(block, page.width) == continuation_side
-    return column_side(block, page.width) == continuation_side
+    return True
 
 
 def _block_in_parallel_column(
@@ -232,8 +235,6 @@ def _parallel_blocked_by_column_owner(
     if owner is None or owner == heading_ref.section_index:
         return False
     if sections[owner].page_start >= page.page_number:
-        return False
-    if sections[owner].page_end < page.page_number:
         return False
     if any(
         ref.page_number == page.page_number
@@ -312,7 +313,7 @@ def _gap_pages_between(
     return [
         page
         for page in pages
-        if from_page < page.page_number < to_page and page_is_sparse(page)
+        if from_page < page.page_number < to_page and page_is_decorative_only(page)
     ]
 
 
@@ -324,11 +325,68 @@ def _last_text_page_before(
         page = next((p for p in pages if p.page_number == probe), None)
         if page is None:
             return None
-        if page_is_sparse(page):
+        if page_is_decorative_only(page):
             probe -= 1
             continue
         return probe
     return None
+
+
+def _opposite_column_wrap_owners(
+    pages: list[LayoutPage],
+    heading_refs: list[_HeadingRef],
+    sections: list[SectionRecord],
+    heading_positions: set[tuple[int, int]],
+) -> dict[tuple[int, str], int]:
+    """When a section ends a page in one column, COF2 layouts often continue on the next page in the other column."""
+    owners: dict[tuple[int, str], int] = {}
+
+    for ref in heading_refs:
+        if ref.tier == "banner":
+            continue
+        heading_page = next(
+            (page for page in pages if page.page_number == ref.page_number),
+            None,
+        )
+        if heading_page is None:
+            continue
+        heading_side = column_side(ref.block, heading_page.width)
+        opposite = "right" if heading_side == "left" else "left"
+        has_body = any(
+            block.bbox.y0 > ref.block.bbox.y0
+            and column_side(block, heading_page.width) == heading_side
+            and (ref.page_number, block.block_index) not in heading_positions
+            and not is_editorial_credits_block(block)
+            for block in heading_page.blocks
+        )
+        if not has_body:
+            continue
+
+        next_page_num = ref.page_number + 1
+        next_page = next(
+            (page for page in pages if page.page_number == next_page_num),
+            None,
+        )
+        if next_page is None or page_is_decorative_only(next_page):
+            continue
+        if sections[ref.section_index].page_end < next_page_num:
+            continue
+        if any(
+            other.page_number == next_page_num
+            and column_side(other.block, next_page.width) == opposite
+            and other.tier == "chapter"
+            for other in heading_refs
+        ):
+            continue
+
+        key = (next_page_num, opposite)
+        existing = owners.get(key)
+        if existing is None:
+            owners[key] = ref.section_index
+        elif sections[ref.section_index].page_start > sections[existing].page_start:
+            owners[key] = ref.section_index
+
+    return owners
 
 
 def _column_continuation_owners(
@@ -336,11 +394,12 @@ def _column_continuation_owners(
     section_blocks: list[list[tuple[LayoutPage, LayoutBlock]]],
     heading_refs: list[_HeadingRef],
     sections: list[SectionRecord],
+    heading_positions: set[tuple[int, int]],
 ) -> dict[tuple[int, str], int]:
     owners: dict[tuple[int, str], int] = {}
 
     for page in pages:
-        if page_is_sparse(page):
+        if page_is_decorative_only(page):
             continue
         if any(is_editorial_credits_block(block) for block in page.blocks):
             continue
@@ -379,6 +438,40 @@ def _column_continuation_owners(
                 continue
 
             owners[(page.page_number, side)] = best_index
+
+    for ref in heading_refs:
+        if ref.tier == "banner":
+            continue
+        heading_page = next(
+            (page for page in pages if page.page_number == ref.page_number),
+            None,
+        )
+        if heading_page is None:
+            continue
+        heading_side = column_side(ref.block, heading_page.width)
+        for page in pages:
+            if page.page_number <= ref.page_number:
+                continue
+            if page_is_decorative_only(page):
+                continue
+            last_text_page = _last_text_page_before(pages, page.page_number)
+            if last_text_page is None or last_text_page < ref.page_number:
+                continue
+            key = (page.page_number, heading_side)
+            existing = owners.get(key)
+            if existing is None:
+                owners[key] = ref.section_index
+            elif sections[ref.section_index].page_start > sections[existing].page_start:
+                owners[key] = ref.section_index
+
+    for key, section_index in _opposite_column_wrap_owners(
+        pages, heading_refs, sections, heading_positions
+    ).items():
+        existing = owners.get(key)
+        if existing is None:
+            owners[key] = section_index
+        elif sections[section_index].page_start >= sections[existing].page_start:
+            owners[key] = section_index
 
     return owners
 
@@ -447,6 +540,17 @@ def _blocks_for_section_spatial(
                 if col_owner_blocked:
                     in_parallel = False
                     in_parallel_list = False
+                elif column_continuation_owners:
+                    col_side = column_side(block, page.width)
+                    owner = column_continuation_owners.get(
+                        (page.page_number, col_side)
+                    )
+                    if (
+                        owner is not None
+                        and owner != heading_ref.section_index
+                    ):
+                        in_parallel = False
+                        in_parallel_list = False
                 if not heading_ref.is_content_only and block.bbox.y0 <= heading.bbox.y0:
                     if not in_parallel and not in_parallel_list and not in_zone:
                         continue
@@ -498,6 +602,21 @@ def _blocks_for_section_spatial(
                         or block.bbox.y0 < column_first_heading_y
                     )
                 )
+                if is_column_continuation:
+                    for ref in heading_refs:
+                        if ref.page_number != page.page_number:
+                            continue
+                        if ref.section_index == heading_ref.section_index:
+                            continue
+                        if ref.tier != "subordinate":
+                            continue
+                        if ref.block.bbox.y0 >= block.bbox.y0:
+                            continue
+                        if _block_in_parallel_column(
+                            page, ref.block, block, heading_refs, ref
+                        ):
+                            is_column_continuation = False
+                            break
                 if not is_sparse_continuation and not is_column_continuation:
                     continue
                 if not _continuation_claims_block(
@@ -528,18 +647,38 @@ def _blocks_for_section_spatial(
 def _nearest_heading_ref(
     block: LayoutBlock,
     heading_refs: list[_HeadingRef],
+    *,
+    page_width: float | None = None,
 ) -> _HeadingRef | None:
+    if page_width is None:
+        page_width = max(
+            (ref.block.bbox.x1 for ref in heading_refs),
+            default=510.0,
+        ) * 1.2
     block_key = spatial_sort_key(block)
-    best: _HeadingRef | None = None
-    best_key: tuple[int, float, float] | None = None
-    for ref in heading_refs:
-        ref_key = spatial_sort_key(ref.block)
-        if ref_key > block_key:
-            continue
-        if best is None or ref_key > best_key:
-            best = ref
-            best_key = ref_key
-    return best
+    block_side = column_side(block, page_width)
+
+    def _pick_best(candidates: list[_HeadingRef]) -> _HeadingRef | None:
+        best: _HeadingRef | None = None
+        best_key: tuple[int, float, float] | None = None
+        for ref in candidates:
+            ref_key = spatial_sort_key(ref.block)
+            if ref_key > block_key:
+                continue
+            if best is None or ref_key > best_key:
+                best = ref
+                best_key = ref_key
+        return best
+
+    same_column = [
+        ref
+        for ref in heading_refs
+        if column_side(ref.block, page_width) == block_side
+    ]
+    best = _pick_best(same_column)
+    if best is not None:
+        return best
+    return _pick_best(list(heading_refs))
 
 
 def _assign_orphan_blocks(
@@ -557,7 +696,22 @@ def _assign_orphan_blocks(
                 continue
             if is_editorial_credits_block(block):
                 continue
-            nearest = _nearest_heading_ref(block, heading_refs)
+            parallel_owner: _HeadingRef | None = None
+            for ref in heading_refs:
+                if ref.page_number != page.page_number:
+                    continue
+                if _block_in_parallel_column(
+                    page, ref.block, block, heading_refs, ref
+                ):
+                    parallel_owner = ref
+                    break
+            if parallel_owner is not None:
+                section_blocks[parallel_owner.section_index].append((page, block))
+                claimed.add(pos)
+                continue
+            nearest = _nearest_heading_ref(
+                block, heading_refs, page_width=page.width
+            )
             if nearest is None:
                 continue
             if is_credits_heading(sections[nearest.section_index].title):
@@ -582,7 +736,7 @@ def _continuation_owner_by_page(
 ) -> dict[int, int | None]:
     owners: dict[int, int | None] = {}
     for page in pages:
-        if page_is_sparse(page):
+        if page_is_decorative_only(page):
             continue
         if any(is_editorial_credits_block(block) for block in page.blocks):
             continue
@@ -804,6 +958,33 @@ def _partition_by_stat_boundaries(
     return groups
 
 
+def _split_at_page_gaps(
+    block_items: list[tuple[LayoutPage, LayoutBlock]],
+    pages: list[LayoutPage],
+) -> list[list[tuple[LayoutPage, LayoutBlock]]]:
+    if not block_items:
+        return []
+    pages_by_number = {page.page_number: page for page in pages}
+    groups: list[list[tuple[LayoutPage, LayoutBlock]]] = []
+    current: list[tuple[LayoutPage, LayoutBlock]] = []
+    last_page: int | None = None
+    for page, block in block_items:
+        if current and last_page is not None and page.page_number > last_page + 1:
+            gap_is_substantive = any(
+                not page_is_decorative_only(pages_by_number[page_num])
+                for page_num in range(last_page + 1, page.page_number)
+                if page_num in pages_by_number
+            )
+            if gap_is_substantive:
+                groups.append(current)
+                current = []
+        current.append((page, block))
+        last_page = page.page_number
+    if current:
+        groups.append(current)
+    return groups
+
+
 def _split_blocks_into_chunks(
     block_items: list[tuple[LayoutPage, LayoutBlock]],
     max_tokens: int,
@@ -883,6 +1064,7 @@ def _group_blocks_for_chunking(
     heading_positions: set[tuple[int, int]] | None = None,
     heading_refs: list[_HeadingRef] | None = None,
     section_index: int | None = None,
+    pages: list[LayoutPage] | None = None,
 ) -> list[list[tuple[LayoutPage, LayoutBlock]]]:
     groups: list[list[tuple[LayoutPage, LayoutBlock]]] = []
     for stat_id, stat_group in _partition_by_stat_boundaries(block_items):
@@ -905,7 +1087,12 @@ def _group_blocks_for_chunking(
                     )
                 ]
             for segment in segments:
-                groups.extend(_split_blocks_into_chunks(segment, max_tokens))
+                if pages:
+                    page_segments = _split_at_page_gaps(segment, pages)
+                else:
+                    page_segments = [segment]
+                for page_segment in page_segments:
+                    groups.extend(_split_blocks_into_chunks(page_segment, max_tokens))
     return groups
 
 
@@ -1088,7 +1275,7 @@ def build_chunks(
 
     for ref in sorted_refs:
         incremental_column_owners = _column_continuation_owners(
-            pages, section_blocks, heading_refs, sections
+            pages, section_blocks, heading_refs, sections, heading_positions
         )
         same_page_blocks = _blocks_for_section_spatial(
             pages,
@@ -1115,7 +1302,7 @@ def build_chunks(
             claimed.add((page.page_number, block.block_index))
 
     column_owners = _column_continuation_owners(
-        pages, section_blocks, heading_refs, sections
+        pages, section_blocks, heading_refs, sections, heading_positions
     )
     continuation_by_page = _continuation_owner_by_page(pages, section_blocks)
     for ref in sorted_refs:
@@ -1149,6 +1336,7 @@ def build_chunks(
             chunk_split_positions,
             heading_refs=heading_refs,
             section_index=section_index,
+            pages=pages,
         )
         for group in groups:
             chunks.append(

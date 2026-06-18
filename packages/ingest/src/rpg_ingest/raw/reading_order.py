@@ -394,3 +394,17 @@ def page_is_sparse(page: LayoutPage, *, max_blocks: int = 2) -> bool:
         and not is_vertical_running_header(b, page)
     ]
     return len(body_blocks) <= max_blocks
+
+
+def page_is_decorative_only(page: LayoutPage, *, min_substantive_chars: int = 30) -> bool:
+    """True when a page has no meaningful narrative body (cover, page number only, etc.)."""
+    body_blocks = [
+        b
+        for b in page.blocks
+        if not is_page_number_label_block(b)
+        and not is_vertical_running_header(b, page)
+    ]
+    if not body_blocks:
+        return True
+    total_chars = sum(len(_strip_glyphs(b.text)) for b in body_blocks)
+    return total_chars < min_substantive_chars
