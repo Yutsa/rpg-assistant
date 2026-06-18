@@ -14,6 +14,7 @@ from rpg_ingest.raw.reading_order import (
     horizontal_overlap_ratio,
     is_editorial_credits_text,
     is_encadre_title_line,
+    is_title_case_heading,
 )
 from rpg_ingest.raw.stat_blocks.profile import StatBlockProfile
 
@@ -21,6 +22,10 @@ HYPHEN_CHARS = "-‐‑–—"
 HYPHEN_END_RE = re.compile(rf"[{re.escape(HYPHEN_CHARS)}]\s*$")
 STRONG_END_RE = re.compile(r"""[.!?»][\'")\]]*\s*$""")
 NEW_UNIT_START_RE = re.compile(r"^[\s«•\-–—*]+|[A-Z][A-Z\s]{3,}")
+INCOMPLETE_WRAP_END_RE = re.compile(
+    r"\b(?:Les|La|Le|Des|Un|Une|Du|De|l'|d'|n'|s'|m'|t'|c'|j')\s*$",
+    re.IGNORECASE,
+)
 
 DEFAULT_MAX_VERTICAL_GAP = 15.0
 DEFAULT_MIN_COLUMN_OVERLAP = 0.25
@@ -51,6 +56,15 @@ def _ends_with_strong_punctuation(text: str) -> bool:
 def _continues_sentence(text: str) -> bool:
     stripped = text.lstrip()
     return bool(stripped) and stripped[0].islower()
+
+
+def _wrap_around_continues(previous_text: str, nxt_text: str) -> bool:
+    if _continues_sentence(nxt_text):
+        return True
+    prev = previous_text.rstrip()
+    if _ends_with_strong_punctuation(prev):
+        return False
+    return bool(INCOMPLETE_WRAP_END_RE.search(prev))
 
 
 def _starts_new_unit(text: str) -> bool:
@@ -94,12 +108,20 @@ def _column_center(block: LayoutBlock) -> float:
     return (block.bbox.x0 + block.bbox.x1) / 2
 
 
+def _block_starts_left(block: LayoutBlock, *, page_width: float) -> bool:
+    return block.bbox.x0 < page_width * COLUMN_CENTER_RATIO
+
+
+def _block_starts_right(block: LayoutBlock, *, page_width: float) -> bool:
+    return block.bbox.x0 >= page_width * COLUMN_CENTER_RATIO
+
+
 def _is_left_column(block: LayoutBlock, *, page_width: float) -> bool:
-    return _column_center(block) < page_width * COLUMN_CENTER_RATIO
+    return _block_starts_left(block, page_width=page_width)
 
 
 def _is_right_column(block: LayoutBlock, *, page_width: float) -> bool:
-    return _column_center(block) > page_width * COLUMN_CENTER_RATIO
+    return _block_starts_right(block, page_width=page_width)
 
 
 def _compatible_style(
@@ -132,11 +154,17 @@ def _is_wrap_around_pair(
     next_idx: int | None = None,
     profile: StatBlockProfile | None = None,
 ) -> bool:
-    if _same_column(previous, nxt):
+    if (
+        _block_starts_left(previous, page_width=page_width)
+        and _block_starts_left(nxt, page_width=page_width)
+    ) or (
+        _block_starts_right(previous, page_width=page_width)
+        and _block_starts_right(nxt, page_width=page_width)
+    ):
         return False
-    if not _is_left_column(previous, page_width=page_width):
+    if not _block_starts_left(previous, page_width=page_width):
         return False
-    if not _is_right_column(nxt, page_width=page_width):
+    if not _block_starts_right(nxt, page_width=page_width):
         return False
     if not _compatible_style(
         previous,
@@ -148,9 +176,9 @@ def _is_wrap_around_pair(
         return False
     if _ends_with_strong_punctuation(previous.text):
         return False
-    if not _continues_sentence(nxt.text):
+    if not _wrap_around_continues(previous.text, nxt.text):
         return False
-    if _starts_new_unit(nxt.text) or _looks_like_heading(
+    if _looks_like_heading(
         nxt, page_blocks=page_blocks, block_idx=next_idx, profile=profile
     ):
         return False
@@ -200,6 +228,46 @@ def _is_drop_cap_pair(previous: LayoutBlock, nxt: LayoutBlock) -> bool:
     return nxt.bbox.x0 >= previous.bbox.x0 - 5
 
 
+def _merge_split_subheading_pair(
+    previous: LayoutBlock,
+    nxt: LayoutBlock,
+    *,
+    page_median_font: float = 10.0,
+) -> MergeKind | None:
+    prev_text = previous.text.strip()
+    nxt_text = nxt.text.strip()
+    if not prev_text or not nxt_text:
+        return None
+    if not previous.metadata.get("is_bold"):
+        return None
+    if not is_title_case_heading(prev_text, previous, median_font=page_median_font):
+        return None
+    if nxt_text[0].isupper() or len(prev_text.split()) > 5 or len(nxt_text.split()) > 4:
+        return None
+    if not _same_column(previous, nxt) or not _visually_adjacent(previous, nxt):
+        return None
+    return "line_break"
+
+
+def is_wrap_around_pair(
+    previous: LayoutBlock,
+    nxt: LayoutBlock,
+    *,
+    page_width: float,
+    page_blocks: list[LayoutBlock] | None = None,
+    next_idx: int | None = None,
+    profile: StatBlockProfile | None = None,
+) -> bool:
+    return _is_wrap_around_pair(
+        previous,
+        nxt,
+        page_width=page_width,
+        page_blocks=page_blocks,
+        next_idx=next_idx,
+        profile=profile,
+    )
+
+
 def _merge_encadre_title_lines(
     previous: LayoutBlock,
     nxt: LayoutBlock,
@@ -225,6 +293,18 @@ def _merge_kind(
     encadre_merge = _merge_encadre_title_lines(previous, nxt)
     if encadre_merge is not None:
         return encadre_merge
+    split_title_merge = _merge_split_subheading_pair(previous, nxt)
+    if split_title_merge is not None:
+        return split_title_merge
+    if _is_wrap_around_pair(
+        previous,
+        nxt,
+        page_width=page_width,
+        page_blocks=page_blocks,
+        next_idx=next_idx,
+        profile=profile,
+    ):
+        return "line_break"
     if _looks_like_heading(
         nxt, page_blocks=page_blocks, block_idx=next_idx, profile=profile
     ):
@@ -235,15 +315,6 @@ def _merge_kind(
         if _shares_text_line(previous, nxt) or _visually_adjacent(previous, nxt):
             return "hyphenation"
         return None
-    if _is_wrap_around_pair(
-        previous,
-        nxt,
-        page_width=page_width,
-        page_blocks=page_blocks,
-        next_idx=next_idx,
-        profile=profile,
-    ):
-        return "line_break"
     if not _visually_adjacent(previous, nxt):
         return None
     if not _same_column(previous, nxt):

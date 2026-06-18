@@ -13,10 +13,39 @@
 
 | Sévérité | Mortelle Xélys | Croissez et multipliez | Retour en grâce |
 |----------|----------------|------------------------|-----------------|
+| **Majeure** | 0 | 0 | 0 |
+| **Mineure** | 7 | 4 | 1 |
+
+**État après correctifs (2026-06-18)** : les 121 tests `pytest` passent, dont 7 régressions sur les trois PDF (`tests/test_cof2_audit_extra_campaigns.py`). Aucun finding **majeur** sur les trois campagnes.
+
+### Correctifs appliqués
+
+| Problème | Fichiers | Résultat |
+|----------|----------|----------|
+| Filigrane DRM `W NOM\x03` dans les fiches | `filtering.py`, `text_utils.py`, `cof2.py` | Noms HERMÉSIA, DECTIANN, PANTHÈRE propres ; capacités EMBUSCADE/DÉVORER extraites |
+| Section fantôme `J-15` (tableau) | `sections.py` | Plus de section tableau |
+| SURVEILLANCE mal assignée | `chunking.py`, `block_merging.py` | Texte dans la bonne section |
+| Troncature « Démasquer l'espion » + titre éclaté | `block_merging.py`, `chunking.py` | Texte complet ; titre « Organiser une réception » fusionné |
+| Fiches multi-colonnes / encadrés | `cof2.py` | Spans distincts (AZULRIA / TALESS) ; continuation capacités |
+| Arbre généalogique p. 17 | `filtering.py` | Garbage partiellement filtré ; reste mineur |
+
+### Findings mineurs restants (acceptables)
+
+- **Titres tronqués** : faux positifs de l'audit sur titres multi-lignes déjà fusionnés (`À PROPOS DE L'ADRESSE`, etc.).
+- **Sections parentes vides** : hiérarchie normale (`LES PISTES À SUIVRE`, `Un passage secret`) — le texte est dans les sous-sections ou chunks voisins.
+- **3 blocs orphelins p. 4** (Mortelle Xélys) : page CRÉDITS décorative, impact négligeable.
+- **Retour en grâce** : 3 sections vides (`Un passage secret`, `RÉCOMPENSE` p. 16, `Manthine`) — contenu présent dans chunks adjacents, pas de perte de texte.
+
+---
+
+## État initial (avant correctifs)
+
+| Sévérité | Mortelle Xélys | Croissez et multipliez | Retour en grâce |
+|----------|----------------|------------------------|-----------------|
 | **Majeure** | 2 | 0 (1 faux positif) | 3 |
 | **Mineure** | 4 | 0 | 4 |
 
-Les trois PDF sont bien importés et globalement lisibles. Les écarts majeurs se concentrent sur **Retour en grâce** (texte tronqué, titres éclatés, arbre généalogique illisible) et sur les **fiches COF2** des deux autres scénarios (filigrane DRM dans la couche texte PDF).
+Les trois PDF sont bien importés et globalement lisibles. Les écarts majeurs initiaux se concentraient sur **Retour en grâce** (texte tronqué, titres éclatés, arbre généalogique illisible) et sur les **fiches COF2** des deux autres scénarios (filigrane DRM dans la couche texte PDF).
 
 ---
 
@@ -144,10 +173,8 @@ Captures de revue visuelle : `data/visual_review/doc_<id>/page_*.png`.
 
 ---
 
-## Pistes de correctif (par priorité)
+## Pistes de correctif (restantes, priorité basse)
 
-1. **Filigrane DRM dans les fiches** — détecter et retirer les blocs `W <NOM>\x03` et glyphes associés avant `annotate_stat_blocks` / parsing COF2.
-2. **Retour en grâce p. 10** — fusion des titres multi-blocs (`Organiser une` + `réception`) ; continuation de colonne à travers l'illustration pour ne pas tronquer « Démasquer l'espion ».
-3. **Sections fantômes tableaux** — ne pas promouvoir les libellés de ligne (`J-12`, `J-15`) en sections si le contexte est un tableau.
-4. **Arbres / diagrammes** — marquer comme `content_only` ou ignorer les zones à faible couverture texte (pas de chunk narrative).
-5. **Assignation section / chunk** — quand un titre niveau 1 n'a que du contenu en continuation de colonne, rattacher au bon parent (ex. SURVEILLANCE).
+1. **Assignation section / chunk** — rattacher les encadrés RÉCOMPENSE et les sous-titres en bas de colonne (`Un passage secret`, `Manthine`) à leur section dédiée plutôt qu'au chunk voisin.
+2. **Arbres / diagrammes** — filtrage plus agressif des blocs généalogiques graphiques (p. 17 Retour en grâce).
+3. **Faux positifs audit** — affiner `truncated_title` pour ignorer les titres connus multi-lignes.

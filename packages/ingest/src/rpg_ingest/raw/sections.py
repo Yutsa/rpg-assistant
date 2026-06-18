@@ -31,6 +31,7 @@ CHAPTER_RE = re.compile(
 )
 NUMBERED_HEADING_RE = re.compile(r"^(\d+(?:\.\d+)*)\s+(.+)$")
 ALL_CAPS_RE = re.compile(r"^[A-Z0-9][A-Z0-9\s\-:,'\.]{2,}$")
+TABLE_ROW_LABEL_RE = re.compile(r"^[A-Z]-\d+$")
 
 MIN_BOLD_HEADING_LEN = 3
 PREAMBLE_TITLE = "Introduction"
@@ -93,6 +94,8 @@ def _is_heading_candidate(
 
     if CHAPTER_RE.match(text):
         return True
+    if TABLE_ROW_LABEL_RE.match(text.replace("\n", " ").strip()):
+        return False
     if is_meta_box_heading(text):
         return True
     if is_title_case_heading(text, block, median_font=page_median_font):

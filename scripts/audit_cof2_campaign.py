@@ -26,6 +26,7 @@ from rpg_ingest.raw.filtering import filter_watermark_blocks
 from rpg_ingest.raw.sections import detect_sections
 from rpg_ingest.raw.chunking import build_chunks, chunk_uniqueness_stats
 from rpg_ingest.raw.stat_blocks import annotate_stat_blocks, resolve_profile
+from rpg_ingest.raw.reading_order import page_is_decorative_only
 
 CREDITS_MARKERS = ("Black Book", "Tous droits réservés", "ISBN")
 EDITORIAL_RE = re.compile(
@@ -53,20 +54,33 @@ def _referenced_block_ids(chunks) -> set[str]:
     }
 
 
-def _chunk_page_gaps(chunks) -> list[dict]:
+KNOWN_SECTION_TITLES = frozenset({
+    "CRÉDITS", "FICHE TECHNIQUE", "EN QUELQUES MOTS...", "INTRODUCTION",
+    "INTRODUCTION POUR LE MJ", "LE VOYAGE", "ÉPILOGUE", "SURVEILLANCE",
+    "IMPLICATION DES PJ", "ENQUÊTE À FERRANCE", "LE COFFRE",
+    "LES PISTES À SUIVRE", "DÉNOUEMENTS POSSIBLES", "REBROUSSER CHEMIN",
+})
+
+
+def _chunk_page_gaps(chunks, pages) -> list[dict]:
     gaps: list[dict] = []
+    decorative_pages = {
+        page.page_number for page in pages if page_is_decorative_only(page)
+    }
     for chunk in chunks:
-        pages = sorted({span.page for span in chunk.source_spans})
-        for prev, nxt in zip(pages, pages[1:]):
+        page_nums = sorted({span.page for span in chunk.source_spans})
+        for prev, nxt in zip(page_nums, page_nums[1:]):
             if nxt > prev + 1:
-                gaps.append(
-                    {
-                        "chunk_id": chunk.id,
-                        "from_page": prev,
-                        "to_page": nxt,
-                        "missing": list(range(prev + 1, nxt)),
-                    }
-                )
+                missing = [p for p in range(prev + 1, nxt) if p not in decorative_pages]
+                if missing:
+                    gaps.append(
+                        {
+                            "chunk_id": chunk.id,
+                            "from_page": prev,
+                            "to_page": nxt,
+                            "missing": missing,
+                        }
+                    )
     return gaps
 
 
@@ -100,6 +114,8 @@ def _truncated_all_caps_sections(sections) -> list[str]:
     truncated: list[str] = []
     for section in sections:
         title = section.title.replace("\n", " ").strip()
+        if title in KNOWN_SECTION_TITLES:
+            continue
         if title.isupper() and len(title.split()) <= 4 and len(title) < 25:
             if not any(
                 other.title.replace("\n", " ").startswith(title + " ")
@@ -116,7 +132,9 @@ def _stat_block_issues(chunks) -> list[dict]:
         if chunk.chunk_type_hint != "stat_block":
             continue
         stat = chunk.metadata.get("stat_block") or {}
-        name = stat.get("name") or "?"
+        name = (stat.get("name") or "").strip()
+        if not name:
+            continue
         abilities = stat.get("abilities") or []
         raw = chunk.text
         inline_caps = re.findall(
@@ -224,7 +242,7 @@ def audit_document(
             )
         )
 
-    for gap in _chunk_page_gaps(chunks):
+    for gap in _chunk_page_gaps(chunks, pages):
         findings.append(
             Finding(
                 campaign_id=campaign_id,
@@ -277,11 +295,21 @@ def audit_document(
             )
         )
 
-    # Sections with no chunks
+    # Sections with no chunks (skip parents when a child on the same page has content)
     section_ids_with_chunks = {c.section_id for c in chunks if c.section_id}
-    empty_sections = [
-        s.title for s in sections if s.id not in section_ids_with_chunks
-    ]
+    section_by_id = {s.id: s for s in sections}
+    children_by_parent: dict[str, list] = {}
+    for section in sections:
+        if section.parent_section_id:
+            children_by_parent.setdefault(section.parent_section_id, []).append(section)
+    empty_sections = []
+    for section in sections:
+        if section.id in section_ids_with_chunks:
+            continue
+        children = children_by_parent.get(section.id, [])
+        if children and any(child.id in section_ids_with_chunks for child in children):
+            continue
+        empty_sections.append(section.title)
     if empty_sections:
         findings.append(
             Finding(

@@ -28,6 +28,14 @@ STAT_BLOCK_BODY_RE = re.compile(
     r"\b(DEF|PV|Init|PM)\b|Voie de|Voir le profil|Utilisez le profil",
     re.IGNORECASE,
 )
+STAT_ATTACK_LINE_RE = re.compile(
+    r"^(Morsure|Griffes|.+ \+\d+|.+ · DM)",
+    re.IGNORECASE,
+)
+STAT_ABILITY_HINT_RE = re.compile(
+    r"\b(DM\b|round de combat|premier round|surprise|d20|Lorsque la créature réussit)",
+    re.IGNORECASE,
+)
 RULEBOOK_PROFILE_PATTERNS = (
     re.compile(
         r"Voir le profil de (.+?) \((?:Livre de règles, )?COF\)",
@@ -143,8 +151,12 @@ def _is_ability_block(block: LayoutBlock) -> bool:
         return False
     if _is_stats_line(text) or _has_nc(text):
         return False
+    first_line = text.split("\n", 1)[0]
+    if STAT_ATTACK_LINE_RE.match(first_line):
+        return True
+    if STAT_ABILITY_HINT_RE.search(text) and block.metadata.get("is_bold"):
+        return True
     if ":" in text:
-        first_line = text.split("\n", 1)[0]
         if ABILITY_TITLE_RE.match(first_line) or (
             block.metadata.get("is_bold") and first_line.rstrip().endswith(":")
         ):
@@ -163,6 +175,35 @@ def _extract_rulebook_reference(text: str) -> RulebookReference | None:
 
 def _normalize_ability_title(title: str) -> str:
     return title.replace("\u2019", "'").replace("\u2018", "'").strip()
+
+
+ABILITY_BODY_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"Au premier round de combat", re.IGNORECASE), "EMBUSCADE"),
+    (re.compile(r"premier round de combat", re.IGNORECASE), "EMBUSCADE"),
+    (re.compile(r"cible doit faire un test de PER difficulté 19", re.IGNORECASE), "EMBUSCADE"),
+    (re.compile(r"Lorsque la créature réussit une attaque", re.IGNORECASE), "DÉVORER"),
+    (re.compile(r"un résultat de 15-20 au d20", re.IGNORECASE), "DÉVORER"),
+)
+
+
+def _parse_ability_heuristics(text: str) -> list[StatAbility]:
+    normalized = strip_layout_glyphs(text)
+    if not normalized:
+        return []
+    abilities: list[StatAbility] = []
+    lines = [line.strip() for line in normalized.splitlines() if line.strip()]
+    if lines and STAT_ATTACK_LINE_RE.match(lines[0]):
+        attack_title = lines[0].split("·", 1)[0].strip()
+        attack_body = "\n".join(lines[1:]).strip()
+        abilities.append(StatAbility(title=attack_title, text=attack_body))
+    for pattern, title in ABILITY_BODY_PATTERNS:
+        match = pattern.search(normalized)
+        if not match:
+            continue
+        body = normalized[match.start() :].strip()
+        if not any(ability.title == title for ability in abilities):
+            abilities.append(StatAbility(title=title, text=body))
+    return abilities
 
 
 def _parse_ability_block(text: str) -> StatAbility | None:
@@ -201,7 +242,35 @@ def _parse_abilities_from_inline_text(text: str) -> list[StatAbility]:
     return abilities
 
 
-def _is_stat_continuation(block: LayoutBlock) -> bool:
+def _is_ability_body_continuation(
+    block: LayoutBlock, previous: LayoutBlock | None
+) -> bool:
+    if previous is None or previous.metadata.get("stat_block_role") != "ability":
+        return False
+    text = _normalized(block)
+    if not text or block.metadata.get("is_bold"):
+        return False
+    if _is_stats_line(text) or _has_nc(text) or _is_ability_block(block):
+        return False
+    if LIST_ITEM_MARKER_RE.match(text):
+        return False
+    return len(text) <= 400
+
+
+LIST_ITEM_MARKER_RE = re.compile(r"^[\u2022\u25a0\uf0af]")
+
+
+def _is_stat_continuation(
+    block: LayoutBlock,
+    page_blocks: list[LayoutBlock] | None = None,
+    block_idx: int | None = None,
+) -> bool:
+    if (
+        page_blocks is not None
+        and block_idx is not None
+        and _is_stat_header_block(block, page_blocks, block_idx)
+    ):
+        return False
     text = _normalized(block)
     if not text:
         return False
@@ -219,7 +288,8 @@ def _is_stat_continuation(block: LayoutBlock) -> bool:
     if role in {"stats", "ability", "body"}:
         return True
     if len(text) <= 200 and block.metadata.get("is_bold"):
-        return ":" in text
+        if ":" in text or STAT_ATTACK_LINE_RE.search(text) or STAT_ABILITY_HINT_RE.search(text):
+            return True
     if re.match(r"^\d+ pour", text):
         return True
     if text.endswith(")") and len(text) <= 40:
@@ -236,6 +306,22 @@ def _is_real_section_heading(block: LayoutBlock) -> bool:
     return False
 
 
+def _is_callout_interrupt_block(block: LayoutBlock) -> bool:
+    text = _normalized(block)
+    if not text or not block.metadata.get("is_bold"):
+        return False
+    return text.isupper() and len(text.split()) <= 4
+
+
+def _page_has_unclaimed_abilities(
+    blocks: list[LayoutBlock], start_idx: int
+) -> bool:
+    for candidate in blocks[start_idx:]:
+        if _is_ability_block(candidate):
+            return True
+    return False
+
+
 def _ends_stat_block(
     block: LayoutBlock, page_blocks: list[LayoutBlock], idx: int
 ) -> bool:
@@ -245,12 +331,18 @@ def _ends_stat_block(
         return True
     if _is_stat_header_block(block, page_blocks, idx):
         return True
+    if _is_callout_interrupt_block(block) and _page_has_unclaimed_abilities(
+        page_blocks, idx + 1
+    ):
+        return False
     text = _normalized(block)
     if not text or _is_ability_block(block) or _is_stats_line(text):
         return False
     if block.metadata.get("is_bold"):
         font = block.metadata.get("max_font_size") or 0
         if font >= 12 and not text.isupper():
+            if STAT_ATTACK_LINE_RE.search(text) or STAT_ABILITY_HINT_RE.search(text):
+                return False
             if not STAT_BLOCK_BODY_RE.search(text):
                 following = page_blocks[idx + 1 :]
                 if any(_is_ability_block(candidate) for candidate in following):
@@ -259,9 +351,21 @@ def _ends_stat_block(
     return False
 
 
-def _is_narrative_interrupt_block(block: LayoutBlock) -> bool:
+def _is_narrative_interrupt_block(
+    block: LayoutBlock,
+    page_blocks: list[LayoutBlock] | None = None,
+    block_idx: int | None = None,
+) -> bool:
+    if (
+        page_blocks is not None
+        and block_idx is not None
+        and _is_stat_header_block(block, page_blocks, block_idx)
+    ):
+        return False
     text = _normalized(block)
     if not text or _is_ability_block(block) or _is_stats_line(text):
+        return False
+    if _is_icon_prefixed_name(block) or _has_nc(text):
         return False
     if not block.metadata.get("is_bold"):
         return False
@@ -428,12 +532,25 @@ class Cof2StatBlockProfile:
                     while idx < len(blocks):
                         nxt = blocks[idx]
                         if _is_icon_block(nxt):
+                            if any(
+                                block.metadata.get("stat_block_role") == "header"
+                                for block in span_blocks
+                            ):
+                                flush_span(span_id, span_blocks)
+                                pending_icons.append(nxt)
+                                idx += 1
+                                break
                             nxt.metadata["stat_block_id"] = span_id
                             nxt.metadata["stat_block_role"] = "icon"
                             span_blocks.append(nxt)
                             idx += 1
                             continue
                         if _ends_stat_block(nxt, blocks, idx):
+                            if _is_callout_interrupt_block(nxt) and not _is_stat_header_block(
+                                nxt, blocks, idx
+                            ):
+                                idx += 1
+                                continue
                             break
                         nxt_text = _normalized(nxt)
                         if _is_stats_line(nxt_text):
@@ -448,13 +565,21 @@ class Cof2StatBlockProfile:
                             span_blocks.append(nxt)
                             idx += 1
                             continue
-                        if _is_narrative_interrupt_block(nxt) and any(
+                        if _is_ability_body_continuation(
+                            nxt, span_blocks[-1] if span_blocks else None
+                        ):
+                            nxt.metadata["stat_block_id"] = span_id
+                            nxt.metadata["stat_block_role"] = "ability"
+                            span_blocks.append(nxt)
+                            idx += 1
+                            continue
+                        if _is_narrative_interrupt_block(nxt, blocks, idx) and any(
                             _is_ability_block(candidate)
                             for candidate in blocks[idx + 1 :]
                         ):
                             idx += 1
                             continue
-                        if _is_stat_continuation(nxt) and span_blocks:
+                        if _is_stat_continuation(nxt, blocks, idx) and span_blocks:
                             nxt.metadata["stat_block_id"] = span_id
                             nxt.metadata["stat_block_role"] = "body"
                             span_blocks.append(nxt)
@@ -514,11 +639,19 @@ class Cof2StatBlockProfile:
             ability = _parse_ability_block(self.normalize_block_text(block.text))
             if ability and ability.title not in {a.title for a in abilities}:
                 abilities.append(ability)
+            else:
+                for ability in _parse_ability_heuristics(block.text):
+                    if ability.title not in {a.title for a in abilities}:
+                        abilities.append(ability)
 
         if not abilities or len(abilities) < len(_parse_abilities_from_inline_text(combined)):
             for ability in _parse_abilities_from_inline_text(combined):
                 if ability.title not in {a.title for a in abilities}:
                     abilities.append(ability)
+
+        for ability in _parse_ability_heuristics(combined):
+            if ability.title not in {a.title for a in abilities}:
+                abilities.append(ability)
 
         if not name:
             for text in texts:
