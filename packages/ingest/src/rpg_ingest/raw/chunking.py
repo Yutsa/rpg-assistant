@@ -21,6 +21,7 @@ from rpg_ingest.raw.reading_order import (
     is_in_heading_content_zone,
     is_list_item_block,
     is_meta_box_heading,
+    is_reward_box_heading,
     is_same_y_band,
     page_is_decorative_only,
     page_median_font,
@@ -405,7 +406,8 @@ def _opposite_column_wrap_owners(
             and not is_editorial_credits_block(block)
             for block in heading_page.blocks
         )
-        tail_heading = ref.block.bbox.y0 >= heading_page.height * 0.70
+        tail_ratio = 0.60 if ref.tier == "subordinate" else 0.70
+        tail_heading = ref.block.bbox.y0 >= heading_page.height * tail_ratio
         if not has_body and not tail_heading:
             continue
         if any(
@@ -520,6 +522,8 @@ def _column_continuation_owners(
 
             if best_index is None:
                 continue
+            if is_reward_box_heading(heading_refs[best_index].title):
+                continue
             if sections[best_index].page_end < last_text_page:
                 continue
 
@@ -535,6 +539,8 @@ def _column_continuation_owners(
 
     for ref in heading_refs:
         if ref.tier == "banner":
+            continue
+        if is_reward_box_heading(ref.title):
             continue
         heading_page = next(
             (page for page in pages if page.page_number == ref.page_number),
@@ -645,6 +651,26 @@ def _nearest_heading_y_above_block(
     return best
 
 
+def _block_reserved_for_reward_heading(
+    page: LayoutPage,
+    block: LayoutBlock,
+    heading_ref: _HeadingRef,
+    heading_refs: list[_HeadingRef],
+) -> bool:
+    if is_reward_box_heading(heading_ref.title):
+        return False
+    for ref in heading_refs:
+        if ref.page_number != page.page_number:
+            continue
+        if not is_reward_box_heading(ref.title):
+            continue
+        if block.bbox.y0 <= ref.block.bbox.y0:
+            continue
+        if is_in_heading_content_zone(block, ref.block, heading_text=ref.title):
+            return True
+    return False
+
+
 def _reserved_for_subordinate_heading(
     page: LayoutPage,
     block: LayoutBlock,
@@ -718,6 +744,10 @@ def _blocks_for_section_spatial(
                     heading_ref,
                     heading_refs,
                     profile=profile,
+                ):
+                    continue
+                if _block_reserved_for_reward_heading(
+                    page, block, heading_ref, heading_refs
                 ):
                     continue
                 if _section_accepts_editorial_credits(sections[heading_ref.section_index]):

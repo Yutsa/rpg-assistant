@@ -109,3 +109,42 @@ def test_xelys_stat_block_names_strip_drm() -> None:
     names.discard("")
     assert "HERMÉSIA" in names
     assert all("\x03" not in (name or "") for name in names)
+
+
+@pytest.mark.skipif(not XELYS.is_file(), reason="COF2 Mortelle Xélys PDF not available")
+def test_xelys_sables_nested_under_pistes() -> None:
+    result = _pipeline(XELYS)
+    pistes = next(s for s in result.sections if s.title == "LES PISTES À SUIVRE")
+    sables = next(
+        s for s in result.sections if s.title.replace("\n", " ") == "Les mercenaires Sables rouges"
+    )
+    assert sables.parent_section_id == pistes.id
+    sables_chunks = [c for c in result.chunks if c.section_id == sables.id]
+    assert sables_chunks
+    assert "Abel" in sables_chunks[0].text
+
+
+@pytest.mark.skipif(not RETOUR.is_file(), reason="COF2 Retour en grâce PDF not available")
+def test_retour_passage_secret_chunk_assigned() -> None:
+    result = _pipeline(RETOUR)
+    section = next(s for s in result.sections if s.title == "Un passage secret")
+    chunks = [c for c in result.chunks if c.section_id == section.id]
+    assert chunks
+    assert "tour sud-ouest" in chunks[0].text.lower()
+
+
+@pytest.mark.skipif(not RETOUR.is_file(), reason="COF2 Retour en grâce PDF not available")
+def test_retour_recompense_p16_chunk_assigned() -> None:
+    result = _pipeline(RETOUR)
+    section = next(
+        s for s in result.sections if s.title == "RÉCOMPENSE EN POINTS DE FAVEUR" and s.page_start == 16
+    )
+    chunks = [c for c in result.chunks if c.section_id == section.id]
+    assert chunks
+    assert "Démasquer les hommes de main" in chunks[0].text
+
+
+@pytest.mark.skipif(not RETOUR.is_file(), reason="COF2 Retour en grâce PDF not available")
+def test_retour_no_genealogy_manthine_section() -> None:
+    result = _pipeline(RETOUR)
+    assert not any(s.title == "Manthine" for s in result.sections)

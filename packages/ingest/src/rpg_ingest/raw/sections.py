@@ -8,12 +8,14 @@ from rpg_ingest.raw.reading_order import (
     MAX_SUBORDINATE_CHAPTER_PAGE_GAP,
     find_block,
     heading_visual_tier,
+    is_all_caps_heading_text,
     is_chapter_heading,
     is_decorative_spread_title,
     is_editorial_credits_block,
     is_in_column_band,
     is_list_item_block,
     is_meta_box_heading,
+    is_reward_box_heading,
     is_spread_title_pair,
     is_title_case_heading,
     is_vertical_running_header,
@@ -42,6 +44,74 @@ class SectionDetectionResult:
     sections: list[SectionRecord]
     heading_anchors: list[tuple[int, int]]
     content_only_section_ids: frozenset[str] = field(default_factory=frozenset)
+
+
+CAPS_SUBORDINATE_MAX_GAP = 80.0
+
+
+def _is_genealogy_diagram_name_heading(
+    block: LayoutBlock,
+    page_blocks: list[LayoutBlock],
+) -> bool:
+    text = block.text.strip()
+    if not text or len(text.split()) > 2 or ":" in text or "\n" in text:
+        return False
+    if not block.metadata.get("is_bold"):
+        return False
+    tree_blocks = [
+        item
+        for item in page_blocks
+        if "ARBRE GÉNÉALOGIQUE" in item.text.upper()
+        or "GENEALOG" in item.text.upper()
+    ]
+    if not tree_blocks:
+        return False
+    tree = tree_blocks[0]
+    if block.bbox.y0 < tree.bbox.y0:
+        return False
+    if len(text) > 24 or text.isupper():
+        return False
+    return True
+
+
+def _same_page_caps_parent_id(
+    *,
+    page_num: int,
+    block: LayoutBlock,
+    sections: list[SectionRecord],
+    anchors: list[tuple[int, int]],
+    pages: list[LayoutPage],
+) -> str | None:
+    best_id: str | None = None
+    best_y = -1.0
+    page = next(p for p in pages if p.page_number == page_num)
+    for section, anchor in zip(sections, anchors, strict=True):
+        if anchor[0] != page_num:
+            continue
+        parent_block = find_block(pages, anchor[0], anchor[1])
+        if parent_block is None:
+            continue
+        parent_tier = heading_visual_tier(
+            section.title,
+            parent_block,
+            median_font=page_median_font(page.blocks),
+            page=page,
+        )
+        if parent_tier in {"chapter", "banner", "meta"}:
+            continue
+        if not is_all_caps_heading_text(section.title):
+            continue
+        if not is_in_column_band(block, parent_block):
+            continue
+        if parent_block.bbox.y0 >= block.bbox.y0:
+            continue
+        gap = block.bbox.y0 - parent_block.bbox.y1
+        if gap > CAPS_SUBORDINATE_MAX_GAP:
+            continue
+        if parent_block.bbox.y0 > best_y:
+            best_y = parent_block.bbox.y0
+            best_id = section.id
+    return best_id
 
 
 def _is_drop_cap_false_heading(
@@ -98,6 +168,10 @@ def _is_heading_candidate(
         return False
     if is_meta_box_heading(text):
         return True
+    if is_reward_box_heading(text):
+        return True
+    if _is_genealogy_diagram_name_heading(block, page_blocks):
+        return False
     if is_title_case_heading(text, block, median_font=page_median_font):
         return True
     if NUMBERED_HEADING_RE.match(text) and (is_bold or max_font >= page_median_font * 1.05):
@@ -307,23 +381,58 @@ def detect_sections(
                 stack.pop()
             parent_id = None
             level = 1
-        elif tier == "subordinate" and active_chapter_id is not None:
-            chapter_section = next(
-                section for section in sections if section.id == active_chapter_id
-            )
-            if (
-                page_num - chapter_section.page_start
-                <= MAX_SUBORDINATE_CHAPTER_PAGE_GAP
-            ):
-                parent_id = active_chapter_id
-                level = 2
+        elif tier == "subordinate":
+            caps_parent_id = None
+            if block is not None:
+                caps_parent_id = _same_page_caps_parent_id(
+                    page_num=page_num,
+                    block=block,
+                    sections=sections,
+                    anchors=anchors,
+                    pages=pages,
+                )
+            if caps_parent_id is not None:
+                parent_section = next(
+                    section for section in sections if section.id == caps_parent_id
+                )
+                parent_id = caps_parent_id
+                level = parent_section.level + 1
+            elif active_chapter_id is not None:
+                chapter_section = next(
+                    section for section in sections if section.id == active_chapter_id
+                )
+                if (
+                    page_num - chapter_section.page_start
+                    <= MAX_SUBORDINATE_CHAPTER_PAGE_GAP
+                ):
+                    parent_id = active_chapter_id
+                    level = 2
+                else:
+                    parent_id = None
+                    level = 2
             else:
                 parent_id = None
                 level = 2
         else:
+            caps_parent_id = None
+            if block is not None:
+                caps_parent_id = _same_page_caps_parent_id(
+                    page_num=page_num,
+                    block=block,
+                    sections=sections,
+                    anchors=anchors,
+                    pages=pages,
+                )
             while stack and stack[-1][0] >= level:
                 stack.pop()
-            parent_id = stack[-1][1] if stack else None
+            if caps_parent_id is not None and not is_all_caps_heading_text(title):
+                parent_section = next(
+                    section for section in sections if section.id == caps_parent_id
+                )
+                parent_id = caps_parent_id
+                level = parent_section.level + 1
+            else:
+                parent_id = stack[-1][1] if stack else None
 
         if index + 1 < len(headings):
             page_end = headings[index + 1][0]
