@@ -387,6 +387,10 @@ class RawRepository:
                      bbox_json, metadata_json)
                 VALUES (%s, %s, %s, %s, %s, %s, {self.dialect.json_param()}, {self.dialect.json_param()})
                 ON CONFLICT (id) DO UPDATE SET
+                    document_id = EXCLUDED.document_id,
+                    page_id = EXCLUDED.page_id,
+                    page_number = EXCLUDED.page_number,
+                    block_index = EXCLUDED.block_index,
                     text = EXCLUDED.text,
                     bbox_json = EXCLUDED.bbox_json,
                     metadata_json = EXCLUDED.metadata_json
@@ -466,6 +470,11 @@ class RawRepository:
                      metadata_json, needs_rechunk)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, {self.dialect.json_param()}, {self.dialect.json_param()}, %s)
                 ON CONFLICT (id) DO UPDATE SET
+                    campaign_id = EXCLUDED.campaign_id,
+                    document_id = EXCLUDED.document_id,
+                    section_id = EXCLUDED.section_id,
+                    page_start = EXCLUDED.page_start,
+                    page_end = EXCLUDED.page_end,
                     text = EXCLUDED.text,
                     chunk_type = EXCLUDED.chunk_type,
                     chunk_type_hint = EXCLUDED.chunk_type_hint,

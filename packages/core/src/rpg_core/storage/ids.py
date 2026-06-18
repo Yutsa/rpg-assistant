@@ -13,12 +13,12 @@ def document_id_from_hash(content_hash: str) -> str:
     return f"doc_{content_hash[:12]}"
 
 
-def page_block_id(page_number: int, block_index: int) -> str:
-    return f"block_{page_number:03d}_{block_index:03d}"
+def page_block_id(document_id: str, page_number: int, block_index: int) -> str:
+    return f"block_{document_id}_{page_number:03d}_{block_index:03d}"
 
 
-def chunk_id(page_start: int, index: int) -> str:
-    return f"chunk_{page_start:03d}_{index:03d}"
+def chunk_id(document_id: str, page_start: int, index: int) -> str:
+    return f"chunk_{document_id}_{page_start:03d}_{index:03d}"
 
 
 def hash_file(path: Path) -> str:

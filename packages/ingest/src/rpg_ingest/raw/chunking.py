@@ -722,14 +722,15 @@ def _make_chunk(
             SourceSpan(
                 page=page_num,
                 page_block_ids=[
-                    page_block_id(page_num, b.block_index) for b in page_blocks
+                    page_block_id(document_id, page_num, b.block_index)
+                    for b in page_blocks
                 ],
                 bbox=merge_block_bboxes(page_blocks),
             )
         )
 
     return ChunkRecord(
-        id=chunk_id(page_start, index),
+        id=chunk_id(document_id, page_start, index),
         campaign_id=campaign_id,
         document_id=document_id,
         section_id=section_id,

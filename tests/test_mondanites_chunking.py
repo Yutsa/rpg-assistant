@@ -60,7 +60,7 @@ def test_mondanites_chunk_quality():
     }
     heading_positions = set(section_result.heading_anchors) - content_only_anchors
     content_block_ids = {
-        page_block_id(page.page_number, block.block_index)
+        page_block_id("doc_mondanites", page.page_number, block.block_index)
         for page in pages
         for block in page.blocks
         if (page.page_number, block.block_index) not in heading_positions

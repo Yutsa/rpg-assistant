@@ -150,7 +150,9 @@ def run(
             for block in layout_page.blocks:
                 blocks.append(
                     PageBlockRecord(
-                        id=page_block_id(layout_page.page_number, block.block_index),
+                        id=page_block_id(
+                            document_id, layout_page.page_number, block.block_index
+                        ),
                         document_id=document_id,
                         page_id=page_id,
                         page_number=layout_page.page_number,
