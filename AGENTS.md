@@ -77,7 +77,8 @@ Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Pas d
 
 - **Setup runtime (à faire une fois par VM, hors update script)** : `cp .env.example .env` puis `uv run alembic upgrade head` pour créer `data/rpg_assistant.db` (SQLite par défaut, aucun Docker requis). Sans ça, CLI/MCP échouent (table manquante).
 - **Tests** : lancer `uv run python -m pytest`, **pas** `uv run pytest`. `tests/test_visual_review.py` fait `from tests.test_campaign_discovery import ...`, ce qui exige la racine du repo sur `sys.path` ; seul `python -m pytest` (qui ajoute le CWD) le fournit. Avec `pytest` direct la collecte échoue (`ModuleNotFoundError: No module named 'tests'`).
-- **Test ignoré** : `test_mondanites_chunking` est `skipped` car il dépend d'un PDF COF2 propriétaire absent du repo (`/home/edouard/Téléchargements/...`). C'est normal. Les autres tests génèrent leurs PDF à la volée via `pymupdf`.
+- **Benchmarks PDF réels** : attentes statiques dans `tests/fixtures/real_pdf_benchmark.py` (pages pièges audit COF2). Configurer `RPG_PDF_MOMIE` et `RPG_PDF_FAELYS` dans `.env` (fichiers propriétaires hors git). Lancer `uv run python -m pytest tests/test_real_pdf_benchmark.py -m real_pdf -q`. Sans PDF local, ces tests sont `skipped`.
+- **Test ignoré** : les benchmarks `real_pdf` sont `skipped` si les PDF COF2 ne sont pas disponibles localement. C'est normal. Les tests synthétiques génèrent leurs PDF à la volée via `pymupdf`.
 - **Aucun linter configuré** (pas de ruff/flake8/black/mypy ni de hooks pre-commit/husky).
 - **Ingestion** : `import_pdf` / `rpg-ingest raw extract` rejette un PDF si `text_coverage_ratio < 0.3` (heuristique ≈ `len(texte)*50 / aire_page`, voir `packages/ingest/src/rpg_ingest/raw/coverage.py`). Pour un PDF de test synthétique, viser ≳ 2900 caractères par page A4, sinon utiliser `--coverage-threshold 0.0`.
 - **Aucun PDF de la campagne de référence `momie` n'est commité** ; la base de dev démarre vide après migration.
