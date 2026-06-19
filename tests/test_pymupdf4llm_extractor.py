@@ -1,13 +1,16 @@
 from __future__ import annotations
 
-import re
+from pathlib import Path
 
+import pymupdf
 import pytest
 
 from rpg_ingest.raw.pymupdf4llm_extractor import (
     _classify_box,
     _markdown_heading_level,
+    extract_document_pymupdf4llm,
 )
+from tests.fixtures.pdf_from_layout import build_momie_synopsis_pdf
 
 
 @pytest.mark.parametrize(
@@ -50,3 +53,17 @@ def test_classify_box_stat_block_candidate():
         markdown_pos=None,
     )
     assert kind == "stat_block_candidate"
+
+
+def test_reconcile_restores_missing_synopsis_paragraph(tmp_path: Path):
+    pdf_path = tmp_path / "momie.pdf"
+    build_momie_synopsis_pdf(pdf_path)
+
+    document = pymupdf.open(pdf_path)
+    extraction = extract_document_pymupdf4llm(document)
+    document.close()
+
+    page_two = next(page for page in extraction.layout_pages if page.page_number == 2)
+    texts = [block.text for block in page_two.blocks]
+    assert any("MALÉDICTION" in text for text in texts)
+    assert any("malédiction pèse sur la région" in text for text in texts)

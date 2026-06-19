@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from rpg_ingest.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
+from rpg_ingest.raw.block_merging import BlockMergeResult, merge_drop_caps, merge_fragmented_blocks
 from rpg_ingest.raw.chunking import build_chunks
 from rpg_ingest.raw.extraction_config import ExtractorKind
 from rpg_ingest.raw.filtering import filter_watermark_blocks
@@ -99,7 +99,10 @@ def run_raw_extraction_pipeline_pdf(
 
     profile = resolve_profile(game_system, layout_pages)
     filtered = filter_watermark_blocks(layout_pages).pages
-    merged = merge_fragmented_blocks(filtered, profile=profile).pages
+    if extractor == "pymupdf4llm":
+        merged = filtered
+    else:
+        merged = merge_fragmented_blocks(filtered, profile=profile).pages
     merged = merge_drop_caps(merged).pages
     stat_result = annotate_stat_blocks(merged, profile)
     layout_pages = stat_result.pages
@@ -108,6 +111,7 @@ def run_raw_extraction_pipeline_pdf(
         refresh_element_kinds_from_layout(elements, layout_pages)
         section_result = build_sections_from_elements(
             elements,
+            layout_pages,
             campaign_id=campaign_id,
             document_id=document_id,
             page_count=len(layout_pages),

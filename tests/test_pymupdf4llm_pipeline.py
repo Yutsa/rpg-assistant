@@ -13,6 +13,7 @@ from rpg_ingest.raw.pymupdf4llm_builder import (
 )
 from rpg_ingest.raw.chunking import chunk_uniqueness_stats
 from rpg_core.storage.ids import page_block_id
+from tests.fixtures.extractor_benchmark import compare_pipelines, modern_matches_or_beats_legacy
 from tests.fixtures.pdf_synthetic import build_multicolumn_nested_headings_pdf
 from tests.fixtures.pipeline import run_raw_extraction_pipeline_pdf
 
@@ -61,6 +62,8 @@ def test_pymupdf4llm_heading_level_normalization(tmp_path: Path):
     _normalize_heading_levels(headings)
     assert [heading.level for heading in headings] == [1, 2, 2, 1]
 
+
+def test_pymupdf4llm_builder_nested_sections_and_chunks(tmp_path: Path):
     pdf_path = tmp_path / "multicolumn.pdf"
     build_multicolumn_nested_headings_pdf(pdf_path)
 
@@ -84,46 +87,18 @@ def test_pymupdf4llm_heading_level_normalization(tmp_path: Path):
     assert chunk_uniqueness_stats(result.chunks)["duplicate_chunk_count"] == 0
 
 
-def test_pymupdf4llm_golden_matches_legacy_section_titles(tmp_path: Path):
+def test_pymupdf4llm_matches_legacy_on_multicolumn_benchmark(tmp_path: Path):
     pdf_path = tmp_path / "multicolumn.pdf"
     build_multicolumn_nested_headings_pdf(pdf_path)
 
-    legacy = run_raw_extraction_pipeline_pdf(
-        pdf_path,
-        campaign_id="camp_test",
-        document_id="doc_legacy",
-        extractor="legacy",
-    )
-    modern = run_raw_extraction_pipeline_pdf(
-        pdf_path,
-        campaign_id="camp_test",
-        document_id="doc_llm",
-        extractor="pymupdf4llm",
-    )
+    comparison = compare_pipelines(pdf_path, campaign_id="bench_mc")
+    assert modern_matches_or_beats_legacy(comparison), comparison.details
 
-    legacy_titles = {section.title for section in legacy.sections}
-    modern_titles = {section.title for section in modern.sections}
-    assert {
-        "PARTIE I",
-        "EN QUELQUES MOTS",
-        "1.1 Sous-section",
-        "PARTIE II",
-    }.issubset(modern_titles)
-    assert "PARTIE I" in legacy_titles
-    assert "PARTIE II" in legacy_titles
-
-    legacy_blocks = {
-        page_block_id("doc_legacy", page.page_number, block.block_index)
-        for page in legacy.pages
-        for block in page.blocks
-    }
-    modern_blocks = {
-        page_block_id("doc_llm", page.page_number, block.block_index)
-        for page in modern.pages
-        for block in page.blocks
-    }
-    assert len(legacy_blocks) > 0
-    assert len(modern_blocks) > 0
+    legacy_partie = comparison.legacy.section_chunk_map.get("PARTIE I", [])
+    modern_partie = comparison.modern.section_chunk_map.get("PARTIE I", [])
+    assert legacy_partie == modern_partie
+    assert "Colonne droite indépendante." in modern_partie[0]
+    assert comparison.modern.empty_section_count <= comparison.legacy.empty_section_count
 
 
 def test_pymupdf4llm_chunks_cover_all_non_heading_blocks(tmp_path: Path):
@@ -136,6 +111,7 @@ def test_pymupdf4llm_chunks_cover_all_non_heading_blocks(tmp_path: Path):
 
     section_result = build_sections_from_elements(
         extraction.elements,
+        extraction.layout_pages,
         campaign_id="camp_test",
         document_id="doc_test",
         page_count=extraction.page_count,

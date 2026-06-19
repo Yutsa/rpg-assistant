@@ -21,7 +21,7 @@ from rpg_ingest.raw.coverage import (
     is_scanned_or_unusable,
     page_text_coverage_ratio,
 )
-from rpg_ingest.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
+from rpg_ingest.raw.block_merging import BlockMergeResult, merge_drop_caps, merge_fragmented_blocks
 from rpg_ingest.raw.filtering import filter_watermark_blocks
 from rpg_ingest.raw.layout import extract_layout_pages
 from rpg_ingest.raw.sections import detect_sections, refine_section_page_ends
@@ -51,12 +51,16 @@ def _postprocess_layout_pages(
     layout_pages: list,
     *,
     game_system: str,
+    extractor_kind: ExtractorKind = "legacy",
 ):
     stat_profile = resolve_profile(game_system, layout_pages)
     filter_result = filter_watermark_blocks(layout_pages)
     layout_pages = filter_result.pages
-    merge_result = merge_fragmented_blocks(layout_pages, profile=stat_profile)
-    layout_pages = merge_result.pages
+    if extractor_kind == "pymupdf4llm":
+        merge_result = BlockMergeResult(pages=layout_pages, merged_block_count=0)
+    else:
+        merge_result = merge_fragmented_blocks(layout_pages, profile=stat_profile)
+        layout_pages = merge_result.pages
     drop_cap_result = merge_drop_caps(layout_pages)
     layout_pages = drop_cap_result.pages
     stat_result = annotate_stat_blocks(layout_pages, stat_profile)
@@ -131,7 +135,9 @@ def run(
             merge_result,
             drop_cap_result,
             stat_result,
-        ) = _postprocess_layout_pages(layout_pages, game_system=game_system)
+        ) = _postprocess_layout_pages(
+            layout_pages, game_system=game_system, extractor_kind=extractor_kind
+        )
 
         if elements is not None:
             refresh_element_kinds_from_layout(elements, layout_pages)
@@ -214,6 +220,7 @@ def run(
         if extractor_kind == "pymupdf4llm" and elements is not None:
             section_result = build_sections_from_elements(
                 elements,
+                layout_pages,
                 campaign_id=campaign_id,
                 document_id=document_id,
                 page_count=len(layout_pages),
