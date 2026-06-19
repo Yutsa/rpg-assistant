@@ -103,7 +103,7 @@ Clients (API, MCP tools) can use these coordinates to open the original PDF at t
 
 #### Extraction providers (`docling` / `legacy`)
 
-The raw pipeline supports two backends, selected via CLI `--extraction-provider` or env `RPG_EXTRACTION_PROVIDER` (default: `docling`):
+The raw pipeline supports two backends, selected via CLI `--extraction-provider` or env `RPG_EXTRACTION_PROVIDER` (default: `legacy`):
 
 | Provider | Engine | Sections / chunks | Fallback |
 |----------|--------|-------------------|----------|
