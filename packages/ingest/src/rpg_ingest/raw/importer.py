@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
-
-import pymupdf
 
 from rpg_ingest.raw.chunking import build_chunks, chunk_uniqueness_stats
 from rpg_ingest.raw.stat_blocks import annotate_stat_blocks, resolve_profile
@@ -16,7 +15,10 @@ from rpg_ingest.raw.coverage import (
 )
 from rpg_ingest.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
 from rpg_ingest.raw.filtering import filter_watermark_blocks
-from rpg_ingest.raw.layout import extract_layout_pages
+from rpg_ingest.raw.docling_chunking import build_chunks_from_elements
+from rpg_ingest.raw.docling_sections import detect_sections_from_elements
+from rpg_ingest.raw.providers import DEFAULT_EXTRACTION_PROVIDER, resolve_extraction_provider
+from rpg_ingest.raw.providers.legacy import LegacyExtractionProvider
 from rpg_ingest.raw.sections import detect_sections, refine_section_page_ends
 from rpg_core.models.raw import (
     ChunkRecord,
@@ -28,6 +30,8 @@ from rpg_core.models.raw import (
 from rpg_core.storage.db import get_connection
 from rpg_core.storage.ids import document_id_from_hash, hash_file, new_id, page_block_id
 from rpg_core.storage.repositories.raw import RawRepository
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -48,6 +52,7 @@ def run(
     game_system: str = "",
     coverage_threshold: float = DEFAULT_COVERAGE_THRESHOLD,
     reimport: bool = True,
+    extraction_provider: str = DEFAULT_EXTRACTION_PROVIDER,
 ) -> ImportResult:
     """Stage A: deterministic raw extraction and persistence."""
     run_id = new_id("run")
@@ -66,23 +71,62 @@ def run(
             )
         )
 
-        try:
-            document = pymupdf.open(pdf_path)
-        except Exception as exc:
-            repo.update_ingestion_run(
-                run_id,
-                status="failed",
-                error_message=f"Could not open PDF: {exc}",
-                finished=True,
-            )
-            return ImportResult(
-                ingestion_run_id=run_id,
-                campaign_id=campaign_id,
-                status="failed",
-                error_message=f"Could not open PDF: {exc}",
-            )
+        provider_name = extraction_provider
+        extraction_method = extraction_provider
+        elements: list = []
+        provider_metadata: dict[str, Any] = {}
 
-        layout_pages = extract_layout_pages(document)
+        try:
+            provider = resolve_extraction_provider(extraction_provider)
+            extraction = provider.extract(pdf_path)
+            layout_pages = extraction.pages
+            elements = extraction.elements
+            extraction_method = extraction.extraction_method
+            provider_metadata = extraction.metadata
+        except Exception as exc:
+            if extraction_provider != "legacy":
+                _logger.warning(
+                    "Extraction provider %s failed (%s); falling back to legacy",
+                    extraction_provider,
+                    exc,
+                )
+                try:
+                    legacy = LegacyExtractionProvider()
+                    extraction = legacy.extract(pdf_path)
+                    layout_pages = extraction.pages
+                    elements = []
+                    extraction_method = "legacy_fallback"
+                    provider_name = "legacy"
+                    provider_metadata = {"fallback_reason": str(exc)}
+                except Exception as legacy_exc:
+                    repo.update_ingestion_run(
+                        run_id,
+                        status="failed",
+                        error_message=f"Could not extract PDF: {legacy_exc}",
+                        finished=True,
+                    )
+                    return ImportResult(
+                        ingestion_run_id=run_id,
+                        campaign_id=campaign_id,
+                        status="failed",
+                        error_message=f"Could not extract PDF: {legacy_exc}",
+                    )
+            else:
+                repo.update_ingestion_run(
+                    run_id,
+                    status="failed",
+                    error_message=f"Could not extract PDF: {exc}",
+                    finished=True,
+                )
+                return ImportResult(
+                    ingestion_run_id=run_id,
+                    campaign_id=campaign_id,
+                    status="failed",
+                    error_message=f"Could not extract PDF: {exc}",
+                )
+
+        use_docling_structure = bool(elements)
+
         stat_profile = resolve_profile(game_system, layout_pages)
         filter_result = filter_watermark_blocks(layout_pages)
         layout_pages = filter_result.pages
@@ -141,6 +185,7 @@ def run(
                     document_id=document_id,
                     page_number=layout_page.page_number,
                     text=layout_page.text,
+                    extraction_method=extraction_method,
                     has_text=bool(layout_page.text.strip()),
                     text_coverage_ratio=ratio,
                     width=layout_page.width,
@@ -163,23 +208,43 @@ def run(
                     )
                 )
 
-        section_result = detect_sections(
-            layout_pages,
-            campaign_id=campaign_id,
-            document_id=document_id,
-            profile=stat_profile,
-        )
+        if use_docling_structure:
+            section_result = detect_sections_from_elements(
+                elements,
+                layout_pages,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                profile=stat_profile,
+            )
+            chunks: list[ChunkRecord] = build_chunks_from_elements(
+                elements,
+                layout_pages,
+                section_result.sections,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                heading_anchors=section_result.heading_anchors,
+                stat_spans=stat_result.spans,
+                profile=stat_profile,
+            )
+        else:
+            section_result = detect_sections(
+                layout_pages,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                profile=stat_profile,
+            )
+            sections = section_result.sections
+            chunks = build_chunks(
+                layout_pages,
+                sections,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                heading_anchors=section_result.heading_anchors,
+                content_only_section_ids=section_result.content_only_section_ids,
+                stat_spans=stat_result.spans,
+                profile=stat_profile,
+            )
         sections = section_result.sections
-        chunks: list[ChunkRecord] = build_chunks(
-            layout_pages,
-            sections,
-            campaign_id=campaign_id,
-            document_id=document_id,
-            heading_anchors=section_result.heading_anchors,
-            content_only_section_ids=section_result.content_only_section_ids,
-            stat_spans=stat_result.spans,
-            profile=stat_profile,
-        )
         refine_section_page_ends(sections, chunks)
 
         repo.insert_pages(pages)
@@ -204,7 +269,10 @@ def run(
             "singleton_heading_count": sum(
                 1 for section in sections if len(section.title.strip()) == 1
             ),
+            "extraction_provider": provider_name,
+            "extraction_method": extraction_method,
             **uniqueness,
+            **provider_metadata,
         }
         repo.update_ingestion_run(
             run_id,
