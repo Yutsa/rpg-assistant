@@ -176,10 +176,11 @@ def run_raw_extraction_pipeline_pdf(
 
 
 def section_by_title(sections: list[SectionRecord], title: str) -> SectionRecord:
+    needle = title.casefold()
     for section in sections:
-        if section.title == title:
+        if section.title.casefold() == needle:
             return section
-    matches = [s for s in sections if title in s.title]
+    matches = [s for s in sections if needle in s.title.casefold()]
     if len(matches) == 1:
         return matches[0]
     raise AssertionError(f"Section not found for title={title!r}; got {[s.title for s in sections]}")

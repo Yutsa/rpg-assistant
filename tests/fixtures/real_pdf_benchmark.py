@@ -43,13 +43,18 @@ from tests.fixtures.pipeline import (
     section_by_title,
     stat_block_ability_titles,
 )
+from rpg_core.storage.db import get_connection
+from rpg_core.storage.dialect import parse_json
+from rpg_core.storage.ids import document_id_from_hash, hash_file
+from rpg_core.storage.repositories.raw import RawRepository
+from rpg_ingest.llm_curated.ingest import LLM_DOCUMENT_SUFFIX
 from tests.fixtures.provider_benchmark import (
     run_docling_pipeline,
     run_legacy_pipeline,
     run_pymupdf4llm_pipeline,
 )
 
-ProviderName = Literal["legacy", "docling", "pymupdf4llm"]
+ProviderName = Literal["legacy", "docling", "pymupdf4llm", "llm_curated"]
 
 
 def _normalize_text(value: str) -> str:
@@ -186,6 +191,76 @@ def skip_reason(spec: RealPdfSpec) -> str:
     return f"{spec.filename} not available ({env_hint}{fallback_hint})"
 
 
+def _llm_curated_document_id(pdf_path: Path) -> str:
+    return f"{document_id_from_hash(hash_file(pdf_path))}{LLM_DOCUMENT_SUFFIX}"
+
+
+def _legacy_layout_pages(pdf_path: Path, *, game_system: str):
+    from rpg_ingest.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
+    from rpg_ingest.raw.filtering import filter_watermark_blocks
+    from rpg_ingest.raw.providers.legacy import LegacyExtractionProvider
+    from rpg_ingest.raw.stat_blocks import resolve_profile
+
+    extraction = LegacyExtractionProvider().extract(pdf_path)
+    pages = extraction.pages
+    profile = resolve_profile(game_system, pages)
+    pages = filter_watermark_blocks(pages).pages
+    pages = merge_fragmented_blocks(pages, profile=profile).pages
+    return merge_drop_caps(pages).pages
+
+
+def run_llm_curated_benchmark(
+    spec: RealPdfSpec,
+    pdf_path: Path,
+) -> BenchmarkRun:
+    """Load agent-curated raw layer from DB (see ``scripts/llm_curated_ingest.py``)."""
+    from tests.fixtures.provider_benchmark import _score_result
+
+    document_id = _llm_curated_document_id(pdf_path)
+    with get_connection() as conn:
+        repo = RawRepository(conn)
+        doc = repo.get_document(document_id)
+        if doc is None:
+            raise FileNotFoundError(
+                f"No LLM-curated document {document_id!r}; run scripts/llm_curated_ingest.py first"
+            )
+        sections = repo.list_sections(document_id)
+        chunks = repo.list_chunks(document_id, limit=10_000)
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT stats FROM ingestion_runs
+                WHERE document_id = %s AND status = 'completed'
+                ORDER BY started_at DESC LIMIT 1
+                """,
+                (document_id,),
+            )
+            row = cur.fetchone()
+        stats = parse_json(row[0]) if row and row[0] else {}
+
+    pages = _legacy_layout_pages(pdf_path, game_system=spec.game_system)
+    raw_anchors = stats.get("heading_anchors") or []
+    anchors = [(int(p), int(b)) for p, b in raw_anchors]
+    score = _score_result(
+        pages,
+        sections,
+        chunks,
+        document_id=document_id,
+        heading_anchors=anchors,
+    )
+
+    return BenchmarkRun(
+        benchmark_id=spec.benchmark_id,
+        provider="llm_curated",
+        pdf_path=pdf_path,
+        sections=sections,
+        chunks=chunks,
+        blocks=score.blocks,
+        missing_blocks=score.missing_blocks,
+        duplicate_chunks=score.duplicate_chunks,
+    )
+
+
 def run_real_pdf_benchmark(
     spec: RealPdfSpec,
     pdf_path: Path,
@@ -193,6 +268,8 @@ def run_real_pdf_benchmark(
     provider: ProviderName,
     document_id: str | None = None,
 ) -> BenchmarkRun:
+    if provider == "llm_curated":
+        return run_llm_curated_benchmark(spec, pdf_path)
     doc_id = document_id or f"bench_{spec.benchmark_id}_{provider}"
     if provider == "legacy":
         extraction = LegacyExtractionProvider().extract(pdf_path)
@@ -644,4 +721,4 @@ BENCHMARK_CHECKS: dict[str, tuple[BenchmarkCheck, ...]] = {
     "faelys": FAELYS_CHECKS,
 }
 
-PROVIDERS: tuple[ProviderName, ...] = ("legacy", "docling", "pymupdf4llm")
+PROVIDERS: tuple[ProviderName, ...] = ("legacy", "docling", "pymupdf4llm", "llm_curated")
