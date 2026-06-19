@@ -1,22 +1,28 @@
+"""Shared raw extraction pipeline for ingestion tests (no database)."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
 from rpg_ingest.raw.block_merging import BlockMergeResult, merge_drop_caps, merge_fragmented_blocks
 from rpg_ingest.raw.chunking import build_chunks
-from rpg_ingest.raw.extraction_config import ExtractorKind
+from rpg_ingest.raw.docling_chunking import build_chunks_from_elements as build_docling_chunks
+from rpg_ingest.raw.docling_sections import detect_sections_from_elements as detect_docling_sections
 from rpg_ingest.raw.filtering import filter_watermark_blocks
 from rpg_ingest.raw.layout import LayoutPage, extract_layout_pages
 from rpg_ingest.raw.pymupdf4llm_builder import (
-    build_chunks_from_elements,
-    build_sections_from_elements,
+    build_chunks_from_elements as build_pymupdf4llm_chunks,
+    build_sections_from_elements as detect_pymupdf4llm_sections,
     refresh_element_kinds_from_layout,
 )
-from rpg_ingest.raw.pymupdf4llm_extractor import extract_document_pymupdf4llm
+from rpg_ingest.raw.providers import resolve_extraction_provider
 from rpg_ingest.raw.sections import detect_sections, refine_section_page_ends
 from rpg_ingest.raw.stat_blocks import annotate_stat_blocks, resolve_profile
 from rpg_ingest.raw.stat_blocks.types import StatBlockSpan
 from rpg_core.models.raw import ChunkRecord, SectionRecord
+
+ProviderName = str
 
 
 @dataclass
@@ -25,7 +31,24 @@ class PipelineResult:
     sections: list[SectionRecord]
     chunks: list[ChunkRecord]
     stat_spans: list[StatBlockSpan]
-    extractor: ExtractorKind
+    provider: ProviderName
+
+
+def _postprocess_pages(
+    pages: list[LayoutPage],
+    *,
+    game_system: str,
+    provider: ProviderName,
+) -> tuple[list[LayoutPage], object]:
+    profile = resolve_profile(game_system, pages)
+    pages = filter_watermark_blocks(pages).pages
+    if provider == "pymupdf4llm":
+        merged = pages
+    else:
+        merged = merge_fragmented_blocks(pages, profile=profile).pages
+    merged = merge_drop_caps(merged).pages
+    stat_result = annotate_stat_blocks(merged, profile)
+    return stat_result.pages, stat_result
 
 
 def run_raw_extraction_pipeline(
@@ -34,29 +57,20 @@ def run_raw_extraction_pipeline(
     campaign_id: str,
     document_id: str,
     game_system: str = "cof2",
-    extractor: ExtractorKind = "legacy",
+    provider: ProviderName = "legacy",
 ) -> PipelineResult:
+    pages, stat_result = _postprocess_pages(pages, game_system=game_system, provider=provider)
     profile = resolve_profile(game_system, pages)
-    filtered = filter_watermark_blocks(pages).pages
-    merged = merge_fragmented_blocks(filtered, profile=profile).pages
-    merged = merge_drop_caps(merged).pages
-    stat_result = annotate_stat_blocks(merged, profile)
-    layout_pages = stat_result.pages
-
-    if extractor == "pymupdf4llm":
-        raise ValueError(
-            "Use run_raw_extraction_pipeline_pdf for pymupdf4llm extractor"
-        )
 
     section_result = detect_sections(
-        layout_pages,
+        pages,
         campaign_id=campaign_id,
         document_id=document_id,
         profile=profile,
     )
     sections = section_result.sections
     chunks = build_chunks(
-        layout_pages,
+        pages,
         sections,
         campaign_id=campaign_id,
         document_id=document_id,
@@ -67,77 +81,46 @@ def run_raw_extraction_pipeline(
     )
     refine_section_page_ends(sections, chunks)
     return PipelineResult(
-        pages=layout_pages,
+        pages=pages,
         sections=sections,
         chunks=chunks,
         stat_spans=stat_result.spans,
-        extractor="legacy",
+        provider="legacy",
     )
 
 
 def run_raw_extraction_pipeline_pdf(
-    pdf_path,
+    pdf_path: Path,
     *,
     campaign_id: str,
     document_id: str,
     game_system: str = "cof2",
-    extractor: ExtractorKind = "legacy",
+    provider: ProviderName = "legacy",
 ) -> PipelineResult:
-    import pymupdf
+    extraction = resolve_extraction_provider(provider).extract(pdf_path)
+    layout_pages = extraction.pages
+    elements = extraction.elements
 
-    document = pymupdf.open(pdf_path)
-    try:
-        if extractor == "pymupdf4llm":
-            llm_extraction = extract_document_pymupdf4llm(document)
-            layout_pages = llm_extraction.layout_pages
-            elements = llm_extraction.elements
-        else:
-            layout_pages = extract_layout_pages(document)
-            elements = None
-    finally:
-        document.close()
+    pages, stat_result = _postprocess_pages(
+        layout_pages,
+        game_system=game_system,
+        provider=provider,
+    )
+    profile = resolve_profile(game_system, pages)
 
-    profile = resolve_profile(game_system, layout_pages)
-    filtered = filter_watermark_blocks(layout_pages).pages
-    if extractor == "pymupdf4llm":
-        merged = filtered
-    else:
-        merged = merge_fragmented_blocks(filtered, profile=profile).pages
-    merged = merge_drop_caps(merged).pages
-    stat_result = annotate_stat_blocks(merged, profile)
-    layout_pages = stat_result.pages
-
-    if elements is not None:
-        refresh_element_kinds_from_layout(elements, layout_pages)
-        section_result = build_sections_from_elements(
+    if elements and provider == "pymupdf4llm":
+        refresh_element_kinds_from_layout(elements, pages)
+        section_result = detect_pymupdf4llm_sections(
             elements,
-            layout_pages,
+            pages,
             campaign_id=campaign_id,
             document_id=document_id,
-            page_count=len(layout_pages),
             profile=profile,
         )
-        sections = section_result.sections
-        chunks = build_chunks_from_elements(
+        chunks = build_pymupdf4llm_chunks(
             elements,
-            section_result,
-            layout_pages,
-            campaign_id=campaign_id,
-            document_id=document_id,
-            stat_spans=stat_result.spans,
-            profile=profile,
-        )
-    else:
-        section_result = detect_sections(
-            layout_pages,
-            campaign_id=campaign_id,
-            document_id=document_id,
-            profile=profile,
-        )
-        sections = section_result.sections
-        chunks = build_chunks(
-            layout_pages,
-            sections,
+            pages,
+            section_result.sections,
             campaign_id=campaign_id,
             document_id=document_id,
             heading_anchors=section_result.heading_anchors,
@@ -145,14 +128,50 @@ def run_raw_extraction_pipeline_pdf(
             stat_spans=stat_result.spans,
             profile=profile,
         )
-        refine_section_page_ends(sections, chunks)
+    elif elements:
+        section_result = detect_docling_sections(
+            elements,
+            pages,
+            campaign_id=campaign_id,
+            document_id=document_id,
+            profile=profile,
+        )
+        chunks = build_docling_chunks(
+            elements,
+            pages,
+            section_result.sections,
+            campaign_id=campaign_id,
+            document_id=document_id,
+            heading_anchors=section_result.heading_anchors,
+            stat_spans=stat_result.spans,
+            profile=profile,
+        )
+    else:
+        section_result = detect_sections(
+            pages,
+            campaign_id=campaign_id,
+            document_id=document_id,
+            profile=profile,
+        )
+        chunks = build_chunks(
+            pages,
+            section_result.sections,
+            campaign_id=campaign_id,
+            document_id=document_id,
+            heading_anchors=section_result.heading_anchors,
+            content_only_section_ids=section_result.content_only_section_ids,
+            stat_spans=stat_result.spans,
+            profile=profile,
+        )
 
+    sections = section_result.sections
+    refine_section_page_ends(sections, chunks)
     return PipelineResult(
-        pages=layout_pages,
+        pages=pages,
         sections=sections,
         chunks=chunks,
         stat_spans=stat_result.spans,
-        extractor=extractor,
+        provider=provider,
     )
 
 

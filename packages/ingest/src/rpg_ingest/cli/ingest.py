@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from rpg_ingest.raw.importer import run
+from rpg_ingest.raw.providers import DEFAULT_EXTRACTION_PROVIDER
 from rpg_core.storage.db import get_connection
 from rpg_core.storage.repositories.raw import RawRepository
 
@@ -18,7 +19,7 @@ def _cmd_raw_extract(args: argparse.Namespace) -> int:
         game_system=args.game_system or "",
         coverage_threshold=args.coverage_threshold,
         reimport=not args.no_reimport,
-        extractor=args.extractor,
+        extraction_provider=args.extraction_provider,
     )
     print(json.dumps(result.__dict__, indent=2, default=str))
     return 0 if result.status == "completed" else 1
@@ -59,10 +60,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="Skip deleting existing raw data for the same document hash",
     )
     extract.add_argument(
-        "--extractor",
-        choices=["legacy", "pymupdf4llm"],
-        default=None,
-        help="PDF layout extractor (default: legacy, or RPG_INGEST_EXTRACTOR env)",
+        "--extraction-provider",
+        choices=["legacy", "docling", "pymupdf4llm"],
+        default=DEFAULT_EXTRACTION_PROVIDER,
+        help=(
+            f"PDF extraction backend (default: {DEFAULT_EXTRACTION_PROVIDER}). "
+            "legacy=PyMuPDF heuristics, docling=IBM Docling, pymupdf4llm=PyMuPDF4LLM layout."
+        ),
     )
     extract.set_defaults(func=_cmd_raw_extract)
 

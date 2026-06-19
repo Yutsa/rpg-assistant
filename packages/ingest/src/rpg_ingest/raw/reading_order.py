@@ -121,7 +121,7 @@ def is_in_heading_content_zone(
         return False
     if horizontal_overlap_ratio(block, heading) < min_overlap:
         return False
-    if heading_text and is_meta_box_heading(heading_text):
+    if heading_text and is_narrow_box_heading(heading_text):
         if block.bbox.x0 < heading.bbox.x0 - NARROW_BOX_X_MARGIN:
             return False
         if block.bbox.x1 > heading.bbox.x1 + NARROW_BOX_X_MARGIN:
@@ -254,7 +254,7 @@ def is_title_case_heading(
     *,
     median_font: float,
 ) -> bool:
-    cleaned = _strip_glyphs(text).strip()
+    cleaned = " ".join(_strip_glyphs(text).split())
     if not cleaned or not block.metadata.get("is_bold"):
         return False
     max_font = block.metadata.get("max_font_size") or 0
@@ -278,6 +278,15 @@ def is_title_case_heading(
 def is_meta_box_heading(text: str) -> bool:
     normalized = _strip_glyphs(text).strip().upper()
     return normalized in META_BOX_HEADINGS
+
+
+def is_reward_box_heading(text: str) -> bool:
+    normalized = " ".join(_strip_glyphs(text).split()).upper()
+    return normalized.startswith("RÉCOMPENSE") or normalized.startswith("RECOMPENSE")
+
+
+def is_narrow_box_heading(text: str) -> bool:
+    return is_meta_box_heading(text) or is_reward_box_heading(text)
 
 
 def is_credits_heading(text: str) -> bool:

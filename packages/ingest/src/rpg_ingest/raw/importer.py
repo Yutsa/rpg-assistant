@@ -1,19 +1,11 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import pymupdf
-
 from rpg_ingest.raw.chunking import build_chunks, chunk_uniqueness_stats
-from rpg_ingest.raw.extraction_config import ExtractorKind, resolve_extractor
-from rpg_ingest.raw.pymupdf4llm_builder import (
-    build_chunks_from_elements,
-    build_sections_from_elements,
-    refresh_element_kinds_from_layout,
-)
-from rpg_ingest.raw.pymupdf4llm_extractor import extract_document_pymupdf4llm
 from rpg_ingest.raw.stat_blocks import annotate_stat_blocks, resolve_profile
 from rpg_ingest.raw.coverage import (
     DEFAULT_COVERAGE_THRESHOLD,
@@ -23,7 +15,17 @@ from rpg_ingest.raw.coverage import (
 )
 from rpg_ingest.raw.block_merging import BlockMergeResult, merge_drop_caps, merge_fragmented_blocks
 from rpg_ingest.raw.filtering import filter_watermark_blocks
-from rpg_ingest.raw.layout import extract_layout_pages
+from rpg_ingest.raw.docling_chunking import (
+    build_chunks_from_elements as build_docling_chunks,
+)
+from rpg_ingest.raw.docling_sections import detect_sections_from_elements as detect_docling_sections
+from rpg_ingest.raw.pymupdf4llm_builder import (
+    build_chunks_from_elements as build_pymupdf4llm_chunks,
+    build_sections_from_elements as detect_pymupdf4llm_sections,
+    refresh_element_kinds_from_layout,
+)
+from rpg_ingest.raw.providers import DEFAULT_EXTRACTION_PROVIDER, resolve_extraction_provider
+from rpg_ingest.raw.providers.legacy import LegacyExtractionProvider
 from rpg_ingest.raw.sections import detect_sections, refine_section_page_ends
 from rpg_core.models.raw import (
     ChunkRecord,
@@ -35,6 +37,8 @@ from rpg_core.models.raw import (
 from rpg_core.storage.db import get_connection
 from rpg_core.storage.ids import document_id_from_hash, hash_file, new_id, page_block_id
 from rpg_core.storage.repositories.raw import RawRepository
+
+_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -51,12 +55,12 @@ def _postprocess_layout_pages(
     layout_pages: list,
     *,
     game_system: str,
-    extractor_kind: ExtractorKind = "legacy",
+    provider_name: str,
 ):
     stat_profile = resolve_profile(game_system, layout_pages)
     filter_result = filter_watermark_blocks(layout_pages)
     layout_pages = filter_result.pages
-    if extractor_kind == "pymupdf4llm":
+    if provider_name == "pymupdf4llm":
         merge_result = BlockMergeResult(pages=layout_pages, merged_block_count=0)
     else:
         merge_result = merge_fragmented_blocks(layout_pages, profile=stat_profile)
@@ -82,13 +86,12 @@ def run(
     game_system: str = "",
     coverage_threshold: float = DEFAULT_COVERAGE_THRESHOLD,
     reimport: bool = True,
-    extractor: str | None = None,
+    extraction_provider: str = DEFAULT_EXTRACTION_PROVIDER,
 ) -> ImportResult:
     """Stage A: deterministic raw extraction and persistence."""
     run_id = new_id("run")
     content_hash = hash_file(pdf_path)
     document_id = document_id_from_hash(content_hash)
-    extractor_kind: ExtractorKind = resolve_extractor(extractor)
 
     with get_connection() as conn:
         repo = RawRepository(conn)
@@ -102,31 +105,62 @@ def run(
             )
         )
 
+        provider_name = extraction_provider
+        extraction_method = extraction_provider
+        elements: list = []
+        provider_metadata: dict[str, Any] = {}
+
         try:
-            document = pymupdf.open(pdf_path)
+            provider = resolve_extraction_provider(extraction_provider)
+            extraction = provider.extract(pdf_path)
+            layout_pages = extraction.pages
+            elements = extraction.elements
+            extraction_method = extraction.extraction_method
+            provider_metadata = extraction.metadata
+            provider_name = extraction.provider_id
         except Exception as exc:
-            repo.update_ingestion_run(
-                run_id,
-                status="failed",
-                error_message=f"Could not open PDF: {exc}",
-                finished=True,
-            )
-            return ImportResult(
-                ingestion_run_id=run_id,
-                campaign_id=campaign_id,
-                status="failed",
-                error_message=f"Could not open PDF: {exc}",
-            )
+            if extraction_provider != "legacy":
+                _logger.warning(
+                    "Extraction provider %s failed (%s); falling back to legacy",
+                    extraction_provider,
+                    exc,
+                )
+                try:
+                    legacy = LegacyExtractionProvider()
+                    extraction = legacy.extract(pdf_path)
+                    layout_pages = extraction.pages
+                    elements = []
+                    extraction_method = "legacy_fallback"
+                    provider_name = "legacy"
+                    provider_metadata = {"fallback_reason": str(exc)}
+                except Exception as legacy_exc:
+                    repo.update_ingestion_run(
+                        run_id,
+                        status="failed",
+                        error_message=f"Could not extract PDF: {legacy_exc}",
+                        finished=True,
+                    )
+                    return ImportResult(
+                        ingestion_run_id=run_id,
+                        campaign_id=campaign_id,
+                        status="failed",
+                        error_message=f"Could not extract PDF: {legacy_exc}",
+                    )
+            else:
+                repo.update_ingestion_run(
+                    run_id,
+                    status="failed",
+                    error_message=f"Could not extract PDF: {exc}",
+                    finished=True,
+                )
+                return ImportResult(
+                    ingestion_run_id=run_id,
+                    campaign_id=campaign_id,
+                    status="failed",
+                    error_message=f"Could not extract PDF: {exc}",
+                )
 
-        extraction_method = "pymupdf4llm" if extractor_kind == "pymupdf4llm" else "pymupdf"
-        elements = None
-
-        if extractor_kind == "pymupdf4llm":
-            llm_extraction = extract_document_pymupdf4llm(document)
-            layout_pages = llm_extraction.layout_pages
-            elements = llm_extraction.elements
-        else:
-            layout_pages = extract_layout_pages(document)
+        use_element_structure = bool(elements)
 
         (
             layout_pages,
@@ -136,10 +170,12 @@ def run(
             drop_cap_result,
             stat_result,
         ) = _postprocess_layout_pages(
-            layout_pages, game_system=game_system, extractor_kind=extractor_kind
+            layout_pages,
+            game_system=game_system,
+            provider_name=provider_name,
         )
 
-        if elements is not None:
+        if use_element_structure:
             refresh_element_kinds_from_layout(elements, layout_pages)
 
         page_ratios = [
@@ -214,25 +250,43 @@ def run(
                     )
                 )
 
-        sections: list[SectionRecord]
+        section_result: Any
         chunks: list[ChunkRecord]
 
-        if extractor_kind == "pymupdf4llm" and elements is not None:
-            section_result = build_sections_from_elements(
+        if use_element_structure and provider_name == "pymupdf4llm":
+            section_result = detect_pymupdf4llm_sections(
                 elements,
                 layout_pages,
                 campaign_id=campaign_id,
                 document_id=document_id,
-                page_count=len(layout_pages),
                 profile=stat_profile,
             )
-            sections = section_result.sections
-            chunks = build_chunks_from_elements(
+            chunks = build_pymupdf4llm_chunks(
                 elements,
-                section_result,
+                layout_pages,
+                section_result.sections,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                heading_anchors=section_result.heading_anchors,
+                content_only_section_ids=section_result.content_only_section_ids,
+                stat_spans=stat_result.spans,
+                profile=stat_profile,
+            )
+        elif use_element_structure:
+            section_result = detect_docling_sections(
+                elements,
                 layout_pages,
                 campaign_id=campaign_id,
                 document_id=document_id,
+                profile=stat_profile,
+            )
+            chunks = build_docling_chunks(
+                elements,
+                layout_pages,
+                section_result.sections,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                heading_anchors=section_result.heading_anchors,
                 stat_spans=stat_result.spans,
                 profile=stat_profile,
             )
@@ -243,10 +297,9 @@ def run(
                 document_id=document_id,
                 profile=stat_profile,
             )
-            sections = section_result.sections
             chunks = build_chunks(
                 layout_pages,
-                sections,
+                section_result.sections,
                 campaign_id=campaign_id,
                 document_id=document_id,
                 heading_anchors=section_result.heading_anchors,
@@ -254,7 +307,9 @@ def run(
                 stat_spans=stat_result.spans,
                 profile=stat_profile,
             )
-            refine_section_page_ends(sections, chunks)
+
+        sections = section_result.sections
+        refine_section_page_ends(sections, chunks)
 
         repo.insert_pages(pages)
         repo.insert_page_blocks(blocks)
@@ -264,7 +319,7 @@ def run(
         uniqueness = chunk_uniqueness_stats(chunks)
         stats = {
             "source_pdf_path": str(pdf_path.resolve()),
-            "extractor": extractor_kind,
+            "extraction_provider": provider_name,
             "extraction_method": extraction_method,
             "page_count": len(pages),
             "block_count": len(blocks),
@@ -281,6 +336,7 @@ def run(
                 1 for section in sections if len(section.title.strip()) == 1
             ),
             **uniqueness,
+            **provider_metadata,
         }
         repo.update_ingestion_run(
             run_id,

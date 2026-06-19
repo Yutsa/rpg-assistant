@@ -1,3 +1,5 @@
+"""Compare legacy, docling, and pymupdf4llm on shared benchmark PDFs."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -12,6 +14,8 @@ from tests.fixtures.extractor_scoring import (
 from tests.fixtures.pdf_from_layout import build_momie_synopsis_pdf, build_page8_layout_pdf
 from tests.fixtures.pdf_synthetic import build_multicolumn_nested_headings_pdf
 from tests.fixtures.pipeline import run_raw_extraction_pipeline_pdf
+
+PROVIDERS = ("legacy", "docling", "pymupdf4llm")
 
 
 @pytest.mark.parametrize(
@@ -35,13 +39,13 @@ def test_pymupdf4llm_beats_legacy_on_benchmarks(
         pdf_path,
         campaign_id="bench",
         document_id="legacy",
-        extractor="legacy",
+        provider="legacy",
     )
     modern = run_raw_extraction_pipeline_pdf(
         pdf_path,
         campaign_id="bench",
-        document_id="modern",
-        extractor="pymupdf4llm",
+        document_id="pymupdf4llm",
+        provider="pymupdf4llm",
     )
 
     legacy_score = scorer(legacy)
@@ -51,4 +55,21 @@ def test_pymupdf4llm_beats_legacy_on_benchmarks(
         f"legacy sections: {[s.title for s in legacy.sections]}\n"
         f"modern sections: {[s.title for s in modern.sections]}"
     )
-    assert modern_score > 0
+
+
+def test_three_pipelines_multicolumn_scores(tmp_path: Path):
+    pdf_path = tmp_path / "multicolumn.pdf"
+    build_multicolumn_nested_headings_pdf(pdf_path)
+
+    results: dict[str, int] = {}
+    for provider in PROVIDERS:
+        run = run_raw_extraction_pipeline_pdf(
+            pdf_path,
+            campaign_id="bench3",
+            document_id=provider,
+            provider=provider,
+        )
+        results[provider] = score_multicolumn(run)
+
+    assert results["pymupdf4llm"] >= results["legacy"]
+    assert all(score > 0 for score in results.values())

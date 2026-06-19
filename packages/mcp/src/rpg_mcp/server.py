@@ -18,6 +18,7 @@ from rpg_ingest.feedback.visual_review import (
     prepare_visual_ingestion_review as run_visual_review,
 )
 from rpg_ingest.raw.importer import run as import_run
+from rpg_ingest.raw.providers import DEFAULT_EXTRACTION_PROVIDER
 from rpg_ingest.semantic.schemas import (
     CHUNK_CLASSIFICATION_JSON_SCHEMA,
     CHUNK_TYPES,
@@ -101,7 +102,7 @@ def import_pdf(
     campaign_id: str,
     campaign_title: str = "",
     game_system: str = "",
-    extractor: str = "",
+    extraction_provider: str = "",
 ) -> str:
     """Run Stage A raw extraction (same pipeline as rpg-ingest raw extract)."""
     result = import_run(
@@ -109,7 +110,7 @@ def import_pdf(
         campaign_id=campaign_id,
         campaign_title=campaign_title,
         game_system=game_system,
-        extractor=extractor or None,
+        extraction_provider=extraction_provider or DEFAULT_EXTRACTION_PROVIDER,
     )
     return json.dumps(result.__dict__, indent=2, default=str)
 
