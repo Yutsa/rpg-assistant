@@ -101,6 +101,7 @@ def import_pdf(
     campaign_id: str,
     campaign_title: str = "",
     game_system: str = "",
+    extractor: str = "",
 ) -> str:
     """Run Stage A raw extraction (same pipeline as rpg-ingest raw extract)."""
     result = import_run(
@@ -108,6 +109,7 @@ def import_pdf(
         campaign_id=campaign_id,
         campaign_title=campaign_title,
         game_system=game_system,
+        extractor=extractor or None,
     )
     return json.dumps(result.__dict__, indent=2, default=str)
 

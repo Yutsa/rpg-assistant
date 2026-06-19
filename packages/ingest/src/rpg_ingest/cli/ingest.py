@@ -18,6 +18,7 @@ def _cmd_raw_extract(args: argparse.Namespace) -> int:
         game_system=args.game_system or "",
         coverage_threshold=args.coverage_threshold,
         reimport=not args.no_reimport,
+        extractor=args.extractor,
     )
     print(json.dumps(result.__dict__, indent=2, default=str))
     return 0 if result.status == "completed" else 1
@@ -56,6 +57,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--no-reimport",
         action="store_true",
         help="Skip deleting existing raw data for the same document hash",
+    )
+    extract.add_argument(
+        "--extractor",
+        choices=["legacy", "pymupdf4llm"],
+        default=None,
+        help="PDF layout extractor (default: legacy, or RPG_INGEST_EXTRACTOR env)",
     )
     extract.set_defaults(func=_cmd_raw_extract)
 

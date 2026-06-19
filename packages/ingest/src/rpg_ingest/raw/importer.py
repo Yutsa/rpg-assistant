@@ -7,6 +7,13 @@ from typing import Any
 import pymupdf
 
 from rpg_ingest.raw.chunking import build_chunks, chunk_uniqueness_stats
+from rpg_ingest.raw.extraction_config import ExtractorKind, resolve_extractor
+from rpg_ingest.raw.pymupdf4llm_builder import (
+    build_chunks_from_elements,
+    build_sections_from_elements,
+    refresh_element_kinds_from_layout,
+)
+from rpg_ingest.raw.pymupdf4llm_extractor import extract_document_pymupdf4llm
 from rpg_ingest.raw.stat_blocks import annotate_stat_blocks, resolve_profile
 from rpg_ingest.raw.coverage import (
     DEFAULT_COVERAGE_THRESHOLD,
@@ -40,6 +47,29 @@ class ImportResult:
     stats: dict[str, Any] = field(default_factory=dict)
 
 
+def _postprocess_layout_pages(
+    layout_pages: list,
+    *,
+    game_system: str,
+):
+    stat_profile = resolve_profile(game_system, layout_pages)
+    filter_result = filter_watermark_blocks(layout_pages)
+    layout_pages = filter_result.pages
+    merge_result = merge_fragmented_blocks(layout_pages, profile=stat_profile)
+    layout_pages = merge_result.pages
+    drop_cap_result = merge_drop_caps(layout_pages)
+    layout_pages = drop_cap_result.pages
+    stat_result = annotate_stat_blocks(layout_pages, stat_profile)
+    return (
+        layout_pages,
+        stat_profile,
+        filter_result,
+        merge_result,
+        drop_cap_result,
+        stat_result,
+    )
+
+
 def run(
     pdf_path: Path,
     *,
@@ -48,11 +78,13 @@ def run(
     game_system: str = "",
     coverage_threshold: float = DEFAULT_COVERAGE_THRESHOLD,
     reimport: bool = True,
+    extractor: str | None = None,
 ) -> ImportResult:
     """Stage A: deterministic raw extraction and persistence."""
     run_id = new_id("run")
     content_hash = hash_file(pdf_path)
     document_id = document_id_from_hash(content_hash)
+    extractor_kind: ExtractorKind = resolve_extractor(extractor)
 
     with get_connection() as conn:
         repo = RawRepository(conn)
@@ -82,16 +114,28 @@ def run(
                 error_message=f"Could not open PDF: {exc}",
             )
 
-        layout_pages = extract_layout_pages(document)
-        stat_profile = resolve_profile(game_system, layout_pages)
-        filter_result = filter_watermark_blocks(layout_pages)
-        layout_pages = filter_result.pages
-        merge_result = merge_fragmented_blocks(layout_pages, profile=stat_profile)
-        layout_pages = merge_result.pages
-        drop_cap_result = merge_drop_caps(layout_pages)
-        layout_pages = drop_cap_result.pages
-        stat_result = annotate_stat_blocks(layout_pages, stat_profile)
-        layout_pages = stat_result.pages
+        extraction_method = "pymupdf4llm" if extractor_kind == "pymupdf4llm" else "pymupdf"
+        elements = None
+
+        if extractor_kind == "pymupdf4llm":
+            llm_extraction = extract_document_pymupdf4llm(document)
+            layout_pages = llm_extraction.layout_pages
+            elements = llm_extraction.elements
+        else:
+            layout_pages = extract_layout_pages(document)
+
+        (
+            layout_pages,
+            stat_profile,
+            filter_result,
+            merge_result,
+            drop_cap_result,
+            stat_result,
+        ) = _postprocess_layout_pages(layout_pages, game_system=game_system)
+
+        if elements is not None:
+            refresh_element_kinds_from_layout(elements, layout_pages)
+
         page_ratios = [
             page_text_coverage_ratio(p.text, p.width, p.height) for p in layout_pages
         ]
@@ -141,6 +185,7 @@ def run(
                     document_id=document_id,
                     page_number=layout_page.page_number,
                     text=layout_page.text,
+                    extraction_method=extraction_method,
                     has_text=bool(layout_page.text.strip()),
                     text_coverage_ratio=ratio,
                     width=layout_page.width,
@@ -163,24 +208,46 @@ def run(
                     )
                 )
 
-        section_result = detect_sections(
-            layout_pages,
-            campaign_id=campaign_id,
-            document_id=document_id,
-            profile=stat_profile,
-        )
-        sections = section_result.sections
-        chunks: list[ChunkRecord] = build_chunks(
-            layout_pages,
-            sections,
-            campaign_id=campaign_id,
-            document_id=document_id,
-            heading_anchors=section_result.heading_anchors,
-            content_only_section_ids=section_result.content_only_section_ids,
-            stat_spans=stat_result.spans,
-            profile=stat_profile,
-        )
-        refine_section_page_ends(sections, chunks)
+        sections: list[SectionRecord]
+        chunks: list[ChunkRecord]
+
+        if extractor_kind == "pymupdf4llm" and elements is not None:
+            section_result = build_sections_from_elements(
+                elements,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                page_count=len(layout_pages),
+                profile=stat_profile,
+            )
+            sections = section_result.sections
+            chunks = build_chunks_from_elements(
+                elements,
+                section_result,
+                layout_pages,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                stat_spans=stat_result.spans,
+                profile=stat_profile,
+            )
+        else:
+            section_result = detect_sections(
+                layout_pages,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                profile=stat_profile,
+            )
+            sections = section_result.sections
+            chunks = build_chunks(
+                layout_pages,
+                sections,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                heading_anchors=section_result.heading_anchors,
+                content_only_section_ids=section_result.content_only_section_ids,
+                stat_spans=stat_result.spans,
+                profile=stat_profile,
+            )
+            refine_section_page_ends(sections, chunks)
 
         repo.insert_pages(pages)
         repo.insert_page_blocks(blocks)
@@ -190,6 +257,8 @@ def run(
         uniqueness = chunk_uniqueness_stats(chunks)
         stats = {
             "source_pdf_path": str(pdf_path.resolve()),
+            "extractor": extractor_kind,
+            "extraction_method": extraction_method,
             "page_count": len(pages),
             "block_count": len(blocks),
             "section_count": len(sections),
