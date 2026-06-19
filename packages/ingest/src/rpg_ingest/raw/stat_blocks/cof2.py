@@ -416,6 +416,14 @@ class Cof2StatBlockProfile:
                     span_id = new_id("sb")
                     span_blocks: list[LayoutBlock] = []
                     attach_icons(span_id, span_blocks)
+                    if idx > 0 and not blocks[idx - 1].metadata.get("stat_block_id"):
+                        prev = blocks[idx - 1]
+                        prev_text = _normalized(prev)
+                        header_text = _normalized(block)
+                        if prev_text and prev_text in header_text:
+                            prev.metadata["stat_block_id"] = span_id
+                            prev.metadata["stat_block_role"] = "header"
+                            span_blocks.append(prev)
                     block.metadata["stat_block_id"] = span_id
                     block.metadata["stat_block_role"] = "header"
                     span_blocks.append(block)

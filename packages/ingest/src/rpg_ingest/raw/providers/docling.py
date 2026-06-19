@@ -3,15 +3,19 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+import pymupdf
 
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
 from docling.document_converter import DocumentConverter, PdfFormatOption
 
 from rpg_ingest.raw.docling_convert import docling_document_to_layout
+from rpg_ingest.raw.docling_enrich import enrich_docling_with_pymupdf
+from rpg_ingest.raw.layout import extract_layout_pages
 from rpg_ingest.raw.providers.base import ExtractionResult
 
 _logger = logging.getLogger(__name__)
@@ -64,10 +68,20 @@ class DoclingExtractionProvider:
         converter = self._get_converter()
         result = converter.convert(str(pdf_path))
         doc = result.document
-        elements, pages = docling_document_to_layout(doc)
+        docling_elements, _docling_pages = docling_document_to_layout(doc)
+
+        pymupdf_document = pymupdf.open(pdf_path)
+        try:
+            pymupdf_pages = extract_layout_pages(pymupdf_document)
+        finally:
+            pymupdf_document.close()
+
+        elements, pages = enrich_docling_with_pymupdf(docling_elements, pymupdf_pages)
         metadata: dict[str, Any] = {
             "docling_page_count": len(doc.pages),
-            "docling_element_count": len(elements),
+            "docling_element_count": len(docling_elements),
+            "enriched_element_count": len(elements),
+            "enriched_block_count": sum(len(page.blocks) for page in pages),
             "do_ocr": self.options.do_ocr,
             "force_backend_text": self.options.force_backend_text,
         }
