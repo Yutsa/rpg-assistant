@@ -37,3 +37,6 @@ pythonpath = [
     "packages/mcp/src",
     "packages/api/src",
 ]
+markers = [
+    "real_pdf: benchmarks on proprietary COF2 PDFs (requires RPG_PDF_* env paths)",
+]
