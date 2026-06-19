@@ -7,7 +7,9 @@ MOMIE_SYNOPSIS_SECTION = "LA MALÉDICTION DE LA MOMIE"
 MOMIE_CREDITS_MARKERS = ("Black Book", "Tous droits réservés")
 
 FAELYS_CREDITS_MARKERS = ("Black Book", "Tous droits réservés")
-FAELYS_INTRO_MARKERS = ("Le bois d'Astréis",)
+# EN QUELQUES MOTS synopsis (p.5) — distinct from backstory in FICHE TECHNIQUE.
+FAELYS_INTRO_MARKERS = ("Hiver 325", "Manthine de Sénice")
+FAELYS_BACKSTORY_MARKERS = ("Le bois d'Astréis", "bois d'Astréis")
 FAELYS_CREDITS_SECTION = "CRÉDITS"
 FAELYS_INTRO_SECTION = "EN QUELQUES MOTS"
 
