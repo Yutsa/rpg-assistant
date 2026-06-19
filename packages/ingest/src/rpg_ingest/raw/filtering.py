@@ -11,6 +11,7 @@ from rpg_ingest.raw.reading_order import (
     is_vertical_running_header,
     page_median_font,
 )
+from rpg_ingest.raw.stat_blocks.text_utils import CONTROL_CHAR_RE, PUA_RE
 
 DRM_EMAIL_ORDER_RE = re.compile(
     r"\S+@\S+\.\S+.*\d{6}/\d+/\d+|\d{6}/\d+/\d+.*\S+@\S+\.\S+",
@@ -93,6 +94,31 @@ def _is_decorative_title_block(
     return False
 
 
+STAT_LINE_HINT_RE = re.compile(
+    r"\b(AGI|FOR|CON|INT|PER|CHA|VOL)\s*[+-]|\|\s*NC\s*\d",
+    re.IGNORECASE,
+)
+
+
+GENEALOGY_GARBAGE_RE = re.compile(r"[\x0c\x0f\x9a\u009a]|Princesse d.")
+
+
+def _is_garbled_block(text: str) -> bool:
+    """Drop DRM overlay lines and diagram garbage with almost no readable letters."""
+    if STAT_LINE_HINT_RE.search(text):
+        return False
+    if GENEALOGY_GARBAGE_RE.search(text):
+        return True
+    cleaned = CONTROL_CHAR_RE.sub("", PUA_RE.sub("", text))
+    cleaned = " ".join(cleaned.split())
+    if not cleaned:
+        return True
+    letters = sum(1 for char in cleaned if char.isalpha())
+    if len(cleaned) < 12:
+        return letters < 4
+    return letters / len(cleaned) < 0.35
+
+
 def _is_layout_noise_block(
     block: LayoutBlock,
     page: LayoutPage,
@@ -158,6 +184,15 @@ def filter_watermark_blocks(
         for block_idx, block in enumerate(page.blocks):
             normalized = _normalize_block_text(block.text)
             distinct_page_count = len(text_pages.get(normalized, set()))
+            if _is_garbled_block(block.text):
+                removed_block_count += 1
+                if (
+                    normalized
+                    and normalized not in removed_patterns
+                    and len(removed_patterns) < cfg.max_removed_patterns
+                ):
+                    removed_patterns.append(normalized)
+                continue
             if _is_layout_noise_block(block, page, block_idx, config=cfg):
                 removed_block_count += 1
                 if (

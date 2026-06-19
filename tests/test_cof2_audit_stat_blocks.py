@@ -386,3 +386,37 @@ def test_fee_parses_inline_abilities_from_collapsed_block():
     pages = _collapsed_fee_pages()
     titles = _ability_titles_from_spans(pages, "FÉE")
     assert titles == list(FEE_ABILITIES)
+
+
+def test_sombre_fee_parses_inline_abilities_with_typographic_apostrophe():
+    """Real Faelys PDF uses U+2019 in PATTES D'ARAIGNÉE inside collapsed inline text."""
+    collapsed = (
+        "SOMBRE FÉE (ARACHNOÏDE) | NC 3\n"
+        "AGI +2* | CON +1 | (S) DEF 16 (V) PV 30 (I) Init. 11 "
+        "TOILE (M) : Sur un test d'attaque réussi. "
+        "MAÎTRE DES TOILES : L'arachnoïde peut se déplacer. "
+        "PATTES D\u2019ARAIGNÉE : L'arachnoïde peut escalader. "
+        "POISON : En cas d'échec. "
+        "CAMOUFLAGE : L'arachnoïde obtient un bonus."
+    )
+    pages = [
+        _page(
+            [
+                _block(
+                    19,
+                    0,
+                    collapsed,
+                    font_size=10,
+                    bold=False,
+                    y0=40,
+                    x0=42,
+                    x1=424,
+                ),
+            ],
+            page_number=19,
+            width=510,
+            height=650,
+        )
+    ]
+    titles = _ability_titles_from_spans(pages, "SOMBRE FÉE")
+    assert titles == list(SOMBRE_FEE_ABILITIES)
