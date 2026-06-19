@@ -8,7 +8,7 @@ from rpg_ingest.raw.providers.base import RawExtractionProvider
 from rpg_ingest.raw.providers.docling import DoclingExtractionProvider, DoclingProviderOptions
 from rpg_ingest.raw.providers.legacy import LegacyExtractionProvider
 
-DEFAULT_EXTRACTION_PROVIDER = "docling"
+DEFAULT_EXTRACTION_PROVIDER = "legacy"
 _ENV_VAR = "RPG_EXTRACTION_PROVIDER"
 
 _PROVIDERS: dict[str, type] = {
