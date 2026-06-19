@@ -110,7 +110,7 @@ The raw pipeline supports two backends, selected via CLI `--extraction-provider`
 | `docling` | IBM Docling (layout AI + reading order) | Heading levels from Docling; chunks by logical order | Auto-fallback to `legacy` on conversion error |
 | `legacy` | PyMuPDF block extraction | Font/column heuristics (`sections.py`, `chunking.py`) | — |
 
-Docling path: `DoclingDocument` → internal `DocElement` list → `LayoutPage` blocks → COF2/stat-block post-processing (unchanged) → `detect_sections_from_elements` / `build_chunks_from_elements`.
+Docling path: `DoclingDocument` → internal `DocElement` list → **PyMuPDF enrichment** (`docling_enrich.py`, one block per layout line) → COF2/stat-block post-processing (unchanged) → `detect_sections_from_elements` / `build_chunks_from_elements`.
 
 **Costs and operational notes (Docling):**
 

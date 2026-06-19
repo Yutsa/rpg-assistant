@@ -65,6 +65,43 @@ def _is_chunk_content(
     return False
 
 
+def _section_for_orphan(page_number: int, sections: list[SectionRecord]) -> str:
+    candidates = [
+        section
+        for section in sections
+        if section.page_start <= page_number <= section.page_end
+    ]
+    if candidates:
+        return candidates[-1].id
+    prior = [section for section in sections if section.page_start <= page_number]
+    if prior:
+        return prior[-1].id
+    return sections[-1].id
+
+
+def _append_orphan_blocks(
+    section_blocks: dict[str, list[tuple[LayoutPage, LayoutBlock]]],
+    pages: list[LayoutPage],
+    sections: list[SectionRecord],
+    *,
+    heading_anchors: list[tuple[int, int]],
+) -> None:
+    claimed = {
+        (page.page_number, block.block_index)
+        for blocks in section_blocks.values()
+        for page, block in blocks
+    }
+    heading_positions = set(heading_anchors)
+    for page in pages:
+        for block in page.blocks:
+            position = (page.page_number, block.block_index)
+            if position in claimed or position in heading_positions:
+                continue
+            section_id = _section_for_orphan(page.page_number, sections)
+            section_blocks[section_id].append((page, block))
+            claimed.add(position)
+
+
 def build_chunks_from_elements(
     elements: list[DocElement],
     pages: list[LayoutPage],
@@ -138,6 +175,13 @@ def build_chunks_from_elements(
         if not _is_chunk_content(element, block, page.blocks, profile=profile):
             continue
         section_blocks[current_section_id].append((page, block))
+
+    _append_orphan_blocks(
+        section_blocks,
+        pages,
+        sections,
+        heading_anchors=heading_anchors,
+    )
 
     chunks = []
     chunk_index = 0

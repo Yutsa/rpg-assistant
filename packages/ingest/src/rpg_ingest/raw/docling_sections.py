@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from rpg_ingest.raw.elements import DocElement
-from rpg_ingest.raw.layout import LayoutPage
+from rpg_ingest.raw.layout import LayoutBlock, LayoutPage
 from rpg_ingest.raw.sections import SectionDetectionResult
 from rpg_ingest.raw.stat_blocks.profile import StatBlockProfile
 from rpg_core.models.raw import SectionRecord
@@ -20,6 +20,30 @@ def _block_for_element(
     if element.block_index >= len(page.blocks):
         return None
     return page, page.blocks[element.block_index]
+
+
+def _is_excluded_heading_block(
+    block: LayoutBlock,
+    page_blocks: list[LayoutBlock],
+    block_idx: int,
+    *,
+    profile: StatBlockProfile | None,
+) -> bool:
+    role = block.metadata.get("stat_block_role")
+    if role in {"header", "stats", "icon"}:
+        return True
+    if profile and profile.is_false_heading(block, page_blocks, block_idx):
+        return True
+    for offset in range(1, 3):
+        next_idx = block_idx + offset
+        if next_idx >= len(page_blocks):
+            break
+        nxt = page_blocks[next_idx]
+        if nxt.metadata.get("stat_block_role") in {"header", "stats"}:
+            return True
+        if " | NC " in nxt.text and block.text.strip() in nxt.text:
+            return True
+    return False
 
 
 def detect_sections_from_elements(
@@ -41,7 +65,9 @@ def detect_sections_from_elements(
                 page, block = located
                 page_blocks = page.blocks
                 block_idx = element.block_index
-                if profile.is_false_heading(block, page_blocks, block_idx):
+                if _is_excluded_heading_block(
+                    block, page_blocks, block_idx, profile=profile
+                ):
                     continue
         headings.append(element)
 
