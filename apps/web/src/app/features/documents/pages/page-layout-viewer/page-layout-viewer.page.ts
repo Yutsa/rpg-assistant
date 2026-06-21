@@ -70,6 +70,7 @@ export class PageLayoutViewerPage {
   readonly hoveredNodeId = signal<string | null>(null);
   readonly selectedNode = signal<PageNode | null>(null);
   readonly detailOpen = signal(false);
+  readonly detailExpanded = signal(false);
 
   readonly showBlocks = signal(true);
   readonly showLines = signal(false);
@@ -136,6 +137,7 @@ export class PageLayoutViewerPage {
           this.error.set(null);
           this.selectedNode.set(null);
           this.detailOpen.set(false);
+          this.detailExpanded.set(false);
           this.hoveredNodeId.set(null);
           this.zoom.set(1);
         }),
@@ -237,10 +239,39 @@ export class PageLayoutViewerPage {
   selectNode(node: PageNode): void {
     this.selectedNode.set(node);
     this.detailOpen.set(true);
+    this.detailExpanded.set(false);
+    queueMicrotask(() => this.scrollNodeIntoView(node));
+  }
+
+  toggleDetailExpanded(): void {
+    this.detailExpanded.update((value) => !value);
   }
 
   closeDetail(): void {
     this.detailOpen.set(false);
+    this.detailExpanded.set(false);
+  }
+
+  private scrollNodeIntoView(node: PageNode): void {
+    const wrap = this.canvasWrap()?.nativeElement;
+    if (!wrap) {
+      return;
+    }
+    const overlay = this.overlayNodes().find((entry) => entry.id === node.id);
+    if (!overlay) {
+      return;
+    }
+    const stripOffset = 150;
+    const nodeTop = overlay.screenY;
+    const nodeBottom = overlay.screenY + overlay.screenHeight;
+    const viewTop = wrap.scrollTop;
+    const viewBottom = wrap.scrollTop + wrap.clientHeight - stripOffset;
+
+    if (nodeBottom > viewBottom) {
+      wrap.scrollTop = nodeBottom - wrap.clientHeight + stripOffset + 12;
+    } else if (nodeTop < viewTop) {
+      wrap.scrollTop = Math.max(0, nodeTop - 12);
+    }
   }
 
   goToPage(pageNumber: number): void {

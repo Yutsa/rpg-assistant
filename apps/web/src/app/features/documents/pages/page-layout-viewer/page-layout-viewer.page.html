@@ -99,15 +99,59 @@
         </div>
       </div>
 
-      <aside class="detail-panel" [class.detail-panel--open]="detailOpen()">
+      <aside
+        class="detail-panel"
+        [class.detail-panel--open]="detailOpen()"
+        [class.detail-panel--expanded]="detailExpanded()"
+      >
         <div class="detail-panel-header">
-          <h2>Détail du nœud</h2>
+          @if (selectedNode(); as node) {
+            <div class="detail-summary">
+              <strong>{{ node.id }}</strong>
+              <span>{{ node.depth }} / {{ node.node_type }}</span>
+            </div>
+          } @else {
+            <h2>Détail du nœud</h2>
+          }
           <button mat-icon-button type="button" (click)="closeDetail()" aria-label="Fermer">
             <mat-icon>close</mat-icon>
           </button>
         </div>
+
         @if (selectedNode(); as node) {
-          <dl>
+          <div class="detail-panel-mobile">
+            @if (node.text) {
+              <p class="node-text-preview">{{ node.text }}</p>
+            }
+
+            <div class="detail-panel-actions">
+              <button mat-button type="button" (click)="toggleDetailExpanded()">
+                {{ detailExpanded() ? 'Moins de détails' : 'Détails techniques' }}
+              </button>
+            </div>
+
+            @if (detailExpanded()) {
+              <dl class="detail-panel-extra">
+                <dt>Bbox (PDF)</dt>
+                <dd>
+                  x0={{ node.bbox.x0 | number: '1.0-1' }},
+                  y0={{ node.bbox.y0 | number: '1.0-1' }},
+                  x1={{ node.bbox.x1 | number: '1.0-1' }},
+                  y1={{ node.bbox.y1 | number: '1.0-1' }}
+                </dd>
+                @if (node.metadata | keyvalue; as entries) {
+                  @if (entries.length > 0) {
+                    <dt>Métadonnées</dt>
+                    <dd>
+                      <pre>{{ node.metadata | json }}</pre>
+                    </dd>
+                  }
+                }
+              </dl>
+            }
+          </div>
+
+          <dl class="detail-panel-desktop">
             <dt>ID</dt>
             <dd>{{ node.id }}</dd>
             <dt>Type</dt>
