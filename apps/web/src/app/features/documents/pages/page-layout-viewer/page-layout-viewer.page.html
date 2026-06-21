@@ -1,29 +1,43 @@
 <section class="viewer" data-testid="page-layout-viewer">
   <header class="viewer-toolbar">
-    <a mat-button [routerLink]="['/documents', documentId]">← Retour au document</a>
+    <div class="toolbar-row toolbar-row--primary">
+      <a mat-button class="back-link" [routerLink]="['/documents', documentId]">← Document</a>
 
-    <div class="page-nav">
-      <button
-        mat-icon-button
-        type="button"
-        [disabled]="pageNumber() <= 1"
-        (click)="goToPage(pageNumber() - 1)"
-        aria-label="Page précédente"
-      >
-        <mat-icon>chevron_left</mat-icon>
-      </button>
-      <span class="page-label">Page {{ pageNumber() }}</span>
-      <button
-        mat-icon-button
-        type="button"
-        (click)="goToPage(pageNumber() + 1)"
-        aria-label="Page suivante"
-      >
-        <mat-icon>chevron_right</mat-icon>
-      </button>
+      <div class="page-nav">
+        <button
+          mat-icon-button
+          type="button"
+          [disabled]="pageNumber() <= 1"
+          (click)="goToPage(pageNumber() - 1)"
+          aria-label="Page précédente"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span class="page-label">Page {{ pageNumber() }}</span>
+        <button
+          mat-icon-button
+          type="button"
+          (click)="goToPage(pageNumber() + 1)"
+          aria-label="Page suivante"
+        >
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <div class="zoom-controls">
+        <button mat-icon-button type="button" (click)="zoomOut()" aria-label="Zoom arrière">
+          <mat-icon>zoom_out</mat-icon>
+        </button>
+        <button mat-icon-button type="button" (click)="resetZoom()" aria-label="Ajuster à la largeur">
+          <mat-icon>fit_screen</mat-icon>
+        </button>
+        <button mat-icon-button type="button" (click)="zoomIn()" aria-label="Zoom avant">
+          <mat-icon>zoom_in</mat-icon>
+        </button>
+      </div>
     </div>
 
-    <div class="layer-toggles">
+    <div class="toolbar-row toolbar-row--layers">
       <mat-checkbox [checked]="showBlocks()" (change)="showBlocks.set($event.checked)">
         Blocs
       </mat-checkbox>
@@ -43,25 +57,27 @@
   } @else if (error()) {
     <app-empty-state [title]="error() ?? ''" />
   } @else {
-    <div class="viewer-body">
-      <div class="canvas-wrap">
+    <div class="viewer-body" [class.viewer-body--detail-open]="detailOpen()">
+      <div class="canvas-wrap" #canvasWrap>
         <div
           class="canvas"
-          [style.width.px]="imageWidth() || null"
-          [style.height.px]="imageHeight() || null"
+          [style.width.px]="displayWidth() || null"
+          [style.height.px]="displayHeight() || null"
         >
           <img
             class="page-image"
             [src]="renderUrl()"
             [attr.alt]="'Page ' + pageNumber()"
+            [style.width.px]="displayWidth() || null"
+            [style.height.px]="displayHeight() || null"
             (load)="onImageLoad($event)"
           />
-          @if (imageWidth() > 0) {
+          @if (displayWidth() > 0) {
             <svg
               class="overlay"
-              [attr.width]="imageWidth()"
-              [attr.height]="imageHeight()"
-              [attr.viewBox]="'0 0 ' + imageWidth() + ' ' + imageHeight()"
+              [attr.width]="displayWidth()"
+              [attr.height]="displayHeight()"
+              [attr.viewBox]="'0 0 ' + displayWidth() + ' ' + displayHeight()"
             >
               @for (node of overlayNodes(); track node.id) {
                 <rect
@@ -83,8 +99,13 @@
         </div>
       </div>
 
-      <aside class="detail-panel">
-        <h2>Détail du nœud</h2>
+      <aside class="detail-panel" [class.detail-panel--open]="detailOpen()">
+        <div class="detail-panel-header">
+          <h2>Détail du nœud</h2>
+          <button mat-icon-button type="button" (click)="closeDetail()" aria-label="Fermer">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
         @if (selectedNode(); as node) {
           <dl>
             <dt>ID</dt>
@@ -112,7 +133,7 @@
             }
           </dl>
         } @else {
-          <p class="hint">Survolez ou cliquez un rectangle pour inspecter un nœud PyMuPDF.</p>
+          <p class="hint">Touchez un rectangle pour inspecter un nœud PyMuPDF.</p>
         }
       </aside>
     </div>

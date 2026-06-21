@@ -1,4 +1,11 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  computed,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DecimalPipe, JsonPipe, KeyValuePipe } from '@angular/common';
@@ -19,6 +26,10 @@ interface OverlayNode extends PageNode {
   screenWidth: number;
   screenHeight: number;
 }
+
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 3;
+const ZOOM_STEP = 0.25;
 
 @Component({
   selector: 'app-page-layout-viewer-page',
@@ -42,6 +53,9 @@ export class PageLayoutViewerPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
+  private readonly canvasWrap = viewChild<ElementRef<HTMLElement>>('canvasWrap');
+  private resizeObserver: ResizeObserver | null = null;
+
   readonly documentId = this.route.snapshot.paramMap.get('documentId') ?? '';
   readonly pageNumber = signal(1);
   readonly loading = signal(true);
@@ -49,19 +63,41 @@ export class PageLayoutViewerPage {
   readonly pageMeta = signal<PageMeta | null>(null);
   readonly nodes = signal<PageNode[]>([]);
   readonly renderUrl = signal('');
-  readonly imageWidth = signal(0);
-  readonly imageHeight = signal(0);
+  readonly naturalWidth = signal(0);
+  readonly naturalHeight = signal(0);
+  readonly containerWidth = signal(0);
+  readonly zoom = signal(1);
   readonly hoveredNodeId = signal<string | null>(null);
   readonly selectedNode = signal<PageNode | null>(null);
+  readonly detailOpen = signal(false);
 
   readonly showBlocks = signal(true);
   readonly showLines = signal(false);
   readonly showSpans = signal(false);
 
+  readonly displayWidth = computed(() => {
+    const nw = this.naturalWidth();
+    const cw = this.containerWidth();
+    if (!nw || !cw) {
+      return 0;
+    }
+    return cw * this.zoom();
+  });
+
+  readonly displayHeight = computed(() => {
+    const nw = this.naturalWidth();
+    const nh = this.naturalHeight();
+    const dw = this.displayWidth();
+    if (!nw || !nh || !dw) {
+      return 0;
+    }
+    return nh * (dw / nw);
+  });
+
   readonly overlayNodes = computed(() => {
     const meta = this.pageMeta();
-    const imgW = this.imageWidth();
-    const imgH = this.imageHeight();
+    const imgW = this.displayWidth();
+    const imgH = this.displayHeight();
     if (!meta || imgW === 0 || imgH === 0) {
       return [] as OverlayNode[];
     }
@@ -99,7 +135,9 @@ export class PageLayoutViewerPage {
           this.loading.set(true);
           this.error.set(null);
           this.selectedNode.set(null);
+          this.detailOpen.set(false);
           this.hoveredNodeId.set(null);
+          this.zoom.set(1);
         }),
         switchMap((pageNumber) =>
           combineLatest([
@@ -109,7 +147,7 @@ export class PageLayoutViewerPage {
             map(([meta, nodes]) => ({
               meta,
               nodes,
-              renderUrl: this.api.getPageRenderUrl(this.documentId, pageNumber),
+              renderUrl: this.api.getPageRenderUrl(this.documentId, pageNumber, 120),
               error: null as string | null,
             })),
             catchError(() =>
@@ -131,13 +169,49 @@ export class PageLayoutViewerPage {
         this.renderUrl.set(renderUrl);
         this.error.set(error);
         this.loading.set(false);
+        queueMicrotask(() => this.observeCanvasWrap());
       });
   }
 
   onImageLoad(event: Event): void {
     const image = event.target as HTMLImageElement;
-    this.imageWidth.set(image.naturalWidth);
-    this.imageHeight.set(image.naturalHeight);
+    this.naturalWidth.set(image.naturalWidth);
+    this.naturalHeight.set(image.naturalHeight);
+    this.updateContainerWidth();
+  }
+
+  observeCanvasWrap(): void {
+    const element = this.canvasWrap()?.nativeElement;
+    if (!element) {
+      return;
+    }
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = new ResizeObserver(() => this.updateContainerWidth());
+    this.resizeObserver.observe(element);
+    this.updateContainerWidth();
+  }
+
+  private updateContainerWidth(): void {
+    const element = this.canvasWrap()?.nativeElement;
+    if (!element) {
+      return;
+    }
+    const styles = getComputedStyle(element);
+    const paddingX =
+      parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
+    this.containerWidth.set(Math.max(0, element.clientWidth - paddingX));
+  }
+
+  zoomIn(): void {
+    this.zoom.update((value) => Math.min(MAX_ZOOM, value + ZOOM_STEP));
+  }
+
+  zoomOut(): void {
+    this.zoom.update((value) => Math.max(MIN_ZOOM, value - ZOOM_STEP));
+  }
+
+  resetZoom(): void {
+    this.zoom.set(1);
   }
 
   nodeClass(node: PageNode): string {
@@ -162,6 +236,11 @@ export class PageLayoutViewerPage {
 
   selectNode(node: PageNode): void {
     this.selectedNode.set(node);
+    this.detailOpen.set(true);
+  }
+
+  closeDetail(): void {
+    this.detailOpen.set(false);
   }
 
   goToPage(pageNumber: number): void {
