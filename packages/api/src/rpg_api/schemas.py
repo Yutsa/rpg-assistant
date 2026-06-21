@@ -114,3 +114,16 @@ class PageBlockOut(BaseModel):
     text: str
     bbox: BBox
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class PageNodeOut(BaseModel):
+    id: str
+    depth: str
+    node_type: str
+    parent_id: str | None = None
+    block_index: int
+    line_index: int | None = None
+    span_index: int | None = None
+    text: str
+    bbox: BBox
+    metadata: dict[str, Any] = Field(default_factory=dict)

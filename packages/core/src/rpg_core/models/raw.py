@@ -29,6 +29,7 @@ class PageRecord(BaseModel):
     text_coverage_ratio: float
     width: float | None = None
     height: float | None = None
+    raw_layout: dict[str, Any] | None = None
 
 
 class PageBlockRecord(BaseModel):

@@ -9,6 +9,10 @@ import {
   Chunk,
   ChunkListItem,
   Document,
+  PageMeta,
+  PageNode,
+  PageNodeLevel,
+  PageNodeType,
   Section,
   StatBlockDetail,
   StatBlockIndex,
@@ -78,6 +82,33 @@ export class CampaignApiService {
   getStatBlockByChunkId(documentId: string, chunkId: string): Observable<StatBlockDetail> {
     return this.http.get<StatBlockDetail>(
       `${API_URL}/documents/${documentId}/stat-blocks/${chunkId}`,
+    );
+  }
+
+  getPageMeta(documentId: string, pageNumber: number): Observable<PageMeta> {
+    return this.http.get<PageMeta>(`${API_URL}/documents/${documentId}/pages/${pageNumber}`);
+  }
+
+  getPageRenderUrl(documentId: string, pageNumber: number, dpi = 150): string {
+    const params = new HttpParams().set('dpi', dpi);
+    return `${API_URL}/documents/${documentId}/pages/${pageNumber}/render?${params.toString()}`;
+  }
+
+  listPageNodes(
+    documentId: string,
+    pageNumber: number,
+    params: { level?: PageNodeLevel; type?: PageNodeType } = {},
+  ): Observable<PageNode[]> {
+    let httpParams = new HttpParams();
+    if (params.level) {
+      httpParams = httpParams.set('level', params.level);
+    }
+    if (params.type) {
+      httpParams = httpParams.set('type', params.type);
+    }
+    return this.http.get<PageNode[]>(
+      `${API_URL}/documents/${documentId}/pages/${pageNumber}/nodes`,
+      { params: httpParams },
     );
   }
 }

@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 
@@ -19,6 +20,8 @@ const CHUNK_PAGE_SIZE = 20;
   selector: 'app-document-explorer-page',
   imports: [
     RouterOutlet,
+    RouterLink,
+    MatButtonModule,
     MatTabsModule,
     MatProgressSpinnerModule,
     SectionTreeComponent,

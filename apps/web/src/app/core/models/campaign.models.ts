@@ -120,3 +120,25 @@ export interface StatBlockDetail {
 export interface SectionNode extends Section {
   children: SectionNode[];
 }
+
+export interface PageMeta {
+  page_number: number;
+  width: number;
+  height: number;
+}
+
+export interface PageNode {
+  id: string;
+  depth: 'block' | 'line' | 'span';
+  node_type: 'text' | 'image';
+  parent_id: string | null;
+  block_index: number;
+  line_index: number | null;
+  span_index: number | null;
+  text: string;
+  bbox: { x0: number; y0: number; x1: number; y1: number };
+  metadata: Record<string, unknown>;
+}
+
+export type PageNodeLevel = PageNode['depth'];
+export type PageNodeType = PageNode['node_type'];

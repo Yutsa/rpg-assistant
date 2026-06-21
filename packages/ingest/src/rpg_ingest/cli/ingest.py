@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-from rpg_ingest.raw.importer import run
+from rpg_ingest.raw.importer import INGEST_MODE_FULL, INGEST_MODE_LAYOUT_ONLY, run
 from rpg_ingest.raw.providers import DEFAULT_EXTRACTION_PROVIDER
 from rpg_core.storage.db import get_connection
 from rpg_core.storage.repositories.raw import RawRepository
@@ -20,6 +20,7 @@ def _cmd_raw_extract(args: argparse.Namespace) -> int:
         coverage_threshold=args.coverage_threshold,
         reimport=not args.no_reimport,
         extraction_provider=args.extraction_provider,
+        ingest_mode=args.ingest_mode,
     )
     print(json.dumps(result.__dict__, indent=2, default=str))
     return 0 if result.status == "completed" else 1
@@ -66,6 +67,15 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             f"PDF extraction backend (default: {DEFAULT_EXTRACTION_PROVIDER}). "
             "Use docling for Docling layout + reading order."
+        ),
+    )
+    extract.add_argument(
+        "--ingest-mode",
+        choices=[INGEST_MODE_FULL, INGEST_MODE_LAYOUT_ONLY],
+        default=INGEST_MODE_FULL,
+        help=(
+            "Ingestion depth: full pipeline (default) or layout-only "
+            "(store raw PyMuPDF structure without sections/chunks)."
         ),
     )
     extract.set_defaults(func=_cmd_raw_extract)

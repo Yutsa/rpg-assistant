@@ -31,6 +31,11 @@
   padding: 3rem;
 }
 
+.explorer-toolbar {
+  grid-column: 1 / -1;
+  padding: 0.75rem 1rem 0;
+}
+
 @media (max-width: 960px) {
   .explorer {
     grid-template-columns: 1fr;

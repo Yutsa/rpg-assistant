@@ -1,0 +1,165 @@
+.viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: calc(100vh - 4rem);
+}
+
+.viewer-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.page-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.page-label {
+  min-width: 5rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.layer-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.viewer-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  gap: 1rem;
+  align-items: start;
+}
+
+.canvas-wrap {
+  overflow: auto;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: #f5f5f5;
+  padding: 1rem;
+}
+
+.canvas {
+  position: relative;
+  margin: 0 auto;
+}
+
+.page-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  rect {
+    pointer-events: all;
+    fill: transparent;
+    stroke-width: 1.5;
+    cursor: pointer;
+    transition: fill 0.1s ease;
+  }
+
+  .node-block {
+    stroke: #1976d2;
+    fill: rgba(25, 118, 210, 0.12);
+  }
+
+  .node-line {
+    stroke: #388e3c;
+    fill: rgba(56, 142, 60, 0.1);
+  }
+
+  .node-span {
+    stroke: #f57c00;
+    fill: rgba(245, 124, 0, 0.1);
+  }
+
+  .node-image {
+    stroke: #7b1fa2;
+    fill: rgba(123, 31, 162, 0.12);
+  }
+
+  .is-hovered,
+  .is-selected {
+    stroke-width: 2.5;
+  }
+
+  .is-selected {
+    fill: rgba(255, 193, 7, 0.2);
+    stroke: #ff8f00;
+  }
+}
+
+.detail-panel {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fff;
+  position: sticky;
+  top: 1rem;
+
+  h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+  }
+
+  dl {
+    margin: 0;
+  }
+
+  dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.54);
+    margin-top: 0.75rem;
+  }
+
+  dd {
+    margin: 0.25rem 0 0;
+    word-break: break-word;
+  }
+
+  pre {
+    margin: 0;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+  }
+
+  .node-text {
+    font-family: inherit;
+    white-space: pre-wrap;
+  }
+
+  .hint {
+    color: rgba(0, 0, 0, 0.6);
+    margin: 0;
+  }
+}
+
+@media (max-width: 960px) {
+  .viewer-body {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-panel {
+    position: static;
+  }
+}
