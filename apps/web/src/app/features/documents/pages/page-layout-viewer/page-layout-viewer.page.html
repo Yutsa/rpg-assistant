@@ -1,0 +1,185 @@
+<section class="viewer" data-testid="page-layout-viewer">
+  <header class="viewer-toolbar">
+    <div class="toolbar-row toolbar-row--primary">
+      <a mat-button class="back-link" [routerLink]="['/documents', documentId]">← Document</a>
+
+      <div class="page-nav">
+        <button
+          mat-icon-button
+          type="button"
+          [disabled]="pageNumber() <= 1"
+          (click)="goToPage(pageNumber() - 1)"
+          aria-label="Page précédente"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span class="page-label">Page {{ pageNumber() }}</span>
+        <button
+          mat-icon-button
+          type="button"
+          (click)="goToPage(pageNumber() + 1)"
+          aria-label="Page suivante"
+        >
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <div class="zoom-controls">
+        <button mat-icon-button type="button" (click)="zoomOut()" aria-label="Zoom arrière">
+          <mat-icon>zoom_out</mat-icon>
+        </button>
+        <button mat-icon-button type="button" (click)="resetZoom()" aria-label="Ajuster à la largeur">
+          <mat-icon>fit_screen</mat-icon>
+        </button>
+        <button mat-icon-button type="button" (click)="zoomIn()" aria-label="Zoom avant">
+          <mat-icon>zoom_in</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="toolbar-row toolbar-row--layers">
+      <mat-checkbox [checked]="showBlocks()" (change)="showBlocks.set($event.checked)">
+        Blocs
+      </mat-checkbox>
+      <mat-checkbox [checked]="showLines()" (change)="showLines.set($event.checked)">
+        Lignes
+      </mat-checkbox>
+      <mat-checkbox [checked]="showSpans()" (change)="showSpans.set($event.checked)">
+        Spans
+      </mat-checkbox>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <app-empty-state [title]="error() ?? ''" />
+  } @else {
+    <div class="viewer-body" [class.viewer-body--detail-open]="detailOpen()">
+      <div class="canvas-wrap" #canvasWrap>
+        <div
+          class="canvas"
+          [style.width.px]="displayWidth() || null"
+          [style.height.px]="displayHeight() || null"
+        >
+          <img
+            class="page-image"
+            [src]="renderUrl()"
+            [attr.alt]="'Page ' + pageNumber()"
+            [style.width.px]="displayWidth() || null"
+            [style.height.px]="displayHeight() || null"
+            (load)="onImageLoad($event)"
+          />
+          @if (displayWidth() > 0) {
+            <svg
+              class="overlay"
+              [attr.width]="displayWidth()"
+              [attr.height]="displayHeight()"
+              [attr.viewBox]="'0 0 ' + displayWidth() + ' ' + displayHeight()"
+            >
+              @for (node of overlayNodes(); track node.id) {
+                <rect
+                  [attr.x]="node.screenX"
+                  [attr.y]="node.screenY"
+                  [attr.width]="node.screenWidth"
+                  [attr.height]="node.screenHeight"
+                  [class]="nodeClass(node)"
+                  [class.is-hovered]="hoveredNodeId() === node.id"
+                  [class.is-selected]="selectedNode()?.id === node.id"
+                  [matTooltip]="nodeTooltip(node)"
+                  (mouseenter)="hoveredNodeId.set(node.id)"
+                  (mouseleave)="hoveredNodeId.set(null)"
+                  (click)="selectNode(node)"
+                />
+              }
+            </svg>
+          }
+        </div>
+      </div>
+
+      <aside
+        class="detail-panel"
+        [class.detail-panel--open]="detailOpen()"
+        [class.detail-panel--expanded]="detailExpanded()"
+      >
+        <div class="detail-panel-header">
+          @if (selectedNode(); as node) {
+            <div class="detail-summary">
+              <strong>{{ node.id }}</strong>
+              <span>{{ node.depth }} / {{ node.node_type }}</span>
+            </div>
+          } @else {
+            <h2>Détail du nœud</h2>
+          }
+          <button mat-icon-button type="button" (click)="closeDetail()" aria-label="Fermer">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        @if (selectedNode(); as node) {
+          <div class="detail-panel-mobile">
+            @if (node.text) {
+              <p class="node-text-preview">{{ node.text }}</p>
+            }
+
+            <div class="detail-panel-actions">
+              <button mat-button type="button" (click)="toggleDetailExpanded()">
+                {{ detailExpanded() ? 'Moins de détails' : 'Détails techniques' }}
+              </button>
+            </div>
+
+            @if (detailExpanded()) {
+              <dl class="detail-panel-extra">
+                <dt>Bbox (PDF)</dt>
+                <dd>
+                  x0={{ node.bbox.x0 | number: '1.0-1' }},
+                  y0={{ node.bbox.y0 | number: '1.0-1' }},
+                  x1={{ node.bbox.x1 | number: '1.0-1' }},
+                  y1={{ node.bbox.y1 | number: '1.0-1' }}
+                </dd>
+                @if (node.metadata | keyvalue; as entries) {
+                  @if (entries.length > 0) {
+                    <dt>Métadonnées</dt>
+                    <dd>
+                      <pre>{{ node.metadata | json }}</pre>
+                    </dd>
+                  }
+                }
+              </dl>
+            }
+          </div>
+
+          <dl class="detail-panel-desktop">
+            <dt>ID</dt>
+            <dd>{{ node.id }}</dd>
+            <dt>Type</dt>
+            <dd>{{ node.depth }} / {{ node.node_type }}</dd>
+            <dt>Bbox (PDF)</dt>
+            <dd>
+              x0={{ node.bbox.x0 | number: '1.0-1' }},
+              y0={{ node.bbox.y0 | number: '1.0-1' }},
+              x1={{ node.bbox.x1 | number: '1.0-1' }},
+              y1={{ node.bbox.y1 | number: '1.0-1' }}
+            </dd>
+            @if (node.text) {
+              <dt>Texte</dt>
+              <dd class="node-text">{{ node.text }}</dd>
+            }
+            @if (node.metadata | keyvalue; as entries) {
+              @if (entries.length > 0) {
+                <dt>Métadonnées</dt>
+                <dd>
+                  <pre>{{ node.metadata | json }}</pre>
+                </dd>
+              }
+            }
+          </dl>
+        } @else {
+          <p class="hint">Touchez un rectangle pour inspecter un nœud PyMuPDF.</p>
+        }
+      </aside>
+    </div>
+  }
+</section>

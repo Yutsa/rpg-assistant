@@ -71,6 +71,7 @@ CREATE TABLE pages (
     text_coverage_ratio REAL NOT NULL DEFAULT 1.0,
     width REAL,
     height REAL,
+    raw_layout_json TEXT,
     UNIQUE (document_id, page_number)
 );
 CREATE TABLE page_blocks (

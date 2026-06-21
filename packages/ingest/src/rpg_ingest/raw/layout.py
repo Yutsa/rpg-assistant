@@ -24,6 +24,17 @@ class LayoutPage:
     height: float
     text: str
     blocks: list[LayoutBlock] = field(default_factory=list)
+    raw_layout: dict[str, Any] | None = None
+
+
+@dataclass
+class RawLayoutPage:
+    page_number: int
+    width: float
+    height: float
+    text: str
+    raw_layout: dict[str, Any]
+    blocks: list[LayoutBlock] = field(default_factory=list)
 
 
 def rebuild_layout_page(page: LayoutPage, blocks: list[LayoutBlock]) -> LayoutPage:
@@ -64,6 +75,64 @@ def _line_metadata(line: dict[str, Any]) -> dict[str, Any]:
         "font_flags": primary.get("flags"),
         "font_name": primary.get("font"),
     }
+
+
+def blocks_from_raw_layout(raw_layout: dict[str, Any], page_number: int) -> list[LayoutBlock]:
+    """Derive text blocks from a PyMuPDF page dict without heuristics."""
+    from rpg_ingest.raw.raw_nodes import _block_text, _line_metadata
+
+    blocks: list[LayoutBlock] = []
+    block_index = 0
+    for block in raw_layout.get("blocks") or []:
+        if block.get("type") != 0:
+            continue
+        block_text = _block_text(block)
+        if not block_text:
+            continue
+        lines = block.get("lines") or []
+        line_meta = [_line_metadata(line) for line in lines if line.get("spans")]
+        metadata: dict[str, Any] = {"line_count": len(lines), "source": "pymupdf_raw"}
+        if line_meta:
+            sizes = [m["font_size"] for m in line_meta if m.get("font_size")]
+            flags = [m.get("font_flags", 0) for m in line_meta]
+            if sizes:
+                metadata["max_font_size"] = max(sizes)
+                metadata["avg_font_size"] = sum(sizes) / len(sizes)
+            metadata["is_bold"] = any(f & 16 for f in flags)
+            metadata["is_italic"] = any(f & 2 for f in flags)
+        blocks.append(
+            LayoutBlock(
+                page_number=page_number,
+                block_index=block_index,
+                text=block_text,
+                bbox=_bbox_from_tuple(tuple(block["bbox"])),
+                metadata=metadata,
+            )
+        )
+        block_index += 1
+    return blocks
+
+
+def extract_raw_layout_pages(document: pymupdf.Document) -> list[RawLayoutPage]:
+    """Extract the full PyMuPDF page dict per page, without heuristics."""
+    pages: list[RawLayoutPage] = []
+    for page_index, page in enumerate(document):
+        page_number = page_index + 1
+        rect = page.rect
+        raw_layout = page.get_text("dict")
+        blocks = blocks_from_raw_layout(raw_layout, page_number)
+        text_parts = [block.text for block in blocks]
+        pages.append(
+            RawLayoutPage(
+                page_number=page_number,
+                width=rect.width,
+                height=rect.height,
+                text="\n\n".join(text_parts),
+                raw_layout=raw_layout,
+                blocks=blocks,
+            )
+        )
+    return pages
 
 
 def extract_layout_pages(document: pymupdf.Document) -> list[LayoutPage]:

@@ -162,6 +162,66 @@ def test_page_meta_and_blocks(api_client: TestClient) -> None:
     assert blocks[0]["id"] == "blk_1"
 
 
+def test_page_nodes_with_raw_layout(tmp_path: Path) -> None:
+    pdf_path = tmp_path / "test.pdf"
+    doc = pymupdf.open()
+    page = doc.new_page()
+    page.insert_text((72, 72), "Overlay me", fontsize=14)
+    doc.save(pdf_path)
+    doc.close()
+
+    document = pymupdf.open(pdf_path)
+    try:
+        from rpg_ingest.raw.layout import extract_raw_layout_pages
+
+        raw_page = extract_raw_layout_pages(document)[0]
+    finally:
+        document.close()
+
+    repo = _memory_repo()
+    repo.ensure_campaign("momie")
+    repo.upsert_document("doc_raw", "momie", "test.pdf", 1, "def")
+    repo.insert_pages(
+        [
+            PageRecord(
+                id="page_raw_1",
+                document_id="doc_raw",
+                page_number=1,
+                text=raw_page.text,
+                text_coverage_ratio=1.0,
+                width=raw_page.width,
+                height=raw_page.height,
+                raw_layout=raw_page.raw_layout,
+            )
+        ]
+    )
+    repo.create_ingestion_run(
+        IngestionRunRecord(
+            id="run_raw",
+            campaign_id="momie",
+            document_id="doc_raw",
+            stage="raw",
+            status="completed",
+            stats={"source_pdf_path": str(pdf_path)},
+        )
+    )
+
+    def _override_raw_repo():
+        return repo
+
+    app = create_app()
+    app.dependency_overrides[get_raw_repo] = _override_raw_repo
+    client = TestClient(app)
+
+    raw_layout = client.get("/documents/doc_raw/pages/1/raw-layout").json()
+    assert raw_layout.get("blocks")
+
+    nodes = client.get("/documents/doc_raw/pages/1/nodes", params={"level": "block"}).json()
+    assert len(nodes) >= 1
+    assert nodes[0]["depth"] == "block"
+    assert "Overlay" in nodes[0]["text"]
+
+
 def test_stat_blocks(api_client: TestClient) -> None:
     index = api_client.get("/documents/doc_test/stat-blocks").json()
     assert index[0]["name"] == "Gobelin"

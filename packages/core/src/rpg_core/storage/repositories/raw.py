@@ -244,7 +244,7 @@ class RawRepository:
             cur.execute(
                 """
                 SELECT id, document_id, page_number, text, extraction_method,
-                       has_text, text_coverage_ratio, width, height
+                       has_text, text_coverage_ratio, width, height, raw_layout_json
                 FROM pages
                 WHERE document_id = %s AND page_number = %s
                 """,
@@ -263,7 +263,14 @@ class RawRepository:
             text_coverage_ratio=row[6] or 0.0,
             width=row[7],
             height=row[8],
+            raw_layout=parse_json(row[9]) if len(row) > 9 else None,
         )
+
+    def get_page_raw_layout(self, document_id: str, page_number: int) -> dict[str, Any] | None:
+        page = self.get_page(document_id, page_number)
+        if page is None:
+            return None
+        return page.raw_layout
 
     def list_page_blocks_for_page(
         self, document_id: str, page_number: int
@@ -350,15 +357,16 @@ class RawRepository:
                 """
                 INSERT INTO pages
                     (id, document_id, page_number, text, extraction_method,
-                     has_text, text_coverage_ratio, width, height)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                     has_text, text_coverage_ratio, width, height, raw_layout_json)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (document_id, page_number) DO UPDATE SET
                     text = EXCLUDED.text,
                     extraction_method = EXCLUDED.extraction_method,
                     has_text = EXCLUDED.has_text,
                     text_coverage_ratio = EXCLUDED.text_coverage_ratio,
                     width = EXCLUDED.width,
-                    height = EXCLUDED.height
+                    height = EXCLUDED.height,
+                    raw_layout_json = EXCLUDED.raw_layout_json
                 """,
                 [
                     (
@@ -371,6 +379,7 @@ class RawRepository:
                         p.text_coverage_ratio,
                         p.width,
                         p.height,
+                        dump_json(p.raw_layout) if p.raw_layout is not None else None,
                     )
                     for p in pages
                 ],

@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+from typing import Any, Literal
+
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import FileResponse
 
 from rpg_api.deps import get_raw_repo, require_document
 from rpg_api.errors import not_found, pdf_not_found
-from rpg_api.schemas import PageBlockOut, PageMetaOut
+from rpg_api.schemas import PageBlockOut, PageMetaOut, PageNodeOut
 from rpg_ingest.feedback.visual_review import VisualReviewError, resolve_pdf_path
+from rpg_ingest.raw.raw_nodes import NodeDepth, NodeType, flatten_raw_layout
 from rpg_ingest.raw.rendering import render_pdf_pages
 from rpg_core.storage.repositories.raw import RawRepository
 
@@ -50,6 +53,52 @@ def list_page_blocks(
             metadata=b.metadata,
         )
         for b in blocks
+    ]
+
+
+@router.get("/{document_id}/pages/{page_number}/raw-layout")
+def get_page_raw_layout(
+    document_id: str,
+    page_number: int,
+    repo: RawRepository = Depends(get_raw_repo),
+) -> dict[str, Any]:
+    require_document(repo, document_id)
+    raw_layout = repo.get_page_raw_layout(document_id, page_number)
+    if raw_layout is None:
+        raise not_found(f"Unknown page {page_number} for document {document_id}")
+    return raw_layout
+
+
+@router.get("/{document_id}/pages/{page_number}/nodes", response_model=list[PageNodeOut])
+def list_page_nodes(
+    document_id: str,
+    page_number: int,
+    level: NodeDepth | None = Query(default=None),
+    node_type: NodeType | None = Query(default=None, alias="type"),
+    repo: RawRepository = Depends(get_raw_repo),
+) -> list[PageNodeOut]:
+    require_document(repo, document_id)
+    raw_layout = repo.get_page_raw_layout(document_id, page_number)
+    if raw_layout is None:
+        raise not_found(
+            f"Raw layout unavailable for page {page_number}. "
+            "Re-import with --ingest-mode layout-only."
+        )
+    nodes = flatten_raw_layout(raw_layout, level=level, node_type=node_type)
+    return [
+        PageNodeOut(
+            id=node.id,
+            depth=node.depth,
+            node_type=node.node_type,
+            parent_id=node.parent_id,
+            block_index=node.block_index,
+            line_index=node.line_index,
+            span_index=node.span_index,
+            text=node.text,
+            bbox=node.bbox,
+            metadata=node.metadata,
+        )
+        for node in nodes
     ]
 
 
