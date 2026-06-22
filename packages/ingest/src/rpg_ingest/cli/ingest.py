@@ -5,7 +5,12 @@ import json
 import sys
 from pathlib import Path
 
-from rpg_ingest.raw.importer import INGEST_MODE_FULL, INGEST_MODE_LAYOUT_ONLY, run
+from rpg_ingest.raw.importer import (
+    INGEST_MODE_EXTRACTOR_COMPARE,
+    INGEST_MODE_FULL,
+    INGEST_MODE_LAYOUT_ONLY,
+    run,
+)
 from rpg_ingest.raw.providers import DEFAULT_EXTRACTION_PROVIDER
 from rpg_core.storage.db import get_connection
 from rpg_core.storage.repositories.raw import RawRepository
@@ -71,11 +76,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     extract.add_argument(
         "--ingest-mode",
-        choices=[INGEST_MODE_FULL, INGEST_MODE_LAYOUT_ONLY],
+        choices=[
+            INGEST_MODE_FULL,
+            INGEST_MODE_LAYOUT_ONLY,
+            INGEST_MODE_EXTRACTOR_COMPARE,
+        ],
         default=INGEST_MODE_FULL,
         help=(
-            "Ingestion depth: full pipeline (default) or layout-only "
-            "(store raw PyMuPDF structure without sections/chunks)."
+            "Ingestion depth: full pipeline (default), layout-only "
+            "(raw PyMuPDF blocks without sections/chunks), or extractor-compare "
+            "(PyMuPDF + PDFBox blocks for the comparateur)."
         ),
     )
     extract.set_defaults(func=_cmd_raw_extract)

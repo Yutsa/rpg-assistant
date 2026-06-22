@@ -148,7 +148,12 @@ def compare_page_extractors_endpoint(
         raise pdf_not_found(str(exc)) from exc
 
     try:
-        payload = compare_page_extractors(resolved_pdf, page_number)
+        payload = compare_page_extractors(
+            resolved_pdf,
+            page_number,
+            repo=repo,
+            document_id=document_id,
+        )
     except ValueError as exc:
         raise not_found(str(exc)) from exc
     except FileNotFoundError as exc:

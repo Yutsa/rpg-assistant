@@ -22,6 +22,13 @@
    [:height pos?]
    [:blocks [:sequential PageBlock]]])
 
+(def DocumentOutput
+  [:map
+   [:extraction-method string?]
+   [:provider-id string?]
+   [:page-count pos-int?]
+   [:pages [:sequential PageOutput]]])
+
 (defn validate [schema value label]
   (if (m/validate schema value)
     value

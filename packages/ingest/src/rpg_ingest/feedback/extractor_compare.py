@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import atexit
 import json
 import subprocess
 import threading
@@ -11,11 +10,15 @@ from typing import Any
 
 import pymupdf
 
-from rpg_core.models.raw import BBox
+from rpg_core.models.raw import BBox, PageBlockRecord
+from rpg_core.storage.repositories.raw import RawRepository
+from rpg_ingest.raw.clojure_pdfbox import extract_pdfbox_page, reset_clojure_pdfbox_session
+from rpg_ingest.raw.extractor_compare_ingest import (
+    COMPARE_LANE_PDFBOX,
+    COMPARE_LANE_PYMUPDF,
+)
 from rpg_ingest.raw.layout import blocks_from_raw_layout
 
-_REPO_ROOT = Path(__file__).resolve().parents[5]
-_INGEST_CLJ_DIR = _REPO_ROOT / "packages" / "ingest-clj"
 _COMPARE_CACHE_MAX = 64
 
 
@@ -38,127 +41,14 @@ def _block_to_dict(
     }
 
 
-class _ClojurePdfboxSession:
-    """Keeps a warm Clojure JVM alive for repeated page extractions."""
-
-    def __init__(self) -> None:
-        self._lock = threading.Lock()
-        self._process: subprocess.Popen[str] | None = None
-
-    def _start(self) -> None:
-        if not _INGEST_CLJ_DIR.is_dir():
-            raise FileNotFoundError(f"Clojure ingest module not found: {_INGEST_CLJ_DIR}")
-
-        self._process = subprocess.Popen(
-            ["clojure", "-M:ingest", "serve"],
-            cwd=_INGEST_CLJ_DIR,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            bufsize=1,
-        )
-        assert self._process.stdout is not None
-        ready_line = self._process.stdout.readline()
-        if not ready_line:
-            raise RuntimeError("Clojure serve process exited before ready signal")
-        ready_payload = json.loads(ready_line)
-        if not ready_payload.get("ready"):
-            raise RuntimeError(f"Unexpected Clojure serve startup payload: {ready_line.strip()}")
-
-    def _ensure_running(self) -> subprocess.Popen[str]:
-        if self._process is None or self._process.poll() is not None:
-            self._start()
-        assert self._process is not None
-        return self._process
-
-    def extract_page(self, pdf_path: Path, page_number: int) -> dict[str, Any]:
-        with self._lock:
-            process = self._ensure_running()
-            assert process.stdin is not None
-            assert process.stdout is not None
-
-            request = json.dumps(
-                {"pdf": str(pdf_path.resolve()), "page": page_number},
-                ensure_ascii=False,
-            )
-            process.stdin.write(f"{request}\n")
-            process.stdin.flush()
-
-            response_line = process.stdout.readline()
-            if not response_line:
-                stderr = ""
-                if process.stderr is not None:
-                    stderr = process.stderr.read()
-                raise RuntimeError(
-                    f"Clojure serve process closed stdout unexpectedly: {stderr.strip()}"
-                )
-
-            payload = json.loads(response_line)
-            if payload.get("error"):
-                raise RuntimeError(str(payload["error"]))
-            return payload
-
-    def close(self) -> None:
-        with self._lock:
-            if self._process is None:
-                return
-            if self._process.poll() is None:
-                self._process.terminate()
-                try:
-                    self._process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    self._process.kill()
-            self._process = None
-
-
-_clojure_session = _ClojurePdfboxSession()
-atexit.register(_clojure_session.close)
-_compare_cache: OrderedDict[tuple[str, float, int], dict[str, Any]] = OrderedDict()
-_compare_cache_lock = threading.Lock()
-
-
-def reset_clojure_pdfbox_session() -> None:
-    """Test helper: restart the warm Clojure JVM."""
-    _clojure_session.close()
-
-
 def clear_compare_cache() -> None:
     """Test helper: drop cached page comparisons."""
     with _compare_cache_lock:
         _compare_cache.clear()
 
 
-def _run_clojure_page_command(pdf_path: Path, page_number: int, action: str) -> dict[str, Any]:
-    if not _INGEST_CLJ_DIR.is_dir():
-        raise FileNotFoundError(f"Clojure ingest module not found: {_INGEST_CLJ_DIR}")
-
-    command = [
-        "clojure",
-        "-M:ingest",
-        "raw",
-        action,
-        "--pdf",
-        str(pdf_path.resolve()),
-        "--page",
-        str(page_number),
-    ]
-    completed = subprocess.run(
-        command,
-        cwd=_INGEST_CLJ_DIR,
-        capture_output=True,
-        text=True,
-        check=False,
-        timeout=180,
-    )
-    if completed.returncode != 0:
-        message = completed.stderr.strip() or completed.stdout.strip() or f"Clojure {action} failed"
-        raise RuntimeError(message)
-
-    payload = json.loads(completed.stdout)
-    if payload.get("error"):
-        raise RuntimeError(str(payload["error"]))
-    return payload
+_compare_cache: OrderedDict[tuple[str, float, int], dict[str, Any]] = OrderedDict()
+_compare_cache_lock = threading.Lock()
 
 
 def _pdfbox_payload_to_page(
@@ -197,6 +87,90 @@ def _pdfbox_payload_to_page(
     }
 
 
+def _page_block_record_to_dict(
+    block: PageBlockRecord,
+    *,
+    block_id_prefix: str,
+) -> dict[str, Any]:
+    lane = (block.metadata or {}).get("compare_lane", block_id_prefix)
+    return _block_to_dict(
+        block_id=block.id,
+        page_number=block.page_number,
+        block_index=block.block_index,
+        text=block.text,
+        bbox=block.bbox,
+        metadata={**block.metadata, "compare_lane": lane},
+    )
+
+
+def _lane_page_from_blocks(
+    *,
+    page_number: int,
+    width: float,
+    height: float,
+    extraction_method: str,
+    block_id_prefix: str,
+    blocks: list[PageBlockRecord],
+) -> dict[str, Any]:
+    sorted_blocks = sorted(blocks, key=lambda block: block.block_index)
+    return {
+        "page_number": page_number,
+        "width": width,
+        "height": height,
+        "extraction_method": extraction_method,
+        "blocks": [
+            _page_block_record_to_dict(block, block_id_prefix=block_id_prefix)
+            for block in sorted_blocks
+        ],
+    }
+
+
+def compare_page_extractors_from_db(
+    repo: RawRepository,
+    document_id: str,
+    page_number: int,
+) -> dict[str, Any] | None:
+    page = repo.get_page(document_id, page_number)
+    if page is None or page.width is None or page.height is None:
+        return None
+
+    blocks = repo.list_page_blocks_for_page(document_id, page_number)
+    lanes: dict[str, list[PageBlockRecord]] = {
+        COMPARE_LANE_PYMUPDF: [],
+        COMPARE_LANE_PDFBOX: [],
+    }
+    for block in blocks:
+        lane = (block.metadata or {}).get("compare_lane")
+        if lane in lanes:
+            lanes[lane].append(block)
+
+    if not lanes[COMPARE_LANE_PYMUPDF] or not lanes[COMPARE_LANE_PDFBOX]:
+        return None
+
+    return {
+        "page_number": page_number,
+        "width": float(page.width),
+        "height": float(page.height),
+        "pymupdf": _lane_page_from_blocks(
+            page_number=page_number,
+            width=float(page.width),
+            height=float(page.height),
+            extraction_method="pymupdf_raw",
+            block_id_prefix=COMPARE_LANE_PYMUPDF,
+            blocks=lanes[COMPARE_LANE_PYMUPDF],
+        ),
+        "pdfbox": _lane_page_from_blocks(
+            page_number=page_number,
+            width=float(page.width),
+            height=float(page.height),
+            extraction_method="pdfbox",
+            block_id_prefix=COMPARE_LANE_PDFBOX,
+            blocks=lanes[COMPARE_LANE_PDFBOX],
+        ),
+        "source": "database",
+    }
+
+
 def extract_pymupdf_raw_blocks(pdf_path: Path, page_number: int) -> dict[str, Any]:
     """PyMuPDF page.get_text('dict') blocks without post-processing."""
     with pymupdf.open(pdf_path) as document:
@@ -229,7 +203,7 @@ def extract_pymupdf_raw_blocks(pdf_path: Path, page_number: int) -> dict[str, An
 
 def extract_pdfbox_blocks(pdf_path: Path, page_number: int) -> dict[str, Any]:
     """PDFBox blocks via the warm Clojure ingest JVM."""
-    payload = _clojure_session.extract_page(pdf_path, page_number)
+    payload = extract_pdfbox_page(pdf_path, page_number)
     return _pdfbox_payload_to_page(
         payload,
         page_number=page_number,
@@ -253,10 +227,22 @@ def _compare_page_extractors_uncached(pdf_path: Path, page_number: int) -> dict[
         "height": height,
         "pymupdf": pymupdf_page,
         "pdfbox": pdfbox_page,
+        "source": "live",
     }
 
 
-def compare_page_extractors(pdf_path: Path, page_number: int) -> dict[str, Any]:
+def compare_page_extractors(
+    pdf_path: Path,
+    page_number: int,
+    *,
+    repo: RawRepository | None = None,
+    document_id: str | None = None,
+) -> dict[str, Any]:
+    if repo is not None and document_id is not None:
+        db_result = compare_page_extractors_from_db(repo, document_id, page_number)
+        if db_result is not None:
+            return db_result
+
     resolved = pdf_path.resolve()
     cache_key = (str(resolved), resolved.stat().st_mtime, page_number)
     with _compare_cache_lock:
@@ -272,3 +258,34 @@ def compare_page_extractors(pdf_path: Path, page_number: int) -> dict[str, Any]:
         while len(_compare_cache) > _COMPARE_CACHE_MAX:
             _compare_cache.popitem(last=False)
     return result
+
+
+def _run_clojure_page_command(pdf_path: Path, page_number: int, action: str) -> dict[str, Any]:
+    """Backward-compatible helper for tests invoking the Clojure CLI directly."""
+    clj_root = Path(__file__).resolve().parents[4] / "ingest-clj"
+    command = [
+        "clojure",
+        "-M:ingest",
+        "raw",
+        action,
+        "--pdf",
+        str(pdf_path.resolve()),
+        "--page",
+        str(page_number),
+    ]
+    completed = subprocess.run(
+        command,
+        cwd=clj_root,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=180,
+    )
+    if completed.returncode != 0:
+        message = completed.stderr.strip() or completed.stdout.strip() or f"Clojure {action} failed"
+        raise RuntimeError(message)
+
+    payload = json.loads(completed.stdout)
+    if payload.get("error"):
+        raise RuntimeError(str(payload["error"]))
+    return payload

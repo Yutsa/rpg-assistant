@@ -9,6 +9,10 @@
    ["n" "--page NUMBER" "1-based page number" :parse-fn #(Integer/parseInt %)]
    ["h" "--help" "Show usage"]])
 
+(def extract-document-options
+  [["p" "--pdf PATH" "Path to the PDF file"]
+   ["h" "--help" "Show usage"]])
+
 (defn- snake-case-key [key-value]
   (-> (name key-value) (str/replace "-" "_")))
 
@@ -21,6 +25,7 @@
              ""
              "Usage:"
              "  clojure -M:ingest raw extract-page --pdf PATH --page N"
+             "  clojure -M:ingest raw extract-document --pdf PATH"
              "  clojure -M:ingest serve"
              ""
              summary]))
@@ -62,11 +67,28 @@
                 (println (result-json {:error (.getMessage e)}))
                 1)))))
 
+(defn extract-document-command [command-args]
+  (let [{:keys [options summary errors]} (cli/parse-opts command-args extract-document-options)]
+    (cond
+      (seq errors) (do (println errors) 1)
+      (:help options) (do (println (usage summary)) 0)
+      (nil? (:pdf options)) (do (println "Missing --pdf") 1)
+
+      :else (try
+              (println (result-json (pdf/extract-document (:pdf options))))
+              0
+              (catch Exception e
+                (println (result-json {:error (.getMessage e)}))
+                1)))))
+
 (defn -main [& args]
   (let [[subcommand action & rest-args] args]
     (cond
       (and (= subcommand "raw") (= action "extract-page"))
       (System/exit (extract-page-command rest-args))
+
+      (and (= subcommand "raw") (= action "extract-document"))
+      (System/exit (extract-document-command rest-args))
 
       (= subcommand "serve")
       (serve-command)

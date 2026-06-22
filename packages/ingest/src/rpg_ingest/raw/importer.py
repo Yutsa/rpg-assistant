@@ -19,6 +19,10 @@ from rpg_ingest.raw.block_merging import merge_drop_caps, merge_fragmented_block
 from rpg_ingest.raw.filtering import filter_watermark_blocks
 from rpg_ingest.raw.docling_chunking import build_chunks_from_elements
 from rpg_ingest.raw.docling_sections import detect_sections_from_elements
+from rpg_ingest.raw.extractor_compare_ingest import (
+    build_extractor_compare_records,
+    extract_compare_document_pages,
+)
 from rpg_ingest.raw.layout import RawLayoutPage, extract_raw_layout_pages
 from rpg_ingest.raw.providers import DEFAULT_EXTRACTION_PROVIDER, resolve_extraction_provider
 from rpg_ingest.raw.providers.legacy import LegacyExtractionProvider
@@ -38,6 +42,7 @@ _logger = logging.getLogger(__name__)
 
 INGEST_MODE_FULL = "full"
 INGEST_MODE_LAYOUT_ONLY = "layout-only"
+INGEST_MODE_EXTRACTOR_COMPARE = "extractor-compare"
 
 
 @dataclass
@@ -56,6 +61,72 @@ def _load_raw_layout_pages(pdf_path: Path) -> list[RawLayoutPage]:
         return extract_raw_layout_pages(document)
     finally:
         document.close()
+
+
+def _persist_extractor_compare(
+    repo: RawRepository,
+    *,
+    run_id: str,
+    campaign_id: str,
+    document_id: str,
+    pdf_path: Path,
+    content_hash: str,
+    pymupdf_pages: list[dict[str, Any]],
+    pdfbox_pages: list[dict[str, Any]],
+    avg_coverage: float,
+    reimport: bool,
+) -> ImportResult:
+    repo.upsert_document(
+        document_id,
+        campaign_id,
+        pdf_path.name,
+        len(pdfbox_pages),
+        content_hash,
+    )
+    repo.update_ingestion_run(run_id, document_id=document_id)
+
+    if reimport:
+        repo.delete_document_raw_data(document_id)
+
+    pages, blocks = build_extractor_compare_records(
+        document_id=document_id,
+        pymupdf_pages=pymupdf_pages,
+        pdfbox_pages=pdfbox_pages,
+    )
+    repo.insert_pages(pages)
+    repo.insert_page_blocks(blocks)
+
+    pymupdf_block_count = sum(
+        len(page.get("blocks") or []) for page in pymupdf_pages
+    )
+    pdfbox_block_count = sum(len(page.get("blocks") or []) for page in pdfbox_pages)
+    stats = {
+        "source_pdf_path": str(pdf_path.resolve()),
+        "page_count": len(pages),
+        "block_count": len(blocks),
+        "pymupdf_block_count": pymupdf_block_count,
+        "pdfbox_block_count": pdfbox_block_count,
+        "section_count": 0,
+        "chunk_count": 0,
+        "text_coverage_ratio": avg_coverage,
+        "ingest_mode": INGEST_MODE_EXTRACTOR_COMPARE,
+        "extraction_provider": "clojure",
+        "extraction_method": "extractor_compare",
+    }
+    repo.update_ingestion_run(
+        run_id,
+        status="completed",
+        document_id=document_id,
+        stats=stats,
+        finished=True,
+    )
+    return ImportResult(
+        ingestion_run_id=run_id,
+        campaign_id=campaign_id,
+        document_id=document_id,
+        status="completed",
+        stats=stats,
+    )
 
 
 def _persist_layout_only(
@@ -228,6 +299,76 @@ def run(
                 content_hash=content_hash,
                 raw_pages=raw_pages,
                 page_ratios=page_ratios,
+                avg_coverage=avg_coverage,
+                reimport=reimport,
+            )
+
+        if ingest_mode == INGEST_MODE_EXTRACTOR_COMPARE:
+            try:
+                pymupdf_pages, pdfbox_pages = extract_compare_document_pages(pdf_path)
+            except Exception as exc:
+                repo.update_ingestion_run(
+                    run_id,
+                    status="failed",
+                    error_message=f"Could not extract PDF for compare: {exc}",
+                    finished=True,
+                )
+                return ImportResult(
+                    ingestion_run_id=run_id,
+                    campaign_id=campaign_id,
+                    status="failed",
+                    error_message=f"Could not extract PDF for compare: {exc}",
+                )
+
+            page_ratios = [
+                page_text_coverage_ratio(
+                    "\n\n".join(
+                        str(block.get("text") or "")
+                        for block in page.get("blocks") or []
+                    ).strip(),
+                    float(page["width"]),
+                    float(page["height"]),
+                )
+                for page in pdfbox_pages
+            ]
+            avg_coverage = document_coverage_ratio(page_ratios)
+            if is_scanned_or_unusable(page_ratios, coverage_threshold):
+                message = (
+                    "PDF rejected: insufficient text coverage "
+                    f"({avg_coverage:.2f} < {coverage_threshold}). "
+                    "A text-based PDF is required; scanned/image-only PDFs are unsupported."
+                )
+                repo.update_ingestion_run(
+                    run_id,
+                    status="rejected",
+                    error_message=message,
+                    stats={
+                        "text_coverage_ratio": avg_coverage,
+                        "page_count": len(pdfbox_pages),
+                    },
+                    finished=True,
+                )
+                return ImportResult(
+                    ingestion_run_id=run_id,
+                    campaign_id=campaign_id,
+                    document_id=document_id,
+                    status="rejected",
+                    error_message=message,
+                    stats={
+                        "text_coverage_ratio": avg_coverage,
+                        "page_count": len(pdfbox_pages),
+                    },
+                )
+
+            return _persist_extractor_compare(
+                repo,
+                run_id=run_id,
+                campaign_id=campaign_id,
+                document_id=document_id,
+                pdf_path=pdf_path,
+                content_hash=content_hash,
+                pymupdf_pages=pymupdf_pages,
+                pdfbox_pages=pdfbox_pages,
                 avg_coverage=avg_coverage,
                 reimport=reimport,
             )
