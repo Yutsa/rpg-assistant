@@ -1,5 +1,6 @@
 (ns rpg.ingest.extract.pdf
   (:require [rpg.ingest.extract.layout :as layout]
+            [rpg.ingest.extract.raw :as raw]
             [rpg.ingest.schema :as schema])
   (:import [java.io File]
            [org.apache.pdfbox Loader]
@@ -37,6 +38,20 @@
       (schema/validate schema/LayoutDocument
                        {:source-path pdf-path :pages pages}
                        "layout document"))))
+
+(defn extract-raw-page [pdf-path page-number]
+  (with-open [document (Loader/loadPDF (File. pdf-path))]
+    (let [page-index (dec page-number)
+          page-count (.getNumberOfPages document)]
+      (when (or (< page-index 0) (>= page-index page-count))
+        (throw (ex-info "Page number out of range"
+                        {:page-number page-number :page-count page-count})))
+      (let [dimensions (page-dimensions document page-index)
+            positions (collect-page-positions document page-index)]
+        (raw/page-raw-blocks page-number
+                             (:width dimensions)
+                             (:height dimensions)
+                             positions)))))
 
 (defn with-document [pdf-path callback]
   (with-open [document (Loader/loadPDF (File. pdf-path))]

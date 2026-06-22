@@ -9,16 +9,28 @@
     <aside class="panel sections-panel">
       <div class="panel-header">
         <h2>Sections</h2>
-        <button
-          mat-icon-button
-          type="button"
-          matTooltip="Voir le PDF"
-          aria-label="Voir le PDF"
-          data-testid="open-pdf-viewer"
-          (click)="openPdfViewer()"
-        >
-          <mat-icon>picture_as_pdf</mat-icon>
-        </button>
+        <div class="panel-header-actions">
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Comparer PyMuPDF / PDFBox"
+            aria-label="Comparer PyMuPDF et PDFBox"
+            data-testid="open-extractor-comparison"
+            [routerLink]="['/documents', documentId, 'pages', 1, 'compare-extractors']"
+          >
+            <mat-icon>compare</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Voir le PDF"
+            aria-label="Voir le PDF"
+            data-testid="open-pdf-viewer"
+            (click)="openPdfViewer()"
+          >
+            <mat-icon>picture_as_pdf</mat-icon>
+          </button>
+        </div>
       </div>
       <app-section-tree
         [nodes]="sectionTree()"

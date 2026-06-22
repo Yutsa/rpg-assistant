@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -24,6 +24,7 @@ const CHUNK_PAGE_SIZE = 20;
   selector: 'app-document-explorer-page',
   imports: [
     RouterOutlet,
+    RouterLink,
     MatButtonModule,
     MatIconModule,
     MatTabsModule,

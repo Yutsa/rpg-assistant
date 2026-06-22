@@ -1,0 +1,52 @@
+<section class="comparison" data-testid="extractor-comparison-viewer">
+  <header class="comparison-toolbar">
+    <a mat-button [routerLink]="['/documents', documentId()]">← Document</a>
+    <h1>Comparaison extracteurs — page {{ pageNumber() }}</h1>
+    <div class="page-nav">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="goToPage(pageNumber() - 1)"
+        [disabled]="pageNumber() <= 1"
+      >
+        Page précédente
+      </button>
+      <button mat-stroked-button type="button" (click)="goToPage(pageNumber() + 1)">
+        Page suivante
+      </button>
+    </div>
+    <p class="legend">
+      <span class="legend-item legend-item--pymupdf">PyMuPDF brut</span>
+      <span class="legend-item legend-item--pdfbox">PDFBox brut</span>
+    </p>
+  </header>
+
+  @if (loading()) {
+    <div class="loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <app-empty-state [title]="error() ?? ''" />
+  } @else if (comparison(); as data) {
+    <div class="split">
+      <app-extractor-pane
+        title="PyMuPDF"
+        subtitle="page.get_text('dict') — blocs natifs"
+        [blocks]="data.pymupdf.blocks"
+        [pageWidth]="data.width"
+        [pageHeight]="data.height"
+        [renderUrl]="renderUrl()"
+        strokeColor="#1976d2"
+      />
+      <app-extractor-pane
+        title="PDFBox"
+        subtitle="lignes PDFTextStripper — sans heuristiques"
+        [blocks]="data.pdfbox.blocks"
+        [pageWidth]="data.width"
+        [pageHeight]="data.height"
+        [renderUrl]="renderUrl()"
+        strokeColor="#e65100"
+      />
+    </div>
+  }
+</section>

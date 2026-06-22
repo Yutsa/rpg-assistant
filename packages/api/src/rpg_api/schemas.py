@@ -127,3 +127,19 @@ class PageNodeOut(BaseModel):
     text: str
     bbox: BBox
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class ExtractorPageOut(BaseModel):
+    page_number: int
+    width: float
+    height: float
+    extraction_method: str
+    blocks: list[PageBlockOut]
+
+
+class PageExtractorsCompareOut(BaseModel):
+    page_number: int
+    width: float
+    height: float
+    pymupdf: ExtractorPageOut
+    pdfbox: ExtractorPageOut

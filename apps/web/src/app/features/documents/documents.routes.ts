@@ -2,10 +2,15 @@ import { Routes } from '@angular/router';
 
 import { ChunkDetailPage } from './pages/chunk-detail/chunk-detail.page';
 import { DocumentExplorerPage } from './pages/document-explorer/document-explorer.page';
+import { PageExtractorComparisonPage } from './pages/page-extractor-comparison/page-extractor-comparison.page';
 import { PageLayoutViewerPage } from './pages/page-layout-viewer/page-layout-viewer.page';
 import { StatBlockDetailPage } from './pages/stat-block-detail/stat-block-detail.page';
 
 export const DOCUMENT_ROUTES: Routes = [
+  {
+    path: ':documentId/pages/:pageNumber/compare-extractors',
+    component: PageExtractorComparisonPage,
+  },
   {
     path: ':documentId/pages/:pageNumber',
     component: PageLayoutViewerPage,

@@ -7,7 +7,14 @@ from fastapi.responses import FileResponse
 
 from rpg_api.deps import get_raw_repo, require_document
 from rpg_api.errors import not_found, pdf_not_found
-from rpg_api.schemas import PageBlockOut, PageMetaOut, PageNodeOut
+from rpg_api.schemas import (
+    ExtractorPageOut,
+    PageBlockOut,
+    PageExtractorsCompareOut,
+    PageMetaOut,
+    PageNodeOut,
+)
+from rpg_ingest.feedback.extractor_compare import compare_page_extractors
 from rpg_ingest.feedback.visual_review import VisualReviewError, resolve_pdf_path
 from rpg_ingest.raw.raw_nodes import NodeDepth, NodeType, flatten_raw_layout
 from rpg_ingest.raw.rendering import render_pdf_pages
@@ -122,6 +129,49 @@ def list_page_nodes(
         )
         for block in blocks
     ]
+
+
+@router.get(
+    "/{document_id}/pages/{page_number}/extractors-compare",
+    response_model=PageExtractorsCompareOut,
+)
+def compare_page_extractors_endpoint(
+    document_id: str,
+    page_number: int,
+    pdf_path: str | None = None,
+    repo: RawRepository = Depends(get_raw_repo),
+) -> PageExtractorsCompareOut:
+    require_document(repo, document_id)
+    try:
+        resolved_pdf = resolve_pdf_path(repo, document_id, pdf_path)
+    except VisualReviewError as exc:
+        raise pdf_not_found(str(exc)) from exc
+
+    try:
+        payload = compare_page_extractors(resolved_pdf, page_number)
+    except ValueError as exc:
+        raise not_found(str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise pdf_not_found(str(exc)) from exc
+    except RuntimeError as exc:
+        raise not_found(str(exc)) from exc
+
+    def _to_extractor_page(side: dict[str, Any]) -> ExtractorPageOut:
+        return ExtractorPageOut(
+            page_number=side["page_number"],
+            width=side["width"],
+            height=side["height"],
+            extraction_method=side["extraction_method"],
+            blocks=[PageBlockOut(**block) for block in side["blocks"]],
+        )
+
+    return PageExtractorsCompareOut(
+        page_number=payload["page_number"],
+        width=payload["width"],
+        height=payload["height"],
+        pymupdf=_to_extractor_page(payload["pymupdf"]),
+        pdfbox=_to_extractor_page(payload["pdfbox"]),
+    )
 
 
 @router.get("/{document_id}/pages/{page_number}/render")
