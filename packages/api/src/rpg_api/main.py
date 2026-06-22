@@ -23,6 +23,7 @@ def create_app() -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=_cors_origins(),
+        allow_origin_regex=r"https://.*\.agent\.cvm\.dev",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -47,10 +48,12 @@ app = create_app()
 
 
 def run() -> None:
+    host = os.environ.get("API_HOST", "0.0.0.0")
+    port = int(os.environ.get("API_PORT", "8000"))
     uvicorn.run(
         "rpg_api.main:app",
-        host="127.0.0.1",
-        port=8000,
+        host=host,
+        port=port,
         reload=False,
     )
 
