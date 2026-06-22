@@ -45,3 +45,18 @@
       (is (not (some #(and (< (:x0 (:bbox %)) midpoint)
                             (> (:x1 (:bbox %)) midpoint))
                      blocks))))))
+
+(deftest extract-layout-keeps-centered-title-intact
+  (testing "Centered titles are not split by the column gutter heuristic"
+    (let [temp-file (doto (File/createTempFile "rpg-ingest-centered-" ".pdf")
+                      (.deleteOnExit))
+          pdf-path (sample-pdf/create-centered-title-two-column-pdf (.getAbsolutePath temp-file))
+          page (-> pdf-path pdf/extract-layout :pages first)
+          blocks (:blocks page)]
+      (is (some #(re-find #"TITRE CENTRE" (:text %)) blocks))
+      (is (not (some #(and (re-find #"TITRE" (:text %))
+                            (re-find #"CENTRE" (:text %))
+                            (not (re-find #"TITRE CENTRE" (:text %))))
+                   blocks)))
+      (is (some #(re-find #"gauche" (:text %)) blocks))
+      (is (some #(re-find #"droite" (:text %)) blocks)))))

@@ -66,6 +66,11 @@
        vec))
 
 (defn collect-lines [text-positions page-width]
-  (let [{:keys [left right]} (columns/split-positions-by-column text-positions page-width)]
-    (->> (concat (lines-from-positions left) (lines-from-positions right))
-         sort-lines-top-down)))
+  (let [gutter (columns/page-gutter-from-positions text-positions page-width)
+        {:keys [single full left right]} (columns/split-positions-by-gutter text-positions page-width gutter)
+        lines (if (seq single)
+                (lines-from-positions single)
+                (vec (concat (lines-from-positions full)
+                             (lines-from-positions left)
+                             (lines-from-positions right))))]
+    (sort-lines-top-down lines)))

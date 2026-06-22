@@ -65,12 +65,16 @@
        vec))
 
 (defn blocks-from-page-lines [line-records page-width]
-  (let [{:keys [left right]} (columns/split-lines-by-column line-records page-width)
-        ordered (vec (concat (blocks-from-line-records left)
-                             (blocks-from-line-records right)))
-        sorted (columns/column-major-block-order ordered page-width)
-        tagged (columns/assign-block-columns sorted page-width)]
+  (let [gutter (columns/page-gutter line-records page-width)
+        {:keys [single full left right]} (columns/split-lines-by-column line-records page-width)
+        blocks (if (seq single)
+                 (blocks-from-line-records single)
+                 (vec (concat (blocks-from-line-records full)
+                              (blocks-from-line-records left)
+                              (blocks-from-line-records right))))
+        tagged (columns/assign-block-columns blocks page-width gutter)
+        sorted (columns/order-blocks tagged page-width gutter)]
     (mapv (fn [block-index block]
             (assoc block :block-index block-index))
           (range)
-          tagged)))
+          sorted)))
