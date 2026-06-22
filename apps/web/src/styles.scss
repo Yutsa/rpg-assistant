@@ -16,13 +16,21 @@ html {
   );
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
   margin: 0;
+  overflow-x: hidden;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   background: var(--mat-sys-surface, #fef7ff);
   color: var(--mat-sys-on-surface, #1d1b20);
+  -webkit-text-size-adjust: 100%;
 }
 
 .page-loading {
@@ -38,4 +46,17 @@ body.e2e-no-animations *::after {
   animation-delay: 0s !important;
   transition-duration: 0s !important;
   transition-delay: 0s !important;
+}
+
+.pdf-viewer-dialog-panel {
+  .mat-mdc-dialog-container,
+  .mat-mdc-dialog-surface {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+    display: flex;
+    flex-direction: column;
+  }
 }

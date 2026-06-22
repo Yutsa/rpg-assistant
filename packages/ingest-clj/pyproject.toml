@@ -1,0 +1,8 @@
+[project]
+name = "rpg-ingest-clj-meta"
+version = "0.1.0"
+description = "Placeholder so uv workspace ignores missing Python package (Clojure lives in deps.edn)"
+requires-python = ">=3.11"
+
+[tool.uv]
+package = false

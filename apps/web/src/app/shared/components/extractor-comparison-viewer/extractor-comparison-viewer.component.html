@@ -1,0 +1,60 @@
+<section class="comparison" data-testid="extractor-comparison-viewer">
+  <header class="comparison-toolbar">
+    <a mat-button [routerLink]="['/documents', documentId()]">← Document</a>
+    <h1>Comparaison extracteurs — page {{ pageNumber() }}</h1>
+    <div class="page-nav">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="goToPage(pageNumber() - 1)"
+        [disabled]="pageNumber() <= 1 || loading() || refreshing()"
+      >
+        Page précédente
+      </button>
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="goToPage(pageNumber() + 1)"
+        [disabled]="loading() || refreshing()"
+      >
+        Page suivante
+      </button>
+      @if (loading() || refreshing()) {
+        <mat-spinner diameter="20" />
+      }
+    </div>
+    <p class="legend">
+      <span class="legend-item legend-item--pymupdf">PyMuPDF</span>
+      <span class="legend-item legend-item--pdfbox">PDFBox</span>
+    </p>
+  </header>
+
+  @if (error()) {
+    <app-empty-state [title]="error() ?? ''" />
+  } @else if (comparison(); as data) {
+    <div class="split" [class.split--loading]="loading() || refreshing()">
+      <app-extractor-pane
+        title="PyMuPDF"
+        subtitle="page.get_text('dict')"
+        [blocks]="data.pymupdf.blocks"
+        [pageWidth]="data.width"
+        [pageHeight]="data.height"
+        [renderUrl]="renderUrl()"
+        strokeColor="#1976d2"
+      />
+      <app-extractor-pane
+        title="PDFBox"
+        subtitle="pipeline Clojure PDFTextStripper"
+        [blocks]="data.pdfbox.blocks"
+        [pageWidth]="data.width"
+        [pageHeight]="data.height"
+        [renderUrl]="renderUrl()"
+        strokeColor="#e65100"
+      />
+    </div>
+  } @else if (loading()) {
+    <div class="loading">
+      <mat-spinner diameter="40" />
+    </div>
+  }
+</section>

@@ -17,6 +17,10 @@ def page_block_id(document_id: str, page_number: int, block_index: int) -> str:
     return f"block_{document_id}_{page_number:03d}_{block_index:03d}"
 
 
+def compare_block_id(document_id: str, page_number: int, lane: str, block_index: int) -> str:
+    return f"{lane}_{document_id}_{page_number:04d}_{block_index:04d}"
+
+
 def chunk_id(document_id: str, page_start: int, index: int) -> str:
     return f"chunk_{document_id}_{page_start:03d}_{index:03d}"
 

@@ -142,3 +142,28 @@ export interface PageNode {
 
 export type PageNodeLevel = PageNode['depth'];
 export type PageNodeType = PageNode['node_type'];
+
+export interface PageBlock {
+  id: string;
+  page_number: number;
+  block_index: number;
+  text: string;
+  bbox: { x0: number; y0: number; x1: number; y1: number };
+  metadata: Record<string, unknown>;
+}
+
+export interface ExtractorPage {
+  page_number: number;
+  width: number;
+  height: number;
+  extraction_method: string;
+  blocks: PageBlock[];
+}
+
+export interface PageExtractorsCompare {
+  page_number: number;
+  width: number;
+  height: number;
+  pymupdf: ExtractorPage;
+  pdfbox: ExtractorPage;
+}

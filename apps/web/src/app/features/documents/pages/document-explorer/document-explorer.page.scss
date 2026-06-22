@@ -1,49 +1,86 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: calc(100dvh - var(--app-toolbar-height, 3.5rem));
+}
+
 .explorer {
-  display: grid;
-  grid-template-columns: minmax(14rem, 18rem) minmax(14rem, 22rem) minmax(28rem, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 0;
-  min-height: calc(100vh - 4rem);
+  height: 100%;
+  min-height: calc(100dvh - var(--app-toolbar-height, 3.5rem));
   border-top: 1px solid var(--mat-sys-outline-variant, #cac4d0);
 }
 
 .panel {
-  padding: 1rem;
-  overflow: auto;
-  border-right: 1px solid var(--mat-sys-outline-variant, #cac4d0);
+  padding: 0.75rem 1rem;
+  overflow: visible;
+  border-bottom: 1px solid var(--mat-sys-outline-variant, #cac4d0);
+  min-height: 0;
 
   h2 {
-    margin: 0 0 0.75rem;
-    font-size: 0.875rem;
+    margin: 0;
+    font-size: 0.8125rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--mat-sys-on-surface-variant, #49454f);
   }
 }
 
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.panel-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  flex-shrink: 0;
+}
+
 .detail-panel {
-  border-right: none;
+  border-bottom: none;
 }
 
 .loading {
-  grid-column: 1 / -1;
   display: flex;
   justify-content: center;
-  padding: 3rem;
+  padding: 2rem;
 }
 
-.explorer-toolbar {
-  grid-column: 1 / -1;
-  padding: 0.75rem 1rem 0;
+.content-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  mat-tab-group {
+    flex: 1;
+    min-height: 0;
+  }
 }
 
-@media (max-width: 960px) {
+@media (min-width: 961px) {
   .explorer {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+    display: grid;
+    grid-template-columns: minmax(14rem, 18rem) minmax(14rem, 22rem) minmax(28rem, 1fr);
+    grid-template-rows: 1fr;
+    height: calc(100dvh - var(--app-toolbar-height, 3.5rem));
+    min-height: calc(100dvh - var(--app-toolbar-height, 3.5rem));
   }
 
   .panel {
+    overflow: auto;
+    border-right: 1px solid var(--mat-sys-outline-variant, #cac4d0);
+    border-bottom: none;
+    height: 100%;
+  }
+
+  .detail-panel {
     border-right: none;
-    border-bottom: 1px solid var(--mat-sys-outline-variant, #cac4d0);
   }
 }

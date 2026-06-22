@@ -7,13 +7,42 @@ from fastapi.responses import FileResponse
 
 from rpg_api.deps import get_raw_repo, require_document
 from rpg_api.errors import not_found, pdf_not_found
-from rpg_api.schemas import PageBlockOut, PageMetaOut, PageNodeOut
+from rpg_api.schemas import (
+    ExtractorPageOut,
+    PageBlockOut,
+    PageExtractorsCompareOut,
+    PageMetaOut,
+    PageNodeOut,
+)
+from rpg_ingest.feedback.extractor_compare import (
+    compare_page_extractors,
+    compare_page_extractors_from_db,
+)
 from rpg_ingest.feedback.visual_review import VisualReviewError, resolve_pdf_path
 from rpg_ingest.raw.raw_nodes import NodeDepth, NodeType, flatten_raw_layout
 from rpg_ingest.raw.rendering import render_pdf_pages
+from rpg_core.models.raw import PageBlockRecord
 from rpg_core.storage.repositories.raw import RawRepository
 
 router = APIRouter(prefix="/documents", tags=["pages"])
+
+COMPARE_LANE_PYMUPDF = "pymupdf"
+
+
+def _blocks_for_layout_view(blocks: list[PageBlockRecord]) -> list[PageBlockRecord]:
+    """When compare lanes are stored, layout UI should show PyMuPDF blocks only."""
+    compare_lanes = {
+        (block.metadata or {}).get("compare_lane")
+        for block in blocks
+        if (block.metadata or {}).get("compare_lane")
+    }
+    if not compare_lanes:
+        return blocks
+    return [
+        block
+        for block in blocks
+        if (block.metadata or {}).get("compare_lane") in (None, COMPARE_LANE_PYMUPDF)
+    ]
 
 
 @router.get("/{document_id}/pages/{page_number}", response_model=PageMetaOut)
@@ -79,27 +108,104 @@ def list_page_nodes(
 ) -> list[PageNodeOut]:
     require_document(repo, document_id)
     raw_layout = repo.get_page_raw_layout(document_id, page_number)
-    if raw_layout is None:
+    if raw_layout is not None:
+        nodes = flatten_raw_layout(raw_layout, level=level, node_type=node_type)
+        return [
+            PageNodeOut(
+                id=node.id,
+                depth=node.depth,
+                node_type=node.node_type,
+                parent_id=node.parent_id,
+                block_index=node.block_index,
+                line_index=node.line_index,
+                span_index=node.span_index,
+                text=node.text,
+                bbox=node.bbox,
+                metadata=node.metadata,
+            )
+            for node in nodes
+        ]
+
+    blocks = _blocks_for_layout_view(
+        repo.list_page_blocks_for_page(document_id, page_number)
+    )
+    if not blocks:
         raise not_found(
             f"Raw layout unavailable for page {page_number}. "
             "Re-import with --ingest-mode layout-only."
         )
-    nodes = flatten_raw_layout(raw_layout, level=level, node_type=node_type)
+    if level is not None and level != "block":
+        return []
+    if node_type is not None and node_type != "text":
+        return []
     return [
         PageNodeOut(
-            id=node.id,
-            depth=node.depth,
-            node_type=node.node_type,
-            parent_id=node.parent_id,
-            block_index=node.block_index,
-            line_index=node.line_index,
-            span_index=node.span_index,
-            text=node.text,
-            bbox=node.bbox,
-            metadata=node.metadata,
+            id=block.id,
+            depth="block",
+            node_type="text",
+            parent_id=None,
+            block_index=block.block_index,
+            line_index=None,
+            span_index=None,
+            text=block.text,
+            bbox=block.bbox,
+            metadata=block.metadata,
         )
-        for node in nodes
+        for block in blocks
     ]
+
+
+@router.get(
+    "/{document_id}/pages/{page_number}/extractors-compare",
+    response_model=PageExtractorsCompareOut,
+)
+def compare_page_extractors_endpoint(
+    document_id: str,
+    page_number: int,
+    pdf_path: str | None = None,
+    repo: RawRepository = Depends(get_raw_repo),
+) -> PageExtractorsCompareOut:
+    require_document(repo, document_id)
+
+    db_result = compare_page_extractors_from_db(repo, document_id, page_number)
+    if db_result is not None:
+        payload = db_result
+    else:
+        try:
+            resolved_pdf = resolve_pdf_path(repo, document_id, pdf_path)
+        except VisualReviewError as exc:
+            raise pdf_not_found(str(exc)) from exc
+
+        try:
+            payload = compare_page_extractors(
+                resolved_pdf,
+                page_number,
+                repo=repo,
+                document_id=document_id,
+            )
+        except ValueError as exc:
+            raise not_found(str(exc)) from exc
+        except FileNotFoundError as exc:
+            raise pdf_not_found(str(exc)) from exc
+        except RuntimeError as exc:
+            raise not_found(str(exc)) from exc
+
+    def _to_extractor_page(side: dict[str, Any]) -> ExtractorPageOut:
+        return ExtractorPageOut(
+            page_number=side["page_number"],
+            width=side["width"],
+            height=side["height"],
+            extraction_method=side["extraction_method"],
+            blocks=[PageBlockOut(**block) for block in side["blocks"]],
+        )
+
+    return PageExtractorsCompareOut(
+        page_number=payload["page_number"],
+        width=payload["width"],
+        height=payload["height"],
+        pymupdf=_to_extractor_page(payload["pymupdf"]),
+        pdfbox=_to_extractor_page(payload["pdfbox"]),
+    )
 
 
 @router.get("/{document_id}/pages/{page_number}/render")

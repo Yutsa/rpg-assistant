@@ -6,13 +6,32 @@
   } @else if (error()) {
     <app-empty-state [title]="error() ?? ''" data-testid="document-error" />
   } @else {
-    <div class="explorer-toolbar">
-      <a mat-stroked-button [routerLink]="['/documents', documentId, 'pages', 1]" data-testid="open-pdf-viewer">
-        Voir le PDF
-      </a>
-    </div>
     <aside class="panel sections-panel">
-      <h2>Sections</h2>
+      <div class="panel-header">
+        <h2>Sections</h2>
+        <div class="panel-header-actions">
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Comparer PyMuPDF / PDFBox"
+            aria-label="Comparer PyMuPDF et PDFBox"
+            data-testid="open-extractor-comparison"
+            [routerLink]="['/documents', documentId, 'pages', 1, 'compare-extractors']"
+          >
+            <mat-icon>compare</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Voir le PDF"
+            aria-label="Voir le PDF"
+            data-testid="open-pdf-viewer"
+            (click)="openPdfViewer()"
+          >
+            <mat-icon>picture_as_pdf</mat-icon>
+          </button>
+        </div>
+      </div>
       <app-section-tree
         [nodes]="sectionTree()"
         [selectedSectionId]="selectedSectionId()"

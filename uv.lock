@@ -18,6 +18,7 @@ members = [
     "rpg-assistant",
     "rpg-core",
     "rpg-ingest",
+    "rpg-ingest-clj-meta",
     "rpg-mcp",
 ]
 
@@ -1547,6 +1548,11 @@ requires-dist = [
     { name = "rpg-core", editable = "packages/core" },
     { name = "tiktoken", specifier = ">=0.7" },
 ]
+
+[[package]]
+name = "rpg-ingest-clj-meta"
+version = "0.1.0"
+source = { virtual = "packages/ingest-clj" }
 
 [[package]]
 name = "rpg-mcp"

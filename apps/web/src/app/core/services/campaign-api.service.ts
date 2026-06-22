@@ -9,6 +9,7 @@ import {
   Chunk,
   ChunkListItem,
   Document,
+  PageExtractorsCompare,
   PageMeta,
   PageNode,
   PageNodeLevel,
@@ -109,6 +110,15 @@ export class CampaignApiService {
     return this.http.get<PageNode[]>(
       `${API_URL}/documents/${documentId}/pages/${pageNumber}/nodes`,
       { params: httpParams },
+    );
+  }
+
+  getPageExtractorsCompare(
+    documentId: string,
+    pageNumber: number,
+  ): Observable<PageExtractorsCompare> {
+    return this.http.get<PageExtractorsCompare>(
+      `${API_URL}/documents/${documentId}/pages/${pageNumber}/extractors-compare`,
     );
   }
 }
