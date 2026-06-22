@@ -1,9 +1,13 @@
 (ns rpg.ingest.extract.page
-  "Minimal PDFBox extraction: TextPosition → one line per block, no layout heuristics."
+  "PDFBox extraction: TextPosition → Y bands, then horizontal gap splitting."
   (:require [clojure.string :as str])
   (:import [org.apache.pdfbox.text TextPosition]))
 
 (def ^:private line-tolerance 2.0)
+(def ^:private gap-alpha 4.0)
+(def ^:private gap-beta 6.0)
+(def ^:private gap-min 12.0)
+(def ^:private gap-median-cap 20.0)
 
 (defn- position-x [text-position]
   (.getXDirAdj ^TextPosition text-position))
@@ -57,6 +61,40 @@
        (map (fn [[_key positions]] positions))
        vec))
 
+(defn- horizontal-gap [prev-pos next-pos]
+  (- (position-x next-pos) (position-right prev-pos)))
+
+(defn- median [values]
+  (let [sorted (vec (sort values))
+        n (count sorted)]
+    (when (pos? n)
+      (let [mid (quot n 2)]
+        (if (odd? n)
+          (nth sorted mid)
+          (/ (+ (nth sorted (dec mid)) (nth sorted mid)) 2.0))))))
+
+(defn- gap-threshold [gaps]
+  (let [calibration (filter #(< % gap-median-cap) gaps)
+        median-gap (or (median calibration) 2.0)]
+    (max (* gap-alpha median-gap) (+ median-gap gap-beta) gap-min)))
+
+(defn- split-line-by-gaps [line-positions]
+  (if (<= (count line-positions) 1)
+    [(vec line-positions)]
+    (let [sorted (vec (sort-by position-x line-positions))
+          n (count sorted)
+          gaps (mapv #(horizontal-gap (sorted %) (sorted (inc %))) (range (dec n)))
+          threshold (gap-threshold gaps)
+          split-at (keep-indexed (fn [idx gap] (when (> gap threshold) (inc idx))) gaps)]
+      (if (empty? split-at)
+        [sorted]
+        (let [boundaries (vec (concat [0] split-at [n]))]
+          (mapv (fn [[start end]] (subvec sorted start end))
+                (map vector boundaries (rest boundaries))))))))
+
+(defn- line-runs [line-positions]
+  (split-line-by-gaps line-positions))
+
 (defn- line-text [line-positions]
   (->> line-positions (map position-text) (apply str) str/trim))
 
@@ -86,7 +124,8 @@
        :metadata (line-metadata line-positions)})))
 
 (defn page-blocks [page-number width height text-positions]
-  (let [blocks (keep-indexed line-as-block (group-into-lines text-positions))]
+  (let [runs (mapcat line-runs (group-into-lines text-positions))
+        blocks (keep-indexed line-as-block runs)]
     {:page-number page-number
      :width width
      :height height

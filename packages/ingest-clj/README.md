@@ -1,6 +1,6 @@
 # rpg-ingest-clj
 
-Extraction PDFBox minimale en Clojure : une ligne PDFTextStripper = un bloc, sans heuristiques de layout.
+Extraction PDFBox en Clojure : bandes Y puis séparation par gaps horizontaux.
 
 ## Prérequis
 
@@ -35,5 +35,5 @@ clojure -M:test
 ## Périmètre
 
 - PDFBox `PDFTextStripper` avec `setSortByPosition true`
-- Regroupement minimal des `TextPosition` en lignes (tolérance Y = 2 pt) pour obtenir des bbox affichables
-- Pas d'import SQLite, sections, chunks, colonnes, fusion de lignes, ni filtrage
+- Regroupement des `TextPosition` en bandes Y (tolérance 2 pt), puis split par gap horizontal adaptatif entre glyphes voisins
+- Pas d'import SQLite, sections, chunks, détection titre/full-width, ni filtrage
