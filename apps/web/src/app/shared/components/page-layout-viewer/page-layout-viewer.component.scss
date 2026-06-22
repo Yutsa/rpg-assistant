@@ -1,5 +1,39 @@
 :host {
   display: block;
+  height: 100%;
+}
+
+.page-layout-viewer-host--embedded {
+  .viewer {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .viewer-toolbar {
+    position: static;
+  }
+
+  .canvas-wrap {
+    margin: 0;
+    max-height: none;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .viewer-body {
+    flex: 1;
+    min-height: 0;
+  }
+
+  @media (min-width: 961px) {
+    .viewer-body {
+      max-height: calc(92vh - 7rem);
+    }
+
+    .detail-panel {
+      max-height: calc(92vh - 7rem);
+    }
+  }
 }
 
 .viewer {
@@ -39,6 +73,11 @@
   flex-wrap: nowrap;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 0.125rem;
+}
+
+.toolbar-spacer {
+  flex: 1;
+  min-width: 0;
 }
 
 .back-link {

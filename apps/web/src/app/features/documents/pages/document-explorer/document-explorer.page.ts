@@ -1,10 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { CampaignApiService } from '../../../../core/services/campaign-api.service';
 import { ChunkListItem, SectionNode, StatBlockIndex } from '../../../../core/models/campaign.models';
@@ -13,6 +16,7 @@ import { ChunkListComponent } from '../../../../shared/components/chunk-list/chu
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SectionTreeComponent } from '../../../../shared/components/section-tree/section-tree.component';
 import { StatBlockListComponent } from '../../../../shared/components/stat-block-list/stat-block-list.component';
+import { PdfViewerDialogComponent } from '../../dialogs/pdf-viewer-dialog.component';
 
 const CHUNK_PAGE_SIZE = 20;
 
@@ -20,9 +24,10 @@ const CHUNK_PAGE_SIZE = 20;
   selector: 'app-document-explorer-page',
   imports: [
     RouterOutlet,
-    RouterLink,
     MatButtonModule,
+    MatIconModule,
     MatTabsModule,
+    MatTooltipModule,
     MatProgressSpinnerModule,
     SectionTreeComponent,
     ChunkListComponent,
@@ -36,6 +41,7 @@ export class DocumentExplorerPage {
   private readonly api = inject(CampaignApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
 
   readonly documentId = this.route.snapshot.paramMap.get('documentId') ?? '';
   readonly loading = signal(true);
@@ -126,6 +132,17 @@ export class DocumentExplorerPage {
 
   loadMoreChunks(): void {
     this.loadChunks(false);
+  }
+
+  openPdfViewer(): void {
+    this.dialog.open(PdfViewerDialogComponent, {
+      data: { documentId: this.documentId },
+      panelClass: 'pdf-viewer-dialog-panel',
+      width: 'min(96vw, 1200px)',
+      maxWidth: '96vw',
+      height: '92vh',
+      autoFocus: false,
+    });
   }
 
   private loadChunks(reset: boolean): void {

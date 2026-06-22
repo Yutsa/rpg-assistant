@@ -47,3 +47,16 @@ body.e2e-no-animations *::after {
   transition-duration: 0s !important;
   transition-delay: 0s !important;
 }
+
+.pdf-viewer-dialog-panel {
+  .mat-mdc-dialog-container,
+  .mat-mdc-dialog-surface {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+    display: flex;
+    flex-direction: column;
+  }
+}

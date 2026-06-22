@@ -1,7 +1,11 @@
 <section class="viewer" data-testid="page-layout-viewer">
   <header class="viewer-toolbar">
     <div class="toolbar-row toolbar-row--primary">
-      <a mat-button class="back-link" [routerLink]="['/documents', documentId]">← Document</a>
+      @if (!embedded()) {
+        <a mat-button class="back-link" [routerLink]="['/documents', documentId()]">← Document</a>
+      } @else {
+        <span class="toolbar-spacer"></span>
+      }
 
       <div class="page-nav">
         <button
@@ -59,9 +63,7 @@
   } @else {
     <div class="viewer-body" [class.viewer-body--detail-open]="detailOpen()">
       <div class="canvas-wrap" #canvasWrap>
-        <div
-          class="canvas"
-        >
+        <div class="canvas">
           <img
             class="page-image"
             [src]="renderUrl()"
@@ -173,7 +175,7 @@
             }
           </dl>
         } @else {
-          <p class="hint">Touchez un rectangle pour inspecter un nœud PyMuPDF.</p>
+          <p class="hint">Touchez un rectangle pour inspecter un nœud.</p>
         }
       </aside>
     </div>

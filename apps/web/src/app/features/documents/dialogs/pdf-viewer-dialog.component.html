@@ -1,0 +1,17 @@
+<div class="pdf-viewer-dialog" data-testid="pdf-viewer-dialog">
+  <div class="pdf-viewer-dialog__header" mat-dialog-title>
+    <span>Visualisation PDF</span>
+    <button mat-icon-button type="button" (click)="close()" aria-label="Fermer">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="pdf-viewer-dialog__content">
+    <app-page-layout-viewer
+      [documentId]="data.documentId"
+      [pageNumber]="pageNumber()"
+      (pageNumberChange)="pageNumber.set($event)"
+      [embedded]="true"
+    />
+  </mat-dialog-content>
+</div>
