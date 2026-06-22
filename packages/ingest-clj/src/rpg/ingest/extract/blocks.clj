@@ -42,14 +42,16 @@
 (defn block-metadata [block-lines]
   (let [line-count (count block-lines)
         metadata (map :metadata block-lines)
-        sizes (keep :max-font-size metadata)]
-    {:source "pdfbox"
-     :line-count line-count
-     :max-font-size (when (seq sizes) (apply max sizes))
-     :avg-font-size (when (seq sizes)
-                      (/ (reduce + sizes) (count sizes)))
-     :bold? (boolean (some :bold? metadata))
-     :italic? (boolean (some :italic? metadata))}))
+        sizes (keep :max-font-size metadata)
+        column (some :column metadata)]
+    (cond-> {:source "pdfbox"
+             :line-count line-count
+             :max-font-size (when (seq sizes) (apply max sizes))
+             :avg-font-size (when (seq sizes)
+                              (/ (reduce + sizes) (count sizes)))
+             :bold? (boolean (some :bold? metadata))
+             :italic? (boolean (some :italic? metadata))}
+      column (assoc :column column))))
 
 (defn block-map [block-index block-lines]
   {:block-index block-index
@@ -64,17 +66,16 @@
        (filterv #(not (str/blank? (:text %))))
        vec))
 
-(defn blocks-from-page-lines [line-records page-width]
-  (let [gutter (columns/page-gutter line-records page-width)
-        {:keys [single full left right]} (columns/split-lines-by-column line-records page-width)
-        blocks (if (seq single)
-                 (blocks-from-line-records single)
-                 (vec (concat (blocks-from-line-records full)
-                              (blocks-from-line-records left)
-                              (blocks-from-line-records right))))
-        tagged (columns/assign-block-columns blocks page-width gutter)
-        sorted (columns/order-blocks tagged page-width gutter)]
-    (mapv (fn [block-index block]
-            (assoc block :block-index block-index))
-          (range)
-          sorted)))
+(defn blocks-from-page-lines
+  ([line-records page-width] (blocks-from-page-lines line-records page-width nil))
+  ([line-records page-width _gutter]
+   (let [grouped (group-by #(get-in % [:metadata :column] "single") line-records)
+         blocks (vec (concat (blocks-from-line-records (get grouped "single" []))
+                             (blocks-from-line-records (get grouped "full" []))
+                             (blocks-from-line-records (get grouped "left" []))
+                             (blocks-from-line-records (get grouped "right" []))))
+         sorted (columns/order-blocks blocks page-width nil)]
+     (mapv (fn [block-index block]
+             (assoc block :block-index block-index))
+           (range)
+           sorted))))

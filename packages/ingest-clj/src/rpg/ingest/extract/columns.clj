@@ -4,9 +4,12 @@
 (def ^:private min-gutter-width-ratio 0.04)
 (def ^:private min-gutter-width-pt 15.0)
 (def ^:private min-lines-per-side 2)
+(def ^:private min-column-line-width 60.0)
+(def ^:private min-band-side-width 40.0)
+(def ^:private min-band-side-positions 3)
 (def ^:private full-width-ratio 0.55)
-(def ^:private gutter-search-start-ratio 0.2)
-(def ^:private gutter-search-end-ratio 0.8)
+(def ^:private left-cluster-ratio 0.42)
+(def ^:private right-cluster-ratio 0.58)
 
 (defn- bbox-center-x [bbox]
   (/ (+ (:x0 bbox) (:x1 bbox)) 2.0))
@@ -32,163 +35,72 @@
     (or (>= width (* page-width full-width-ratio))
         (spans-midpoint? bbox page-width))))
 
-(defn- sample-covered? [x line-records]
-  (some (fn [line]
-          (let [bbox (record-bbox line)]
-            (and (<= (:x0 bbox) x)
-                 (>= (:x1 bbox) x))))
-        line-records))
-
-(defn- longest-uncovered-run [covered start-index end-index]
-  (loop [index start-index
-         best {:start start-index :end start-index :width 0}
-         run-start nil]
-    (if (>= index end-index)
-      best
-      (if (aget covered index)
-        (recur (inc index)
-               best
-               nil)
-        (let [start (or run-start index)
-              width (inc (- index start))]
-          (recur (inc index)
-                 (if (> width (:width best))
-                   {:start start :end (inc index) :width width}
-                   best)
-                 start))))))
-
-(defn find-central-gutter
-  "Return {:x0 :x1} for the widest empty vertical band in the page center."
-  [line-records page-width]
-  (let [sample-count (max 100 (int page-width))
-        step (/ page-width sample-count)
-        search-start (int (* page-width gutter-search-start-ratio))
-        search-end (int (* page-width gutter-search-end-ratio))
-        covered (boolean-array sample-count)]
-    (doseq [line line-records
-            sample (range search-start search-end)]
-      (let [x (* sample step)
-            index (min (dec sample-count) (int (/ x step)))]
-        (when (sample-covered? x [line])
-          (aset covered index true))))
-    (let [gap (longest-uncovered-run covered search-start search-end)
-          min-width (max min-gutter-width-pt (* page-width min-gutter-width-ratio))]
-      (when (>= (:width gap) min-width)
-        {:x0 (* (:start gap) step)
-         :x1 (* (:end gap) step)}))))
-
-(defn- lines-on-side [line-records gutter side]
-  (count
-   (filter
-    (fn [line]
-      (let [center (bbox-center-x (record-bbox line))]
-        (case side
-          :left (< center (:x0 gutter))
-          :right (> center (:x1 gutter))
-          false)))
-    line-records)))
-
-(defn two-column-page?
-  "True when a central gutter exists and both sides have enough body lines."
-  [line-records page-width]
-  (let [candidates (remove #(full-width-record? % page-width) line-records)
-        gutter (find-central-gutter candidates page-width)]
-    (and gutter
-         (>= (lines-on-side candidates gutter :left) min-lines-per-side)
-         (>= (lines-on-side candidates gutter :right) min-lines-per-side))))
-
-(defn line-column
-  "Classify a line as :single, :full, :left or :right."
-  [line page-width gutter]
-  (cond
-    (not gutter) :single
-    (full-width-record? line page-width) :full
-    (< (bbox-center-x (record-bbox line)) (:x0 gutter)) :left
-    (> (bbox-center-x (record-bbox line)) (:x1 gutter)) :right
-    :else (if (< (bbox-center-x (record-bbox line)) (/ page-width 2.0)) :left :right)))
-
-(defn column-side
-  "Return column label for a block bbox."
-  [bbox page-width gutter]
-  (cond
-    (not gutter) "single"
-    (full-width-record? {:bbox bbox} page-width) "full"
-    (< (bbox-center-x bbox) (:x0 gutter)) "left"
-    (> (bbox-center-x bbox) (:x1 gutter)) "right"
-    :else (if (< (bbox-center-x bbox) (/ page-width 2.0)) "left" "right")))
-
-(defn same-column?
-  "True when two bboxes overlap horizontally enough to share a column."
-  [left-bbox right-bbox]
-  (let [overlap (- (min (:x1 left-bbox) (:x1 right-bbox))
-                   (max (:x0 left-bbox) (:x0 right-bbox)))
-        narrow-width (min (- (:x1 left-bbox) (:x0 left-bbox))
-                          (- (:x1 right-bbox) (:x0 right-bbox)))]
-    (and (pos? overlap)
-         (>= (/ overlap (max narrow-width 1.0)) 0.25))))
-
-(defn position-side [text-position page-width gutter]
-  (let [center (+ (typography/position-x text-position)
-                  (/ (typography/position-width text-position) 2.0))]
-    (cond
-      (not gutter) :single
-      (< center (:x0 gutter)) :left
-      (> center (:x1 gutter)) :right
-      :else :full)))
-
 (defn- position-center-x [text-position]
   (+ (typography/position-x text-position)
      (/ (typography/position-width text-position) 2.0)))
 
+(defn- position-right [text-position]
+  (+ (typography/position-x text-position)
+     (typography/position-width text-position)))
+
 (defn- position-spans-midpoint? [text-position page-width]
   (let [midpoint (/ page-width 2.0)
         x0 (typography/position-x text-position)
-        x1 (+ x0 (typography/position-width text-position))]
+        x1 (position-right text-position)]
     (and (< x0 midpoint)
          (> x1 midpoint))))
 
-(defn- column-candidate-positions [text-positions page-width]
-  (filter (fn [position]
-            (not (position-spans-midpoint? position page-width)))
-          text-positions))
+(defn- min-gutter-width [page-width]
+  (max min-gutter-width-pt (* page-width min-gutter-width-ratio)))
 
-(defn- find-gutter-from-position-centers [text-positions page-width]
-  (let [centers (sort (map position-center-x text-positions))
-        mid-start (* page-width gutter-search-start-ratio)
-        mid-end (* page-width gutter-search-end-ratio)
-        min-width (max min-gutter-width-pt (* page-width min-gutter-width-ratio))]
-    (loop [remaining (filter #(and (>= % mid-start) (<= % mid-end)) centers)
-           best {:x0 mid-start :x1 mid-start :width 0}
-           prev nil]
-      (if (empty? remaining)
-        (when (>= (:width best) min-width) best)
-        (let [current (first remaining)
-              next-best (if prev
-                          (let [gap (- current prev)]
-                            (if (> gap (:width best))
-                              {:x0 prev :x1 current :width gap}
-                              best))
-                          best)]
-          (recur (rest remaining) next-best current))))))
+(defn- largest-position-gap [positions]
+  (when (>= (count positions) 2)
+    (let [sorted (sort-by typography/position-x positions)]
+      (loop [remaining (rest sorted)
+             previous (first sorted)
+             best {:width 0 :split-index 0}]
+        (if (empty? remaining)
+          best
+          (let [current (first remaining)
+                gap (- (typography/position-x current)
+                       (position-right previous))
+                index (- (count sorted) (count remaining))
+                next-best (if (> gap (:width best))
+                            {:width gap :split-index index}
+                            best)]
+            (recur (rest remaining) current next-best)))))))
 
-(defn- positions-on-side [text-positions gutter side]
-  (count
-   (filter
-    (fn [position]
-      (let [center (position-center-x position)]
-        (case side
-          :left (< center (:x0 gutter))
-          :right (> center (:x1 gutter))
-          false)))
-    text-positions)))
+(defn band-two-column-gap [positions page-width]
+  (let [candidates (remove #(position-spans-midpoint? % page-width) positions)
+        gap (largest-position-gap candidates)]
+    (when (and gap (pos? (:width gap)) (>= (:width gap) (min-gutter-width page-width)))
+      (let [sorted (sort-by typography/position-x candidates)
+            split-index (:split-index gap)
+            left (subvec (vec sorted) 0 split-index)
+            right (subvec (vec sorted) split-index)]
+        (when (and (seq left) (seq right))
+          (let [left-width (- (position-right (last left)) (typography/position-x (first left)))
+                right-width (- (position-right (last right)) (typography/position-x (first right)))]
+            (when (and (>= left-width min-band-side-width)
+                       (>= right-width min-band-side-width)
+                       (>= (count left) min-band-side-positions)
+                       (>= (count right) min-band-side-positions))
+              {:x0 (position-right (last left))
+               :x1 (typography/position-x (first right))
+               :width (:width gap)})))))))
 
-(defn page-gutter-from-positions [text-positions page-width]
-  (let [candidates (column-candidate-positions text-positions page-width)
-        gutter (find-gutter-from-position-centers candidates page-width)]
-    (when (and gutter
-               (>= (positions-on-side candidates gutter :left) (* min-lines-per-side 3))
-               (>= (positions-on-side candidates gutter :right) (* min-lines-per-side 3)))
-      gutter)))
+(defn- position-bands [text-positions line-tolerance]
+  (->> text-positions
+       (group-by #(typography/line-key % line-tolerance))
+       (map (fn [[_ positions]] positions))))
+
+(defn page-gutter-from-positions [text-positions page-width line-tolerance]
+  (let [band-gutters (keep #(band-two-column-gap % page-width) (position-bands text-positions line-tolerance))
+        two-column-bands (count band-gutters)]
+    (when (>= two-column-bands min-lines-per-side)
+      (let [x0 (/ (reduce + (map :x0 band-gutters)) (count band-gutters))
+            x1 (/ (reduce + (map :x1 band-gutters)) (count band-gutters))]
+        {:x0 x0 :x1 x1}))))
 
 (defn- bucket-for-position [position page-width gutter]
   (cond
@@ -204,13 +116,63 @@
           {:single [] :full [] :left [] :right []}
           text-positions))
 
-(defn page-gutter [line-records page-width]
-  (when (two-column-page? line-records page-width)
-    (let [candidates (remove #(full-width-record? % page-width) line-records)]
-      (find-central-gutter candidates page-width))))
+(defn- cluster-side-lines [line-records page-width side]
+  (let [left-threshold (* page-width left-cluster-ratio)
+        right-threshold (* page-width right-cluster-ratio)]
+    (filter
+     (fn [line]
+       (let [center (bbox-center-x (record-bbox line))]
+         (and (>= (bbox-width (record-bbox line)) min-column-line-width)
+              (case side
+                :left (< center left-threshold)
+                :right (> center right-threshold)
+                false))))
+     line-records)))
 
-(defn split-lines-by-column [line-records page-width]
-  (if-let [gutter (page-gutter line-records page-width)]
+(defn find-gutter-from-line-clusters [line-records page-width]
+  (let [candidates (remove #(full-width-record? % page-width) line-records)
+        left-lines (cluster-side-lines candidates page-width :left)
+        right-lines (cluster-side-lines candidates page-width :right)]
+    (when (and (>= (count left-lines) min-lines-per-side)
+               (>= (count right-lines) min-lines-per-side))
+      (let [left-edge (apply max (map :x1 (map record-bbox left-lines)))
+            right-edge (apply min (map :x0 (map record-bbox right-lines)))
+            gap (- right-edge left-edge)]
+        (when (>= gap (min-gutter-width page-width))
+          {:x0 left-edge :x1 right-edge})))))
+
+(defn page-gutter [line-records page-width]
+  (find-gutter-from-line-clusters line-records page-width))
+
+(defn two-column-page? [line-records page-width]
+  (boolean (page-gutter line-records page-width)))
+
+(defn line-column [line page-width gutter]
+  (cond
+    (not gutter) :single
+    (full-width-record? line page-width) :full
+    (< (bbox-center-x (record-bbox line)) (:x0 gutter)) :left
+    (> (bbox-center-x (record-bbox line)) (:x1 gutter)) :right
+    :else (if (< (bbox-center-x (record-bbox line)) (/ page-width 2.0)) :left :right)))
+
+(defn column-side [bbox page-width gutter]
+  (cond
+    (not gutter) "single"
+    (full-width-record? {:bbox bbox} page-width) "full"
+    (< (bbox-center-x bbox) (:x0 gutter)) "left"
+    (> (bbox-center-x bbox) (:x1 gutter)) "right"
+    :else (if (< (bbox-center-x bbox) (/ page-width 2.0)) "left" "right")))
+
+(defn same-column? [left-bbox right-bbox]
+  (let [overlap (- (min (:x1 left-bbox) (:x1 right-bbox))
+                   (max (:x0 left-bbox) (:x0 right-bbox)))
+        narrow-width (min (- (:x1 left-bbox) (:x0 left-bbox))
+                          (- (:x1 right-bbox) (:x0 right-bbox)))]
+    (and (pos? overlap)
+         (>= (/ overlap (max narrow-width 1.0)) 0.25))))
+
+(defn split-lines-by-column [line-records page-width gutter]
+  (if gutter
     (reduce (fn [acc line]
               (update acc (line-column line page-width gutter) conj line))
             {:single [] :full [] :left [] :right []}
@@ -220,7 +182,7 @@
 (defn- column-sort-priority [column]
   (get {:single 0 :full 0 :left 1 :right 2} column 0))
 
-(defn order-blocks [blocks page-width gutter]
+(defn order-blocks [blocks _page-width _gutter]
   (vec
    (sort-by
     (fn [block]

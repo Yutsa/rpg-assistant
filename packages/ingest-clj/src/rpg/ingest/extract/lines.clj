@@ -32,15 +32,19 @@
      :bold? (boolean (some typography/position-bold? line-positions))
      :italic? (boolean (some typography/position-italic? line-positions))}))
 
-(defn build-line [line-positions]
-  (when (seq line-positions)
-    (let [text (line-text line-positions)]
-      (when-not (str/blank? text)
-        {:positions line-positions
-         :text text
-         :bbox (line-bbox line-positions)
-         :line-height (line-height line-positions)
-         :metadata (line-metadata line-positions)}))))
+(defn build-line
+  ([line-positions] (build-line line-positions nil))
+  ([line-positions column-label]
+   (when (seq line-positions)
+     (let [text (line-text line-positions)]
+       (when-not (str/blank? text)
+         (let [metadata (cond-> (line-metadata line-positions)
+                          column-label (assoc :column column-label))]
+           {:positions line-positions
+            :text text
+            :bbox (line-bbox line-positions)
+            :line-height (line-height line-positions)
+            :metadata metadata}))))))
 
 (defn vertical-gap [previous-line next-line]
   (- (:y0 (:bbox next-line)) (:y1 (:bbox previous-line))))
@@ -59,18 +63,29 @@
 (defn sort-lines-top-down [line-records]
   (vec (sort-by (fn [line] [(:y0 (:bbox line)) (:x0 (:bbox line))]) line-records)))
 
-(defn- lines-from-positions [text-positions]
-  (->> (typography/group-positions-into-lines text-positions default-line-tolerance)
-       (map build-line)
-       (remove nil?)
-       vec))
+(defn- lines-from-positions
+  ([text-positions] (lines-from-positions text-positions nil))
+  ([text-positions column-label]
+   (->> (typography/group-positions-into-lines text-positions default-line-tolerance)
+        (map #(build-line % column-label))
+        (remove nil?)
+        vec)))
 
-(defn collect-lines [text-positions page-width]
-  (let [gutter (columns/page-gutter-from-positions text-positions page-width)
-        {:keys [single full left right]} (columns/split-positions-by-gutter text-positions page-width gutter)
-        lines (if (seq single)
-                (lines-from-positions single)
-                (vec (concat (lines-from-positions full)
-                             (lines-from-positions left)
-                             (lines-from-positions right))))]
-    (sort-lines-top-down lines)))
+(defn- lines-from-band [band-positions page-width]
+  (if-let [band-gutter (columns/band-two-column-gap band-positions page-width)]
+    (let [{:keys [single full left right]}
+          (columns/split-positions-by-gutter band-positions page-width
+                                             {:x0 (:x0 band-gutter) :x1 (:x1 band-gutter)})]
+      (vec (concat (lines-from-positions single "single")
+                   (lines-from-positions full "full")
+                   (lines-from-positions left "left")
+                   (lines-from-positions right "right"))))
+    (lines-from-positions band-positions "single")))
+
+(defn collect-lines
+  ([text-positions page-width] (collect-lines text-positions page-width nil))
+  ([text-positions page-width _gutter]
+   (->> (group-by #(typography/line-key % default-line-tolerance) text-positions)
+        (sort-by key)
+        (mapcat (fn [[_ band-positions]] (lines-from-band band-positions page-width)))
+        sort-lines-top-down)))

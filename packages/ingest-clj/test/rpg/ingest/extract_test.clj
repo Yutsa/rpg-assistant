@@ -60,3 +60,15 @@
                    blocks)))
       (is (some #(re-find #"gauche" (:text %)) blocks))
       (is (some #(re-find #"droite" (:text %)) blocks)))))
+
+(deftest extract-layout-ignores-narrow-right-footer
+  (testing "A single text column plus a narrow right footer stays single-column"
+    (let [temp-file (doto (File/createTempFile "rpg-ingest-footer-" ".pdf")
+                      (.deleteOnExit))
+          pdf-path (sample-pdf/create-single-column-with-right-footer-pdf (.getAbsolutePath temp-file))
+          page (-> pdf-path pdf/extract-layout :pages first)
+          blocks (:blocks page)]
+      (is (every? #(= "single" (:column (:metadata %))) blocks))
+      (is (not (some #(and (< (count (:text %)) 4)
+                            (> (:x0 (:bbox %)) 300))
+                     blocks))))))

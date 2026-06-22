@@ -78,3 +78,21 @@
                         (- page-height 180 (* index 24)))))
         (.save document file))
       (.getAbsolutePath file))))
+
+(defn create-single-column-with-right-footer-pdf [file-path]
+  (let [file (File. file-path)
+        body-lines ["Colonne unique premiere ligne de texte longue."
+                    "Colonne unique deuxieme ligne de texte longue."
+                    "Colonne unique troisieme ligne de texte longue."
+                    "Colonne unique quatrieme ligne de texte longue."]]
+    (with-open [document (PDDocument.)]
+      (let [page (PDPage. PDRectangle/A4)
+            page-height (.getHeight PDRectangle/A4)
+            page-width (.getWidth PDRectangle/A4)]
+        (.addPage document page)
+        (with-open [content-stream (PDPageContentStream. document page)]
+          (doseq [[index line-text] (map-indexed vector body-lines)]
+            (write-line content-stream 12 line-text 72 (- page-height 120 (* index 24))))
+          (write-line content-stream 10 "BBECOF209" (+ page-width -100) (- page-height 40)))
+        (.save document file))
+      (.getAbsolutePath file))))
