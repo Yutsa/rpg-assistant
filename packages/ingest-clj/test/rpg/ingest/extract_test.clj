@@ -36,9 +36,9 @@
         (let [page (pdf/extract-page (.getAbsolutePath momie-pdf) 7)
               block-count (count (:blocks page))
               texts (set (map :text (:blocks page)))]
-          (is (< block-count 92)
-              "page 7 should produce fewer blocks once same-font lines merge")
-          (is (> block-count 10)
+          (is (< block-count 30)
+              "page 7 should merge same-font lines within each column")
+          (is (> block-count 4)
               "columns should still be split")
           (is (some #(str/includes? % "Dans les vestiges") texts))
           (is (some #(str/includes? % "Depuis lors") texts))

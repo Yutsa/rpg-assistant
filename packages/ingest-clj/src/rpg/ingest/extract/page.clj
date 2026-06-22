@@ -8,7 +8,6 @@
 (def ^:private gap-beta 6.0)
 (def ^:private gap-min 12.0)
 (def ^:private gap-median-cap 20.0)
-(def ^:private column-overlap-min 0.35)
 
 (defn- position-x [text-position]
   (.getXDirAdj ^TextPosition text-position))
@@ -134,20 +133,8 @@
        :font-signature (font-signature-from-positions positions)
        :line-count 1})))
 
-(defn- x-overlap-ratio [bbox-a bbox-b]
-  (let [overlap (max 0.0 (- (min (:x1 bbox-a) (:x1 bbox-b))
-                            (max (:x0 bbox-a) (:x0 bbox-b))))
-        min-width (min (- (:x1 bbox-a) (:x0 bbox-a))
-                       (- (:x1 bbox-b) (:x0 bbox-b)))]
-    (if (pos? min-width) (/ overlap min-width) 0.0)))
-
 (defn- same-line? [bbox-a bbox-b]
   (< (Math/abs (- (:y0 bbox-a) (:y0 bbox-b))) line-tolerance))
-
-(defn- can-merge-segments? [current next-segment]
-  (and current
-       (= (:font-signature current) (:font-signature next-segment))
-       (>= (x-overlap-ratio (:bbox current) (:bbox next-segment)) column-overlap-min)))
 
 (defn- merge-segments [current next-segment]
   (let [separator (if (same-line? (:bbox current) (:bbox next-segment)) " " "\n")]
@@ -159,18 +146,41 @@
      :font-signature (:font-signature current)
      :line-count (+ (:line-count current) (:line-count next-segment))}))
 
-(defn- merge-segments-by-font [segments]
+(defn- segment-x-center [segment]
+  (/ (+ (:x0 (:bbox segment)) (:x1 (:bbox segment))) 2.0))
+
+(defn- segment-column [segment page-width]
+  ;; Two-column COF2 pages: gutter near mid-page (x-centers cluster left/right).
+  (if (< (segment-x-center segment) (* page-width 0.48))
+    :col-0
+    :col-1))
+
+(defn- can-merge-consecutive? [current next-segment]
+  (and current
+       (= (:font-signature current) (:font-signature next-segment))))
+
+(defn- merge-segments-by-font-in-column [segments]
   (reduce
    (fn [acc segment]
      (if (empty? acc)
        [segment]
        (let [current (peek acc)
              prior (pop acc)]
-         (if (can-merge-segments? current segment)
+         (if (can-merge-consecutive? current segment)
            (conj prior (merge-segments current segment))
            (conj acc segment)))))
    []
    segments))
+
+(defn- merge-segments-by-font [segments page-width]
+  (->> segments
+       (group-by #(segment-column % page-width))
+       (mapcat (fn [[_column segs]]
+                 (->> segs
+                      (sort-by (comp :y0 :bbox))
+                      merge-segments-by-font-in-column)))
+       (sort-by (juxt (comp :y0 :bbox) (comp :x0 :bbox)))
+       vec))
 
 (defn- segment-metadata [segment]
   (let [sig (:font-signature segment)]
@@ -189,12 +199,12 @@
    :metadata (segment-metadata segment)})
 
 (defn page-blocks [page-number width height text-positions]
-  (let [segments (->> text-positions
-                      group-into-lines
-                      (mapcat split-line-into-runs)
-                      (keep run-segment)
-                      vec
-                      merge-segments-by-font)
+  (let [raw-segments (->> text-positions
+                          group-into-lines
+                          (mapcat split-line-into-runs)
+                          (keep run-segment)
+                          vec)
+        segments (merge-segments-by-font raw-segments width)
         blocks (keep-indexed segment-as-block segments)]
     {:page-number page-number
      :width width
