@@ -1,5 +1,6 @@
+import { DecimalPipe, JsonPipe, KeyValuePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,14 +9,26 @@ import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { CampaignApiService } from '../../../core/services/campaign-api.service';
-import { PageExtractorsCompare } from '../../../core/models/campaign.models';
+import { PageBlock, PageExtractorsCompare } from '../../../core/models/campaign.models';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
+import {
+  BlockSelection,
+  CompareLane,
+  findBestMatchBlock,
+} from './bbox-overlay.util';
 import { ExtractorPaneComponent } from './extractor-pane.component';
+
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 3;
+const ZOOM_STEP = 0.25;
 
 @Component({
   selector: 'app-extractor-comparison-viewer',
   imports: [
     RouterLink,
+    DecimalPipe,
+    JsonPipe,
+    KeyValuePipe,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
@@ -37,6 +50,66 @@ export class ExtractorComparisonViewerComponent {
   readonly refreshing = signal(false);
   readonly error = signal<string | null>(null);
   readonly comparison = signal<PageExtractorsCompare | null>(null);
+  readonly zoom = signal(1);
+  readonly selection = signal<BlockSelection | null>(null);
+  readonly hoveredBlockId = signal<string | null>(null);
+  readonly detailOpen = signal(false);
+  readonly detailExpanded = signal(false);
+
+  readonly matchedBlock = computed(() => {
+    const data = this.comparison();
+    const current = this.selection();
+    if (!data || !current) {
+      return null;
+    }
+    const candidates =
+      current.lane === 'pymupdf' ? data.pdfbox.blocks : data.pymupdf.blocks;
+    return findBestMatchBlock(current.block, candidates);
+  });
+
+  readonly pymupdfSelectedId = computed(() => {
+    const selection = this.selection();
+    return selection?.lane === 'pymupdf' ? selection.block.id : null;
+  });
+
+  readonly pdfboxSelectedId = computed(() => {
+    const selection = this.selection();
+    return selection?.lane === 'pdfbox' ? selection.block.id : null;
+  });
+
+  readonly pymupdfMatchedId = computed(() => {
+    const data = this.comparison();
+    if (!data) {
+      return null;
+    }
+    const selection = this.selection();
+    if (selection?.lane === 'pdfbox') {
+      return findBestMatchBlock(selection.block, data.pymupdf.blocks)?.id ?? null;
+    }
+    const hovered = this.hoveredBlockId();
+    const pdfboxBlock = data.pdfbox.blocks.find((block) => block.id === hovered);
+    if (pdfboxBlock) {
+      return findBestMatchBlock(pdfboxBlock, data.pymupdf.blocks)?.id ?? null;
+    }
+    return null;
+  });
+
+  readonly pdfboxMatchedId = computed(() => {
+    const data = this.comparison();
+    if (!data) {
+      return null;
+    }
+    const selection = this.selection();
+    if (selection?.lane === 'pymupdf') {
+      return findBestMatchBlock(selection.block, data.pdfbox.blocks)?.id ?? null;
+    }
+    const hovered = this.hoveredBlockId();
+    const pymupdfBlock = data.pymupdf.blocks.find((block) => block.id === hovered);
+    if (pymupdfBlock) {
+      return findBestMatchBlock(pymupdfBlock, data.pdfbox.blocks)?.id ?? null;
+    }
+    return null;
+  });
 
   private readonly pageCache = new Map<number, PageExtractorsCompare>();
   private readonly prefetchSubscriptions = new Map<number, Subscription>();
@@ -53,6 +126,7 @@ export class ExtractorComparisonViewerComponent {
     effect(() => {
       this.documentId();
       this.pageNumber();
+      this.clearInteractionState();
       this.loadComparison();
     });
   }
@@ -69,6 +143,49 @@ export class ExtractorComparisonViewerComponent {
 
   renderUrl(): string {
     return this.api.getPageRenderUrl(this.documentId(), this.pageNumber(), 120);
+  }
+
+  zoomIn(): void {
+    this.zoom.update((value) => Math.min(MAX_ZOOM, value + ZOOM_STEP));
+  }
+
+  zoomOut(): void {
+    this.zoom.update((value) => Math.max(MIN_ZOOM, value - ZOOM_STEP));
+  }
+
+  resetZoom(): void {
+    this.zoom.set(1);
+  }
+
+  selectBlock(lane: CompareLane, block: PageBlock): void {
+    this.selection.set({ lane, block });
+    this.detailOpen.set(true);
+    this.detailExpanded.set(false);
+  }
+
+  onBlockHover(block: PageBlock | null): void {
+    this.hoveredBlockId.set(block?.id ?? null);
+  }
+
+  closeDetail(): void {
+    this.detailOpen.set(false);
+    this.detailExpanded.set(false);
+  }
+
+  toggleDetailExpanded(): void {
+    this.detailExpanded.update((value) => !value);
+  }
+
+  laneLabel(lane: CompareLane): string {
+    return lane === 'pymupdf' ? 'PyMuPDF' : 'PDFBox';
+  }
+
+  private clearInteractionState(): void {
+    this.selection.set(null);
+    this.hoveredBlockId.set(null);
+    this.detailOpen.set(false);
+    this.detailExpanded.set(false);
+    this.zoom.set(1);
   }
 
   private loadComparison(): void {

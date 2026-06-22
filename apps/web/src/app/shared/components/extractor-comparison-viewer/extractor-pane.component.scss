@@ -28,24 +28,31 @@
 .canvas-wrap {
   flex: 1;
   min-height: 0;
-  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
   background: #f0f0f0;
   padding: 0.5rem;
+}
+
+.canvas-wrap--scrollable {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
 }
 
 .canvas {
   position: relative;
   display: block;
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 auto;
+  flex-shrink: 0;
 }
 
 .page-image {
   display: block;
-  width: 100%;
+  width: auto;
   height: auto;
-  max-width: 100%;
+  max-width: none;
 }
 
 .overlay {
@@ -54,15 +61,40 @@
   left: 0;
   pointer-events: none;
 
-  rect {
+  .block-rect {
     pointer-events: all;
-    cursor: help;
+    fill: transparent;
+    stroke-width: 1.5;
+    cursor: pointer;
+    transition: fill 0.1s ease, stroke-width 0.1s ease;
+  }
+
+  .is-hovered,
+  .is-selected,
+  .is-matched {
+    stroke-width: 2.5;
+  }
+
+  .is-selected {
+    fill: rgba(255, 193, 7, 0.2);
+    stroke: #ff8f00;
+  }
+
+  .is-matched {
+    fill: rgba(76, 175, 80, 0.18);
+    stroke: #2e7d32;
+    stroke-dasharray: 4 2;
+  }
+
+  .is-hovered:not(.is-selected):not(.is-matched) {
+    fill: rgba(25, 118, 210, 0.12);
   }
 }
 
-@media (min-width: 961px) {
-  .page-image {
-    width: auto;
-    max-width: none;
+@media (max-width: 1199px) {
+  .pane {
+    height: 42dvh;
+    max-height: 42dvh;
+    flex-shrink: 0;
   }
 }

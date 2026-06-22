@@ -8,6 +8,10 @@ import { ExtractorComparisonViewerComponent } from '../../../../shared/component
 @Component({
   selector: 'app-page-extractor-comparison-page',
   imports: [ExtractorComparisonViewerComponent],
+  host: {
+    class: 'page-extractor-comparison',
+  },
+  styleUrl: './page-extractor-comparison.page.scss',
   template: `
     <app-extractor-comparison-viewer
       [documentId]="documentId"
