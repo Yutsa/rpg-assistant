@@ -4,7 +4,11 @@
     <p>{{ subtitle() }} · {{ blocks().length }} blocs</p>
   </header>
 
-  <div class="canvas-wrap" #canvasWrap>
+  <div
+    class="canvas-wrap"
+    #canvasWrap
+    [class.canvas-wrap--scrollable]="allowScroll()"
+  >
     <div class="canvas">
       <img
         class="page-image"

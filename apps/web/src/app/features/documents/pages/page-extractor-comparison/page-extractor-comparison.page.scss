@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
+@media (min-width: 1200px) {
+  :host {
+    overflow: hidden;
+  }
+}

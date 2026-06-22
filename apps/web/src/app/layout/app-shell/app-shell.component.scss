@@ -68,6 +68,12 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+@media (min-width: 1200px) {
+  .content:has(.page-extractor-comparison) {
+    overflow: hidden;
+  }
+}
+
 @media (min-width: 768px) {
   .toolbar {
     flex-direction: row;
