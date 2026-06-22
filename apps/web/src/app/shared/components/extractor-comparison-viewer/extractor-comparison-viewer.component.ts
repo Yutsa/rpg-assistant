@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -62,9 +63,20 @@ export class ExtractorComparisonViewerComponent {
         this.comparison.set(payload);
         this.loading.set(false);
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
+        const detail =
+          typeof err.error?.detail === 'string'
+            ? err.error.detail
+            : typeof err.error?.error === 'string'
+              ? err.error.error
+              : null;
+        const suffix = detail
+          ? ` (${err.status}: ${detail})`
+          : err.status
+            ? ` (HTTP ${err.status})`
+            : '';
         this.error.set(
-          'Comparaison indisponible. Vérifiez que le PDF source et Clojure sont accessibles.',
+          `Comparaison indisponible. Vérifiez que l'API est à jour, que le PDF source et Clojure sont accessibles${suffix}.`,
         );
         this.loading.set(false);
       },
