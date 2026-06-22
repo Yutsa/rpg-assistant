@@ -11,7 +11,7 @@ from rpg_ingest.raw.providers.base import ExtractionResult
 
 
 class LegacyExtractionProvider:
-    """Extract layout using PyMuPDF block detection (pre-Docling pipeline)."""
+    """Extract layout using PyMuPDF block detection."""
 
     provider_id = "legacy"
 
@@ -23,7 +23,6 @@ class LegacyExtractionProvider:
             document.close()
         return ExtractionResult(
             pages=pages,
-            elements=[],
             extraction_method="pymupdf",
             provider_id=self.provider_id,
         )

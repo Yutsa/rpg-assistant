@@ -1,15 +1,11 @@
-"""Benchmark helpers comparing Docling and legacy extraction pipelines."""
+"""Benchmark helpers for the legacy extraction pipeline."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from pathlib import Path
 
 from rpg_ingest.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
 from rpg_ingest.raw.chunking import build_chunks, chunk_uniqueness_stats
-from rpg_ingest.raw.docling_chunking import build_chunks_from_elements
-from rpg_ingest.raw.docling_sections import detect_sections_from_elements
-from rpg_ingest.raw.elements import DocElement
 from rpg_ingest.raw.filtering import filter_watermark_blocks
 from rpg_ingest.raw.layout import LayoutPage
 from rpg_ingest.raw.sections import detect_sections, refine_section_page_ends
@@ -31,26 +27,6 @@ class PipelineScore:
     @property
     def coverage_ok(self) -> bool:
         return self.missing_blocks == 0 and self.duplicate_chunks == 0
-
-    def beats(self, other: PipelineScore) -> bool:
-        """Return True when this pipeline is strictly better than another."""
-        key_self = (
-            int(self.coverage_ok),
-            self.quality_points,
-            -self.missing_blocks,
-            -self.duplicate_chunks,
-            self.sections,
-            self.blocks,
-        )
-        key_other = (
-            int(other.coverage_ok),
-            other.quality_points,
-            -other.missing_blocks,
-            -other.duplicate_chunks,
-            other.sections,
-            other.blocks,
-        )
-        return key_self > key_other
 
 
 def _postprocess_pages(
@@ -88,44 +64,6 @@ def run_legacy_pipeline(
         document_id=document_id,
         heading_anchors=section_result.heading_anchors,
         content_only_section_ids=section_result.content_only_section_ids,
-        stat_spans=stat_result.spans,
-        profile=profile,
-    )
-    refine_section_page_ends(section_result.sections, chunks)
-    score = _score_result(
-        pages,
-        section_result.sections,
-        chunks,
-        document_id=document_id,
-        heading_anchors=section_result.heading_anchors,
-    )
-    return score, chunks, section_result.sections
-
-
-def run_docling_pipeline(
-    pages: list[LayoutPage],
-    elements: list[DocElement],
-    *,
-    campaign_id: str,
-    document_id: str,
-    game_system: str = "cof2",
-) -> tuple[PipelineScore, list, list]:
-    pages, stat_result = _postprocess_pages(pages, game_system=game_system)
-    profile = resolve_profile(game_system, pages)
-    section_result = detect_sections_from_elements(
-        elements,
-        pages,
-        campaign_id=campaign_id,
-        document_id=document_id,
-        profile=profile,
-    )
-    chunks = build_chunks_from_elements(
-        elements,
-        pages,
-        section_result.sections,
-        campaign_id=campaign_id,
-        document_id=document_id,
-        heading_anchors=section_result.heading_anchors,
         stat_spans=stat_result.spans,
         profile=profile,
     )

@@ -16,9 +16,8 @@ import re
 import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Literal
+from typing import Callable
 
-from rpg_ingest.raw.providers.docling import DoclingExtractionProvider
 from rpg_ingest.raw.providers.legacy import LegacyExtractionProvider
 from rpg_core.models.raw import ChunkRecord, SectionRecord
 from tests.fixtures.cof2_audit_expectations import (
@@ -42,9 +41,7 @@ from tests.fixtures.pipeline import (
     section_by_title,
     stat_block_ability_titles,
 )
-from tests.fixtures.provider_benchmark import run_docling_pipeline, run_legacy_pipeline
-
-ProviderName = Literal["legacy", "docling"]
+from tests.fixtures.provider_benchmark import run_legacy_pipeline
 
 
 def _normalize_text(value: str) -> str:
@@ -138,7 +135,6 @@ class RealPdfSpec:
 @dataclass
 class BenchmarkRun:
     benchmark_id: str
-    provider: ProviderName
     pdf_path: Path
     sections: list[SectionRecord]
     chunks: list[ChunkRecord]
@@ -185,30 +181,18 @@ def run_real_pdf_benchmark(
     spec: RealPdfSpec,
     pdf_path: Path,
     *,
-    provider: ProviderName,
     document_id: str | None = None,
 ) -> BenchmarkRun:
-    doc_id = document_id or f"bench_{spec.benchmark_id}_{provider}"
-    if provider == "legacy":
-        extraction = LegacyExtractionProvider().extract(pdf_path)
-        score, chunks, sections = run_legacy_pipeline(
-            extraction.pages,
-            campaign_id=spec.campaign_id,
-            document_id=doc_id,
-            game_system=spec.game_system,
-        )
-    else:
-        extraction = DoclingExtractionProvider().extract(pdf_path)
-        score, chunks, sections = run_docling_pipeline(
-            extraction.pages,
-            extraction.elements,
-            campaign_id=spec.campaign_id,
-            document_id=doc_id,
-            game_system=spec.game_system,
-        )
+    doc_id = document_id or f"bench_{spec.benchmark_id}_legacy"
+    extraction = LegacyExtractionProvider().extract(pdf_path)
+    score, chunks, sections = run_legacy_pipeline(
+        extraction.pages,
+        campaign_id=spec.campaign_id,
+        document_id=doc_id,
+        game_system=spec.game_system,
+    )
     return BenchmarkRun(
         benchmark_id=spec.benchmark_id,
-        provider=provider,
         pdf_path=pdf_path,
         sections=sections,
         chunks=chunks,
@@ -387,7 +371,7 @@ def _momie_synopsis_not_mixed_with_credits(run: BenchmarkRun) -> None:
 
 
 def _mondanites_page5_no_content_scramble(run: BenchmarkRun) -> None:
-    """Page 5 body sections must not cross-contaminate (docling regression)."""
+    """Page 5 body sections must not cross-contaminate."""
     en_quelques = _find_section(run.sections, "EN QUELQUES MOTS")
     assert en_quelques is not None, "EN QUELQUES MOTS section expected on page 5"
     eq_chunks = [c for c in run.chunks if c.section_id == en_quelques.id]
@@ -403,7 +387,7 @@ def _mondanites_page5_no_content_scramble(run: BenchmarkRun) -> None:
 
 
 def _mondanites_no_spurious_stat_titles(run: BenchmarkRun) -> None:
-    """Watermark/stat-block debris must not become section headings (docling p.15)."""
+    """Watermark/stat-block debris must not become section headings (p.15)."""
     for section in run.sections:
         title = _normalize_text(section.title)
         assert "taless rhann" not in title or "histoire" in title, (
@@ -577,7 +561,7 @@ def _faelys_prairie_section(run: BenchmarkRun) -> None:
 
 
 def _faelys_no_sentence_fragment_sections(run: BenchmarkRun) -> None:
-    """Column body text must not become section titles (docling p.12 regression)."""
+    """Column body text must not become section titles (p.12 regression)."""
     fragment_markers = (
         "s'exprime d'une voix",
         "énonce",
@@ -630,4 +614,3 @@ BENCHMARK_CHECKS: dict[str, tuple[BenchmarkCheck, ...]] = {
     "faelys": FAELYS_CHECKS,
 }
 
-PROVIDERS: tuple[ProviderName, ...] = ("legacy", "docling")
