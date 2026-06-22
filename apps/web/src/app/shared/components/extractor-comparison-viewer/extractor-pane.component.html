@@ -5,13 +5,14 @@
   </header>
 
   <div class="canvas-wrap" #canvasWrap>
-    @if (displayWidth() > 0 && displayHeight() > 0) {
-      <div
-        class="canvas"
-        [style.width.px]="displayWidth()"
-        [style.height.px]="displayHeight()"
-        [style.background-image]="'url(' + renderUrl() + ')'"
-      >
+    <div class="canvas">
+      <img
+        class="page-image"
+        [src]="renderUrl()"
+        [attr.alt]="title()"
+        (load)="onImageLoad($event)"
+      />
+      @if (displayWidth() > 0 && displayHeight() > 0) {
         <svg
           class="overlay"
           [style.width.px]="displayWidth()"
@@ -32,7 +33,7 @@
             </rect>
           }
         </svg>
-      </div>
-    }
+      }
+    </div>
   </div>
 </section>

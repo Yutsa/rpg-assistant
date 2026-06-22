@@ -36,11 +36,16 @@
 .canvas {
   position: relative;
   display: block;
+  width: fit-content;
+  max-width: 100%;
   margin: 0 auto;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-position: top left;
-  background-color: #fff;
+}
+
+.page-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
 }
 
 .overlay {
@@ -56,8 +61,8 @@
 }
 
 @media (min-width: 961px) {
-  .canvas-wrap {
-    display: flex;
-    justify-content: center;
+  .page-image {
+    width: auto;
+    max-width: none;
   }
 }

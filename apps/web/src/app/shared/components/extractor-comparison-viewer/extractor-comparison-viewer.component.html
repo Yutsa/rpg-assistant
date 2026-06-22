@@ -32,7 +32,6 @@
   @if (error()) {
     <app-empty-state [title]="error() ?? ''" />
   } @else if (comparison(); as data) {
-    <link rel="preload" as="image" [attr.href]="renderUrl()" />
     <div class="split" [class.split--loading]="loading() || refreshing()">
       <app-extractor-pane
         title="PyMuPDF"

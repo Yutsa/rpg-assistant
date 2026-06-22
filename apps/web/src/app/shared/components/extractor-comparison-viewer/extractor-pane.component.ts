@@ -1,11 +1,9 @@
 import {
   Component,
-  ElementRef,
   computed,
   effect,
   input,
   signal,
-  viewChild,
 } from '@angular/core';
 import { PageBlock } from '../../../core/models/campaign.models';
 import { mapBlocksToOverlay } from './bbox-overlay.util';
@@ -25,8 +23,6 @@ export class ExtractorPaneComponent {
   readonly renderUrl = input.required<string>();
   readonly strokeColor = input('#1976d2');
 
-  private readonly canvasWrap = viewChild<ElementRef<HTMLElement>>('canvasWrap');
-
   readonly displayWidth = signal(0);
   readonly displayHeight = signal(0);
 
@@ -41,34 +37,16 @@ export class ExtractorPaneComponent {
   );
 
   constructor() {
-    effect((onCleanup) => {
+    effect(() => {
       this.renderUrl();
-      this.pageWidth();
-      this.pageHeight();
-      const wrap = this.canvasWrap()?.nativeElement;
-      if (!wrap) {
-        return;
-      }
-
-      const updateSize = () => {
-        const pageWidth = this.pageWidth();
-        const pageHeight = this.pageHeight();
-        if (!pageWidth || !pageHeight) {
-          this.displayWidth.set(0);
-          this.displayHeight.set(0);
-          return;
-        }
-
-        const availableWidth = Math.max(0, wrap.clientWidth - 16);
-        const scale = availableWidth / pageWidth;
-        this.displayWidth.set(availableWidth);
-        this.displayHeight.set(pageHeight * scale);
-      };
-
-      const observer = new ResizeObserver(() => updateSize());
-      observer.observe(wrap);
-      updateSize();
-      onCleanup(() => observer.disconnect());
+      this.displayWidth.set(0);
+      this.displayHeight.set(0);
     });
+  }
+
+  onImageLoad(event: Event): void {
+    const image = event.target as HTMLImageElement;
+    this.displayWidth.set(image.clientWidth);
+    this.displayHeight.set(image.clientHeight);
   }
 }
