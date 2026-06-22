@@ -1,5 +1,5 @@
 (ns rpg.ingest.extract.page
-  "PDFBox extraction: TextPosition → Y bands, horizontal gaps, merge by font style."
+  "PDFBox extraction: TextPosition → Y bands, horizontal gaps, paragraph clusters."
   (:require [clojure.string :as str])
   (:import [org.apache.pdfbox.text TextPosition]))
 
@@ -8,6 +8,10 @@
 (def ^:private gap-beta 6.0)
 (def ^:private gap-min 12.0)
 (def ^:private gap-median-cap 20.0)
+(def ^:private paragraph-gap-alpha 1.8)
+(def ^:private paragraph-gap-beta 4.0)
+(def ^:private paragraph-gap-min 8.0)
+(def ^:private paragraph-indent-min 8.0)
 
 (defn- position-x [text-position]
   (.getXDirAdj ^TextPosition text-position))
@@ -155,22 +159,62 @@
     :col-0
     :col-1))
 
-(defn- can-merge-consecutive? [current next-segment]
-  (and current
-       (= (:font-signature current) (:font-signature next-segment))))
+(defn- vertical-gap [prev-segment next-segment]
+  (- (:y0 (:bbox next-segment)) (:y1 (:bbox prev-segment))))
 
-(defn- merge-segments-by-font-in-column [segments]
-  (reduce
-   (fn [acc segment]
-     (if (empty? acc)
-       [segment]
-       (let [current (peek acc)
-             prior (pop acc)]
-         (if (can-merge-consecutive? current segment)
-           (conj prior (merge-segments current segment))
-           (conj acc segment)))))
-   []
-   segments))
+(defn- line-height [segment]
+  (- (:y1 (:bbox segment)) (:y0 (:bbox segment))))
+
+(defn- indent-delta [prev-segment next-segment]
+  (- (:x0 (:bbox next-segment)) (:x0 (:bbox prev-segment))))
+
+(defn- hyphenated-line-end? [text]
+  (boolean (re-find #"[-\u00AD]$" (str/trimr text))))
+
+(defn- paragraph-gap-threshold [segments]
+  (let [gaps (mapv vertical-gap segments (rest segments))
+        positive-gaps (vec (filter pos? gaps))
+        gap-sample (if (seq positive-gaps) positive-gaps gaps)
+        median-gap (or (median gap-sample) 2.0)
+        median-line-height (or (median (mapv line-height segments)) 10.0)]
+    (max (* paragraph-gap-alpha median-gap)
+         (+ median-gap paragraph-gap-beta)
+         (* median-line-height 0.4)
+         paragraph-gap-min)))
+
+(defn- paragraph-break? [prev-segment next-segment threshold]
+  (cond
+    (not= (:font-signature prev-segment) (:font-signature next-segment)) true
+    (> (indent-delta prev-segment next-segment) paragraph-indent-min) true
+    (hyphenated-line-end? (:text prev-segment)) false
+    (> (vertical-gap prev-segment next-segment) threshold) true
+    :else false))
+
+(defn- cluster-paragraphs [segments]
+  (if (empty? segments)
+    []
+    (let [sorted (vec (sort-by (comp :y0 :bbox) segments))
+          threshold (paragraph-gap-threshold sorted)]
+      (reduce
+       (fn [paragraphs segment]
+         (if (empty? paragraphs)
+           [[segment]]
+           (let [current-paragraph (peek paragraphs)
+                 previous-segment (peek current-paragraph)]
+             (if (paragraph-break? previous-segment segment threshold)
+               (conj paragraphs [segment])
+               (conj (pop paragraphs) (conj current-paragraph segment))))))
+       []
+       sorted))))
+
+(defn- merge-paragraph-cluster [segments]
+  (reduce merge-segments segments))
+
+(defn- merge-segments-in-column [segments]
+  (->> segments
+       cluster-paragraphs
+       (map merge-paragraph-cluster)
+       vec))
 
 (defn- merge-segments-by-font [segments page-width]
   (->> segments
@@ -178,14 +222,14 @@
        (mapcat (fn [[_column segs]]
                  (->> segs
                       (sort-by (comp :y0 :bbox))
-                      merge-segments-by-font-in-column)))
+                      merge-segments-in-column)))
        (sort-by (juxt (comp :y0 :bbox) (comp :x0 :bbox)))
        vec))
 
 (defn- segment-metadata [segment]
   (let [sig (:font-signature segment)]
     {:source "pdfbox_raw"
-     :extraction "font-run"
+     :extraction "paragraph"
      :line-count (:line-count segment)
      :max-font-size (:font-size sig)
      :avg-font-size (:font-size sig)
