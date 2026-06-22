@@ -75,10 +75,27 @@ Demande confirmation avant `import_pdf` ou toute soumission sémantique si l'uti
 
 Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Pas de GUI : trois surfaces, la **CLI** `rpg-ingest`, le **serveur MCP** `rpg-assistant-mcp` (stdio), et l'**API HTTP** `rpg-api` (FastAPI). Le script d'update (`uv sync`) est déjà lancé au démarrage ; il ne crée pas la base ni le `.env`.
 
-- **Setup runtime (à faire une fois par VM, hors update script)** : `cp .env.example .env` puis `uv run alembic upgrade head` pour créer `data/rpg_assistant.db` (SQLite par défaut, aucun Docker requis). Sans ça, CLI/MCP échouent (table manquante).
+### Setup automatique (`.cursor/environment.json`)
+
+Au démarrage, Cursor exécute `uv sync` puis `.cursor/scripts/cloud-agent-install.sh` :
+
+- **Clojure CLI** (`clojure`, `clj`) — installé par le script si absent (Java 21 déjà présent sur la VM).
+- **5 PDF COF2** — téléchargés dans `data/pdfs/` via `gdown` (Google Drive) s'ils ne sont pas déjà présents :
+  - `COF2_10_Mondanites_Et_Momies_web_v1a.pdf`
+  - `COF2_07_Le_Dernier_Faelys_web_v0.pdf`
+  - `COF2_Mortelle_Xelys.pdf`
+  - `COF2_Croissez_Et_Multipliez.pdf`
+  - `COF2_Retour_En_Grace.pdf`
+- **`.env`** — créé depuis `.env.example` avec `RPG_PDF_MOMIE` et `RPG_PDF_FAELYS` pointant vers les PDF locaux.
+- **Base SQLite** — `uv run alembic upgrade head` crée `data/rpg_assistant.db`.
+
+Aucune action manuelle requise pour Clojure ou les PDF sur une VM cloud agent à jour.
+
+### Commandes utiles
+
 - **Tests** : lancer `uv run python -m pytest`, **pas** `uv run pytest`. `tests/test_visual_review.py` fait `from tests.test_campaign_discovery import ...`, ce qui exige la racine du repo sur `sys.path` ; seul `python -m pytest` (qui ajoute le CWD) le fournit. Avec `pytest` direct la collecte échoue (`ModuleNotFoundError: No module named 'tests'`).
-- **Benchmarks PDF réels** : attentes statiques dans `tests/fixtures/real_pdf_benchmark.py` (pages pièges audit COF2). Configurer `RPG_PDF_MOMIE` et `RPG_PDF_FAELYS` dans `.env` (fichiers propriétaires hors git). Lancer `uv run python -m pytest tests/test_real_pdf_benchmark.py -m real_pdf -q`. Sans PDF local, ces tests sont `skipped`.
-- **Test ignoré** : les benchmarks `real_pdf` sont `skipped` si les PDF COF2 ne sont pas disponibles localement. C'est normal. Les tests synthétiques génèrent leurs PDF à la volée via `pymupdf`.
+- **Benchmarks PDF réels** : attentes statiques dans `tests/fixtures/real_pdf_benchmark.py` (pages pièges audit COF2). Lancer `uv run python -m pytest tests/test_real_pdf_benchmark.py -m real_pdf -q` — les PDF sont dans `data/pdfs/` après le bootstrap cloud.
+- **Tests campagnes supplémentaires** : `tests/test_cof2_audit_extra_campaigns.py` utilise aussi les PDF dans `data/pdfs/`.
+- **Test ignoré** : les benchmarks `real_pdf` sont `skipped` si les PDF COF2 ne sont pas disponibles localement (hors cloud agent). Les tests synthétiques génèrent leurs PDF à la volée via `pymupdf`.
 - **Aucun linter configuré** (pas de ruff/flake8/black/mypy ni de hooks pre-commit/husky).
 - **Ingestion** : `import_pdf` / `rpg-ingest raw extract` rejette un PDF si `text_coverage_ratio < 0.3` (heuristique ≈ `len(texte)*50 / aire_page`, voir `packages/ingest/src/rpg_ingest/raw/coverage.py`). Pour un PDF de test synthétique, viser ≳ 2900 caractères par page A4, sinon utiliser `--coverage-threshold 0.0`.
-- **Aucun PDF de la campagne de référence `momie` n'est commité** ; la base de dev démarre vide après migration.
