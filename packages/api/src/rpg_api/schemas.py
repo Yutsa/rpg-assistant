@@ -143,4 +143,3 @@ class PageExtractorsCompareOut(BaseModel):
     height: float
     pymupdf: ExtractorPageOut
     pdfbox: ExtractorPageOut
-    pdfbox_layout: ExtractorPageOut

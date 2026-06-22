@@ -1,24 +1,22 @@
 # rpg-ingest-clj
 
-Extraction raw de PDF en Clojure (maps + Malli), sans heuristiques de structuration.
+Extraction PDFBox minimale en Clojure : une ligne PDFTextStripper = un bloc, sans heuristiques de layout.
 
 ## Prérequis
 
 - Java 21+
 - Clojure CLI 1.12+
 
-## Import d'un PDF
+## Extraction d'une page (JSON)
 
 ```bash
 cd packages/ingest-clj
-export DATABASE_URL=sqlite:////workspace/data/rpg_assistant.db
-clojure -M:ingest raw extract \
-  --pdf /path/to/document.pdf \
-  --campaign-id my-campaign \
-  --game-system cof2
+clojure -M:ingest raw extract-page --pdf /path/to/document.pdf --page 1
 ```
 
-La base SQLite doit exister (`uv run alembic upgrade head` à la racine du monorepo).
+Sortie JSON : `page_number`, `width`, `height`, `blocks[]` avec `block_index`, `text`, `bbox`, `metadata`.
+
+Utilisé par l'API `GET /documents/{id}/pages/{n}/extractors-compare` et le viewer de comparaison PyMuPDF / PDFBox dans la webapp.
 
 ## Tests
 
@@ -27,9 +25,8 @@ cd packages/ingest-clj
 clojure -M:test
 ```
 
-## Périmètre v1
+## Périmètre
 
-- Extraction layout PDFBox → pages + blocs (bbox, métadonnées typo)
-- Détection double colonne : positions séparées gauche/droite avant regroupement lignes → blocs, ordre column-major (aligné PyMuPDF `get_text("dict")`)
-- Persistance raw SQLite compatible avec le schéma Python
-- Pas de sections, chunks, stat blocks, filtrage, ni comptage de tokens
+- PDFBox `PDFTextStripper` avec `setSortByPosition true`
+- Regroupement minimal des `TextPosition` en lignes (tolérance Y = 2 pt) pour obtenir des bbox affichables
+- Pas d'import SQLite, sections, chunks, colonnes, fusion de lignes, ni filtrage

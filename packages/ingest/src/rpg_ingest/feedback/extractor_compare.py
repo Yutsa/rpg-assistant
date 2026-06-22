@@ -132,7 +132,7 @@ def extract_pymupdf_raw_blocks(pdf_path: Path, page_number: int) -> dict[str, An
 
 
 def extract_pdfbox_raw_blocks(pdf_path: Path, page_number: int) -> dict[str, Any]:
-    """PDFBox line-level blocks via the Clojure ingest CLI (no column heuristics)."""
+    """PDFBox line-level blocks via the Clojure ingest CLI (no layout heuristics)."""
     payload = _run_clojure_page_command(pdf_path, page_number, "extract-page")
     return _pdfbox_payload_to_page(
         payload,
@@ -142,28 +142,15 @@ def extract_pdfbox_raw_blocks(pdf_path: Path, page_number: int) -> dict[str, Any
     )
 
 
-def extract_pdfbox_layout_blocks(pdf_path: Path, page_number: int) -> dict[str, Any]:
-    """PDFBox blocks after column split, line merge and column-major ordering."""
-    payload = _run_clojure_page_command(pdf_path, page_number, "extract-layout-page")
-    return _pdfbox_payload_to_page(
-        payload,
-        page_number=page_number,
-        extraction_method="pdfbox_layout",
-        block_id_prefix="pdfbox-layout",
-    )
-
-
 def compare_page_extractors(pdf_path: Path, page_number: int) -> dict[str, Any]:
     pymupdf_page = extract_pymupdf_raw_blocks(pdf_path, page_number)
-    pdfbox_raw_page = extract_pdfbox_raw_blocks(pdf_path, page_number)
-    pdfbox_layout_page = extract_pdfbox_layout_blocks(pdf_path, page_number)
-    width = pymupdf_page["width"] or pdfbox_raw_page["width"] or pdfbox_layout_page["width"]
-    height = pymupdf_page["height"] or pdfbox_raw_page["height"] or pdfbox_layout_page["height"]
+    pdfbox_page = extract_pdfbox_raw_blocks(pdf_path, page_number)
+    width = pymupdf_page["width"] or pdfbox_page["width"]
+    height = pymupdf_page["height"] or pdfbox_page["height"]
     return {
         "page_number": page_number,
         "width": width,
         "height": height,
         "pymupdf": pymupdf_page,
-        "pdfbox": pdfbox_raw_page,
-        "pdfbox_layout": pdfbox_layout_page,
+        "pdfbox": pdfbox_page,
     }

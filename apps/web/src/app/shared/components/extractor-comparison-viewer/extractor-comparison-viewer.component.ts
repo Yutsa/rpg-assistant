@@ -76,7 +76,7 @@ export class ExtractorComparisonViewerComponent {
             ? ` (HTTP ${err.status})`
             : '';
         this.error.set(
-          `Comparaison indisponible. Vérifiez que l'API est à jour, que le PDF source et Clojure sont accessibles${suffix}.`,
+          `Comparaison indisponible. Vérifiez que l'API est à jour, que le PDF source et Clojure CLI sont accessibles${suffix}.`,
         );
         this.loading.set(false);
       },

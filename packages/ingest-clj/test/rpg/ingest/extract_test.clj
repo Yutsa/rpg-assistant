@@ -4,71 +4,25 @@
             [rpg.ingest.test-fixtures.pdf :as sample-pdf])
   (:import [java.io File]))
 
-(deftest extract-layout-reads-text-blocks
-  (testing "PDF sample produces pages and text blocks"
+(deftest extract-page-reads-line-blocks
+  (testing "PDF sample produces one block per line"
     (let [temp-file (doto (File/createTempFile "rpg-ingest-" ".pdf")
                       (.deleteOnExit))
           pdf-path (sample-pdf/create-sample-pdf (.getAbsolutePath temp-file))
-          layout-document (pdf/extract-layout pdf-path)
-          first-page (first (:pages layout-document))]
-      (is (= pdf-path (:source-path layout-document)))
-      (is (= 1 (count (:pages layout-document))))
-      (is (pos? (count (:blocks first-page))))
-      (is (re-find #"Premiere" (:text first-page))))))
+          page (pdf/extract-page pdf-path 1)]
+      (is (= 1 (:page-number page)))
+      (is (pos? (:width page)))
+      (is (pos? (:height page)))
+      (is (>= (count (:blocks page)) 2))
+      (is (re-find #"Premiere" (:text (first (:blocks page))))))))
 
-(deftest extract-layout-keeps-block-metadata
-  (testing "Each block exposes pdfbox metadata"
+(deftest extract-page-keeps-block-metadata
+  (testing "Each block exposes pdfbox_raw metadata and bbox"
     (let [temp-file (doto (File/createTempFile "rpg-ingest-meta-" ".pdf")
                       (.deleteOnExit))
           pdf-path (sample-pdf/create-sample-pdf (.getAbsolutePath temp-file))
-          first-block (-> pdf-path pdf/extract-layout :pages first :blocks first)]
-      (is (= "pdfbox" (:source (:metadata first-block))))
+          first-block (-> pdf-path (pdf/extract-page 1) :blocks first)]
+      (is (= "pdfbox_raw" (:source (:metadata first-block))))
+      (is (= "line" (:extraction (:metadata first-block))))
       (is (contains? (:bbox first-block) :x0))
-      (is (pos? (:line-count (:metadata first-block)))))))
-
-(deftest extract-layout-splits-two-columns
-  (testing "Double-column pages produce separate left/right blocks"
-    (let [temp-file (doto (File/createTempFile "rpg-ingest-columns-" ".pdf")
-                      (.deleteOnExit))
-          pdf-path (sample-pdf/create-two-column-pdf (.getAbsolutePath temp-file))
-          page (-> pdf-path pdf/extract-layout :pages first)
-          blocks (:blocks page)
-          page-width (:width page)
-          midpoint (/ page-width 2.0)]
-      (is (>= (count blocks) 4))
-      (is (some #(and (< (:x0 (:bbox %)) midpoint)
-                      (re-find #"gauche" (:text %)))
-                blocks))
-      (is (some #(and (> (:x0 (:bbox %)) midpoint)
-                      (re-find #"droite" (:text %)))
-                blocks))
-      (is (not (some #(and (< (:x0 (:bbox %)) midpoint)
-                            (> (:x1 (:bbox %)) midpoint))
-                     blocks))))))
-
-(deftest extract-layout-keeps-centered-title-intact
-  (testing "Centered titles are not split by the column gutter heuristic"
-    (let [temp-file (doto (File/createTempFile "rpg-ingest-centered-" ".pdf")
-                      (.deleteOnExit))
-          pdf-path (sample-pdf/create-centered-title-two-column-pdf (.getAbsolutePath temp-file))
-          page (-> pdf-path pdf/extract-layout :pages first)
-          blocks (:blocks page)]
-      (is (some #(re-find #"TITRE CENTRE" (:text %)) blocks))
-      (is (not (some #(and (re-find #"TITRE" (:text %))
-                            (re-find #"CENTRE" (:text %))
-                            (not (re-find #"TITRE CENTRE" (:text %))))
-                   blocks)))
-      (is (some #(re-find #"gauche" (:text %)) blocks))
-      (is (some #(re-find #"droite" (:text %)) blocks)))))
-
-(deftest extract-layout-ignores-narrow-right-footer
-  (testing "A single text column plus a narrow right footer stays single-column"
-    (let [temp-file (doto (File/createTempFile "rpg-ingest-footer-" ".pdf")
-                      (.deleteOnExit))
-          pdf-path (sample-pdf/create-single-column-with-right-footer-pdf (.getAbsolutePath temp-file))
-          page (-> pdf-path pdf/extract-layout :pages first)
-          blocks (:blocks page)]
-      (is (every? #(= "single" (:column (:metadata %))) blocks))
-      (is (not (some #(and (< (count (:text %)) 4)
-                            (> (:x0 (:bbox %)) 300))
-                     blocks))))))
+      (is (pos? (:max-font-size (:metadata first-block)))))))
