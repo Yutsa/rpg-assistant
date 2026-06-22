@@ -18,6 +18,16 @@
       (is (re-find #"Premiere" (:text (first (:blocks page)))))
       (is (re-find #"Deuxieme" (:text (first (:blocks page))))))))
 
+(deftest extract-page-keeps-single-block-on-same-line-font-change
+  (testing "Font changes within one line stay in the same block"
+    (let [temp-file (doto (File/createTempFile "rpg-ingest-mixed-font-" ".pdf")
+                      (.deleteOnExit))
+          pdf-path (sample-pdf/create-mixed-font-line-pdf (.getAbsolutePath temp-file))
+          page (pdf/extract-page pdf-path 1)
+          first-block (first (:blocks page))]
+      (is (= 1 (count (:blocks page))))
+      (is (re-find #"Normal bold text" (:text first-block))))))
+
 (deftest extract-page-keeps-block-metadata
   (testing "Each block exposes pdfbox_raw metadata and bbox"
     (let [temp-file (doto (File/createTempFile "rpg-ingest-meta-" ".pdf")

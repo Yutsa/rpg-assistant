@@ -107,12 +107,8 @@
           threshold (gap-threshold gaps)
           split-at (keep-indexed
                     (fn [idx gap]
-                      (let [prev (sorted idx)
-                            next (sorted (inc idx))]
-                        (when (or (> gap threshold)
-                                  (not= (font-signature-from-position prev)
-                                        (font-signature-from-position next)))
-                          (inc idx))))
+                      (when (> gap threshold)
+                        (inc idx)))
                     gaps)]
       (if (empty? split-at)
         [sorted]
@@ -184,7 +180,9 @@
 
 (defn- paragraph-break? [prev-segment next-segment threshold]
   (cond
-    (not= (:font-signature prev-segment) (:font-signature next-segment)) true
+    (and (not (same-line? (:bbox prev-segment) (:bbox next-segment)))
+         (not= (:font-signature prev-segment) (:font-signature next-segment)))
+    true
     (> (indent-delta prev-segment next-segment) paragraph-indent-min) true
     (hyphenated-line-end? (:text prev-segment)) false
     (> (vertical-gap prev-segment next-segment) threshold) true

@@ -13,6 +13,26 @@
   (.showText content-stream text)
   (.endText content-stream))
 
+(defn create-mixed-font-line-pdf [file-path]
+  (let [file (File. file-path)]
+    (with-open [document (PDDocument.)]
+      (let [page (PDPage. PDRectangle/A4)
+            page-height (.getHeight PDRectangle/A4)
+            y (- page-height 100)]
+        (.addPage document page)
+        (with-open [content-stream (PDPageContentStream. document page)]
+          (.beginText content-stream)
+          (.setFont content-stream (PDType1Font. Standard14Fonts$FontName/HELVETICA) 12)
+          (.newLineAtOffset content-stream 72 y)
+          (.showText content-stream "Normal ")
+          (.setFont content-stream (PDType1Font. Standard14Fonts$FontName/HELVETICA_BOLD) 12)
+          (.showText content-stream "bold")
+          (.setFont content-stream (PDType1Font. Standard14Fonts$FontName/HELVETICA) 12)
+          (.showText content-stream " text.")
+          (.endText content-stream))
+        (.save document file))
+      (.getAbsolutePath file))))
+
 (defn create-sample-pdf [file-path & {:keys [lines]
                                       :or {lines ["Premiere ligne de test." "Deuxieme ligne de test."]}}]
   (let [file (File. file-path)]
