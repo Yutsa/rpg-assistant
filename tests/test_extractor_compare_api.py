@@ -164,6 +164,128 @@ def test_extractors_compare_endpoint_from_db(compare_client):
     assert body["pdfbox"]["blocks"][0]["text"] == "Stored pdfbox block"
 
 
+def test_extractors_compare_endpoint_from_db_without_pdf():
+    repo = _memory_repo_factory(with_pages=True, check_same_thread=False)
+    repo.ensure_campaign("cmp", title="Compare", game_system="generic")
+    repo.upsert_document("doc_db_no_pdf", "cmp", "compare.pdf", 1, "hash-db-no-pdf")
+    repo.insert_pages(
+        [
+            PageRecord(
+                id="page_db_no_pdf_1",
+                document_id="doc_db_no_pdf",
+                page_number=1,
+                text="Stored compare page",
+                extraction_method="extractor_compare",
+                text_coverage_ratio=1.0,
+                width=595.0,
+                height=842.0,
+            )
+        ]
+    )
+    repo.insert_page_blocks(
+        [
+            PageBlockRecord(
+                id="pymupdf_doc_db_no_pdf_0001_0000",
+                document_id="doc_db_no_pdf",
+                page_id="page_db_no_pdf_1",
+                page_number=1,
+                block_index=0,
+                text="Stored pymupdf block",
+                bbox=BBox(x0=72, y0=72, x1=200, y1=90),
+                metadata={"compare_lane": COMPARE_LANE_PYMUPDF},
+            ),
+            PageBlockRecord(
+                id="pdfbox_doc_db_no_pdf_0001_0000",
+                document_id="doc_db_no_pdf",
+                page_id="page_db_no_pdf_1",
+                page_number=1,
+                block_index=0,
+                text="Stored pdfbox block",
+                bbox=BBox(x0=72, y0=72, x1=200, y1=90),
+                metadata={"compare_lane": COMPARE_LANE_PDFBOX},
+            ),
+        ]
+    )
+    repo.create_ingestion_run(
+        IngestionRunRecord(
+            id="run_db_no_pdf",
+            campaign_id="cmp",
+            document_id="doc_db_no_pdf",
+            stage="raw",
+            status="completed",
+            stats={},
+        )
+    )
+
+    app = create_app()
+
+    def _override_raw_repo():
+        return repo
+
+    app.dependency_overrides[get_raw_repo] = _override_raw_repo
+    with TestClient(app) as db_client:
+        response = db_client.get("/documents/doc_db_no_pdf/pages/1/extractors-compare")
+    assert response.status_code == 200
+
+
+def test_page_nodes_filters_compare_lanes_to_pymupdf():
+    repo = _memory_repo_factory(with_pages=True, check_same_thread=False)
+    repo.ensure_campaign("cmp", title="Compare", game_system="generic")
+    repo.upsert_document("doc_nodes", "cmp", "compare.pdf", 1, "hash-nodes")
+    repo.insert_pages(
+        [
+            PageRecord(
+                id="page_nodes_1",
+                document_id="doc_nodes",
+                page_number=1,
+                text="Compare page",
+                extraction_method="extractor_compare",
+                text_coverage_ratio=1.0,
+                width=595.0,
+                height=842.0,
+            )
+        ]
+    )
+    repo.insert_page_blocks(
+        [
+            PageBlockRecord(
+                id="pymupdf_doc_nodes_0001_0000",
+                document_id="doc_nodes",
+                page_id="page_nodes_1",
+                page_number=1,
+                block_index=0,
+                text="PyMuPDF lane block",
+                bbox=BBox(x0=72, y0=72, x1=200, y1=90),
+                metadata={"compare_lane": COMPARE_LANE_PYMUPDF},
+            ),
+            PageBlockRecord(
+                id="pdfbox_doc_nodes_0001_0000",
+                document_id="doc_nodes",
+                page_id="page_nodes_1",
+                page_number=1,
+                block_index=0,
+                text="PDFBox lane block",
+                bbox=BBox(x0=72, y0=72, x1=200, y1=90),
+                metadata={"compare_lane": COMPARE_LANE_PDFBOX},
+            ),
+        ]
+    )
+
+    app = create_app()
+
+    def _override_raw_repo():
+        return repo
+
+    app.dependency_overrides[get_raw_repo] = _override_raw_repo
+    with TestClient(app) as client:
+        nodes = client.get(
+            "/documents/doc_nodes/pages/1/nodes",
+            params={"level": "block"},
+        ).json()
+    assert len(nodes) == 1
+    assert nodes[0]["text"] == "PyMuPDF lane block"
+
+
 def test_clojure_raw_extract_document_cli(tmp_path: Path):
     pdf_path = tmp_path / "raw-document.pdf"
     _write_text_pdf(pdf_path, pages=2)

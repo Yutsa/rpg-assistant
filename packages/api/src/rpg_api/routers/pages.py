@@ -14,13 +14,35 @@ from rpg_api.schemas import (
     PageMetaOut,
     PageNodeOut,
 )
-from rpg_ingest.feedback.extractor_compare import compare_page_extractors
+from rpg_ingest.feedback.extractor_compare import (
+    compare_page_extractors,
+    compare_page_extractors_from_db,
+)
 from rpg_ingest.feedback.visual_review import VisualReviewError, resolve_pdf_path
 from rpg_ingest.raw.raw_nodes import NodeDepth, NodeType, flatten_raw_layout
 from rpg_ingest.raw.rendering import render_pdf_pages
+from rpg_core.models.raw import PageBlockRecord
 from rpg_core.storage.repositories.raw import RawRepository
 
 router = APIRouter(prefix="/documents", tags=["pages"])
+
+COMPARE_LANE_PYMUPDF = "pymupdf"
+
+
+def _blocks_for_layout_view(blocks: list[PageBlockRecord]) -> list[PageBlockRecord]:
+    """When compare lanes are stored, layout UI should show PyMuPDF blocks only."""
+    compare_lanes = {
+        (block.metadata or {}).get("compare_lane")
+        for block in blocks
+        if (block.metadata or {}).get("compare_lane")
+    }
+    if not compare_lanes:
+        return blocks
+    return [
+        block
+        for block in blocks
+        if (block.metadata or {}).get("compare_lane") in (None, COMPARE_LANE_PYMUPDF)
+    ]
 
 
 @router.get("/{document_id}/pages/{page_number}", response_model=PageMetaOut)
@@ -104,7 +126,9 @@ def list_page_nodes(
             for node in nodes
         ]
 
-    blocks = repo.list_page_blocks_for_page(document_id, page_number)
+    blocks = _blocks_for_layout_view(
+        repo.list_page_blocks_for_page(document_id, page_number)
+    )
     if not blocks:
         raise not_found(
             f"Raw layout unavailable for page {page_number}. "
@@ -142,24 +166,29 @@ def compare_page_extractors_endpoint(
     repo: RawRepository = Depends(get_raw_repo),
 ) -> PageExtractorsCompareOut:
     require_document(repo, document_id)
-    try:
-        resolved_pdf = resolve_pdf_path(repo, document_id, pdf_path)
-    except VisualReviewError as exc:
-        raise pdf_not_found(str(exc)) from exc
 
-    try:
-        payload = compare_page_extractors(
-            resolved_pdf,
-            page_number,
-            repo=repo,
-            document_id=document_id,
-        )
-    except ValueError as exc:
-        raise not_found(str(exc)) from exc
-    except FileNotFoundError as exc:
-        raise pdf_not_found(str(exc)) from exc
-    except RuntimeError as exc:
-        raise not_found(str(exc)) from exc
+    db_result = compare_page_extractors_from_db(repo, document_id, page_number)
+    if db_result is not None:
+        payload = db_result
+    else:
+        try:
+            resolved_pdf = resolve_pdf_path(repo, document_id, pdf_path)
+        except VisualReviewError as exc:
+            raise pdf_not_found(str(exc)) from exc
+
+        try:
+            payload = compare_page_extractors(
+                resolved_pdf,
+                page_number,
+                repo=repo,
+                document_id=document_id,
+            )
+        except ValueError as exc:
+            raise not_found(str(exc)) from exc
+        except FileNotFoundError as exc:
+            raise pdf_not_found(str(exc)) from exc
+        except RuntimeError as exc:
+            raise not_found(str(exc)) from exc
 
     def _to_extractor_page(side: dict[str, Any]) -> ExtractorPageOut:
         return ExtractorPageOut(

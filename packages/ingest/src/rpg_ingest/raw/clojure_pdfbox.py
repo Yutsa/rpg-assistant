@@ -27,7 +27,7 @@ class ClojurePdfboxSession:
             cwd=_INGEST_CLJ_DIR,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
             text=True,
             bufsize=1,
         )
@@ -60,12 +60,7 @@ class ClojurePdfboxSession:
 
             response_line = process.stdout.readline()
             if not response_line:
-                stderr = ""
-                if process.stderr is not None:
-                    stderr = process.stderr.read()
-                raise RuntimeError(
-                    f"Clojure serve process closed stdout unexpectedly: {stderr.strip()}"
-                )
+                raise RuntimeError("Clojure serve process closed stdout unexpectedly")
 
             payload = json.loads(response_line)
             if payload.get("error"):

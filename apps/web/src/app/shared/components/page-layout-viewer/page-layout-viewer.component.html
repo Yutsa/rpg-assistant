@@ -68,6 +68,7 @@
             class="page-image"
             [src]="renderUrl()"
             [attr.alt]="'Page ' + pageNumber()"
+            [style.width.px]="displayWidth() > 0 ? displayWidth() : null"
             (load)="onImageLoad($event)"
           />
           @if (displayWidth() > 0 && displayHeight() > 0) {

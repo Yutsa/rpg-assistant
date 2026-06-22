@@ -71,8 +71,6 @@ export class PageLayoutViewerComponent {
   readonly renderUrl = signal('');
   readonly naturalWidth = signal(0);
   readonly naturalHeight = signal(0);
-  readonly imageRenderWidth = signal(0);
-  readonly imageRenderHeight = signal(0);
   readonly containerWidth = signal(0);
   readonly zoom = signal(1);
   readonly hoveredNodeId = signal<string | null>(null);
@@ -85,10 +83,6 @@ export class PageLayoutViewerComponent {
   readonly showSpans = signal(false);
 
   readonly displayWidth = computed(() => {
-    const rendered = this.imageRenderWidth();
-    if (rendered > 0) {
-      return rendered;
-    }
     const naturalWidth = this.naturalWidth();
     const containerWidth = this.containerWidth();
     if (!naturalWidth || !containerWidth) {
@@ -98,10 +92,6 @@ export class PageLayoutViewerComponent {
   });
 
   readonly displayHeight = computed(() => {
-    const rendered = this.imageRenderHeight();
-    if (rendered > 0) {
-      return rendered;
-    }
     const naturalWidth = this.naturalWidth();
     const naturalHeight = this.naturalHeight();
     const displayWidth = this.displayWidth();
@@ -154,8 +144,6 @@ export class PageLayoutViewerComponent {
           this.detailExpanded.set(false);
           this.hoveredNodeId.set(null);
           this.zoom.set(1);
-          this.imageRenderWidth.set(0);
-          this.imageRenderHeight.set(0);
         }),
         switchMap(([documentId, pageNumber]) =>
           combineLatest([
@@ -195,13 +183,7 @@ export class PageLayoutViewerComponent {
     const image = event.target as HTMLImageElement;
     this.naturalWidth.set(image.naturalWidth);
     this.naturalHeight.set(image.naturalHeight);
-    this.syncImageRenderSize(image);
     this.updateContainerWidth();
-  }
-
-  private syncImageRenderSize(image: HTMLImageElement): void {
-    this.imageRenderWidth.set(image.clientWidth);
-    this.imageRenderHeight.set(image.clientHeight);
   }
 
   observeCanvasWrap(): void {
@@ -212,10 +194,6 @@ export class PageLayoutViewerComponent {
     this.resizeObserver?.disconnect();
     this.resizeObserver = new ResizeObserver(() => {
       this.updateContainerWidth();
-      const image = element.querySelector('.page-image') as HTMLImageElement | null;
-      if (image?.clientWidth) {
-        this.syncImageRenderSize(image);
-      }
     });
     this.resizeObserver.observe(element);
     this.updateContainerWidth();
