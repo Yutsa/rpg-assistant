@@ -8,7 +8,7 @@
   (str (Instant/now)))
 
 (defn- json-string [value]
-  (json/generate-string value))
+  (json/generate-string value {:key-fn name}))
 
 (defn ensure-campaign [connection campaign-id & {:keys [title game-system]}]
   (jdbc/execute! connection

@@ -16,13 +16,21 @@ html {
   );
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
   margin: 0;
+  overflow-x: hidden;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   background: var(--mat-sys-surface, #fef7ff);
   color: var(--mat-sys-on-surface, #1d1b20);
+  -webkit-text-size-adjust: 100%;
 }
 
 .page-loading {

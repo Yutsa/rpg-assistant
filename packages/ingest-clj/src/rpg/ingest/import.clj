@@ -41,11 +41,11 @@
     {:pages pages :blocks blocks}))
 
 (defn- completed-stats [pdf-path payload]
-  {:source-pdf-path pdf-path
-   :page-count (count (:pages payload))
-   :block-count (count (:blocks payload))
-   :extraction-method "pdfbox"
-   :ingest-mode "raw"})
+  {:source_pdf_path (.getAbsolutePath (java.io.File. pdf-path))
+   :page_count (count (:pages payload))
+   :block_count (count (:blocks payload))
+   :extraction_method "pdfbox"
+   :ingest_mode "raw"})
 
 (defn- failed-result [run-id campaign-id error-message]
   {:ingestion-run-id run-id

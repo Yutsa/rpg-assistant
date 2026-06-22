@@ -65,6 +65,8 @@ export class PageLayoutViewerPage {
   readonly renderUrl = signal('');
   readonly naturalWidth = signal(0);
   readonly naturalHeight = signal(0);
+  readonly imageRenderWidth = signal(0);
+  readonly imageRenderHeight = signal(0);
   readonly containerWidth = signal(0);
   readonly zoom = signal(1);
   readonly hoveredNodeId = signal<string | null>(null);
@@ -77,22 +79,30 @@ export class PageLayoutViewerPage {
   readonly showSpans = signal(false);
 
   readonly displayWidth = computed(() => {
-    const nw = this.naturalWidth();
-    const cw = this.containerWidth();
-    if (!nw || !cw) {
+    const rendered = this.imageRenderWidth();
+    if (rendered > 0) {
+      return rendered;
+    }
+    const naturalWidth = this.naturalWidth();
+    const containerWidth = this.containerWidth();
+    if (!naturalWidth || !containerWidth) {
       return 0;
     }
-    return cw * this.zoom();
+    return containerWidth * this.zoom();
   });
 
   readonly displayHeight = computed(() => {
-    const nw = this.naturalWidth();
-    const nh = this.naturalHeight();
-    const dw = this.displayWidth();
-    if (!nw || !nh || !dw) {
+    const rendered = this.imageRenderHeight();
+    if (rendered > 0) {
+      return rendered;
+    }
+    const naturalWidth = this.naturalWidth();
+    const naturalHeight = this.naturalHeight();
+    const displayWidth = this.displayWidth();
+    if (!naturalWidth || !naturalHeight || !displayWidth) {
       return 0;
     }
-    return nh * (dw / nw);
+    return naturalHeight * (displayWidth / naturalWidth);
   });
 
   readonly overlayNodes = computed(() => {
@@ -140,6 +150,8 @@ export class PageLayoutViewerPage {
           this.detailExpanded.set(false);
           this.hoveredNodeId.set(null);
           this.zoom.set(1);
+          this.imageRenderWidth.set(0);
+          this.imageRenderHeight.set(0);
         }),
         switchMap((pageNumber) =>
           combineLatest([
@@ -179,7 +191,13 @@ export class PageLayoutViewerPage {
     const image = event.target as HTMLImageElement;
     this.naturalWidth.set(image.naturalWidth);
     this.naturalHeight.set(image.naturalHeight);
+    this.syncImageRenderSize(image);
     this.updateContainerWidth();
+  }
+
+  private syncImageRenderSize(image: HTMLImageElement): void {
+    this.imageRenderWidth.set(image.clientWidth);
+    this.imageRenderHeight.set(image.clientHeight);
   }
 
   observeCanvasWrap(): void {
@@ -188,7 +206,13 @@ export class PageLayoutViewerPage {
       return;
     }
     this.resizeObserver?.disconnect();
-    this.resizeObserver = new ResizeObserver(() => this.updateContainerWidth());
+    this.resizeObserver = new ResizeObserver(() => {
+      this.updateContainerWidth();
+      const image = element.querySelector('.page-image') as HTMLImageElement | null;
+      if (image?.clientWidth) {
+        this.syncImageRenderSize(image);
+      }
+    });
     this.resizeObserver.observe(element);
     this.updateContainerWidth();
   }
@@ -201,7 +225,13 @@ export class PageLayoutViewerPage {
     const styles = getComputedStyle(element);
     const paddingX =
       parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
-    this.containerWidth.set(Math.max(0, element.clientWidth - paddingX));
+    const measured = Math.max(0, element.clientWidth - paddingX);
+    if (measured > 0) {
+      this.containerWidth.set(measured);
+      return;
+    }
+    const fallback = Math.max(0, window.innerWidth - paddingX - 24);
+    this.containerWidth.set(fallback);
   }
 
   zoomIn(): void {

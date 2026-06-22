@@ -75,14 +75,16 @@ def resolve_pdf_path(
         return path
 
     run = repo.get_latest_raw_run(document_id)
-    if run and run.stats.get("source_pdf_path"):
-        path = Path(run.stats["source_pdf_path"]).resolve()
-        if path.is_file():
-            return path
-        raise VisualReviewError(
-            f"Stored source_pdf_path no longer exists: {path}. "
-            "Re-import the PDF or pass pdf_path explicitly."
-        )
+    if run:
+        stored_path = run.stats.get("source_pdf_path") or run.stats.get("source-pdf-path")
+        if stored_path:
+            path = Path(stored_path).resolve()
+            if path.is_file():
+                return path
+            raise VisualReviewError(
+                f"Stored source_pdf_path no longer exists: {path}. "
+                "Re-import the PDF or pass pdf_path explicitly."
+            )
 
     raise VisualReviewError(
         f"No source_pdf_path found for document {document_id}. "

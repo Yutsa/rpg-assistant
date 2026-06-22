@@ -61,18 +61,14 @@
       <div class="canvas-wrap" #canvasWrap>
         <div
           class="canvas"
-          [style.width.px]="displayWidth() || null"
-          [style.height.px]="displayHeight() || null"
         >
           <img
             class="page-image"
             [src]="renderUrl()"
             [attr.alt]="'Page ' + pageNumber()"
-            [style.width.px]="displayWidth() || null"
-            [style.height.px]="displayHeight() || null"
             (load)="onImageLoad($event)"
           />
-          @if (displayWidth() > 0) {
+          @if (displayWidth() > 0 && displayHeight() > 0) {
             <svg
               class="overlay"
               [attr.width]="displayWidth()"

@@ -79,26 +79,48 @@ def list_page_nodes(
 ) -> list[PageNodeOut]:
     require_document(repo, document_id)
     raw_layout = repo.get_page_raw_layout(document_id, page_number)
-    if raw_layout is None:
+    if raw_layout is not None:
+        nodes = flatten_raw_layout(raw_layout, level=level, node_type=node_type)
+        return [
+            PageNodeOut(
+                id=node.id,
+                depth=node.depth,
+                node_type=node.node_type,
+                parent_id=node.parent_id,
+                block_index=node.block_index,
+                line_index=node.line_index,
+                span_index=node.span_index,
+                text=node.text,
+                bbox=node.bbox,
+                metadata=node.metadata,
+            )
+            for node in nodes
+        ]
+
+    blocks = repo.list_page_blocks_for_page(document_id, page_number)
+    if not blocks:
         raise not_found(
             f"Raw layout unavailable for page {page_number}. "
             "Re-import with --ingest-mode layout-only."
         )
-    nodes = flatten_raw_layout(raw_layout, level=level, node_type=node_type)
+    if level is not None and level != "block":
+        return []
+    if node_type is not None and node_type != "text":
+        return []
     return [
         PageNodeOut(
-            id=node.id,
-            depth=node.depth,
-            node_type=node.node_type,
-            parent_id=node.parent_id,
-            block_index=node.block_index,
-            line_index=node.line_index,
-            span_index=node.span_index,
-            text=node.text,
-            bbox=node.bbox,
-            metadata=node.metadata,
+            id=block.id,
+            depth="block",
+            node_type="text",
+            parent_id=None,
+            block_index=block.block_index,
+            line_index=None,
+            span_index=None,
+            text=block.text,
+            bbox=block.bbox,
+            metadata=block.metadata,
         )
-        for node in nodes
+        for block in blocks
     ]
 
 
