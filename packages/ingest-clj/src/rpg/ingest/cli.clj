@@ -21,8 +21,31 @@
              ""
              "Usage:"
              "  clojure -M:ingest raw extract-page --pdf PATH --page N"
+             "  clojure -M:ingest serve"
              ""
              summary]))
+
+(defn- handle-serve-request [line]
+  (try
+    (let [request (json/parse-string line true)
+          pdf-path (:pdf request)
+          page-number (:page request)]
+      (cond
+        (or (nil? pdf-path) (nil? page-number))
+        (result-json {:error "Missing pdf or page"})
+        :else (result-json (pdf/extract-page pdf-path page-number))))
+    (catch Exception e
+      (result-json {:error (.getMessage e)}))))
+
+(defn serve-command []
+  (println (result-json {:ready true}))
+  (flush)
+  (loop []
+    (when-let [line (read-line)]
+      (when-not (str/blank? line)
+        (println (handle-serve-request line))
+        (flush))
+      (recur))))
 
 (defn extract-page-command [command-args]
   (let [{:keys [options summary errors]} (cli/parse-opts command-args extract-page-options)]
@@ -44,6 +67,9 @@
     (cond
       (and (= subcommand "raw") (= action "extract-page"))
       (System/exit (extract-page-command rest-args))
+
+      (= subcommand "serve")
+      (serve-command)
 
       :else
       (do

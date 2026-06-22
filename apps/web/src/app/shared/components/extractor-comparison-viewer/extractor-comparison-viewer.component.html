@@ -7,31 +7,36 @@
         mat-stroked-button
         type="button"
         (click)="goToPage(pageNumber() - 1)"
-        [disabled]="pageNumber() <= 1"
+        [disabled]="pageNumber() <= 1 || loading() || refreshing()"
       >
         Page précédente
       </button>
-      <button mat-stroked-button type="button" (click)="goToPage(pageNumber() + 1)">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="goToPage(pageNumber() + 1)"
+        [disabled]="loading() || refreshing()"
+      >
         Page suivante
       </button>
+      @if (loading() || refreshing()) {
+        <mat-spinner diameter="20" />
+      }
     </div>
     <p class="legend">
-      <span class="legend-item legend-item--pymupdf">PyMuPDF brut</span>
-      <span class="legend-item legend-item--pdfbox">PDFBox brut</span>
+      <span class="legend-item legend-item--pymupdf">PyMuPDF</span>
+      <span class="legend-item legend-item--pdfbox">PDFBox</span>
     </p>
   </header>
 
-  @if (loading()) {
-    <div class="loading">
-      <mat-spinner diameter="40" />
-    </div>
-  } @else if (error()) {
+  @if (error()) {
     <app-empty-state [title]="error() ?? ''" />
   } @else if (comparison(); as data) {
-    <div class="split">
+    <link rel="preload" as="image" [attr.href]="renderUrl()" />
+    <div class="split" [class.split--loading]="loading() || refreshing()">
       <app-extractor-pane
         title="PyMuPDF"
-        subtitle="page.get_text('dict') — blocs natifs"
+        subtitle="page.get_text('dict')"
         [blocks]="data.pymupdf.blocks"
         [pageWidth]="data.width"
         [pageHeight]="data.height"
@@ -39,14 +44,18 @@
         strokeColor="#1976d2"
       />
       <app-extractor-pane
-        title="PDFBox brut"
-        subtitle="PDFTextStripper — une ligne par bloc"
+        title="PDFBox"
+        subtitle="pipeline Clojure PDFTextStripper"
         [blocks]="data.pdfbox.blocks"
         [pageWidth]="data.width"
         [pageHeight]="data.height"
         [renderUrl]="renderUrl()"
         strokeColor="#e65100"
       />
+    </div>
+  } @else if (loading()) {
+    <div class="loading">
+      <mat-spinner diameter="40" />
     </div>
   }
 </section>

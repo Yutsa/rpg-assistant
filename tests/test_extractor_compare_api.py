@@ -13,7 +13,21 @@ from fastapi.testclient import TestClient
 from rpg_api.deps import get_raw_repo
 from rpg_api.main import create_app
 from rpg_core.models.raw import IngestionRunRecord, PageRecord
+from rpg_ingest.feedback.extractor_compare import (
+    clear_compare_cache,
+    compare_page_extractors,
+    reset_clojure_pdfbox_session,
+)
 from tests.fixtures.db import memory_repo as _memory_repo_factory
+
+
+@pytest.fixture(autouse=True)
+def _reset_extractor_runtime():
+    clear_compare_cache()
+    reset_clojure_pdfbox_session()
+    yield
+    clear_compare_cache()
+    reset_clojure_pdfbox_session()
 
 
 def _write_text_pdf(path: Path, *, pages: int = 1) -> None:
@@ -74,7 +88,7 @@ def test_extractors_compare_endpoint(compare_client):
     body = response.json()
     assert body["page_number"] == 1
     assert body["pymupdf"]["extraction_method"] == "pymupdf_raw"
-    assert body["pdfbox"]["extraction_method"] == "pdfbox_raw"
+    assert body["pdfbox"]["extraction_method"] == "pdfbox"
     assert len(body["pymupdf"]["blocks"]) >= 1
     assert len(body["pdfbox"]["blocks"]) >= 1
     assert body["pymupdf"]["blocks"][0]["text"]
@@ -96,3 +110,44 @@ def test_clojure_raw_extract_page_cli(tmp_path: Path):
     assert payload["page_number"] == 1
     assert len(payload["blocks"]) >= 1
     assert payload["blocks"][0]["text"]
+
+
+def test_clojure_serve_extract_page(tmp_path: Path):
+    pdf_path = tmp_path / "serve-page.pdf"
+    _write_text_pdf(pdf_path)
+    clj_root = Path(__file__).resolve().parents[1] / "packages" / "ingest-clj"
+    process = subprocess.Popen(
+        ["clojure", "-M:ingest", "serve"],
+        cwd=clj_root,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        bufsize=1,
+    )
+    try:
+        ready_line = process.stdout.readline()
+        ready_payload = json.loads(ready_line)
+        assert ready_payload["ready"] is True
+
+        request = json.dumps({"pdf": str(pdf_path), "page": 1})
+        process.stdin.write(f"{request}\n")
+        process.stdin.flush()
+
+        payload = json.loads(process.stdout.readline())
+        assert payload["page_number"] == 1
+        assert len(payload["blocks"]) >= 1
+        assert payload["blocks"][0]["text"]
+    finally:
+        process.terminate()
+        process.wait(timeout=10)
+
+
+def test_compare_page_extractors_uses_cache(tmp_path: Path):
+    pdf_path = tmp_path / "cached.pdf"
+    _write_text_pdf(pdf_path)
+
+    first = compare_page_extractors(pdf_path, 1)
+    second = compare_page_extractors(pdf_path, 1)
+
+    assert first is second
