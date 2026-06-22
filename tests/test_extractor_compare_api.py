@@ -75,10 +75,38 @@ def test_extractors_compare_endpoint(compare_client):
     assert body["page_number"] == 1
     assert body["pymupdf"]["extraction_method"] == "pymupdf_raw"
     assert body["pdfbox"]["extraction_method"] == "pdfbox_raw"
+    assert body["pdfbox_layout"]["extraction_method"] == "pdfbox_layout"
     assert len(body["pymupdf"]["blocks"]) >= 1
     assert len(body["pdfbox"]["blocks"]) >= 1
+    assert len(body["pdfbox_layout"]["blocks"]) >= 1
     assert body["pymupdf"]["blocks"][0]["text"]
     assert "bbox" in body["pymupdf"]["blocks"][0]
+
+
+def test_clojure_layout_extract_page_cli(tmp_path: Path):
+    pdf_path = tmp_path / "layout-page.pdf"
+    _write_text_pdf(pdf_path)
+    clj_root = Path(__file__).resolve().parents[1] / "packages" / "ingest-clj"
+    result = subprocess.run(
+        [
+            "clojure",
+            "-M:ingest",
+            "raw",
+            "extract-layout-page",
+            "--pdf",
+            str(pdf_path),
+            "--page",
+            "1",
+        ],
+        cwd=clj_root,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    payload = json.loads(result.stdout)
+    assert payload["page_number"] == 1
+    assert len(payload["blocks"]) >= 1
+    assert payload["blocks"][0]["text"]
 
 
 def test_clojure_raw_extract_page_cli(tmp_path: Path):

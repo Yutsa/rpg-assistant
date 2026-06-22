@@ -166,4 +166,5 @@ export interface PageExtractorsCompare {
   height: number;
   pymupdf: ExtractorPage;
   pdfbox: ExtractorPage;
+  pdfbox_layout: ExtractorPage;
 }

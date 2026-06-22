@@ -171,6 +171,7 @@ def compare_page_extractors_endpoint(
         height=payload["height"],
         pymupdf=_to_extractor_page(payload["pymupdf"]),
         pdfbox=_to_extractor_page(payload["pdfbox"]),
+        pdfbox_layout=_to_extractor_page(payload["pdfbox_layout"]),
     )
 
 

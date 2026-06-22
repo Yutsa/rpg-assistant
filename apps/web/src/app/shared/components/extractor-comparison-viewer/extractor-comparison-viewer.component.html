@@ -18,6 +18,7 @@
     <p class="legend">
       <span class="legend-item legend-item--pymupdf">PyMuPDF brut</span>
       <span class="legend-item legend-item--pdfbox">PDFBox brut</span>
+      <span class="legend-item legend-item--pdfbox-layout">PDFBox heuristiques</span>
     </p>
   </header>
 
@@ -39,13 +40,22 @@
         strokeColor="#1976d2"
       />
       <app-extractor-pane
-        title="PDFBox"
+        title="PDFBox brut"
         subtitle="lignes PDFTextStripper — sans heuristiques"
         [blocks]="data.pdfbox.blocks"
         [pageWidth]="data.width"
         [pageHeight]="data.height"
         [renderUrl]="renderUrl()"
         strokeColor="#e65100"
+      />
+      <app-extractor-pane
+        title="PDFBox heuristiques"
+        subtitle="colonnes + fusion lignes — pipeline Clojure"
+        [blocks]="data.pdfbox_layout.blocks"
+        [pageWidth]="data.width"
+        [pageHeight]="data.height"
+        [renderUrl]="renderUrl()"
+        strokeColor="#2e7d32"
       />
     </div>
   }

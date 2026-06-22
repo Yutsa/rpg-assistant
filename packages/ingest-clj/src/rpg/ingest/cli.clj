@@ -31,6 +31,7 @@
              "Usage:"
              "  clojure -M:ingest raw extract [options]"
              "  clojure -M:ingest raw extract-page --pdf PATH --page N"
+             "  clojure -M:ingest raw extract-layout-page --pdf PATH --page N"
              ""
              (:summary summary)]))
 
@@ -69,6 +70,21 @@
                 (println (result-json {:error (.getMessage e)}))
                 1)))))
 
+(defn extract-layout-page-command [command-args]
+  (let [{:keys [options summary errors]} (cli/parse-opts command-args extract-page-options)]
+    (cond
+      (seq errors) (do (println errors) 1)
+      (:help options) (do (println (extract-usage {:summary summary})) 0)
+      (or (nil? (:pdf options)) (nil? (:page options)))
+      (do (println "Missing --pdf or --page") 1)
+
+      :else (try
+              (println (result-json (pdf/extract-layout-page (:pdf options) (:page options))))
+              0
+              (catch Exception e
+                (println (result-json {:error (.getMessage e)}))
+                1)))))
+
 (defn -main [& args]
   (let [[subcommand action & rest-args] args]
     (cond
@@ -77,6 +93,9 @@
 
       (and (= subcommand "raw") (= action "extract-page"))
       (System/exit (extract-page-command rest-args))
+
+      (and (= subcommand "raw") (= action "extract-layout-page"))
+      (System/exit (extract-layout-page-command rest-args))
 
       :else
       (do

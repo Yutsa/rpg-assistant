@@ -53,6 +53,15 @@
                              (:height dimensions)
                              positions)))))
 
+(defn extract-layout-page [pdf-path page-number]
+  (with-open [document (Loader/loadPDF (File. pdf-path))]
+    (let [page-index (dec page-number)
+          page-count (.getNumberOfPages document)]
+      (when (or (< page-index 0) (>= page-index page-count))
+        (throw (ex-info "Page number out of range"
+                        {:page-number page-number :page-count page-count})))
+      (page-layout document page-index))))
+
 (defn with-document [pdf-path callback]
   (with-open [document (Loader/loadPDF (File. pdf-path))]
     (callback document)))

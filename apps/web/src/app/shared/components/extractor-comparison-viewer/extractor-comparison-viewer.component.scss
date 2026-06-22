@@ -64,6 +64,10 @@
   color: #e65100;
 }
 
+.legend-item--pdfbox-layout {
+  color: #2e7d32;
+}
+
 .loading {
   display: flex;
   justify-content: center;
@@ -72,29 +76,25 @@
 
 .split {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   flex: 1;
   min-height: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.split > *:first-child {
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
+.split > * + * {
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1200px) {
   .split {
     grid-template-columns: 1fr;
     overflow: auto;
   }
 
-  .split > *:first-child {
-    border-right: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-    min-height: 50vh;
-  }
-
-  .split > *:last-child {
+  .split > * + * {
+    border-left: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
     min-height: 50vh;
   }
 }
