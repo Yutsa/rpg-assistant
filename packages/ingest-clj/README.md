@@ -30,5 +30,6 @@ clojure -M:test
 ## Périmètre v1
 
 - Extraction layout PDFBox → pages + blocs (bbox, métadonnées typo)
+- Détection double colonne : positions séparées gauche/droite avant regroupement lignes → blocs, ordre column-major (aligné PyMuPDF `get_text("dict")`)
 - Persistance raw SQLite compatible avec le schéma Python
 - Pas de sections, chunks, stat blocks, filtrage, ni comptage de tokens

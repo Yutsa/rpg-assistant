@@ -6,10 +6,10 @@
            [org.apache.pdfbox.pdmodel.font Standard14Fonts$FontName]
            [org.apache.pdfbox.pdmodel PDPageContentStream]))
 
-(defn- write-line [content-stream font-size text offset-y]
+(defn- write-line [content-stream font-size text x-offset y-offset]
   (.beginText content-stream)
   (.setFont content-stream (PDType1Font. Standard14Fonts$FontName/HELVETICA) font-size)
-  (.newLineAtOffset content-stream 72 offset-y)
+  (.newLineAtOffset content-stream x-offset y-offset)
   (.showText content-stream text)
   (.endText content-stream))
 
@@ -22,6 +22,26 @@
         (.addPage document page)
         (with-open [content-stream (PDPageContentStream. document page)]
           (doseq [[index line-text] (map-indexed vector lines)]
-            (write-line content-stream 12 line-text (- page-height 100 (* index 24)))))
+            (write-line content-stream 12 line-text 72 (- page-height 100 (* index 24)))))
+        (.save document file))
+      (.getAbsolutePath file))))
+
+(defn create-two-column-pdf [file-path]
+  (let [file (File. file-path)
+        left-lines ["Colonne gauche premiere ligne."
+                    "Colonne gauche deuxieme ligne."]
+        right-lines ["Colonne droite premiere ligne."
+                     "Colonne droite deuxieme ligne."]]
+    (with-open [document (PDDocument.)]
+      (let [page (PDPage. PDRectangle/A4)
+            page-height (.getHeight PDRectangle/A4)
+            page-width (.getWidth PDRectangle/A4)]
+        (.addPage document page)
+        (with-open [content-stream (PDPageContentStream. document page)]
+          (doseq [[index line-text] (map-indexed vector left-lines)]
+            (write-line content-stream 12 line-text 72 (- page-height 100 (* index 24))))
+          (doseq [[index line-text] (map-indexed vector right-lines)]
+            (write-line content-stream 12 line-text (+ (/ page-width 2) 36)
+                        (- page-height 100 (* index 24)))))
         (.save document file))
       (.getAbsolutePath file))))
