@@ -29,8 +29,10 @@
   flex: 1;
   min-height: 0;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   background: #f0f0f0;
   padding: 0.5rem;
+  touch-action: pan-x pan-y;
 }
 
 .canvas {
@@ -54,9 +56,33 @@
   left: 0;
   pointer-events: none;
 
-  rect {
+  .block-rect {
     pointer-events: all;
-    cursor: help;
+    fill: transparent;
+    stroke-width: 1.5;
+    cursor: pointer;
+    transition: fill 0.1s ease, stroke-width 0.1s ease;
+  }
+
+  .is-hovered,
+  .is-selected,
+  .is-matched {
+    stroke-width: 2.5;
+  }
+
+  .is-selected {
+    fill: rgba(255, 193, 7, 0.2);
+    stroke: #ff8f00;
+  }
+
+  .is-matched {
+    fill: rgba(76, 175, 80, 0.18);
+    stroke: #2e7d32;
+    stroke-dasharray: 4 2;
+  }
+
+  .is-hovered:not(.is-selected):not(.is-matched) {
+    fill: rgba(25, 118, 210, 0.12);
   }
 }
 

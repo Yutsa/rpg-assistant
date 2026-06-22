@@ -23,34 +23,170 @@
         <mat-spinner diameter="20" />
       }
     </div>
+    <div class="zoom-controls">
+      <button mat-icon-button type="button" (click)="zoomOut()" aria-label="Zoom arrière">
+        <mat-icon>zoom_out</mat-icon>
+      </button>
+      <button mat-icon-button type="button" (click)="resetZoom()" aria-label="Ajuster à la largeur">
+        <mat-icon>fit_screen</mat-icon>
+      </button>
+      <button mat-icon-button type="button" (click)="zoomIn()" aria-label="Zoom avant">
+        <mat-icon>zoom_in</mat-icon>
+      </button>
+    </div>
     <p class="legend">
       <span class="legend-item legend-item--pymupdf">PyMuPDF</span>
       <span class="legend-item legend-item--pdfbox">PDFBox</span>
+      <span class="legend-item legend-item--matched">Correspondance</span>
     </p>
   </header>
 
   @if (error()) {
     <app-empty-state [title]="error() ?? ''" />
   } @else if (comparison(); as data) {
-    <div class="split" [class.split--loading]="loading() || refreshing()">
-      <app-extractor-pane
-        title="PyMuPDF"
-        subtitle="page.get_text('dict')"
-        [blocks]="data.pymupdf.blocks"
-        [pageWidth]="data.width"
-        [pageHeight]="data.height"
-        [renderUrl]="renderUrl()"
-        strokeColor="#1976d2"
-      />
-      <app-extractor-pane
-        title="PDFBox"
-        subtitle="pipeline Clojure PDFTextStripper"
-        [blocks]="data.pdfbox.blocks"
-        [pageWidth]="data.width"
-        [pageHeight]="data.height"
-        [renderUrl]="renderUrl()"
-        strokeColor="#e65100"
-      />
+    <div
+      class="viewer-body"
+      [class.viewer-body--detail-open]="detailOpen()"
+      [class.viewer-body--loading]="loading() || refreshing()"
+    >
+      <div class="split">
+        <app-extractor-pane
+          title="PyMuPDF"
+          subtitle="page.get_text('dict')"
+          [blocks]="data.pymupdf.blocks"
+          [pageWidth]="data.width"
+          [pageHeight]="data.height"
+          [renderUrl]="renderUrl()"
+          [zoom]="zoom()"
+          [selectedBlockId]="pymupdfSelectedId()"
+          [hoveredBlockId]="hoveredBlockId()"
+          [matchedBlockId]="pymupdfMatchedId()"
+          strokeColor="#1976d2"
+          (blockSelect)="selectBlock('pymupdf', $event)"
+          (blockHover)="onBlockHover($event)"
+        />
+        <app-extractor-pane
+          title="PDFBox"
+          subtitle="pipeline Clojure PDFTextStripper"
+          [blocks]="data.pdfbox.blocks"
+          [pageWidth]="data.width"
+          [pageHeight]="data.height"
+          [renderUrl]="renderUrl()"
+          [zoom]="zoom()"
+          [selectedBlockId]="pdfboxSelectedId()"
+          [hoveredBlockId]="hoveredBlockId()"
+          [matchedBlockId]="pdfboxMatchedId()"
+          strokeColor="#e65100"
+          (blockSelect)="selectBlock('pdfbox', $event)"
+          (blockHover)="onBlockHover($event)"
+        />
+      </div>
+
+      <aside
+        class="detail-panel"
+        [class.detail-panel--open]="detailOpen()"
+        [class.detail-panel--expanded]="detailExpanded()"
+      >
+        <div class="detail-panel-header">
+          @if (selection(); as current) {
+            <div class="detail-summary">
+              <strong>{{ current.block.id }}</strong>
+              <span>{{ laneLabel(current.lane) }} · bloc {{ current.block.block_index }}</span>
+            </div>
+          } @else {
+            <h2>Détail du bloc</h2>
+          }
+          <button mat-icon-button type="button" (click)="closeDetail()" aria-label="Fermer">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        @if (selection(); as current) {
+          <div class="detail-panel-mobile">
+            @if (current.block.text) {
+              <p class="block-text-preview">{{ current.block.text }}</p>
+            }
+            @if (matchedBlock(); as match) {
+              <p class="match-preview">
+                Correspondance {{ laneLabel(current.lane === 'pymupdf' ? 'pdfbox' : 'pymupdf') }} :
+                <strong>{{ match.id }}</strong>
+              </p>
+            }
+            <div class="detail-panel-actions">
+              <button mat-button type="button" (click)="toggleDetailExpanded()">
+                {{ detailExpanded() ? 'Moins de détails' : 'Détails techniques' }}
+              </button>
+            </div>
+            @if (detailExpanded()) {
+              <dl class="detail-panel-extra">
+                <dt>Bbox (PDF)</dt>
+                <dd>
+                  x0={{ current.block.bbox.x0 | number: '1.0-1' }},
+                  y0={{ current.block.bbox.y0 | number: '1.0-1' }},
+                  x1={{ current.block.bbox.x1 | number: '1.0-1' }},
+                  y1={{ current.block.bbox.y1 | number: '1.0-1' }}
+                </dd>
+                @if (current.block.metadata | keyvalue; as entries) {
+                  @if (entries.length > 0) {
+                    <dt>Métadonnées</dt>
+                    <dd>
+                      <pre>{{ current.block.metadata | json }}</pre>
+                    </dd>
+                  }
+                }
+                @if (matchedBlock(); as match) {
+                  <dt>Correspondance</dt>
+                  <dd>
+                    <span>{{ match.id }}</span>
+                    @if (match.text) {
+                      <p class="match-text">{{ match.text }}</p>
+                    }
+                  </dd>
+                }
+              </dl>
+            }
+          </div>
+
+          <dl class="detail-panel-desktop">
+            <dt>ID</dt>
+            <dd>{{ current.block.id }}</dd>
+            <dt>Extracteur</dt>
+            <dd>{{ laneLabel(current.lane) }}</dd>
+            <dt>Index</dt>
+            <dd>{{ current.block.block_index }}</dd>
+            <dt>Bbox (PDF)</dt>
+            <dd>
+              x0={{ current.block.bbox.x0 | number: '1.0-1' }},
+              y0={{ current.block.bbox.y0 | number: '1.0-1' }},
+              x1={{ current.block.bbox.x1 | number: '1.0-1' }},
+              y1={{ current.block.bbox.y1 | number: '1.0-1' }}
+            </dd>
+            @if (current.block.text) {
+              <dt>Texte</dt>
+              <dd class="block-text">{{ current.block.text }}</dd>
+            }
+            @if (current.block.metadata | keyvalue; as entries) {
+              @if (entries.length > 0) {
+                <dt>Métadonnées</dt>
+                <dd>
+                  <pre>{{ current.block.metadata | json }}</pre>
+                </dd>
+              }
+            }
+            @if (matchedBlock(); as match) {
+              <dt>Correspondance ({{ laneLabel(current.lane === 'pymupdf' ? 'pdfbox' : 'pymupdf') }})</dt>
+              <dd>
+                <span>{{ match.id }}</span>
+                @if (match.text) {
+                  <p class="match-text">{{ match.text }}</p>
+                }
+              </dd>
+            }
+          </dl>
+        } @else {
+          <p class="hint">Cliquez sur un rectangle pour inspecter un bloc.</p>
+        }
+      </aside>
     </div>
   } @else if (loading()) {
     <div class="loading">

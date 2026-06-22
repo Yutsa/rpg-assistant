@@ -10,6 +10,7 @@
         class="page-image"
         [src]="renderUrl()"
         [attr.alt]="title()"
+        [style.width.px]="displayWidth() > 0 ? displayWidth() : null"
         (load)="onImageLoad($event)"
       />
       @if (displayWidth() > 0 && displayHeight() > 0) {
@@ -26,11 +27,15 @@
               [attr.width]="block.screenWidth"
               [attr.height]="block.screenHeight"
               [attr.stroke]="strokeColor()"
-              fill="transparent"
-              stroke-width="1.5"
-            >
-              <title>{{ block.text }}</title>
-            </rect>
+              class="block-rect"
+              [class.is-hovered]="hoveredBlockId() === block.id"
+              [class.is-selected]="selectedBlockId() === block.id"
+              [class.is-matched]="matchedBlockId() === block.id"
+              [matTooltip]="blockTooltip(block)"
+              (mouseenter)="onBlockHover(block)"
+              (mouseleave)="onBlockHover(null)"
+              (click)="onBlockClick(block)"
+            />
           }
         </svg>
       }
