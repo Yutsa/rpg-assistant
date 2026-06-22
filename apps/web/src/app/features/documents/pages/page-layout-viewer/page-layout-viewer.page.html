@@ -71,8 +71,8 @@
           @if (displayWidth() > 0 && displayHeight() > 0) {
             <svg
               class="overlay"
-              [attr.width]="displayWidth()"
-              [attr.height]="displayHeight()"
+              [style.width.px]="displayWidth()"
+              [style.height.px]="displayHeight()"
               [attr.viewBox]="'0 0 ' + displayWidth() + ' ' + displayHeight()"
             >
               @for (node of overlayNodes(); track node.id) {
