@@ -13,13 +13,9 @@
 
 (defn line-bbox [line-positions]
   (let [left (apply min (map typography/position-x line-positions))
-        top (apply min (map typography/position-y line-positions))
-        right (apply max (map #(+ (typography/position-x %)
-                                  (typography/position-width %))
-                              line-positions))
-        bottom (apply max (map #(+ (typography/position-y %)
-                                    (typography/position-height %))
-                               line-positions))]
+        top (apply min (map typography/position-top line-positions))
+        right (apply max (map typography/position-right line-positions))
+        bottom (apply max (map typography/position-bottom line-positions))]
     {:x0 left :y0 top :x1 right :y1 bottom}))
 
 (defn line-height [line-positions]
