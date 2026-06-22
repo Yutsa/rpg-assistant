@@ -101,25 +101,14 @@ Example page block:
 
 Clients (API, MCP tools) can use these coordinates to open the original PDF at the correct page and draw a highlight over the source region.
 
-#### Extraction providers (`docling` / `legacy`)
+#### Extraction backend (`legacy`)
 
-The raw pipeline supports two backends, selected via CLI `--extraction-provider` or env `RPG_EXTRACTION_PROVIDER` (default: `legacy`):
+The raw Python pipeline uses **PyMuPDF block extraction** (font/column heuristics in `sections.py`, `chunking.py`). An alternate **Clojure/PDFBox** extractor lives in `packages/ingest-clj` for comparison and experimentation.
 
-| Provider | Engine | Sections / chunks | Fallback |
-|----------|--------|-------------------|----------|
-| `docling` | IBM Docling (layout AI + reading order) | Heading levels from Docling; chunks by logical order | Auto-fallback to `legacy` on conversion error |
-| `legacy` | PyMuPDF block extraction | Font/column heuristics (`sections.py`, `chunking.py`) | — |
-
-Docling path: `DoclingDocument` → internal `DocElement` list → **PyMuPDF enrichment** (`docling_enrich.py`, one block per layout line) → COF2/stat-block post-processing (unchanged) → `detect_sections_from_elements` / `build_chunks_from_elements`.
-
-**Costs and operational notes (Docling):**
-
-- Heavy Python dependencies: PyTorch, transformers, layout/table models (~hundreds of MB disk).
-- First run downloads models from Hugging Face / ModelScope (network, cache under `~/.cache`).
-- CPU-only by default; GPU speeds layout inference when available.
-- `do_ocr=False` by default (text-native PDFs). Enable OCR only for scanned documents — pulls RapidOCR models and is significantly slower.
-- Docling is MIT-licensed; bundled OCR backends (RapidOCR/Paddle) have separate licenses.
-- Multi-column RPG layouts may be merged by Docling; use `legacy` or visual review when precision matters.
+| Pipeline | Engine | Sections / chunks |
+|----------|--------|-------------------|
+| `legacy` (default) | PyMuPDF | Font/column heuristics (`sections.py`, `chunking.py`) |
+| `clojure` | PDFBox via Clojure CLI | Separate package; not wired into `rpg-ingest` persistence yet |
 
 ### 2. Document Structure Detection
 

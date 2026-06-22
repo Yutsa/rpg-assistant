@@ -11,7 +11,6 @@ from rpg_ingest.raw.importer import (
     INGEST_MODE_LAYOUT_ONLY,
     run,
 )
-from rpg_ingest.raw.providers import DEFAULT_EXTRACTION_PROVIDER
 from rpg_core.storage.db import get_connection
 from rpg_core.storage.repositories.raw import RawRepository
 
@@ -24,7 +23,6 @@ def _cmd_raw_extract(args: argparse.Namespace) -> int:
         game_system=args.game_system or "",
         coverage_threshold=args.coverage_threshold,
         reimport=not args.no_reimport,
-        extraction_provider=args.extraction_provider,
         ingest_mode=args.ingest_mode,
     )
     print(json.dumps(result.__dict__, indent=2, default=str))
@@ -64,15 +62,6 @@ def build_parser() -> argparse.ArgumentParser:
         "--no-reimport",
         action="store_true",
         help="Skip deleting existing raw data for the same document hash",
-    )
-    extract.add_argument(
-        "--extraction-provider",
-        choices=["docling", "legacy"],
-        default=DEFAULT_EXTRACTION_PROVIDER,
-        help=(
-            f"PDF extraction backend (default: {DEFAULT_EXTRACTION_PROVIDER}). "
-            "Use docling for Docling layout + reading order."
-        ),
     )
     extract.add_argument(
         "--ingest-mode",

@@ -73,7 +73,7 @@ Demande confirmation avant `import_pdf` ou toute soumission sémantique si l'uti
 
 ## Cursor Cloud specific instructions
 
-Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Pas de GUI : trois surfaces, la **CLI** `rpg-ingest`, le **serveur MCP** `rpg-assistant-mcp` (stdio), et l'**API HTTP** `rpg-api` (FastAPI). Le script d'update (`uv sync`) est déjà lancé au démarrage ; il ne crée pas la base ni le `.env`.
+Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Pas de GUI : trois surfaces, la **CLI** `rpg-ingest`, le **serveur MCP** `rpg-assistant-mcp` (stdio), et l'**API HTTP** `rpg-api` (FastAPI).
 
 ### Setup automatique (`.cursor/environment.json`)
 
