@@ -44,6 +44,30 @@
 (defn- position-text [text-position]
   (.getUnicode ^TextPosition text-position))
 
+(defn- position-font-name [text-position]
+  (let [font (.getFont ^TextPosition text-position)]
+    (when font (.getName font))))
+
+(defn- layout-glyph-char? [ch]
+  (let [code (int ch)]
+    (or (<= code 0x08)
+        (and (<= 0x0B code 0x0C))
+        (and (<= 0x0E code 0x1F))
+        (and (<= 0x7F code 0x9F))
+        (and (<= 0xE000 code 0xF8FF)))))
+
+(defn- layout-glyph-position? [text-position]
+  (let [font-name (position-font-name text-position)
+        text (position-text text-position)]
+    (or (and font-name (re-find #"(?i)wingdings" font-name))
+        (and (seq text) (every? layout-glyph-char? text)))))
+
+(defn- strip-layout-glyphs [text]
+  (-> text
+      (str/replace #"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]" "")
+      (str/replace #"[\uE000-\uF8FF]" "")
+      str/trim))
+
 (defn- position-bold? [text-position]
   (let [font (.getFont ^TextPosition text-position)
         font-name (when font (.getName font))]
@@ -117,7 +141,7 @@
                 (map vector boundaries (rest boundaries))))))))
 
 (defn- run-text [positions]
-  (->> positions (map position-text) (apply str) str/trim))
+  (->> positions (map position-text) (apply str) strip-layout-glyphs))
 
 (defn- run-bbox [positions]
   {:x0 (apply min (map position-x positions))
@@ -167,6 +191,12 @@
 (defn- hyphenated-line-end? [text]
   (boolean (re-find #"[-\u00AD]$" (str/trimr text))))
 
+(def ^:private chip-entry-start-re
+  #"^[\p{Lu}][^:\n]{0,60}[\u202f ]*:")
+
+(defn- chip-entry-start? [text]
+  (boolean (re-find chip-entry-start-re (str/trim text))))
+
 (defn- paragraph-gap-threshold [segments]
   (let [gaps (mapv vertical-gap segments (rest segments))
         positive-gaps (vec (filter pos? gaps))
@@ -180,6 +210,7 @@
 
 (defn- paragraph-break? [prev-segment next-segment threshold]
   (cond
+    (chip-entry-start? (:text next-segment)) true
     (> (indent-delta prev-segment next-segment) paragraph-indent-min) true
     (hyphenated-line-end? (:text prev-segment)) false
     (> (vertical-gap prev-segment next-segment) threshold) true
@@ -287,6 +318,7 @@
 (defn page-blocks [page-number width height text-positions]
   (let [ctx {:height height}
         raw-segments (->> text-positions
+                          (remove layout-glyph-position?)
                           group-into-lines
                           (mapcat split-line-into-runs)
                           (keep run-segment)
