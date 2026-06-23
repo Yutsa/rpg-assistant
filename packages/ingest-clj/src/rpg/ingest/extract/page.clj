@@ -180,9 +180,6 @@
 
 (defn- paragraph-break? [prev-segment next-segment threshold]
   (cond
-    (and (not (same-line? (:bbox prev-segment) (:bbox next-segment)))
-         (not= (:font-signature prev-segment) (:font-signature next-segment)))
-    true
     (> (indent-delta prev-segment next-segment) paragraph-indent-min) true
     (hyphenated-line-end? (:text prev-segment)) false
     (> (vertical-gap prev-segment next-segment) threshold) true

@@ -14,6 +14,17 @@ Ce dépôt ingère des PDF d'aventures RPG en deux couches : **raw** (détermini
 
 Workspace `uv` à la racine : `uv sync` installe tous les packages en mode editable.
 
+## Lancer l'application (dev local)
+
+Après `uv sync`, `.env` (copie de `.env.example`) et `uv run alembic upgrade head`, démarrer **deux terminaux** depuis la racine du dépôt :
+
+1. **API** — `uv run rpg-api` → [http://127.0.0.1:8000](http://127.0.0.1:8000) (docs OpenAPI : `/docs`)
+2. **Frontend** — `cd apps/web && npm install && npm start` → [http://localhost:4200](http://localhost:4200)
+
+Le serveur Angular proxifie `/api` vers le backend ; les deux processus doivent tourner en parallèle. Node.js **22.22.3+** requis (`apps/web/.nvmrc`).
+
+Quand l'utilisateur demande de lancer l'appli, exécuter ces deux commandes en arrière-plan (ou dans deux terminaux) plutôt que de se contenter de les citer.
+
 ## Serveur MCP `rpg-assistant`
 
 Utilise **toujours** le serveur MCP `rpg-assistant` pour consulter ou enrichir les données ingérées. Ne réimplémente pas l'ingestion ni n'interroge la base à la main sauf pour du debug explicite demandé par l'utilisateur.
@@ -73,7 +84,7 @@ Demande confirmation avant `import_pdf` ou toute soumission sémantique si l'uti
 
 ## Cursor Cloud specific instructions
 
-Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Pas de GUI : trois surfaces, la **CLI** `rpg-ingest`, le **serveur MCP** `rpg-assistant-mcp` (stdio), et l'**API HTTP** `rpg-api` (FastAPI).
+Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Quatre surfaces : **CLI** `rpg-ingest`, **serveur MCP** `rpg-assistant-mcp` (stdio), **API HTTP** `rpg-api` (FastAPI), et **frontend Angular** `apps/web` (voir [Lancer l'application](#lancer-lapplication-dev-local)).
 
 ### Setup automatique (`.cursor/environment.json`)
 
@@ -93,6 +104,7 @@ Aucune action manuelle requise pour Clojure ou les PDF sur une VM cloud agent à
 
 ### Commandes utiles
 
+- **Application** : `uv run rpg-api` (terminal 1) + `cd apps/web && npm start` (terminal 2) — voir [Lancer l'application](#lancer-lapplication-dev-local).
 - **Tests** : lancer `uv run python -m pytest`, **pas** `uv run pytest`. `tests/test_visual_review.py` fait `from tests.test_campaign_discovery import ...`, ce qui exige la racine du repo sur `sys.path` ; seul `python -m pytest` (qui ajoute le CWD) le fournit. Avec `pytest` direct la collecte échoue (`ModuleNotFoundError: No module named 'tests'`).
 - **Benchmarks PDF réels** : attentes statiques dans `tests/fixtures/real_pdf_benchmark.py` (pages pièges audit COF2). Lancer `uv run python -m pytest tests/test_real_pdf_benchmark.py -m real_pdf -q` — les PDF sont dans `data/pdfs/` après le bootstrap cloud.
 - **Tests campagnes supplémentaires** : `tests/test_cof2_audit_extra_campaigns.py` utilise aussi les PDF dans `data/pdfs/`.

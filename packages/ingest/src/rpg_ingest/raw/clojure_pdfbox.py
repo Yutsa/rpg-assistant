@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import atexit
 import json
+import os
 import subprocess
 import threading
 from pathlib import Path
@@ -9,6 +10,28 @@ from typing import Any
 
 _REPO_ROOT = Path(__file__).resolve().parents[5]
 _INGEST_CLJ_DIR = _REPO_ROOT / "packages" / "ingest-clj"
+_LOCAL_JDK_ROOT = Path.home() / ".local" / "jdk"
+
+
+def _resolve_java_home() -> str | None:
+    """Prefer JAVA_HOME, then Temurin JDK under ~/.local/jdk (see cloud-agent-install.sh)."""
+    configured = os.environ.get("JAVA_HOME", "").strip()
+    if configured and (Path(configured) / "bin" / "java").is_file():
+        return configured
+    if _LOCAL_JDK_ROOT.is_dir():
+        for candidate in sorted(_LOCAL_JDK_ROOT.glob("jdk-*"), reverse=True):
+            if (candidate / "bin" / "java").is_file():
+                return str(candidate)
+    return None
+
+
+def _clojure_subprocess_env() -> dict[str, str]:
+    env = os.environ.copy()
+    java_home = _resolve_java_home()
+    if java_home:
+        env["JAVA_HOME"] = java_home
+        env["PATH"] = f"{java_home}/bin:{env.get('PATH', '')}"
+    return env
 
 
 class ClojurePdfboxSession:
@@ -30,6 +53,7 @@ class ClojurePdfboxSession:
             stderr=subprocess.DEVNULL,
             text=True,
             bufsize=1,
+            env=_clojure_subprocess_env(),
         )
         assert self._process.stdout is not None
         ready_line = self._process.stdout.readline()
@@ -112,6 +136,7 @@ def extract_pdfbox_document(pdf_path: Path) -> dict[str, Any]:
         text=True,
         check=False,
         timeout=600,
+        env=_clojure_subprocess_env(),
     )
     if completed.returncode != 0:
         message = completed.stderr.strip() or completed.stdout.strip() or "Clojure extract-document failed"

@@ -94,6 +94,7 @@ tests/      # pytest suite (all packages)
 
 - [uv](https://docs.astral.sh/uv/) — install with `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - Python 3.11+ (uv can install it automatically if missing)
+- Node.js **22.22.3+** and npm (for the Angular frontend — see `apps/web/.nvmrc`)
 - Docker (optional, only if you use PostgreSQL locally)
 
 ### Install
@@ -118,6 +119,30 @@ docker compose up -d
 uv run alembic upgrade head
 ```
 
+### Run the application
+
+After [install](#install), start the backend and frontend in **two terminals** from the repository root.
+
+**Terminal 1 — API (backend):**
+
+```bash
+uv run rpg-api
+```
+
+Listens on [http://127.0.0.1:8000](http://127.0.0.1:8000). OpenAPI docs at `/docs`.
+
+**Terminal 2 — web UI (frontend):**
+
+```bash
+cd apps/web
+npm install   # first time only
+npm start
+```
+
+Open [http://localhost:4200](http://localhost:4200). The Angular dev server proxies `/api` to the backend (`http://127.0.0.1:8000`), so both processes must be running.
+
+**Prerequisites for the frontend:** Node.js **22.22.3+** (see `apps/web/.nvmrc`) and npm.
+
 ### CLI (large PDFs / batch)
 
 ```bash
@@ -127,29 +152,13 @@ uv run rpg-ingest raw status --ingestion-run-id run_xxxxxxxxxxxx
 
 ### HTTP API
 
-Read-only REST API over the ingested data (campaigns, documents, sections, chunks, stat blocks, PDF page renders):
-
-```bash
-uv run rpg-api
-```
-
-Server listens on [http://127.0.0.1:8000](http://127.0.0.1:8000). OpenAPI docs at `/docs`.
+Read-only REST API over the ingested data (campaigns, documents, sections, chunks, stat blocks, PDF page renders). See [Run the application](#run-the-application) for startup.
 
 CORS is enabled for the Angular dev server (`http://localhost:4200` by default). Override with `CORS_ORIGINS` (comma-separated) if needed.
 
 ### Frontend (Angular)
 
-The web UI lives in `apps/web/` and proxies API calls to `rpg-api` during development.
-
-**Prerequisites:** Node.js **22.22.3+** (see `apps/web/.nvmrc`) and npm.
-
-```bash
-cd apps/web
-npm install
-npm start
-```
-
-Open [http://localhost:4200](http://localhost:4200). Start `uv run rpg-api` in another terminal so the proxy (`/api` → `http://127.0.0.1:8000`) can reach the backend.
+The web UI lives in `apps/web/`. See [Run the application](#run-the-application) for startup (`npm start` + `rpg-api` in parallel).
 
 **E2E tests (Playwright):**
 

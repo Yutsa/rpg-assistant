@@ -349,6 +349,23 @@ class RawRepository:
             cur.execute("DELETE FROM page_blocks WHERE document_id = %s", (document_id,))
             cur.execute("DELETE FROM pages WHERE document_id = %s", (document_id,))
 
+    def delete_compare_lane_blocks(self, document_id: str) -> int:
+        """Remove PyMuPDF/PDFBox compare-lane blocks; keep pipeline blocks."""
+        with self.conn.cursor() as cur:
+            cur.execute(
+                """
+                DELETE FROM page_blocks
+                WHERE document_id = %s
+                  AND (id LIKE %s OR id LIKE %s)
+                """,
+                (
+                    document_id,
+                    f"pymupdf_{document_id}_%",
+                    f"pdfbox_{document_id}_%",
+                ),
+            )
+            return cur.rowcount
+
     def insert_pages(self, pages: list[PageRecord]) -> None:
         if not pages:
             return

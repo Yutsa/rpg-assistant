@@ -17,6 +17,7 @@ from rpg_ingest.raw.coverage import (
 from rpg_ingest.raw.block_merging import merge_drop_caps, merge_fragmented_blocks
 from rpg_ingest.raw.filtering import filter_watermark_blocks
 from rpg_ingest.raw.extractor_compare_ingest import (
+    attach_compare_lanes,
     build_extractor_compare_records,
     extract_compare_document_pages,
 )
@@ -219,6 +220,7 @@ def run(
     coverage_threshold: float = DEFAULT_COVERAGE_THRESHOLD,
     reimport: bool = True,
     ingest_mode: str = INGEST_MODE_FULL,
+    attach_compare_lanes_on_import: bool = True,
 ) -> ImportResult:
     """Stage A: deterministic raw extraction and persistence."""
     run_id = new_id("run")
@@ -487,7 +489,7 @@ def run(
         repo.insert_chunks(chunks)
 
         uniqueness = chunk_uniqueness_stats(chunks)
-        stats = {
+        stats: dict[str, Any] = {
             "source_pdf_path": str(pdf_path.resolve()),
             "page_count": len(pages),
             "block_count": len(blocks),
@@ -509,6 +511,17 @@ def run(
             **uniqueness,
             **provider_metadata,
         }
+        if attach_compare_lanes_on_import:
+            try:
+                stats.update(
+                    attach_compare_lanes(
+                        repo,
+                        document_id=document_id,
+                        pdf_path=pdf_path,
+                    )
+                )
+            except Exception as exc:
+                stats["compare_lanes_error"] = str(exc)
         repo.update_ingestion_run(
             run_id,
             status="completed",

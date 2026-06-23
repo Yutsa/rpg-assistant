@@ -7,6 +7,7 @@ import pymupdf
 
 from rpg_core.models.raw import BBox, PageBlockRecord, PageRecord
 from rpg_core.storage.ids import compare_block_id
+from rpg_core.storage.repositories.raw import RawRepository
 from rpg_ingest.raw.clojure_pdfbox import extract_pdfbox_document
 from rpg_ingest.raw.layout import blocks_from_raw_layout
 from rpg_ingest.raw.coverage import page_text_coverage_ratio
@@ -125,3 +126,35 @@ def build_extractor_compare_records(
                 )
 
     return pages, blocks
+
+
+def attach_compare_lanes(
+    repo: RawRepository,
+    *,
+    document_id: str,
+    pdf_path: Path,
+) -> dict[str, int]:
+    """Persist raw PyMuPDF + PDFBox blocks for the comparateur alongside a full import."""
+    pymupdf_pages, pdfbox_pages = extract_compare_document_pages(pdf_path)
+    _, compare_blocks = build_extractor_compare_records(
+        document_id=document_id,
+        pymupdf_pages=pymupdf_pages,
+        pdfbox_pages=pdfbox_pages,
+    )
+    removed = repo.delete_compare_lane_blocks(document_id)
+    repo.insert_page_blocks(compare_blocks)
+    pymupdf_count = sum(
+        1
+        for block in compare_blocks
+        if (block.metadata or {}).get("compare_lane") == COMPARE_LANE_PYMUPDF
+    )
+    pdfbox_count = sum(
+        1
+        for block in compare_blocks
+        if (block.metadata or {}).get("compare_lane") == COMPARE_LANE_PDFBOX
+    )
+    return {
+        "compare_lanes_removed": removed,
+        "compare_lane_pymupdf_block_count": pymupdf_count,
+        "compare_lane_pdfbox_block_count": pdfbox_count,
+    }

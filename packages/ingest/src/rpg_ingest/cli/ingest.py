@@ -11,6 +11,7 @@ from rpg_ingest.raw.importer import (
     INGEST_MODE_LAYOUT_ONLY,
     run,
 )
+from rpg_ingest.raw.extractor_compare_ingest import attach_compare_lanes
 from rpg_core.storage.db import get_connection
 from rpg_core.storage.repositories.raw import RawRepository
 
@@ -24,9 +25,25 @@ def _cmd_raw_extract(args: argparse.Namespace) -> int:
         coverage_threshold=args.coverage_threshold,
         reimport=not args.no_reimport,
         ingest_mode=args.ingest_mode,
+        attach_compare_lanes_on_import=not args.skip_compare_lanes,
     )
     print(json.dumps(result.__dict__, indent=2, default=str))
     return 0 if result.status == "completed" else 1
+
+
+def _cmd_raw_attach_compare_lanes(args: argparse.Namespace) -> int:
+    with get_connection() as conn:
+        repo = RawRepository(conn)
+        if repo.get_document(args.document_id) is None:
+            print(f"Document not found: {args.document_id}", file=sys.stderr)
+            return 1
+        stats = attach_compare_lanes(
+            repo,
+            document_id=args.document_id,
+            pdf_path=Path(args.pdf),
+        )
+    print(json.dumps(stats, indent=2))
+    return 0
 
 
 def _cmd_raw_status(args: argparse.Namespace) -> int:
@@ -77,7 +94,23 @@ def build_parser() -> argparse.ArgumentParser:
             "(PyMuPDF + PDFBox blocks for the comparateur)."
         ),
     )
+    extract.add_argument(
+        "--skip-compare-lanes",
+        action="store_true",
+        help=(
+            "Skip persisting PyMuPDF/PDFBox compare-lane blocks after a full import "
+            "(requires Java for PDFBox when not skipped)."
+        ),
+    )
     extract.set_defaults(func=_cmd_raw_extract)
+
+    attach = raw_sub.add_parser(
+        "attach-compare-lanes",
+        help="Persist compare-lane blocks for an already-imported document",
+    )
+    attach.add_argument("pdf", type=Path, help="Path to campaign PDF")
+    attach.add_argument("--document-id", required=True, help="Existing document id")
+    attach.set_defaults(func=_cmd_raw_attach_compare_lanes)
 
     status = raw_sub.add_parser("status", help="Show ingestion run status")
     status.add_argument("--ingestion-run-id", required=True)
