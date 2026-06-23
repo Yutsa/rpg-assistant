@@ -45,3 +45,22 @@
             (write-line content-stream 12 line-text 72 (- page-height 100 (* index 24)))))
         (.save document file))
       (.getAbsolutePath file))))
+
+(defn create-drop-cap-paragraph-pdf [file-path]
+  (let [file (File. file-path)]
+    (with-open [document (PDDocument.)]
+      (let [page (PDPage. PDRectangle/A4)
+            page-height (.getHeight PDRectangle/A4)
+            left 72
+            wrap (+ left 28)
+            line1-y (- page-height 160)
+            line2-y (- page-height 184)
+            line3-y (- page-height 208)]
+        (.addPage document page)
+        (with-open [content-stream (PDPageContentStream. document page)]
+          (write-line content-stream 27 "S" left line1-y)
+          (write-line content-stream 10 "i beaucoup ont oublie les chroniques des" wrap line1-y)
+          (write-line content-stream 10 "Terres d'Osgild, certains essaient de decou-" left line2-y)
+          (write-line content-stream 10 "vrir les secrets de son passe." left line3-y))
+        (.save document file))
+      (.getAbsolutePath file))))

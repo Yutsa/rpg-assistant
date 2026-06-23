@@ -116,3 +116,31 @@
                                (str/includes? % "émaner. Proférant"))
                         texts))
               "orphan fragments should not remain as standalone blocks"))))))
+
+(deftest extract-page-handles-drop-cap-paragraph
+  (testing "Drop-cap letter joins the wrapped first line, then full-width lines follow"
+    (let [temp-file (doto (File/createTempFile "rpg-ingest-drop-cap-" ".pdf")
+                      (.deleteOnExit))
+          pdf-path (sample-pdf/create-drop-cap-paragraph-pdf (.getAbsolutePath temp-file))
+          page (pdf/extract-page pdf-path 1)
+          intro-block (first (:blocks page))]
+      (is (= 1 (count (:blocks page))))
+      (is (re-find #"^Si beaucoup ont oublie" (:text intro-block)))
+      (is (re-find #"Terres d'Osgild" (:text intro-block)))
+      (is (not (re-find #"STerres" (:text intro-block)))))))
+
+(deftest extract-page-momie-p5-intro-drop-cap
+  (testing "Page 5 intro paragraph keeps drop-cap reading order"
+    (let [momie-pdf (java.io.File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
+      (when (.exists momie-pdf)
+        (let [page (pdf/extract-page (.getAbsolutePath momie-pdf) 5)
+              intro-block (some #(when (and (str/includes? % "Terres d")
+                                            (str/includes? % "Osgild"))
+                                   %)
+                                (map :text (:blocks page)))]
+          (is (some? intro-block)
+              "intro paragraph with Terres d'Osgild should be present")
+          (is (re-find #"^Si beaucoup ont oublié" intro-block)
+              "drop cap S should prefix the wrapped first line")
+          (is (not (re-find #"STerres" intro-block))
+              "drop cap must not merge into the next full-width line"))))))
