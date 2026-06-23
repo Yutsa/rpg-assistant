@@ -282,7 +282,7 @@
    parasite-margin-artifact?])
 
 (defn- parasite-block? [segment ctx]
-  (boolean (some #(% segment ctx) parasite-heuristics)))
+  (some (fn [pred] (pred segment ctx)) parasite-heuristics))
 
 (defn page-blocks [page-number width height text-positions]
   (let [ctx {:height height}
