@@ -12,6 +12,8 @@
 (def ^:private paragraph-gap-beta 4.0)
 (def ^:private paragraph-gap-min 8.0)
 (def ^:private paragraph-indent-min 8.0)
+(def ^:private drop-cap-font-ratio 1.8)
+(def ^:private drop-cap-min-font 12.0)
 
 (defn- position-x [text-position]
   (.getXDirAdj ^TextPosition text-position))
@@ -122,6 +124,29 @@
         median-gap (or (median calibration) 2.0)]
     (max (* gap-alpha median-gap) (+ median-gap gap-beta) gap-min)))
 
+(defn- font-size-change-split? [prev-pos next-pos]
+  (let [prev-fs (position-font-size prev-pos)
+        next-fs (position-font-size next-pos)]
+    (and (pos? prev-fs) (pos? next-fs)
+         (or (>= (/ prev-fs next-fs) drop-cap-font-ratio)
+             (>= (/ next-fs prev-fs) drop-cap-font-ratio)))))
+
+(defn- split-run-at-font-changes [positions]
+  (if (<= (count positions) 1)
+    [positions]
+    (let [sorted (vec (sort-by position-x positions))
+          n (count sorted)
+          split-at (keep-indexed
+                    (fn [idx _]
+                      (when (font-size-change-split? (sorted idx) (sorted (inc idx)))
+                        (inc idx)))
+                    (range (dec n)))]
+      (if (empty? split-at)
+        [sorted]
+        (let [boundaries (vec (concat [0] split-at [n]))]
+          (mapv (fn [[start end]] (subvec sorted start end))
+                (map vector boundaries (rest boundaries))))))))
+
 (defn- split-line-into-runs [line-positions]
   (if (empty? line-positions)
     []
@@ -133,12 +158,13 @@
                     (fn [idx gap]
                       (when (> gap threshold)
                         (inc idx)))
-                    gaps)]
-      (if (empty? split-at)
-        [sorted]
-        (let [boundaries (vec (concat [0] split-at [n]))]
-          (mapv (fn [[start end]] (subvec sorted start end))
-                (map vector boundaries (rest boundaries))))))))
+                    gaps)
+          gap-runs (if (empty? split-at)
+                     [sorted]
+                     (let [boundaries (vec (concat [0] split-at [n]))]
+                       (mapv (fn [[start end]] (subvec sorted start end))
+                             (map vector boundaries (rest boundaries)))))]
+      (mapcat split-run-at-font-changes gap-runs))))
 
 (defn- run-text [positions]
   (->> positions (map position-text) (apply str) strip-layout-glyphs))
@@ -160,8 +186,25 @@
 (defn- same-line? [bbox-a bbox-b]
   (< (Math/abs (- (:y0 bbox-a) (:y0 bbox-b))) line-tolerance))
 
+(defn- drop-cap-segment? [segment]
+  (let [text (str/trim (:text segment))
+        font-size (:font-size (:font-signature segment))]
+    (and (= (count text) 1)
+         (re-find #"^[A-Z]$" text)
+         (>= font-size drop-cap-min-font))))
+
+(defn- drop-cap-merge? [current next-segment]
+  (and (drop-cap-segment? current)
+       (boolean (re-find #"^[\p{Ll}]" (str/trim (:text next-segment))))))
+
+(defn- merge-separator [current next-segment]
+  (cond
+    (drop-cap-merge? current next-segment) ""
+    (same-line? (:bbox current) (:bbox next-segment)) " "
+    :else "\n"))
+
 (defn- merge-segments [current next-segment]
-  (let [separator (if (same-line? (:bbox current) (:bbox next-segment)) " " "\n")]
+  (let [separator (merge-separator current next-segment)]
     {:text (str (:text current) separator (:text next-segment))
      :bbox {:x0 (min (:x0 (:bbox current)) (:x0 (:bbox next-segment)))
             :y0 (min (:y0 (:bbox current)) (:y0 (:bbox next-segment)))
