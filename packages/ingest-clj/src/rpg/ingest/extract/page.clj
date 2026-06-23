@@ -237,13 +237,63 @@
    :bbox (:bbox segment)
    :metadata (segment-metadata segment)})
 
+(def ^:private margin-ratio 0.08)
+(def ^:private running-header-y-ratio 0.04)
+(def ^:private margin-artifact-max-height 5.0)
+(def ^:private running-header-max-chars 80)
+
+(defn- strip-format-glyphs [text]
+  (str/replace text #"[\p{Cf}\p{Co}\p{Cs}]" ""))
+
+(defn- stripped-segment-text [text]
+  (str/trim (strip-format-glyphs text)))
+
+(defn- in-header-margin? [bbox {:keys [height]}]
+  (< (:y1 bbox) (* height margin-ratio)))
+
+(defn- in-footer-margin? [bbox {:keys [height]}]
+  (> (:y0 bbox) (* height (- 1.0 margin-ratio))))
+
+(defn- parasite-drm-email? [{:keys [text]} _]
+  (boolean (re-find #"(?i)\S+@\S+\.\S+" text)))
+
+(defn- parasite-drm-order? [{:keys [text]} _]
+  (boolean (re-find #"\d{6}/\d+/\d+" text)))
+
+(defn- parasite-page-number? [{:keys [text]} _]
+  (boolean (re-find #"(?i)PAGE\s+\d+" (stripped-segment-text text))))
+
+(defn- parasite-running-header? [{:keys [text bbox]} {:keys [height]}]
+  (let [stripped (stripped-segment-text text)]
+    (and (< (:y1 bbox) (* height running-header-y-ratio))
+         (not (str/blank? stripped))
+         (< (count stripped) running-header-max-chars))))
+
+(defn- parasite-margin-artifact? [{:keys [bbox]} ctx]
+  (and (< (- (:y1 bbox) (:y0 bbox)) margin-artifact-max-height)
+       (or (in-header-margin? bbox ctx)
+           (in-footer-margin? bbox ctx))))
+
+(def ^:private parasite-heuristics
+  [parasite-drm-email?
+   parasite-drm-order?
+   parasite-page-number?
+   parasite-running-header?
+   parasite-margin-artifact?])
+
+(defn- parasite-block? [segment ctx]
+  (some (fn [pred] (pred segment ctx)) parasite-heuristics))
+
 (defn page-blocks [page-number width height text-positions]
-  (let [raw-segments (->> text-positions
+  (let [ctx {:height height}
+        raw-segments (->> text-positions
                           group-into-lines
                           (mapcat split-line-into-runs)
                           (keep run-segment)
                           vec)
-        segments (merge-segments-by-font raw-segments width)
+        segments (->> (merge-segments-by-font raw-segments width)
+                      (remove #(parasite-block? % ctx))
+                      vec)
         blocks (keep-indexed segment-as-block segments)]
     {:page-number page-number
      :width width
