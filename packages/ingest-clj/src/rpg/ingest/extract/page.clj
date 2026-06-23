@@ -189,7 +189,19 @@
   (- (:x0 (:bbox next-segment)) (:x0 (:bbox prev-segment))))
 
 (defn- hyphenated-line-end? [text]
-  (boolean (re-find #"[-\u00AD]$" (str/trimr text))))
+  (boolean (re-find #"[-\u00AD\u2010\u2011]$" (str/trimr text))))
+
+(def ^:private strong-end-re
+  #"[.!?»][\'\")\]]*\s*$")
+
+(defn- ends-with-strong-punctuation? [text]
+  (boolean (re-find strong-end-re (str/trimr text))))
+
+(defn- mid-sentence-continuation? [prev-segment next-segment]
+  (let [prev-text (:text prev-segment)
+        next-text (:text next-segment)]
+    (and (not (ends-with-strong-punctuation? prev-text))
+         (boolean (re-find #"^[\s«‹]*[\p{Ll}]" (str/trim next-text))))))
 
 (def ^:private chip-entry-start-re
   #"^[\p{Lu}][^:\n]{0,60}[\u202f ]*:")
@@ -211,8 +223,9 @@
 (defn- paragraph-break? [prev-segment next-segment threshold]
   (cond
     (chip-entry-start? (:text next-segment)) true
-    (> (indent-delta prev-segment next-segment) paragraph-indent-min) true
     (hyphenated-line-end? (:text prev-segment)) false
+    (mid-sentence-continuation? prev-segment next-segment) false
+    (> (indent-delta prev-segment next-segment) paragraph-indent-min) true
     (> (vertical-gap prev-segment next-segment) threshold) true
     :else false))
 

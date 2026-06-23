@@ -93,3 +93,26 @@
           (is (and (str/includes? elsirianne-block "collectionneuse")
                    (str/includes? elsirianne-block "Roi‑Sorcier"))
               "Elsirianne multi-line chip should be one block"))))))
+
+(deftest extract-page-merges-illustration-wrap-fragments-in-same-column
+  (testing "Indented line continuations around an illustration stay in the left-column block"
+    (let [momie-pdf (java.io.File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
+      (when (.exists momie-pdf)
+        (let [page (pdf/extract-page (.getAbsolutePath momie-pdf) 14)
+              texts (map :text (:blocks page))
+              left-intro (some #(when (str/includes? % "En pénétrant dans la maison") %) texts)
+              right-continuation (some #(when (str/includes? % "émaner. Proférant") %) texts)]
+          (is (some? left-intro)
+              "left-column intro block should be present")
+          (is (and (str/includes? left-intro "vous ressen")
+                   (str/includes? left-intro "tez immédiatement une")
+                   (str/includes? left-intro "aura de terreur en"))
+              "hyphenation and illustration indent fragments merge in the left column")
+          (is (some? right-continuation)
+              "right-column continuation should be a separate block")
+          (is (not (str/includes? right-continuation "En pénétrant dans la maison"))
+              "right-column block must not span columns")
+          (is (not (some #(and (str/includes? % "tez immédiatement une")
+                               (str/includes? % "émaner. Proférant"))
+                        texts))
+              "orphan fragments should not remain as standalone blocks"))))))
