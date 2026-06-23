@@ -68,3 +68,28 @@
           (is (not (some #(re-find #"(?i)@" %) texts)))
           (is (not (some #(str/includes? % "Mondanités et momie") texts)))
           (is (some #(str/includes? % "Le manoir Horsbi") texts)))))))
+
+(deftest extract-page-merges-multi-line-chip-entries
+  (testing "Actor chip bullets (Wingdings) are ignored; each entry stays one block"
+    (let [momie-pdf (java.io.File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
+      (when (.exists momie-pdf)
+        (let [page (pdf/extract-page (.getAbsolutePath momie-pdf) 8)
+              texts (map :text (:blocks page))
+              kalian-block (some #(when (str/includes? % "Kalian") %) texts)
+              taless-block (some #(when (str/includes? % "Taless Rhann") %) texts)
+              elsirianne-block (some #(when (str/includes? % "Elsirianne Horsbi") %) texts)]
+          (is (some? kalian-block)
+              "Kalian entry should be present")
+          (is (and (str/includes? kalian-block "témoin capital")
+                   (str/includes? kalian-block "de la soirée"))
+              "Kalian description should be one block, not split across lines")
+          (is (not (some #(and (str/includes? % "Kalian")
+                               (str/includes? % "Hector Debranne"))
+                        texts))
+              "Kalian and Hector should not share the same block")
+          (is (and (str/includes? taless-block "Roi‑Sorcier")
+                   (str/includes? taless-block "momie"))
+              "Taless Rhann multi-line chip should be one block")
+          (is (and (str/includes? elsirianne-block "collectionneuse")
+                   (str/includes? elsirianne-block "Roi‑Sorcier"))
+              "Elsirianne multi-line chip should be one block"))))))
