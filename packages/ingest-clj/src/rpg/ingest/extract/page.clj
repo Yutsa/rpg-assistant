@@ -237,24 +237,18 @@
    :bbox (:bbox segment)
    :metadata (segment-metadata segment)})
 
-(def ^:private margin-ratio 0.08)
-(def ^:private running-header-y-ratio 0.04)
-
-(defn- strip-format-glyphs [text]
-  (str/replace text #"[\p{Cf}\p{Co}\p{Cs}]" ""))
-
 (defn- parasite-block? [{:keys [text bbox]} height]
-  (let [stripped (str/trim (strip-format-glyphs text))
-        block-height (- (:y1 bbox) (:y0 bbox))]
-    (or (re-find #"(?i)PAGE\s+\d+" stripped)
-        (re-find #"(?i)@\S+\.\S+" text)
-        (re-find #"\d{6}/\d+/\d+" text)
-        (and (< (:y1 bbox) (* height running-header-y-ratio))
-             (seq stripped)
-             (< (count stripped) 80))
-        (and (< block-height 5.0)
-             (or (< (:y1 bbox) (* height margin-ratio))
-                 (> (:y0 bbox) (* height (- 1.0 margin-ratio))))))))
+  (or (re-find #"(?i)\S+@\S+\.\S+" text)
+      (re-find #"\d{6}/\d+/\d+" text)
+      (let [stripped (str/trim (str/replace text #"[\p{Cf}\p{Co}\p{Cs}]" ""))
+            h (- (:y1 bbox) (:y0 bbox))]
+        (or (re-find #"(?i)PAGE\s+\d+" stripped)
+            (and (< (:y1 bbox) (* height 0.04))
+                 (not (str/blank? stripped))
+                 (< (count stripped) 80))
+            (and (< h 5.0)
+                 (or (< (:y1 bbox) (* height 0.08))
+                     (> (:y0 bbox) (* height 0.92))))))))
 
 (defn page-blocks [page-number width height text-positions]
   (let [raw-segments (->> text-positions
