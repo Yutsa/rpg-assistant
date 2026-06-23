@@ -56,3 +56,15 @@
                                (str/includes? % "Depuis lors"))
                         texts))
               "left and right columns should not share the same block"))))))
+
+(deftest extract-page-filters-parasite-blocks
+  (testing "Running header, page numbers and DRM watermark are removed"
+    (let [momie-pdf (java.io.File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
+      (when (.exists momie-pdf)
+        (let [page (pdf/extract-page (.getAbsolutePath momie-pdf) 9)
+              texts (set (map :text (:blocks page)))]
+          (is (= 5 (count (:blocks page))))
+          (is (not (some #(re-find #"(?i)PAGE\s+\d+" %) texts)))
+          (is (not (some #(re-find #"(?i)@" %) texts)))
+          (is (not (some #(str/includes? % "Mondanités et momie") texts)))
+          (is (some #(str/includes? % "Le manoir Horsbi") texts)))))))
