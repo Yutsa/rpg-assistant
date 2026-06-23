@@ -248,47 +248,57 @@
 (defn- stripped-segment-text [text]
   (str/trim (strip-format-glyphs text)))
 
-(defn- in-header-margin? [bbox height]
+(defn- in-header-margin? [bbox {:keys [height]}]
   (< (:y1 bbox) (* height margin-ratio)))
 
-(defn- in-footer-margin? [bbox height]
+(defn- in-footer-margin? [bbox {:keys [height]}]
   (> (:y0 bbox) (* height (- 1.0 margin-ratio))))
 
-(defn- parasite-drm-email? [{:keys [text]}]
+(defn- parasite-drm-email? [{:keys [text]} _]
   (boolean (re-find #"(?i)\S+@\S+\.\S+" text)))
 
-(defn- parasite-drm-order? [{:keys [text]}]
+(defn- parasite-drm-order? [{:keys [text]} _]
   (boolean (re-find #"\d{6}/\d+/\d+" text)))
 
-(defn- parasite-page-number? [{:keys [text]}]
+(defn- parasite-page-number? [{:keys [text]} _]
   (boolean (re-find #"(?i)PAGE\s+\d+" (stripped-segment-text text))))
 
-(defn- parasite-running-header? [{:keys [text bbox]} height]
+(defn- parasite-running-header? [{:keys [text bbox]} {:keys [height]}]
   (let [stripped (stripped-segment-text text)]
     (and (< (:y1 bbox) (* height running-header-y-ratio))
          (not (str/blank? stripped))
          (< (count stripped) running-header-max-chars))))
 
-(defn- parasite-margin-artifact? [{:keys [bbox]} height]
+(defn- parasite-margin-artifact? [{:keys [bbox]} ctx]
   (and (< (- (:y1 bbox) (:y0 bbox)) margin-artifact-max-height)
-       (or (in-header-margin? bbox height)
-           (in-footer-margin? bbox height))))
+       (or (in-header-margin? bbox ctx)
+           (in-footer-margin? bbox ctx))))
 
-(defn- parasite-block? [segment height]
-  (or (parasite-drm-email? segment)
-      (parasite-drm-order? segment)
-      (parasite-page-number? segment)
-      (parasite-running-header? segment height)
-      (parasite-margin-artifact? segment height)))
+(def ^:private parasite-heuristics
+  {:drm-email parasite-drm-email?
+   :drm-order parasite-drm-order?
+   :page-number parasite-page-number?
+   :running-header parasite-running-header?
+   :margin-artifact parasite-margin-artifact?})
+
+(def ^:private active-parasite-heuristics
+  [:drm-email :drm-order :page-number :running-header :margin-artifact])
+
+(defn- parasite-block? [segment ctx]
+  (boolean
+   (some (fn [heuristic-id]
+           ((parasite-heuristics heuristic-id) segment ctx))
+         active-parasite-heuristics)))
 
 (defn page-blocks [page-number width height text-positions]
-  (let [raw-segments (->> text-positions
+  (let [ctx {:height height}
+        raw-segments (->> text-positions
                           group-into-lines
                           (mapcat split-line-into-runs)
                           (keep run-segment)
                           vec)
         segments (->> (merge-segments-by-font raw-segments width)
-                      (remove #(parasite-block? % height))
+                      (remove #(parasite-block? % ctx))
                       vec)
         blocks (keep-indexed segment-as-block segments)]
     {:page-number page-number
