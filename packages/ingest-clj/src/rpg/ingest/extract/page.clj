@@ -237,18 +237,53 @@
    :bbox (:bbox segment)
    :metadata (segment-metadata segment)})
 
-(defn- parasite-block? [{:keys [text bbox]} height]
-  (or (re-find #"(?i)\S+@\S+\.\S+" text)
-      (re-find #"\d{6}/\d+/\d+" text)
-      (let [stripped (str/trim (str/replace text #"[\p{Cf}\p{Co}\p{Cs}]" ""))
-            h (- (:y1 bbox) (:y0 bbox))]
-        (or (re-find #"(?i)PAGE\s+\d+" stripped)
-            (and (< (:y1 bbox) (* height 0.04))
-                 (not (str/blank? stripped))
-                 (< (count stripped) 80))
-            (and (< h 5.0)
-                 (or (< (:y1 bbox) (* height 0.08))
-                     (> (:y0 bbox) (* height 0.92))))))))
+(def ^:private margin-ratio 0.08)
+(def ^:private running-header-y-ratio 0.04)
+(def ^:private margin-artifact-max-height 5.0)
+(def ^:private running-header-max-chars 80)
+
+(defn- strip-format-glyphs [text]
+  (str/replace text #"[\p{Cf}\p{Co}\p{Cs}]" ""))
+
+(defn- stripped-segment-text [text]
+  (str/trim (strip-format-glyphs text)))
+
+(defn- in-header-margin? [bbox height]
+  (< (:y1 bbox) (* height margin-ratio)))
+
+(defn- in-footer-margin? [bbox height]
+  (> (:y0 bbox) (* height (- 1.0 margin-ratio))))
+
+(defn- parasite-drm-email? [{:keys [text]} _height]
+  (boolean (re-find #"(?i)\S+@\S+\.\S+" text)))
+
+(defn- parasite-drm-order? [{:keys [text]} _height]
+  (boolean (re-find #"\d{6}/\d+/\d+" text)))
+
+(defn- parasite-page-number? [segment _height]
+  (boolean (re-find #"(?i)PAGE\s+\d+"
+                      (stripped-segment-text (:text segment)))))
+
+(defn- parasite-running-header? [{:keys [text bbox]} height]
+  (let [stripped (stripped-segment-text text)]
+    (and (< (:y1 bbox) (* height running-header-y-ratio))
+         (not (str/blank? stripped))
+         (< (count stripped) running-header-max-chars))))
+
+(defn- parasite-margin-artifact? [{:keys [bbox]} height]
+  (and (< (- (:y1 bbox) (:y0 bbox)) margin-artifact-max-height)
+       (or (in-header-margin? bbox height)
+           (in-footer-margin? bbox height))))
+
+(def ^:private parasite-predicates
+  [parasite-drm-email?
+   parasite-drm-order?
+   parasite-page-number?
+   parasite-running-header?
+   parasite-margin-artifact?])
+
+(defn- parasite-block? [segment height]
+  (boolean (some #(% segment height) parasite-predicates)))
 
 (defn page-blocks [page-number width height text-positions]
   (let [raw-segments (->> text-positions
