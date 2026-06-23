@@ -275,20 +275,14 @@
            (in-footer-margin? bbox ctx))))
 
 (def ^:private parasite-heuristics
-  {:drm-email parasite-drm-email?
-   :drm-order parasite-drm-order?
-   :page-number parasite-page-number?
-   :running-header parasite-running-header?
-   :margin-artifact parasite-margin-artifact?})
-
-(def ^:private active-parasite-heuristics
-  [:drm-email :drm-order :page-number :running-header :margin-artifact])
+  [parasite-drm-email?
+   parasite-drm-order?
+   parasite-page-number?
+   parasite-running-header?
+   parasite-margin-artifact?])
 
 (defn- parasite-block? [segment ctx]
-  (boolean
-   (some (fn [heuristic-id]
-           ((parasite-heuristics heuristic-id) segment ctx))
-         active-parasite-heuristics)))
+  (boolean (some #(% segment ctx) parasite-heuristics)))
 
 (defn page-blocks [page-number width height text-positions]
   (let [ctx {:height height}
