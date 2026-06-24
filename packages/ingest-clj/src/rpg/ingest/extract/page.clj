@@ -459,8 +459,9 @@
                           group-into-lines
                           (mapcat line->segments)
                           vec)
-        segments (->> (merge-segments-by-font raw-segments width)
+        segments (->> raw-segments
                       (remove #(parasite-block? % ctx))
+                      (#(merge-segments-by-font % width))
                       vec)
         blocks (keep-indexed segment-as-block segments)]
     {:page-number page-number
