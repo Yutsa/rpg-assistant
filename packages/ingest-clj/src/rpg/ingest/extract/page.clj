@@ -14,6 +14,9 @@
 (def ^:private paragraph-indent-min 8.0)
 (def ^:private drop-cap-font-ratio 1.8)
 (def ^:private drop-cap-min-font 12.0)
+(def ^:private bullet-gap-min 0.8)
+(def ^:private bullet-gap-median-multiplier 2.5)
+(def ^:private bullet-body-gap-fallback 0.3)
 
 (defn- position-x [text-position]
   (.getXDirAdj ^TextPosition text-position))
@@ -63,6 +66,26 @@
         text (position-text text-position)]
     (or (and font-name (re-find #"(?i)wingdings" font-name))
         (and (seq text) (every? layout-glyph-char? text)))))
+
+(defn- alphanumeric-char? [ch]
+  (boolean (re-find #"[\p{L}\p{N}]" (str ch))))
+
+(defn- alphanumeric-position? [text-position]
+  (let [text (position-text text-position)]
+    (and (seq text) (some alphanumeric-char? text))))
+
+(defn- prefix-position? [text-position]
+  (or (layout-glyph-position? text-position)
+      (not (alphanumeric-position? text-position))))
+
+(defn- partition-line-prefix-body [line-positions]
+  (let [sorted (vec (sort-by position-x line-positions))]
+    (loop [remaining sorted prefix []]
+      (if (empty? remaining)
+        [prefix []]
+        (if (prefix-position? (first remaining))
+          (recur (rest remaining) (conj prefix (first remaining)))
+          [prefix remaining])))))
 
 (defn- strip-layout-glyphs [text]
   (-> text
@@ -118,6 +141,36 @@
         (if (odd? n)
           (nth sorted mid)
           (/ (+ (nth sorted (dec mid)) (nth sorted mid)) 2.0))))))
+
+(defn- median-alphanumeric-gaps [body-positions]
+  (let [sorted (vec (sort-by position-x (filter alphanumeric-position? body-positions)))
+        n (count sorted)]
+    (when (>= n 2)
+      (median (mapv #(horizontal-gap (sorted %) (sorted (inc %)))
+                    (range (dec n)))))))
+
+(defn- prefix-to-body-gap [prefix-positions body-positions]
+  (when (and (seq prefix-positions) (seq body-positions))
+    (let [last-prefix (last (vec (sort-by position-x prefix-positions)))
+          first-body (first (vec (sort-by position-x body-positions)))]
+      (horizontal-gap last-prefix first-body))))
+
+(defn- letter-start-body? [body-positions]
+  (when (seq body-positions)
+    (let [text (position-text (first (sort-by position-x body-positions)))]
+      (boolean (re-find #"^[\p{L}]" text)))))
+
+(defn- list-item-start-on-line? [line-positions]
+  (let [[prefix body] (partition-line-prefix-body line-positions)
+        median-body-gap (or (median-alphanumeric-gaps body) bullet-body-gap-fallback)
+        prefix-gap (prefix-to-body-gap prefix body)
+        gap-threshold (max bullet-gap-min
+                          (* bullet-gap-median-multiplier median-body-gap))]
+    (and (seq prefix)
+         (seq body)
+         (letter-start-body? body)
+         (some? prefix-gap)
+         (> prefix-gap gap-threshold))))
 
 (defn- gap-threshold [gaps]
   (let [calibration (filter #(< % gap-median-cap) gaps)
@@ -175,13 +228,37 @@
    :x1 (apply max (map position-right positions))
    :y1 (apply max (map position-bottom positions))})
 
-(defn- run-segment [positions]
-  (let [text (run-text positions)]
-    (when-not (str/blank? text)
-      {:text text
-       :bbox (run-bbox positions)
-       :font-signature (font-signature-from-positions positions)
-       :line-count 1})))
+(defn- run-segment
+  ([positions] (run-segment positions {}))
+  ([positions {:keys [list-item-start]}]
+   (let [text (run-text positions)]
+     (when-not (str/blank? text)
+       (cond-> {:text text
+                :bbox (run-bbox positions)
+                :font-signature (font-signature-from-positions positions)
+                :line-count 1}
+         list-item-start (assoc :list-item-start true))))))
+
+(defn- line-positions-without-bullet-prefix [line-positions list-item-start?]
+  (if list-item-start?
+    (second (partition-line-prefix-body line-positions))
+    (remove layout-glyph-position? line-positions)))
+
+(defn- run->segments [run-positions]
+  (let [list-item? (list-item-start-on-line? run-positions)
+        filtered (line-positions-without-bullet-prefix run-positions list-item?)
+        text-runs (split-line-into-runs filtered)]
+    (loop [remaining text-runs segments [] first-run? true]
+      (if (empty? remaining)
+        segments
+        (let [segment (run-segment (first remaining)
+                                   {:list-item-start (and list-item? first-run?)})]
+          (recur (rest remaining)
+                 (if segment (conj segments segment) segments)
+                 false))))))
+
+(defn- line->segments [line-positions]
+  (->> line-positions split-line-into-runs (mapcat run->segments)))
 
 (defn- same-line? [bbox-a bbox-b]
   (< (Math/abs (- (:y0 bbox-a) (:y0 bbox-b))) line-tolerance))
@@ -205,13 +282,15 @@
 
 (defn- merge-segments [current next-segment]
   (let [separator (merge-separator current next-segment)]
-    {:text (str (:text current) separator (:text next-segment))
-     :bbox {:x0 (min (:x0 (:bbox current)) (:x0 (:bbox next-segment)))
-            :y0 (min (:y0 (:bbox current)) (:y0 (:bbox next-segment)))
-            :x1 (max (:x1 (:bbox current)) (:x1 (:bbox next-segment)))
-            :y1 (max (:y1 (:bbox current)) (:y1 (:bbox next-segment)))}
-     :font-signature (:font-signature current)
-     :line-count (+ (:line-count current) (:line-count next-segment))}))
+    (cond-> {:text (str (:text current) separator (:text next-segment))
+             :bbox {:x0 (min (:x0 (:bbox current)) (:x0 (:bbox next-segment)))
+                    :y0 (min (:y0 (:bbox current)) (:y0 (:bbox next-segment)))
+                    :x1 (max (:x1 (:bbox current)) (:x1 (:bbox next-segment)))
+                    :y1 (max (:y1 (:bbox current)) (:y1 (:bbox next-segment)))}
+             :font-signature (:font-signature current)
+             :line-count (+ (:line-count current) (:line-count next-segment))}
+      (or (:list-item-start current) (:list-item-start next-segment))
+      (assoc :list-item-start true))))
 
 (defn- segment-x-center [segment]
   (/ (+ (:x0 (:bbox segment)) (:x1 (:bbox segment))) 2.0))
@@ -246,12 +325,6 @@
     (and (not (ends-with-strong-punctuation? prev-text))
          (boolean (re-find #"^[\s«‹]*[\p{Ll}]" (str/trim next-text))))))
 
-(def ^:private chip-entry-start-re
-  #"^[\p{Lu}][^:\n]{0,60}[\u202f ]*:")
-
-(defn- chip-entry-start? [text]
-  (boolean (re-find chip-entry-start-re (str/trim text))))
-
 (defn- paragraph-gap-threshold [segments]
   (let [gaps (mapv vertical-gap segments (rest segments))
         positive-gaps (vec (filter pos? gaps))
@@ -265,7 +338,7 @@
 
 (defn- paragraph-break? [prev-segment next-segment threshold]
   (cond
-    (chip-entry-start? (:text next-segment)) true
+    (:list-item-start next-segment) true
     (hyphenated-line-end? (:text prev-segment)) false
     (mid-sentence-continuation? prev-segment next-segment) false
     (> (indent-delta prev-segment next-segment) paragraph-indent-min) true
@@ -310,13 +383,14 @@
 
 (defn- segment-metadata [segment]
   (let [sig (:font-signature segment)]
-    {:source "pdfbox_raw"
-     :extraction "paragraph"
-     :line-count (:line-count segment)
-     :max-font-size (:font-size sig)
-     :avg-font-size (:font-size sig)
-     :bold? (:bold? sig)
-     :italic? (:italic? sig)}))
+    (cond-> {:source "pdfbox_raw"
+             :extraction "paragraph"
+             :line-count (:line-count segment)
+             :max-font-size (:font-size sig)
+             :avg-font-size (:font-size sig)
+             :bold? (:bold? sig)
+             :italic? (:italic? sig)}
+      (:list-item-start segment) (assoc :list-item-start true))))
 
 (defn- segment-as-block [block-index segment]
   {:block-index block-index
@@ -374,10 +448,8 @@
 (defn page-blocks [page-number width height text-positions]
   (let [ctx {:height height}
         raw-segments (->> text-positions
-                          (remove layout-glyph-position?)
                           group-into-lines
-                          (mapcat split-line-into-runs)
-                          (keep run-segment)
+                          (mapcat line->segments)
                           vec)
         segments (->> (merge-segments-by-font raw-segments width)
                       (remove #(parasite-block? % ctx))
