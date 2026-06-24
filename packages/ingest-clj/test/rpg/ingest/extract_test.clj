@@ -70,29 +70,46 @@
           (is (some #(str/includes? % "Le manoir Horsbi") texts)))))))
 
 (deftest extract-page-merges-multi-line-chip-entries
-  (testing "Actor chip bullets (Wingdings) are ignored; each entry stays one block"
+  (testing "Layout bullet detection splits NPC entries; multi-line descriptions stay merged"
     (let [momie-pdf (java.io.File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
       (when (.exists momie-pdf)
         (let [page (pdf/extract-page (.getAbsolutePath momie-pdf) 8)
-              texts (map :text (:blocks page))
-              kalian-block (some #(when (str/includes? % "Kalian") %) texts)
-              taless-block (some #(when (str/includes? % "Taless Rhann") %) texts)
-              elsirianne-block (some #(when (str/includes? % "Elsirianne Horsbi") %) texts)]
+              blocks (:blocks page)
+              texts (map :text blocks)
+              kalian-block (some #(when (str/includes? (:text %) "Kalian") %) blocks)
+              taless-block (some #(when (str/includes? (:text %) "Taless Rhann") %) blocks)
+              elsirianne-block (some #(when (str/includes? (:text %) "Elsirianne Horsbi") %) blocks)]
           (is (some? kalian-block)
               "Kalian entry should be present")
-          (is (and (str/includes? kalian-block "témoin capital")
-                   (str/includes? kalian-block "de la soirée"))
+          (is (:list-item-start (:metadata kalian-block))
+              "Kalian first segment should expose list-item-start metadata")
+          (is (and (str/includes? (:text kalian-block) "témoin capital")
+                   (str/includes? (:text kalian-block) "de la soirée"))
               "Kalian description should be one block, not split across lines")
           (is (not (some #(and (str/includes? % "Kalian")
                                (str/includes? % "Hector Debranne"))
                         texts))
               "Kalian and Hector should not share the same block")
-          (is (and (str/includes? taless-block "Roi‑Sorcier")
-                   (str/includes? taless-block "momie"))
+          (is (and (str/includes? (:text taless-block) "Roi‑Sorcier")
+                   (str/includes? (:text taless-block) "momie"))
               "Taless Rhann multi-line chip should be one block")
-          (is (and (str/includes? elsirianne-block "collectionneuse")
-                   (str/includes? elsirianne-block "Roi‑Sorcier"))
+          (is (and (str/includes? (:text elsirianne-block) "collectionneuse")
+                   (str/includes? (:text elsirianne-block) "Roi‑Sorcier"))
               "Elsirianne multi-line chip should be one block"))))))
+
+(deftest extract-page-list-bullets-no-chip-entry-false-positives
+  (testing "Body prose with mid-sentence colon is not split by chip-entry regex"
+    (let [momie-pdf (java.io.File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
+      (when (.exists momie-pdf)
+        (let [page (pdf/extract-page (.getAbsolutePath momie-pdf) 10)
+              texts (map :text (:blocks page))
+              tempete-block (some #(when (str/includes? % "TEMPÊTE DE SABLE") %) texts)]
+          (is (some? tempete-block)
+               "TEMPÊTE DE SABLE encadré should be present")
+          (is (str/includes? tempete-block "La momie a déclenché")
+              "title and body should not be split solely because of colon in body prose")
+          (is (not (some #(re-find #"^[\s:]" (str/trim %)) texts))
+              "no block should start with a fragment cut at a mid-sentence colon"))))))
 
 (deftest extract-page-merges-illustration-wrap-fragments-in-same-column
   (testing "Indented line continuations around an illustration stay in the left-column block"
