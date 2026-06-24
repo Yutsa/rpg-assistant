@@ -12,7 +12,7 @@
 (def ^:private paragraph-gap-beta 4.0)
 (def ^:private paragraph-gap-min 8.0)
 (def ^:private paragraph-indent-min 8.0)
-(def ^:private drop-cap-font-ratio 1.8)
+(def ^:private drop-cap-font-ratio 1.25)
 (def ^:private drop-cap-min-font 12.0)
 (def ^:private bullet-gap-min 0.8)
 (def ^:private bullet-gap-median-multiplier 2.5)
@@ -177,12 +177,13 @@
         median-gap (or (median calibration) 2.0)]
     (max (* gap-alpha median-gap) (+ median-gap gap-beta) gap-min)))
 
+(defn- font-size-ratio-split? [prev-fs next-fs]
+  (and (pos? prev-fs) (pos? next-fs)
+       (or (>= (/ prev-fs next-fs) drop-cap-font-ratio)
+           (>= (/ next-fs prev-fs) drop-cap-font-ratio))))
+
 (defn- font-size-change-split? [prev-pos next-pos]
-  (let [prev-fs (position-font-size prev-pos)
-        next-fs (position-font-size next-pos)]
-    (and (pos? prev-fs) (pos? next-fs)
-         (or (>= (/ prev-fs next-fs) drop-cap-font-ratio)
-             (>= (/ next-fs prev-fs) drop-cap-font-ratio)))))
+  (font-size-ratio-split? (position-font-size prev-pos) (position-font-size next-pos)))
 
 (defn- split-run-at-font-changes [positions]
   (if (<= (count positions) 1)
@@ -274,6 +275,12 @@
   (and (drop-cap-segment? current)
        (boolean (re-find #"^[\p{Ll}]" (str/trim (:text next-segment))))))
 
+(defn- segment-font-size-change-split? [prev-segment next-segment]
+  (and (not (drop-cap-segment? prev-segment))
+       (font-size-ratio-split?
+        (:font-size (:font-signature prev-segment))
+        (:font-size (:font-signature next-segment)))))
+
 (defn- merge-separator [current next-segment]
   (cond
     (drop-cap-merge? current next-segment) ""
@@ -339,6 +346,7 @@
 (defn- paragraph-break? [prev-segment next-segment threshold]
   (cond
     (:list-item-start next-segment) true
+    (segment-font-size-change-split? prev-segment next-segment) true
     (hyphenated-line-end? (:text prev-segment)) false
     (mid-sentence-continuation? prev-segment next-segment) false
     (> (indent-delta prev-segment next-segment) paragraph-indent-min) true
