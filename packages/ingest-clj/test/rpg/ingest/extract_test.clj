@@ -103,11 +103,14 @@
       (when (.exists momie-pdf)
         (let [page (pdf/extract-page (.getAbsolutePath momie-pdf) 10)
               texts (map :text (:blocks page))
-              tempete-block (some #(when (str/includes? % "TEMPÊTE DE SABLE") %) texts)]
-          (is (some? tempete-block)
-               "TEMPÊTE DE SABLE encadré should be present")
-          (is (str/includes? tempete-block "La momie a déclenché")
-              "title and body should not be split solely because of colon in body prose")
+              tempete-title (some #(when (and (str/includes? % "TEMPÊTE DE SABLE")
+                                              (not (str/includes? % "La momie a déclenché")))
+                                    %) texts)
+              tempete-body (some #(when (str/includes? % "La momie a déclenché") %) texts)]
+          (is (some? tempete-title)
+              "TEMPÊTE DE SABLE encadré title should be present")
+          (is (some? tempete-body)
+              "encadré body should be a separate block from the title")
           (is (not (some #(re-find #"^[\s:]" (str/trim %)) texts))
               "no block should start with a fragment cut at a mid-sentence colon"))))))
 
