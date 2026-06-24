@@ -69,6 +69,20 @@
           (is (not (some #(str/includes? % "Mondanités et momie") texts)))
           (is (some #(str/includes? % "Le manoir Horsbi") texts)))))))
 
+(deftest extract-page-momie-p17-no-running-header-merge
+  (testing "Running header must not merge into body continuation on page 17"
+    (let [momie-pdf (java.io.File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
+      (when (.exists momie-pdf)
+        (let [page (pdf/extract-page (.getAbsolutePath momie-pdf) 17)
+              first-left (first (filter #(str/includes? (:text %) "casque")
+                                        (:blocks page)))]
+          (is (some? first-left)
+              "body continuation from page 16 should be present")
+          (is (not (str/includes? (:text first-left) "Mondanités et momie"))
+              "running header must not be merged into the body block")
+          (is (> (:y0 (:bbox first-left)) (* (:height page) 0.05))
+              "body block y0 must not extend into the header margin"))))))
+
 (deftest extract-page-merges-multi-line-chip-entries
   (testing "Layout bullet detection splits NPC entries; multi-line descriptions stay merged"
     (let [momie-pdf (java.io.File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
