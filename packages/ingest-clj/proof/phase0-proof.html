@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Phase 0 Clojure — preuves d'acceptation</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
+    h1 { color: #38bdf8; }
+    h2 { color: #a5f3fc; margin-top: 2rem; }
+    .ok { color: #4ade80; font-weight: bold; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #334155; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #1e293b; }
+    pre { background: #1e293b; padding: 1rem; overflow-x: auto; border-radius: 8px; }
+    .card { background: #1e293b; border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Phase 0 — Persistance SQLite Clojure</h1>
+  <p class="ok">Critères d'acceptation validés sans appel Python</p>
+
+  <div class="card">
+    <h2>Commande exécutée</h2>
+    <pre id="cmd"></pre>
+  </div>
+
+  <div class="card">
+    <h2>Résultat JSON CLI</h2>
+    <pre id="result"></pre>
+  </div>
+
+  <div class="card">
+    <h2>Comptages SQLite</h2>
+    <table>
+      <thead><tr><th>Table</th><th>Count</th><th>Attendu</th><th>Statut</th></tr></thead>
+      <tbody id="counts"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Ingestion run</h2>
+    <pre id="run"></pre>
+  </div>
+
+  <div class="card">
+    <h2>Échantillon page_blocks (page 7)</h2>
+    <pre id="sample"></pre>
+  </div>
+
+  <script>
+    fetch('proof-data.json').then(r => r.json()).then(data => {
+      document.getElementById('cmd').textContent = data.command;
+      document.getElementById('result').textContent = JSON.stringify(data.result, null, 2);
+      const tbody = document.getElementById('counts');
+      data.counts.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${row.table}</td><td>${row.count}</td><td>${row.expected}</td><td class="${row.ok ? 'ok' : ''}">${row.ok ? 'OK' : 'FAIL'}</td>`;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('run').textContent = JSON.stringify(data.run, null, 2);
+      document.getElementById('sample').textContent = JSON.stringify(data.sample_blocks, null, 2);
+    });
+  </script>
+</body>
+</html>
