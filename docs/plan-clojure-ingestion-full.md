@@ -47,6 +47,7 @@ packages/ingest-clj/src/rpg/
 │   ├── reading_order.clj       # passe 1 : tri colonne-majeur, garde-fous géométrie
 │   ├── sections.clj            # passe 2 : flux typo → sections + block-assignments
 │   ├── chunks.clj              # blocs contenu → chunks 1:1
+│   ├── stat_blocks.clj         # phase 5 : détection fiches monstre/PNJ (heuristique dédiée)
 │   ├── ids.clj                 # doc_*, block_*, sec_*, chunk_*, run_*
 │   ├── pipeline.clj            # orchestration import full
 │   └── storage/
@@ -54,7 +55,9 @@ packages/ingest-clj/src/rpg/
 │       └── raw.clj             # INSERT campaigns…chunks
 ```
 
-Plus tard (hors ce plan) : `api/`, `mcp/`, `semantic/`, `stat_blocks/`.
+Plus tard (hors ce plan) : `api/`, `mcp/`, `semantic/`.
+
+**Fiches monstre / PNJ (COF2)** : ignorées en phases 2–4. Une **étape dédiée** `detect-stat-blocks` sera branchée dans la chaîne en phase 5 (après chunks, ou en pré-filtre avant sections — à trancher à l'implémentation).
 
 ## Phases
 
@@ -103,7 +106,9 @@ Passe 2 — parcourir en flux : détecter titre/corps + affecter chaque bloc à 
 
 Le signal principal est le **changement de typo** (taille police, gras) entre blocs consécutifs en ordre de lecture — indicateur titre↔corps — complété par des garde-fous COF2 (spread décoratif, drop-cap, encadrés…).
 
-**Hors scope phase 2** : `StatBlockProfile` / `false-heading?` → phase 5 ; `insert-sections!` → phase 4.
+**Hors scope phases 2–4** :
+- Fiches monstre / PNJ COF2 — pas de `false-heading?`, pas de `stat_block_role`, pas de garde-fous spécifiques fiches ; les blocs de fiches passent dans le flux sections/chunks comme du texte normal (imperfections acceptées)
+- `insert-sections!` / `insert-chunks!` → phase 4
 
 #### 2.1 — Passe 1 : ordre de lecture (`reading_order.clj`)
 
@@ -184,7 +189,7 @@ Clé de tri : `column-major-sort-key` = `(page-number, column-side, y0, x0)` ave
   ...)
 ```
 
-Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…`) restent nécessaires — le signal typo seul génère trop de faux positifs sur les fiches monstre (phase 5).
+Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…`, drop-cap, listes) suffisent pour la narration — **sans** traiter les faux positifs liés aux fiches monstre (nom en gras, NC, stats), reportés à la phase 5.
 
 **Hiérarchie** : au moment d'ouvrir une section, `heading-level` + `heading-visual-tier` déterminent le `level` et le `parent-section-id` (chapitre vide la pile, subordinate s'accroche au chapitre actif de la colonne, etc.) — logique reprise de `sections.py` mais déclenchée **au fil de l'eau** plutôt qu'après scan global.
 
@@ -226,147 +231,6 @@ Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…
 
 **Priorité** : tests portés depuis `test_sections.py` (structure sections) **+** assertions sur `block-assignments` (chaque bloc corps pointe vers la bonne `section-id`).
 
-**Oracle Python** : utile en dev pour comparer sections ; l'affectation bloc→section Python passe par `chunking.py` (logique différente) — ne pas viser une égalité bit-à-bit, seulement cohérence structurelle Momie.
+**Oracle Python** : utile en dev pour comparer sections sur le **texte narratif** ; ne pas benchmarker les pages à fiches monstre avant phase 5.
 
-**Test clé Momie p.5** : 3 sections (`EN QUELQUES MOTS`, `FICHE TECHNIQUE`, `LES GRANDES LIGNES`) + 3 blocs corps affectés — préfigure directement la phase 3.
-
-#### 2.7 — Critères de done
-
-- [ ] `block-index` = ordre de lecture colonne-majeur après extraction
-- [ ] `assign-sections` retourne sections + `block-assignments` + anchors
-- [ ] Tests `test_sections.py` portés (structure hiérarchique)
-- [ ] Test affectation page 5 : 3 sections, 3 blocs corps correctement assignés
-- [ ] Pipeline phase 0 branché sur passe 1 uniquement (passe 2 pas encore en prod)
-
-#### 2.8 — Comparaison avec Python
-
-| | Python actuel | Clojure cible |
-|--|---------------|---------------|
-| Ordre blocs | Ordre extraction + merge ; tri colonne-majeur seulement au chunking | **Passe 1** normalise dès l'extraction |
-| Sections | Scan global → tri spatial titres → pile | **Passe 2** flux linéaire |
-| Affectation | Rétrospective dans `chunking.py` | **Passe 2** simultanée (`block-assignments`) |
-| Signal titre | Règles explicites par type | **Transition typo** + garde-fous |
-
----
-
-### Phase 3 — Chunks 1:1
-
-**`chunks.clj`** — trivialisé par la passe 2 :
-
-```
-1. Pour chaque bloc avec une entrée dans block-assignments :
-     créer un chunk 1:1 (texte du bloc, section-id déjà connu)
-2. Blocs anchor (titres) → pas de chunk
-3. refine-section-page-ends depuis les spans des chunks
-```
-
-Plus besoin de recalculer « dernier anchor avant bloc en même colonne » — c'est fait en phase 2.
-
-**Structure chunk** :
-```clojure
-{:id (chunk-id document-id page block-index)
- :section-id (get block-assignments block-id)
- :page-start page :page-end page
- :text (reflow-text block-text)
- :token-count (estimate-tokens text)
- :source-spans [{:page p :page-block-ids [block-id] :bbox ...}]
- :chunk-type-hint nil
- :metadata {}
- :needs-rechunk false}
-```
-
-**Critère de done** : test porté `test_build_chunks_partitions_blocks_between_headings_on_same_page` — 3 chunks, signatures uniques, textes `Résumé court.` / `Niveau 5` / `Contenu principal.`
-
----
-
-### Phase 4 — Pipeline complète
-
-**`pipeline.clj`** — équivalent de `importer.run()` mode `full` :
-
-1. Hash PDF → `document-id`
-2. `ensure-campaign`, `create-run` (`status: running`)
-3. `extract-document` (PDFBox)
-4. Coverage → `rejected` si scan
-5. `delete-document-raw-data` si reimport
-6. `normalize-reading-order` sur chaque page (passe 1)
-7. Matérialiser `pages` + `page_blocks`
-8. `assign-sections` (passe 2 — sections + block-assignments)
-9. `build-chunks-1to1` depuis `block-assignments`
-10. `refine-section-page-ends`
-11. `insert-*` en transaction
-12. `update-run` (`status: completed`, stats JSON)
-
-**Stats du run** : `page_count`, `block_count`, `section_count`, `chunk_count`, `text_coverage_ratio`, `source_pdf_path`, `extraction_method: "pdfbox"`.
-
-**CLI** :
-```bash
-clojure -M:ingest import --pdf PATH --campaign-id momie
-clojure -M:ingest import --pdf PATH --campaign-id momie --coverage-threshold 0.3 --no-reimport
-```
-
-**Critère de done** : import Momie complet sans Python ; `sections` et `chunks` peuplés.
-
----
-
-### Phase 5 — Qualité COF2
-
-- Porter profil COF2 : `false-heading?` (noms de fiches monstre, etc.)
-- `stat_blocks/` (chunks dédiés, metadata structurée) — **second temps**
-- Tests régression sur `data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf`
-- Heuristiques `chunk_type_hint` optionnelles
-
----
-
-### Phase 6 — Au-delà (plus tard)
-
-| Composant | Remplace |
-|-----------|----------|
-| Couche sémantique | `submit_chunk_classifications`, entités, relations |
-| API HTTP | `rpg-api` |
-| MCP | `rpg-assistant-mcp` |
-| Rendu PDF / visual review | `rendering.py`, MCP `prepare_visual_ingestion_review` |
-
-## Ce qu'il ne faut pas porter de Python
-
-- `_group_blocks_for_chunking` / budget ~1200 tokens
-- Mode `extractor-compare` / dual lanes (outil dev)
-- `raw_layout_json` PyMuPDF (optionnel)
-- Merge document-level (`merge_fragmented_blocks`, etc.) — réévaluer seulement si régressions sur blocs Clojure
-
-## Stratégie de tests
-
-1. **Unitaires Clojure** — PDF synthétiques (`test/rpg/ingest/test_fixtures/pdf.clj`)
-2. **Intégration BDD** — import → requêtes SQL
-3. **Régression COF2** — structure sections + nombre de chunks sur Momie
-4. **Python comme oracle temporaire** — comparer structure sections sur Momie ; l'affectation bloc→section n'a pas d'équivalent direct (chunking Python rétrospectif)
-
-## Campagne de référence
-
-| Clé | Valeur |
-|-----|--------|
-| `campaign_id` | `momie` |
-| PDF | `data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf` |
-| Page piège colonnes | **7** |
-
-## Ordre de travail
-
-```
-Phase 0 (storage) → Phase 1 (is-bold) → Phase 2 (sections) → Phase 3 (chunks) → Phase 4 (pipeline) → Phase 5 (COF2)
-```
-
-## Références code existant
-
-| Rôle | Chemin Python (spécification) | Chemin Clojure (cible / existant) |
-|------|-------------------------------|-----------------------------------|
-| Extraction blocs | `packages/ingest/.../layout.py` | `packages/ingest-clj/.../extract/page.clj` |
-| Sections | `packages/ingest/.../sections.py` | `packages/ingest-clj/.../sections.clj` |
-| Reading order | `packages/ingest/.../reading_order.py` | `packages/ingest-clj/.../reading_order.clj` |
-| IDs | `packages/core/.../ids.py` | `packages/ingest-clj/.../ids.clj` |
-| Coverage | `packages/ingest/.../coverage.py` | `packages/ingest-clj/.../coverage.clj` |
-| Persistance | `packages/core/.../repositories/raw.py` | `packages/ingest-clj/.../storage/raw.clj` |
-| Orchestration | `packages/ingest/.../importer.py` | `packages/ingest-clj/.../pipeline.clj` |
-| Schéma BDD | `migrations/versions/001_initial_schema.py` | inchangé |
-
-## Comparateur extracteur (contexte)
-
-Le plan [`plan-extractor-compare.md`](plan-extractor-compare.md) reste valide comme **outil de dev** pour affiner `page.clj`. Il n'est pas le chemin de production une fois la pipeline full Clojure en place.
+**Test clé Momie p.5** : 3 sections (`EN QUELQUES MOTS`, `FICHE TECHNIQUE`, `LES GRANDES LIGNES`) + 3 blocs corps affectés — p
