@@ -25,10 +25,10 @@ Le schéma SQLite existant (`campaigns`, `documents`, `ingestion_runs`, `pages`,
 | Extraction PDFBox page par page | ✅ `packages/ingest-clj` |
 | Blocs (texte, bbox, metadata) | ✅ |
 | CLI `extract-page` / `extract-document` / `serve` | ✅ |
-| Persistance SQLite depuis Clojure | ❌ |
+| Persistance SQLite depuis Clojure | ✅ phase 0 |
 | Sections | ❌ |
 | Chunks | ❌ |
-| Import `full` sans Python | ❌ |
+| Import `full` sans Python | ❌ (phase 4) |
 
 Aujourd'hui, Clojure est branché uniquement sur le workflow `extractor-compare` via un pont Python (`clojure_pdfbox.py`).
 
@@ -65,8 +65,9 @@ Plus tard (hors ce plan) : `api/`, `mcp/`, `semantic/`, `stat_blocks/`.
 
 **Modules** :
 - `rpg.ingest.ids` — conventions d'IDs alignées sur `packages/core/src/rpg_core/storage/ids.py`
-- `rpg.ingest.coverage` — porter `page_text_coverage_ratio` + rejet si moyenne `< 0.3`
 - `rpg.ingest.storage.db` + `storage.raw` — connexion, transactions, `insert-*`, `delete-document-raw-data`, cycle `ingestion_run`
+
+**Hors scope phase 0** : `coverage.clj` (rejet PDF scanné) — reporté / optionnel.
 
 **CLI** :
 ```bash

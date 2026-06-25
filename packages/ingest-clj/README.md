@@ -14,6 +14,16 @@ cd packages/ingest-clj
 clojure -M:ingest raw extract-page --pdf /path/to/document.pdf --page 1
 ```
 
+## Import phase 0 (pages + blocs → SQLite)
+
+```bash
+cd packages/ingest-clj
+clojure -M:ingest import --pdf /path/to/document.pdf --campaign-id momie \
+  --db sqlite:../../data/rpg_assistant.db
+```
+
+Persistance **pages + page_blocks** uniquement (pas sections/chunks). Sans appel Python.
+
 Mode serveur (JVM chaude, utilisé par l'API Python) :
 
 ```bash
