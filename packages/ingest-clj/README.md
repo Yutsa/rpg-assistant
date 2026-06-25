@@ -31,7 +31,7 @@ clojure -M:ingest serve
 # puis une requête JSON par ligne sur stdin : {"pdf":"/path/to.pdf","page":1}
 ```
 
-Sortie JSON : `page_number`, `width`, `height`, `blocks[]` avec `block_index`, `text`, `bbox`, `metadata`.
+Sortie JSON : `page_number`, `width`, `height`, `blocks[]` avec `block_index`, `text`, `bbox`, `metadata` (dont `is_bold`, `max_font_size`, `line_count`, …).
 
 Utilisé par l'API `GET /documents/{id}/pages/{n}/extractors-compare` et le viewer de comparaison PyMuPDF / PDFBox dans la webapp.
 

@@ -79,15 +79,13 @@ Smoke test : extrait + persiste **pages + blocs** uniquement.
 
 ---
 
-### Phase 1 — Extraction enrichie
+### Phase 1 — Normalisation metadata bloc
 
-Exposer dans les metadata des blocs (`page.clj`) :
+**Décision** : pas d'exposition de `:column` en metadata (overkill ; la colonne reste dérivée à la volée depuis la bbox en phases 2–3, comme en Python via `column-side` / `is-in-column-band`). Pas de `page-median-font` non plus — à réévaluer en phase 2 si les heuristiques titres en ont besoin.
 
-| Clé | Usage |
-|-----|-------|
-| `:column` (`0` / `1`) | Assignation section sur pages 2 colonnes (déjà calculé en interne) |
-| `:is-bold` | Heuristiques titres (au lieu de `:bold?` seul) |
-| Médiane police page | Calculée sur les blocs de la page ; utilisée par `sections.clj` |
+**Travail** (`page.clj`) :
+- Remplacer `:bold?` par `:is-bold` dans les metadata bloc (JSON persisté : `is_bold`, aligné Python).
+- Supprimer `:bold?` des metadata exposées.
 
 ---
 
@@ -108,7 +106,7 @@ Porter depuis Python (`sections.py`, `reading_order.py`) :
 - Section fallback `"Document"` si aucun titre
 - `refine-section-page-ends` (après chunks)
 
-**Signaux déjà disponibles sur les blocs** : `text`, `bbox`, `max-font-size`, `bold?`, `line-count`.
+**Signaux déjà disponibles sur les blocs** : `text`, `bbox`, `max-font-size`, `is-bold`, `line-count`.
 
 **Référence de validation** : tests portés depuis `tests/test_sections.py`, `tests/test_chunking.py` (page 5, 3 sections / 3 chunks).
 
@@ -128,7 +126,7 @@ Porter depuis Python (`sections.py`, `reading_order.py`) :
 
 **Assignation bloc → section** :
 - Section du dernier anchor **avant** le bloc en ordre de lecture
-- Filtrer par **même colonne** (`:column`) quand pertinent
+- Filtrer par **même colonne** (bbox overlap / `column-side`, pas de clé metadata)
 - Blocs avant le premier titre → section `"Document"`
 
 **Structure chunk** :
@@ -217,7 +215,7 @@ clojure -M:ingest import --pdf PATH --campaign-id momie --coverage-threshold 0.3
 ## Ordre de travail
 
 ```
-Phase 0 (storage) → Phase 1 (metadata) → Phase 2 (sections) → Phase 3 (chunks) → Phase 4 (pipeline) → Phase 5 (COF2)
+Phase 0 (storage) → Phase 1 (is-bold) → Phase 2 (sections) → Phase 3 (chunks) → Phase 4 (pipeline) → Phase 5 (COF2)
 ```
 
 ## Références code existant

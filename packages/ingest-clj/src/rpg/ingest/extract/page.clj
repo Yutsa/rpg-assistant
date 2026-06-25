@@ -396,7 +396,7 @@
              :line-count (:line-count segment)
              :max-font-size (:font-size sig)
              :avg-font-size (:font-size sig)
-             :bold? (:bold? sig)
+             :is-bold (:bold? sig)
              :italic? (:italic? sig)}
       (:list-item-start segment) (assoc :list-item-start true))))
 
