@@ -1,5 +1,0 @@
-
-Testing rpg.ingest.import-test
-
-Ran 21 tests containing 74 assertions.
-0 failures, 0 errors.

@@ -24,8 +24,6 @@ clojure -M:ingest import --pdf /path/to/document.pdf --campaign-id momie \
 
 Persistance **pages + page_blocks** uniquement (pas sections/chunks). Sans appel Python.
 
-Preuves d'acceptation : `proof/screenshots/` (générées via `proof/generate_proof.py` + `proof/phase0-proof.html`).
-
 Mode serveur (JVM chaude, utilisé par l'API Python) :
 
 ```bash
