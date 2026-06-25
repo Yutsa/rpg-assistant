@@ -32,8 +32,12 @@ cd packages/ingest-clj
 clojure -M:test
 ```
 
-## Périmètre
+## Périmètre actuel
 
 - PDFBox `PDFTextStripper` avec `setSortByPosition true`
 - Regroupement des `TextPosition` en bandes Y (tolérance 2 pt), puis split par gap horizontal adaptatif entre glyphes voisins
-- Pas d'import SQLite, sections, chunks, détection titre/full-width, ni filtrage
+- Filtrage parasite (DRM, numéros de page, en-têtes) au niveau page
+
+## Roadmap
+
+Plan d'ingestion full 100 % Clojure (sections, chunks 1:1, persistance SQLite) : [`docs/plan-clojure-ingestion-full.md`](../../docs/plan-clojure-ingestion-full.md).
