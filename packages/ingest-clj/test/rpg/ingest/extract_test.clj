@@ -33,11 +33,22 @@
     (let [temp-file (doto (File/createTempFile "rpg-ingest-meta-" ".pdf")
                       (.deleteOnExit))
           pdf-path (sample-pdf/create-sample-pdf (.getAbsolutePath temp-file))
-          first-block (-> pdf-path (pdf/extract-page 1) :blocks first)]
-      (is (= "pdfbox_raw" (:source (:metadata first-block))))
-      (is (= "paragraph" (:extraction (:metadata first-block))))
-      (is (contains? (:bbox first-block) :x0))
-      (is (pos? (:max-font-size (:metadata first-block)))))))
+          meta (-> pdf-path (pdf/extract-page 1) :blocks first :metadata)]
+      (is (= "pdfbox_raw" (:source meta)))
+      (is (= "paragraph" (:extraction meta)))
+      (is (contains? (:bbox (-> pdf-path (pdf/extract-page 1) :blocks first)) :x0))
+      (is (pos? (:max-font-size meta)))
+      (is (contains? meta :is-bold))
+      (is (not (contains? meta :bold?))))))
+
+(deftest extract-page-exposes-is-bold-metadata
+  (testing "Mixed-font line sets is-bold (not bold?) when any glyph is bold"
+    (let [temp-file (doto (File/createTempFile "rpg-ingest-is-bold-" ".pdf")
+                      (.deleteOnExit))
+          pdf-path (sample-pdf/create-mixed-font-line-pdf (.getAbsolutePath temp-file))
+          meta (-> pdf-path (pdf/extract-page 1) :blocks first :metadata)]
+      (is (true? (:is-bold meta)))
+      (is (not (contains? meta :bold?))))))
 
 (deftest extract-page-splits-two-column-line-by-horizontal-gap
   (testing "Columns split by horizontal gap; paragraphs split by vertical rhythm"
