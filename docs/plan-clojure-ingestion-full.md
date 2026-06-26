@@ -27,7 +27,7 @@ Le schéma SQLite existant (`campaigns`, `documents`, `ingestion_runs`, `pages`,
 | Metadata `:is-bold` alignée Python | ✅ phase 1 |
 | CLI `extract-page` / `extract-document` / `serve` | ✅ |
 | Persistance SQLite depuis Clojure | ✅ phase 0 |
-| Ordre de lecture (passe 1) | 🔲 à aligner sur tri `(x0, y0)` — voir PR #39 |
+| Ordre de lecture (passe 1) | ✅ tri spatial `(x0, y0, x1)` — PR #39 |
 | Sections | 🔲 phase 2 |
 | Chunks | ❌ phase 3 |
 | Import `full` sans Python | ❌ phase 4 |
@@ -259,8 +259,8 @@ Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…
 
 | # | Tâche | Done quand |
 |---|-------|------------|
-| 2.5.1 | `spatial-sort-key` + `normalize-reading-order` | tests synthétique + Momie p.7 ; **pas** de `column-side` en passe 1 |
-| 2.5.2 | Intégrer passe 1 dans `page.clj` | `extract_test` verts ; `spatial-ordered?` sur pages réelles |
+| 2.5.1 | `spatial-sort-key` + `normalize-reading-order` | ✅ |
+| 2.5.2 | Intégrer passe 1 dans `page.clj` | ✅ `extract_test` + `reading_order_test` verts |
 | 2.5.3 | `font-transition-heading?` + garde-fous | tests spread p.5, drop-cap, meta box |
 | 2.5.4 | `assign-sections` flux mono-fil (1 colonne) | tests chapitres simples + fallback Document |
 | 2.5.5 | Fils parallèles (`is-in-column-band?`) | tests PARTIE I/II, page 8 sans faux préambule |
@@ -276,11 +276,11 @@ Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…
 
 #### 2.7 — Critères de done
 
-- [ ] `block-index` = ordre tri spatial `(x0, y0, x1)` après extraction
+- [x] `block-index` = ordre tri spatial `(x0, y0, x1)` après extraction
 - [ ] `assign-sections` retourne sections + `block-assignments` + anchors
 - [ ] Tests `test_sections.py` portés (structure hiérarchique)
 - [ ] Test affectation page 5 : 3 sections, 3 blocs corps correctement assignés
-- [ ] Passe 1 branchée dans `page.clj` / `pdf.clj` ; passe 2 pas encore en prod
+- [x] Passe 1 branchée dans `page.clj` / `pdf.clj` ; passe 2 pas encore en prod
 
 #### 2.8 — Comparaison avec Python
 
