@@ -47,7 +47,11 @@ clojure -M:test
 - PDFBox `PDFTextStripper` avec `setSortByPosition true`
 - Regroupement des `TextPosition` en bandes Y (tolérance 2 pt), puis split par gap horizontal adaptatif entre glyphes voisins
 - Filtrage parasite (DRM, numéros de page, en-têtes) au niveau page
+- Import CLI : **pages + page_blocks** en SQLite (phase 0)
+- Modules sections + chunks 1:1 implémentés mais **pas encore branchés** sur l'import (phase 4)
 
 ## Roadmap
 
-Plan d'ingestion full 100 % Clojure (sections, chunks 1:1, persistance SQLite) : [`docs/plan-clojure-ingestion-full.md`](../../docs/plan-clojure-ingestion-full.md).
+Plan d'ingestion full 100 % Clojure : [`docs/plan-clojure-ingestion-full.md`](../../docs/plan-clojure-ingestion-full.md).
+
+**Suivi** : voir section « Suivi d'avancement (pour les agents) » — prochaine étape = **phase 4** (pipeline complète).

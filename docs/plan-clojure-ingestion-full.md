@@ -1,5 +1,59 @@
 # Plan : pipeline d'ingestion full en Clojure
 
+## Suivi d'avancement (pour les agents)
+
+> **Prompt utilisateur typique** : « Continue l'implémentation de la prochaine phase du plan. »
+>
+> Lire cette section en premier, puis la section détaillée de la phase listée dans **Prochaine phase**.
+
+| Phase | Intitulé | Statut | Livrable principal |
+|-------|----------|--------|-------------------|
+| 0 | Fondations (storage, CLI import pages+blocs) | ✅ fait | `storage/raw.clj`, `pipeline.clj` (phase 0) |
+| 1 | Metadata `:is-bold` | ✅ fait | `extract/page.clj` |
+| 2 | Ordre de lecture + sections | ✅ fait | `reading_order.clj`, `sections.clj`, tests |
+| 3 | Chunks 1:1 | ✅ fait | `chunks.clj`, `text/reflow.clj`, tests — PR #42 |
+| **4** | **Pipeline complète** | **🔲 à faire** | **`pipeline.clj` full, `insert-sections!` / `insert-chunks!`, `coverage.clj`** |
+| 5 | Fiches monstre COF2 | 🔲 à faire | `stat_blocks.clj` |
+| 6 | API / MCP / sémantique | hors scope | — |
+
+### Prochaine phase : **4 — Pipeline complète**
+
+**Objectif** : un `clojure -M:ingest import` persiste pages, blocs, sections et chunks en SQLite, sans Python.
+
+**Fichiers à modifier / créer** :
+
+| Fichier | Action |
+|---------|--------|
+| `packages/ingest-clj/src/rpg/ingest/pipeline.clj` | Étendre `import-pdf!` : assign-sections → build-chunks-1to1 → refine-section-page-ends → persist |
+| `packages/ingest-clj/src/rpg/ingest/storage/raw.clj` | Ajouter `insert-sections!`, `insert-chunks!` (schéma aligné `packages/core/.../repositories/raw.py`) |
+| `packages/ingest-clj/src/rpg/ingest/coverage.clj` | **Nouveau** — port de `packages/ingest/.../coverage.py` (rejet si `text_coverage_ratio < seuil`) |
+| `packages/ingest-clj/test/rpg/ingest/import_test.clj` | Import Momie → compter sections + chunks en BDD |
+
+**Étapes pipeline** (ordre cible, voir section Phase 4 ci-dessous) :
+
+1. Hash PDF → `document-id`
+2. `ensure-campaign`, `create-run`
+3. `extract-document` (déjà normalise l'ordre de lecture en passe 1)
+4. Coverage → `rejected` si scan
+5. `delete-document-raw-data` si reimport
+6. `assign-sections` → `build-chunks-1to1` → `refine-section-page-ends`
+7. `insert-pages!` + `insert-page-blocks!` + `insert-sections!` + `insert-chunks!` en transaction
+8. `update-run` (`completed`, stats : `page_count`, `block_count`, `section_count`, `chunk_count`, `text_coverage_ratio`, …)
+
+**Critère de done** : import Momie (`data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf`, `campaign-id=momie`) → tables `sections` et `chunks` peuplées.
+
+**Tests** :
+
+```bash
+cd packages/ingest-clj && clojure -M:test
+```
+
+**Références Python** (spécification, ne pas appeler en prod) : `packages/ingest/src/rpg_ingest/raw/importer.py`, `packages/core/src/rpg_core/storage/repositories/raw.py`.
+
+**Dernière mise à jour du suivi** : 2026-06-26 (phases 0–3 livrées ; phase 4 prochaine).
+
+---
+
 ## Objectif
 
 Remplacer entièrement la pipeline Python d'ingestion raw (`rpg-ingest`, provider PyMuPDF) par une pipeline **100 % Clojure** (PDFBox). L'API et le MCP seront réécrits en Clojure plus tard ; ce plan couvre uniquement l'ingestion jusqu'à la persistance SQLite.
@@ -26,13 +80,14 @@ Le schéma SQLite existant (`campaigns`, `documents`, `ingestion_runs`, `pages`,
 | Blocs (texte, bbox, metadata) | ✅ |
 | Metadata `:is-bold` alignée Python | ✅ phase 1 |
 | CLI `extract-page` / `extract-document` / `serve` | ✅ |
-| Persistance SQLite depuis Clojure | ✅ phase 0 |
-| Ordre de lecture (passe 1) | ✅ tri spatial `(x0, y0, x1)` — PR #39 |
-| Sections | 🔲 phase 2 |
-| Chunks | ❌ phase 3 |
-| Import `full` sans Python | ❌ phase 4 |
+| Persistance SQLite depuis Clojure | ✅ phase 0 (pages + blocs) |
+| Ordre de lecture (passe 1) | ✅ `reading_order.clj` — tri spatial `(x0, y0, x1)` |
+| Sections + `block-assignments` (passe 2) | ✅ `sections.clj` |
+| Chunks 1:1 | ✅ `chunks.clj` (phase 3) |
+| Import `full` sans Python | ❌ **phase 4** |
+| Fiches monstre COF2 | ❌ phase 5 |
 
-Aujourd'hui, Clojure est branché uniquement sur le workflow `extractor-compare` via un pont Python (`clojure_pdfbox.py`).
+Aujourd'hui, `import-pdf!` ne persiste que **pages + page_blocks**. Les modules sections/chunks existent mais ne sont pas encore branchés sur l'import ni écrits en BDD. Clojure reste aussi branché sur `extractor-compare` via un pont Python (`clojure_pdfbox.py`).
 
 ## Architecture cible
 
@@ -94,7 +149,7 @@ Smoke test : extrait + persiste **pages + blocs** uniquement.
 
 ---
 
-### Phase 2 — Ordre de lecture + sections (deux passes)
+### Phase 2 — Ordre de lecture + sections (deux passes) ✅
 
 **Prérequis** : phase 1 livrée (`:is-bold` dans les metadata bloc).
 
@@ -277,10 +332,10 @@ Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…
 #### 2.7 — Critères de done
 
 - [x] `block-index` = ordre tri spatial `(x0, y0, x1)` après extraction
-- [ ] `assign-sections` retourne sections + `block-assignments` + anchors
-- [ ] Tests `test_sections.py` portés (structure hiérarchique)
-- [ ] Test affectation page 5 : 3 sections, 3 blocs corps correctement assignés
-- [x] Passe 1 branchée dans `page.clj` / `pdf.clj` ; passe 2 pas encore en prod
+- [x] `assign-sections` retourne sections + `block-assignments` + anchors
+- [x] Tests `test_sections.py` portés (structure hiérarchique) → `sections_test.clj`
+- [x] Test affectation page 5 : 3 sections, 3 blocs corps correctement assignés
+- [x] Passe 1 branchée dans `page.clj` / `pdf.clj`
 
 #### 2.8 — Comparaison avec Python
 
@@ -294,7 +349,9 @@ Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…
 
 ---
 
-### Phase 3 — Chunks 1:1
+### Phase 3 — Chunks 1:1 ✅
+
+**Livré** : `chunks.clj`, `text/reflow.clj`, `chunks_test.clj` (PR #42).
 
 **`chunks.clj`** — trivialisé par la passe 2 :
 
@@ -312,16 +369,23 @@ Plus besoin de recalculer « dernier anchor avant bloc en même colonne » — c
 {:id (chunk-id document-id page block-index)
  :section-id (get block-assignments block-id)
  :page-start page :page-end page
- :text (reflow-text block-text)
+ :text (reflow-text block-text)   ; nettoyage retours ligne / césures PDF — pas de re-découpage
  :source-spans [{:page p :page-block-ids [block-id] :bbox ...}]
  :chunk-type-hint nil
  :metadata {}
  :needs-rechunk false}
 ```
 
-**Critère de done** : test porté `test_build_chunks_partitions_blocks_between_headings_on_same_page` — 3 chunks, signatures uniques, textes `Résumé court.` / `Niveau 5` / `Contenu principal.`
+Le reflow aligne le texte chunk sur la pipeline Python (`reflow_chunk_text`) : espaces insécables, fusion des `\n` intra-paragraphe, césures en fin de ligne. Il ne fusionne **pas** de blocs — le 1:1 est entièrement porté par `block-assignments`.
 
-### Phase 4 — Pipeline complète
+**Critères de done** :
+
+- [x] `build-chunks-1to1` depuis `block-assignments`
+- [x] `refine-section-page-ends`
+- [x] Test porté `test_build_chunks_partitions_blocks_between_headings_on_same_page` → `chunks_test.clj`
+- [x] Test `test_build_chunks_covers_all_blocks_without_duplicates` porté
+
+### Phase 4 — Pipeline complète 🔲 **PROCHAINE**
 
 **`pipeline.clj`** — équivalent de `importer.run()` mode `full` :
 
@@ -347,6 +411,17 @@ clojure -M:ingest import --pdf PATH --campaign-id momie --coverage-threshold 0.3
 ```
 
 **Critère de done** : import Momie complet sans Python ; `sections` et `chunks` peuplés.
+
+#### 4.1 — Sous-tâches (checklist agent)
+
+| # | Tâche | Fichier(s) | Done quand |
+|---|-------|------------|------------|
+| 4.1.1 | `insert-sections!` + `insert-chunks!` | `storage/raw.clj` | INSERT alignés schéma SQLite / `raw.py` |
+| 4.1.2 | Calcul `text_coverage_ratio` par page + document | `coverage.clj`, `pipeline.clj` | rejet si ratio < seuil (défaut 0.3) |
+| 4.1.3 | Orchestration full dans `import-pdf!` | `pipeline.clj` | enchaîne extract → sections → chunks → persist |
+| 4.1.4 | Stats run complètes | `pipeline.clj` | `section_count`, `chunk_count`, `text_coverage_ratio` dans JSON stats |
+| 4.1.5 | Test intégration Momie | `import_test.clj` | `count-rows` sections > 0, chunks > 0 après import |
+| 4.1.6 | CLI flags `--coverage-threshold`, `--no-reimport` | `cli.clj` | si pas déjà exposés |
 
 ---
 
