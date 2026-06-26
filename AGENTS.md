@@ -25,6 +25,69 @@ Le serveur Angular proxifie `/api` vers le backend ; les deux processus doivent 
 
 Quand l'utilisateur demande de lancer l'appli, exécuter ces deux commandes en arrière-plan (ou dans deux terminaux) plutôt que de se contenter de les citer.
 
+### Script recommandé (Cloud Agent / agents)
+
+Préférer le script idempotent qui **libère les ports** avant de démarrer :
+
+```bash
+bash .cursor/scripts/dev-stack.sh restart   # stop + free ports 8000/4200 + start API + web
+bash .cursor/scripts/dev-stack.sh status    # santé API / web
+bash .cursor/scripts/dev-stack.sh stop
+```
+
+Le script :
+- tue les sessions tmux `rpg-api-server` / `rpg-web-server` existantes ;
+- libère les ports **8000** (API) et **4200** (Angular) via `.cursor/scripts/free-port.sh` (`lsof` si `ss` absent) ;
+- active **nvm** avec la version de `apps/web/.nvmrc` (Angular exige Node ≥ 22.22.3) — le binaire nvm est priorisé sur `/exec-daemon/node` ;
+- définit `NG_CLI_ANALYTICS=false` (évite le prompt interactif bloquant `ng serve`) ;
+- exécute `npm install` dans `apps/web` si besoin.
+
+**Ne jamais** lancer `npm start` sans vérifier qu'aucune instance n'occupe déjà le port 4200 (symptôme fréquent : `ng: not found` ou serveur zombie).
+
+## Clôture de tâche — vérification manuelle obligatoire
+
+À la fin de **toute tâche** qui modifie l'ingestion, l'API, le frontend ou les données en base, l'agent doit **préparer l'environnement** pour que l'utilisateur puisse valider visuellement, et **fournir une preuve** (capture ou vidéo). Ne pas se limiter aux tests automatisés.
+
+### Checklist agent (fin de PR / fin de tâche)
+
+1. **Réimport** si la pipeline ou le chunking a changé :
+   ```bash
+   bash .cursor/scripts/clojure-import-momie.sh
+   # ou import équivalent (Python MCP/CLI) pour la campagne concernée
+   ```
+   Noter le `document_id` retourné (JSON du CLI ou MCP).
+
+2. **Stack dev prête** :
+   ```bash
+   bash .cursor/scripts/dev-stack.sh restart
+   bash .cursor/scripts/dev-stack.sh status   # API=200, Web=200
+   ```
+
+3. **Preuve visuelle** — au moins une des options :
+   - **Capture écran UI** (prioritaire si la tâche touche blocs/chunks/pages) :
+   ```bash
+   cd apps/web
+   node ../../.cursor/scripts/capture-pdf-viewer.mjs DOCUMENT_ID PAGE ../../artifacts/verification-page-PAGE.png
+   ```
+     Inclure la capture dans le résumé / la PR (`/opt/cursor/artifacts/` sur Cloud Agent).
+   - **Vidéo courte** Playwright si interaction multi-étapes (`npx playwright test … --video=on`).
+   - **Rendu MCP** en secours : `prepare_visual_ingestion_review(document_id, seed=42)` + lecture des PNG.
+
+4. **Indiquer à l'utilisateur** comment reproduire :
+   - URL directe : `http://127.0.0.1:4200/documents/{document_id}` → bouton « Visualisation PDF » → page concernée ;
+   - ce qui a changé et ce qu'il doit contrôler (ex. « page 5 : 1 chunk titre, 1 chunk corps fiche technique »).
+
+### Campagne de référence pour vérif ingestion
+
+| Élément | Valeur |
+|---------|--------|
+| PDF | `data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf` |
+| `campaign_id` | `momie` |
+| Page de contrôle typique | **5** (titre spread + fiche technique) |
+| Import Clojure | `bash .cursor/scripts/clojure-import-momie.sh` |
+
+Le `document_id` change à chaque réimport (hash du PDF) ; toujours utiliser celui du **dernier run** (`ingestion_run_id` / JSON CLI), pas une valeur figée dans ce guide.
+
 ## Serveur MCP `rpg-assistant`
 
 Utilise **toujours** le serveur MCP `rpg-assistant` pour consulter ou enrichir les données ingérées. Ne réimplémente pas l'ingestion ni n'interroge la base à la main sauf pour du debug explicite demandé par l'utilisateur.
@@ -92,8 +155,9 @@ Quand l'utilisateur dit **« continue l'implémentation de la prochaine phase du
 ## Campagne de référence (dev)
 
 - `campaign_id` : `momie`
-- `document_id` : `doc_010672301b36` (Mondanités et Momie, 20 pages, 75 chunks)
-- Dernier run réussi : vérifier avec `get_ingestion_status` si besoin.
+- PDF : `data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf`
+- `document_id` : **variable** — hash stable du PDF (`doc_*` retourné par le dernier import) ; ne pas hardcoder une valeur obsolète.
+- Dernier run réussi : vérifier avec `get_ingestion_status` ou le JSON de `clojure-import-momie.sh`.
 
 ## Cursor Cloud specific instructions
 
@@ -117,7 +181,9 @@ Aucune action manuelle requise pour Clojure ou les PDF sur une VM cloud agent à
 
 ### Commandes utiles
 
-- **Application** : `uv run rpg-api` (terminal 1) + `cd apps/web && npm start` (terminal 2) — voir [Lancer l'application](#lancer-lapplication-dev-local).
+- **Application** : `bash .cursor/scripts/dev-stack.sh restart` (recommandé) ou manuellement `uv run rpg-api` + `cd apps/web && nvm use && npm start` — voir [Lancer l'application](#lancer-lapplication-dev-local).
+- **Réimport Momie (Clojure)** : `bash .cursor/scripts/clojure-import-momie.sh`
+- **Capture preuve UI** : `cd apps/web && node ../../.cursor/scripts/capture-pdf-viewer.mjs DOCUMENT_ID PAGE /opt/cursor/artifacts/verification.png`
 - **Tests** : lancer `uv run python -m pytest`, **pas** `uv run pytest`. `tests/test_visual_review.py` fait `from tests.test_campaign_discovery import ...`, ce qui exige la racine du repo sur `sys.path` ; seul `python -m pytest` (qui ajoute le CWD) le fournit. Avec `pytest` direct la collecte échoue (`ModuleNotFoundError: No module named 'tests'`).
 - **Benchmarks PDF réels** : attentes statiques dans `tests/fixtures/real_pdf_benchmark.py` (pages pièges audit COF2). Lancer `uv run python -m pytest tests/test_real_pdf_benchmark.py -m real_pdf -q` — les PDF sont dans `data/pdfs/` après le bootstrap cloud.
 - **Tests campagnes supplémentaires** : `tests/test_cof2_audit_extra_campaigns.py` utilise aussi les PDF dans `data/pdfs/`.
