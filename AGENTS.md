@@ -16,33 +16,43 @@ Workspace `uv` à la racine : `uv sync` installe tous les packages en mode edita
 
 ## Lancer l'application (dev local)
 
-Après `uv sync`, `.env` (copie de `.env.example`) et `uv run alembic upgrade head`, démarrer **deux terminaux** depuis la racine du dépôt :
+### Commande unique (agents — à utiliser en priorité)
 
-1. **API** — `uv run rpg-api` → [http://127.0.0.1:8000](http://127.0.0.1:8000) (docs OpenAPI : `/docs`)
-2. **Frontend** — `cd apps/web && npm install && npm start` → [http://localhost:4200](http://localhost:4200)
-
-Le serveur Angular proxifie `/api` vers le backend ; les deux processus doivent tourner en parallèle. Node.js **22.22.3+** requis (`apps/web/.nvmrc`).
-
-Quand l'utilisateur demande de lancer l'appli, exécuter ces deux commandes en arrière-plan (ou dans deux terminaux) plutôt que de se contenter de les citer.
-
-### Script recommandé (Cloud Agent / agents)
-
-Préférer le script idempotent qui **libère les ports** avant de démarrer :
+Quand l'utilisateur demande de **lancer l'appli** ou de **voir les campagnes** :
 
 ```bash
-bash .cursor/scripts/dev-stack.sh restart   # stop + free ports 8000/4200 + start API + web
-bash .cursor/scripts/dev-stack.sh status    # santé API / web
-bash .cursor/scripts/dev-stack.sh stop
+bash .cursor/scripts/launch-app.sh
 ```
 
-Le script :
-- tue les sessions tmux `rpg-api-server` / `rpg-web-server` existantes ;
-- libère les ports **8000** (API) et **4200** (Angular) via `.cursor/scripts/free-port.sh` (`lsof` si `ss` absent) ;
-- active **nvm** avec la version de `apps/web/.nvmrc` (Angular exige Node ≥ 22.22.3) — le binaire nvm est priorisé sur `/exec-daemon/node` ;
-- définit `NG_CLI_ANALYTICS=false` (évite le prompt interactif bloquant `ng serve`) ;
-- exécute `npm install` dans `apps/web` si besoin.
+Ce script (idempotent) :
+1. importe les 5 PDF COF2 si la base est vide (`seed-campaigns.sh`, `--skip-compare-lanes`) ;
+2. démarre API + Angular via `dev-stack.sh restart` ;
+3. affiche le lien **http://127.0.0.1:4200/**.
 
-**Ne jamais** lancer `npm start` sans vérifier qu'aucune instance n'occupe déjà le port 4200 (symptôme fréquent : `ng: not found` ou serveur zombie).
+**Ne pas** réimporter manuellement les PDF ni lancer `npm start` à la main — le bootstrap cloud et `launch-app.sh` couvrent déjà Node, `npm install`, analytics et ports.
+
+Attendre la fin du script d'install Cursor (`.cursor/environment.json`) si `node_modules` ou les campagnes manquent encore.
+
+### Démarrage manuel (développeurs)
+
+Après `uv sync`, `.env` et `uv run alembic upgrade head` :
+
+1. **API** — `uv run rpg-api` → [http://127.0.0.1:8000](http://127.0.0.1:8000) (docs : `/docs`)
+2. **Frontend** — `cd apps/web && npm install && npm start` → [http://localhost:4200](http://localhost:4200)
+
+Node.js **22.22.3+** requis (`apps/web/.nvmrc`). Sur les VMs cloud, `/exec-daemon/node` (v22.14) est trop ancien : prioriser le binaire nvm (`PATH="$HOME/.nvm/versions/node/v22.22.3/bin:$PATH"`).
+
+### Scripts utilitaires
+
+```bash
+bash .cursor/scripts/launch-app.sh          # campagnes + stack (recommandé agents)
+bash .cursor/scripts/dev-stack.sh restart   # stack seule (ports 8000/4200)
+bash .cursor/scripts/dev-stack.sh status
+bash .cursor/scripts/dev-stack.sh stop
+bash .cursor/scripts/seed-campaigns.sh      # import COF2 si DB vide
+```
+
+`dev-stack.sh` : tmux `rpg-api-server` / `rpg-web-server`, libère les ports, `NG_CLI_ANALYTICS=false`, attend `/health` et le frontend avant de rendre la main.
 
 ## Clôture de tâche — vérification manuelle obligatoire
 
@@ -180,12 +190,13 @@ Au démarrage, Cursor exécute `uv sync` puis `.cursor/scripts/cloud-agent-insta
   - `COF2_Retour_En_Grace.pdf`
 - **`.env`** — créé depuis `.env.example` avec `RPG_PDF_MOMIE` et `RPG_PDF_FAELYS` pointant vers les PDF locaux.
 - **Base SQLite** — `uv run alembic upgrade head` crée `data/rpg_assistant.db`.
+- **Campagnes COF2** — `seed-campaigns.sh` importe les 5 PDF si la table `campaigns` est vide (~1–2 min au bootstrap, pas au lancement).
 
-Aucune action manuelle requise pour Clojure ou les PDF sur une VM cloud agent à jour.
+Aucune action manuelle requise pour Clojure, les PDF ou les campagnes sur une VM cloud agent à jour.
 
 ### Commandes utiles
 
-- **Application** : `bash .cursor/scripts/dev-stack.sh restart` (recommandé) ou manuellement `uv run rpg-api` + `cd apps/web && nvm use && npm start` — voir [Lancer l'application](#lancer-lapplication-dev-local).
+- **Application** : `bash .cursor/scripts/launch-app.sh` — voir [Lancer l'application](#lancer-lapplication-dev-local).
 - **Réimport Momie (Clojure)** : `bash .cursor/scripts/clojure-import-momie.sh`
 - **Capture preuve UI** : `bash .cursor/scripts/capture-verification.sh DOCUMENT_ID PAGE` (stack dev requise)
 - **Tests** : lancer `uv run python -m pytest`, **pas** `uv run pytest`. `tests/test_visual_review.py` fait `from tests.test_campaign_discovery import ...`, ce qui exige la racine du repo sur `sys.path` ; seul `python -m pytest` (qui ajoute le CWD) le fournit. Avec `pytest` direct la collecte échoue (`ModuleNotFoundError: No module named 'tests'`).

@@ -136,4 +136,5 @@ download_pdfs
 setup_env_file
 ensure_frontend_toolchain
 uv run alembic upgrade head
+bash "$ROOT/.cursor/scripts/seed-campaigns.sh"
 echo "Cloud agent bootstrap complete."
