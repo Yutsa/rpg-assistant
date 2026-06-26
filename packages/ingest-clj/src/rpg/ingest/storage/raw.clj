@@ -113,6 +113,78 @@
                     (json-util/encode-json (:bbox block))
                     (json-util/encode-json (:metadata block))])))
 
+(defn- parent-first-sections [sections]
+  (let [by-id (into {} (map (fn [s] [(:id s) s]) sections))
+        ordered (atom [])
+        inserted (atom #{})]
+    (letfn [(append! [section]
+              (when-not (contains? @inserted (:id section))
+                (when-let [parent-id (:parent-section-id section)]
+                  (when-let [parent (get by-id parent-id)]
+                    (append! parent)))
+                (swap! ordered conj section)
+                (swap! inserted conj (:id section))))]
+      (doseq [section sections]
+        (append! section))
+      @ordered)))
+
+(defn insert-sections!
+  [ds sections]
+  (doseq [section (parent-first-sections sections)]
+    (jdbc/execute! ds
+                   ["INSERT INTO sections
+                       (id, campaign_id, document_id, parent_section_id, title, level,
+                        page_start, page_end)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                     ON CONFLICT (id) DO UPDATE SET
+                       parent_section_id = excluded.parent_section_id,
+                       title = excluded.title,
+                       level = excluded.level,
+                       page_start = excluded.page_start,
+                       page_end = excluded.page_end"
+                    (:id section)
+                    (:campaign-id section)
+                    (:document-id section)
+                    (:parent-section-id section)
+                    (:title section)
+                    (:level section)
+                    (:page-start section)
+                    (:page-end section)])))
+
+(defn insert-chunks!
+  [ds chunks]
+  (doseq [chunk chunks]
+    (jdbc/execute! ds
+                   ["INSERT INTO chunks
+                       (id, campaign_id, document_id, section_id, page_start, page_end,
+                        text, chunk_type, chunk_type_hint, source_spans_json,
+                        metadata_json, needs_rechunk)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     ON CONFLICT (id) DO UPDATE SET
+                       campaign_id = excluded.campaign_id,
+                       document_id = excluded.document_id,
+                       section_id = excluded.section_id,
+                       page_start = excluded.page_start,
+                       page_end = excluded.page_end,
+                       text = excluded.text,
+                       chunk_type = excluded.chunk_type,
+                       chunk_type_hint = excluded.chunk_type_hint,
+                       source_spans_json = excluded.source_spans_json,
+                       metadata_json = excluded.metadata_json,
+                       needs_rechunk = excluded.needs_rechunk"
+                    (:id chunk)
+                    (:campaign-id chunk)
+                    (:document-id chunk)
+                    (:section-id chunk)
+                    (:page-start chunk)
+                    (:page-end chunk)
+                    (:text chunk)
+                    (:chunk-type chunk)
+                    (:chunk-type-hint chunk)
+                    (json-util/encode-json (:source-spans chunk))
+                    (json-util/encode-json (:metadata chunk))
+                    (if (:needs-rechunk chunk) 1 0)])))
+
 (defn count-rows
   [ds table document-id]
   (-> (jdbc/execute-one! ds

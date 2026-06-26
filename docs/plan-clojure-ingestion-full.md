@@ -12,35 +12,23 @@
 | 1 | Metadata `:is-bold` | ✅ fait | `extract/page.clj` |
 | 2 | Ordre de lecture + sections | ✅ fait | `reading_order.clj`, `sections.clj`, tests |
 | 3 | Chunks 1:1 | ✅ fait | `chunks.clj`, `text/reflow.clj`, tests — PR #42 |
-| **4** | **Pipeline complète** | **🔲 à faire** | **`pipeline.clj` full, `insert-sections!` / `insert-chunks!`, `coverage.clj`** |
-| 5 | Fiches monstre COF2 | 🔲 à faire | `stat_blocks.clj` |
+| **4** | **Pipeline complète** | **✅ fait** | **`pipeline.clj` full, `insert-sections!` / `insert-chunks!`, `coverage.clj`** |
+| 5 | Fiches monstre COF2 | **🔲 à faire** | `stat_blocks.clj` |
 | 6 | API / MCP / sémantique | hors scope | — |
 
-### Prochaine phase : **4 — Pipeline complète**
+### Prochaine phase : **5 — Fiches monstre COF2**
 
-**Objectif** : un `clojure -M:ingest import` persiste pages, blocs, sections et chunks en SQLite, sans Python.
+**Objectif** : détecter les fiches monstre/PNJ COF2 et les exclure du flux sections.
 
 **Fichiers à modifier / créer** :
 
 | Fichier | Action |
 |---------|--------|
-| `packages/ingest-clj/src/rpg/ingest/pipeline.clj` | Étendre `import-pdf!` : assign-sections → build-chunks-1to1 → refine-section-page-ends → persist |
-| `packages/ingest-clj/src/rpg/ingest/storage/raw.clj` | Ajouter `insert-sections!`, `insert-chunks!` (schéma aligné `packages/core/.../repositories/raw.py`) |
-| `packages/ingest-clj/src/rpg/ingest/coverage.clj` | **Nouveau** — port de `packages/ingest/.../coverage.py` (rejet si `text_coverage_ratio < seuil`) |
-| `packages/ingest-clj/test/rpg/ingest/import_test.clj` | Import Momie → compter sections + chunks en BDD |
+| `packages/ingest-clj/src/rpg/ingest/stat_blocks.clj` | **Nouveau** — détection spans fiche, exclusion sections |
+| `packages/ingest-clj/src/rpg/ingest/pipeline.clj` | Brancher `detect-stat-blocks` avant `assign-sections` |
+| `packages/ingest-clj/test/rpg/ingest/stat_blocks_test.clj` | Tests fiches Momie |
 
-**Étapes pipeline** (ordre cible, voir section Phase 4 ci-dessous) :
-
-1. Hash PDF → `document-id`
-2. `ensure-campaign`, `create-run`
-3. `extract-document` (déjà normalise l'ordre de lecture en passe 1)
-4. Coverage → `rejected` si scan
-5. `delete-document-raw-data` si reimport
-6. `assign-sections` → `build-chunks-1to1` → `refine-section-page-ends`
-7. `insert-pages!` + `insert-page-blocks!` + `insert-sections!` + `insert-chunks!` en transaction
-8. `update-run` (`completed`, stats : `page_count`, `block_count`, `section_count`, `chunk_count`, `text_coverage_ratio`, …)
-
-**Critère de done** : import Momie (`data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf`, `campaign-id=momie`) → tables `sections` et `chunks` peuplées.
+**Critère de done** : fiches Momie reconnues sur au moins 2 pages ; sections adjacentes non polluées.
 
 **Tests** :
 
@@ -48,9 +36,7 @@
 cd packages/ingest-clj && clojure -M:test
 ```
 
-**Références Python** (spécification, ne pas appeler en prod) : `packages/ingest/src/rpg_ingest/raw/importer.py`, `packages/core/src/rpg_core/storage/repositories/raw.py`.
-
-**Dernière mise à jour du suivi** : 2026-06-26 (phases 0–3 livrées ; phase 4 prochaine).
+**Dernière mise à jour du suivi** : 2026-06-26 (phases 0–4 livrées ; phase 5 prochaine).
 
 ---
 
@@ -84,8 +70,8 @@ Le schéma SQLite existant (`campaigns`, `documents`, `ingestion_runs`, `pages`,
 | Ordre de lecture (passe 1) | ✅ `reading_order.clj` — tri spatial `(x0, y0, x1)` |
 | Sections + `block-assignments` (passe 2) | ✅ `sections.clj` |
 | Chunks 1:1 | ✅ `chunks.clj` (phase 3) |
-| Import `full` sans Python | ❌ **phase 4** |
-| Fiches monstre COF2 | ❌ phase 5 |
+| Import `full` sans Python | ✅ phase 4 |
+| Fiches monstre COF2 | ❌ **phase 5** |
 
 Aujourd'hui, `import-pdf!` ne persiste que **pages + page_blocks**. Les modules sections/chunks existent mais ne sont pas encore branchés sur l'import ni écrits en BDD. Clojure reste aussi branché sur `extractor-compare` via un pont Python (`clojure_pdfbox.py`).
 
@@ -385,7 +371,20 @@ Le reflow aligne le texte chunk sur la pipeline Python (`reflow_chunk_text`) : e
 - [x] Test porté `test_build_chunks_partitions_blocks_between_headings_on_same_page` → `chunks_test.clj`
 - [x] Test `test_build_chunks_covers_all_blocks_without_duplicates` porté
 
-### Phase 4 — Pipeline complète 🔲 **PROCHAINE**
+### Phase 4 — Pipeline complète ✅
+
+**Livré** : `pipeline.clj` full, `coverage.clj`, `insert-sections!` / `insert-chunks!`, tests intégration Momie.
+
+**Critères de done** :
+
+- [x] `insert-sections!` + `insert-chunks!` alignés schéma SQLite
+- [x] Coverage → rejet si `text_coverage_ratio < seuil` (défaut 0.3)
+- [x] `import-pdf!` enchaîne extract → sections → chunks → persist
+- [x] Stats run : `section_count`, `chunk_count`, `text_coverage_ratio`
+- [x] Test Momie : sections > 0, chunks > 0
+- [x] CLI `--coverage-threshold`
+
+### Phase 5 — Fiches monstre / PNJ COF2 🔲 **PROCHAINE**
 
 **`pipeline.clj`** — équivalent de `importer.run()` mode `full` :
 

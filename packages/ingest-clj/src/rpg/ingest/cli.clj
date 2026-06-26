@@ -20,6 +20,8 @@
    ["t" "--campaign-title TITLE" "Campaign title (optional)"]
    ["g" "--game-system SYSTEM" "Game system (optional)"]
    ["d" "--db PATH" "SQLite database path or sqlite: URL (optional)"]
+   [nil "--coverage-threshold N" "Minimum text coverage ratio (default 0.3)"
+    :parse-fn #(Double/parseDouble %)]
    [nil "--no-reimport" "Keep existing raw data for this document"]
    ["h" "--help" "Show usage"]])
 
@@ -109,6 +111,7 @@
                   :campaign-title (:campaign-title options)
                   :game-system (:game-system options)
                   :db-spec (:db options)
+                  :coverage-threshold (:coverage-threshold options)
                   :reimport (not (:no-reimport options))})))
               0
               (catch Exception e
