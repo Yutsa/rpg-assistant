@@ -82,11 +82,17 @@ start_stack() {
     "export PATH=\"$HOME/.local/bin:\$PATH\"; uv run rpg-api"
 
   local web_bin
-  web_bin="$(nvm_node_bin_dir)"
-  export PATH="${web_bin}:$PATH"
+  if [[ -f "$ROOT/.cursor/cache/frontend-toolchain.env" ]]; then
+    # shellcheck disable=SC1091
+    source "$ROOT/.cursor/cache/frontend-toolchain.env"
+    web_bin="${WEB_NODE_BIN_DIR:?}"
+  else
+    web_bin="$(nvm_node_bin_dir)"
+    export PATH="${web_bin}:$PATH"
+  fi
 
-  ensure_node
   cd "$ROOT/apps/web"
+  node -v
   npm install --no-audit --no-fund
 
   WEB_START="export PATH=\"${web_bin}:\$PATH\"; export NG_CLI_ANALYTICS=false; cd \"$ROOT/apps/web\"; npm start -- --host 127.0.0.1 --port ${WEB_PORT}"

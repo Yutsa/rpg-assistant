@@ -18,3 +18,4 @@ web-cljs/
 data/
 *.db
 .cursor/debug*.log
+.cursor/cache/

@@ -168,6 +168,10 @@ Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Quatr
 Au démarrage, Cursor exécute `uv sync` puis `.cursor/scripts/cloud-agent-install.sh` :
 
 - **Clojure CLI** (`clojure`, `clj`) — installé par le script si absent (Java 21 déjà présent sur la VM).
+- **Node.js 22.22.3** (via nvm, version `apps/web/.nvmrc`) + **`npm install`** dans `apps/web` — évite le téléchargement Node et les dépendances au premier `dev-stack.sh`.
+- **Playwright Chromium** — pré-installé (`npx playwright install chromium`) pour les captures d'écran de preuve sans téléchargement (~115 Mo).
+- **`lsof`** — installé si absent (libération des ports 8000/4200).
+- **`NG_CLI_ANALYTICS=false`** — écrit dans `.env` et `.cursor/cache/frontend-toolchain.env` (pas de prompt bloquant `ng serve`).
 - **5 PDF COF2** — téléchargés dans `data/pdfs/` via `gdown` (Google Drive) s'ils ne sont pas déjà présents :
   - `COF2_10_Mondanites_Et_Momies_web_v1a.pdf`
   - `COF2_07_Le_Dernier_Faelys_web_v0.pdf`
@@ -183,7 +187,7 @@ Aucune action manuelle requise pour Clojure ou les PDF sur une VM cloud agent à
 
 - **Application** : `bash .cursor/scripts/dev-stack.sh restart` (recommandé) ou manuellement `uv run rpg-api` + `cd apps/web && nvm use && npm start` — voir [Lancer l'application](#lancer-lapplication-dev-local).
 - **Réimport Momie (Clojure)** : `bash .cursor/scripts/clojure-import-momie.sh`
-- **Capture preuve UI** : `cd apps/web && node ../../.cursor/scripts/capture-pdf-viewer.mjs DOCUMENT_ID PAGE /opt/cursor/artifacts/verification.png`
+- **Capture preuve UI** : `bash .cursor/scripts/capture-verification.sh DOCUMENT_ID PAGE` (stack dev requise)
 - **Tests** : lancer `uv run python -m pytest`, **pas** `uv run pytest`. `tests/test_visual_review.py` fait `from tests.test_campaign_discovery import ...`, ce qui exige la racine du repo sur `sys.path` ; seul `python -m pytest` (qui ajoute le CWD) le fournit. Avec `pytest` direct la collecte échoue (`ModuleNotFoundError: No module named 'tests'`).
 - **Benchmarks PDF réels** : attentes statiques dans `tests/fixtures/real_pdf_benchmark.py` (pages pièges audit COF2). Lancer `uv run python -m pytest tests/test_real_pdf_benchmark.py -m real_pdf -q` — les PDF sont dans `data/pdfs/` après le bootstrap cloud.
 - **Tests campagnes supplémentaires** : `tests/test_cof2_audit_extra_campaigns.py` utilise aussi les PDF dans `data/pdfs/`.
