@@ -76,6 +76,19 @@ Schémas et prompt de référence : ressources MCP `ingestion://schemas/*` et `i
 
 Demande confirmation avant `import_pdf` ou toute soumission sémantique si l'utilisateur n'a pas explicitement demandé d'écrire en base.
 
+## Ingestion Clojure (pipeline full PDFBox)
+
+Remplacement progressif de la pipeline Python raw par `packages/ingest-clj`. **Plan et suivi d'avancement** : [`docs/plan-clojure-ingestion-full.md`](docs/plan-clojure-ingestion-full.md) — section **« Suivi d'avancement (pour les agents) »** en tête de fichier.
+
+Quand l'utilisateur dit **« continue l'implémentation de la prochaine phase du plan »** (ou variante) :
+
+1. Lire la section suivi du plan → identifier la phase marquée **PROCHAINE**.
+2. Implémenter uniquement cette phase (sous-tâches et critères de done listés).
+3. Tests : `cd packages/ingest-clj && clojure -M:test`.
+4. Mettre à jour le suivi d'avancement en fin de PR (cocher la phase, pointer la suivante).
+
+**État au 2026-06-26** : phases 0–3 livrées ; **prochaine = phase 4** (pipeline complète : `pipeline.clj` + `insert-sections!` / `insert-chunks!` + `coverage.clj`).
+
 ## Campagne de référence (dev)
 
 - `campaign_id` : `momie`
