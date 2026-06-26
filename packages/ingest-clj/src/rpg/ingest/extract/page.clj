@@ -467,7 +467,7 @@
         blocks (->> segments
                     (keep-indexed segment-as-block)
                     vec
-                    (#(reading-order/normalize-page-blocks % width)))]
+                    (#(reading-order/normalize-page-blocks %)))]
     {:page-number page-number
      :width width
      :height height
