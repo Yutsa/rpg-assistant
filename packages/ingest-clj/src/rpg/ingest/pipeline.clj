@@ -130,9 +130,8 @@
   "Import a PDF: pages, blocks, sections and chunks. Returns result map."
   [{:keys [pdf-path campaign-id campaign-title game-system reimport db-spec
            coverage-threshold]
-    :or {reimport true
-         coverage-threshold coverage/default-coverage-threshold}}]
-  (let [run-id (ids/new-id "run")
+    :or {reimport true}}]
+  (let [threshold (or coverage-threshold coverage/default-coverage-threshold)run-id (ids/new-id "run")
         content-hash (ids/hash-file pdf-path)
         document-id (ids/document-id-from-hash content-hash)
         ds (db/connect :db-spec db-spec)]
@@ -144,9 +143,9 @@
       (let [extracted (pdf/extract-document pdf-path)
             page-ratios (page-coverage-ratios extracted)
             avg-coverage (coverage/document-coverage-ratio page-ratios)]
-        (if (coverage/scanned-or-unusable? page-ratios coverage-threshold)
+        (if (coverage/scanned-or-unusable? page-ratios threshold)
           (reject-import! ds run-id campaign-id document-id
-                          avg-coverage (count (:pages extracted)) coverage-threshold)
+                          avg-coverage (count (:pages extracted)) threshold)
           (let [{:keys [pages blocks]} (build-page-records document-id extracted page-ratios)
                 section-result (sections/assign-sections (:pages extracted)
                                                          {:campaign-id campaign-id

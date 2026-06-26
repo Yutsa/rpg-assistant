@@ -106,13 +106,14 @@
               (println
                (result-json
                 (pipeline/import-pdf!
-                 {:pdf-path (:pdf options)
-                  :campaign-id (:campaign-id options)
-                  :campaign-title (:campaign-title options)
-                  :game-system (:game-system options)
-                  :db-spec (:db options)
-                  :coverage-threshold (:coverage-threshold options)
-                  :reimport (not (:no-reimport options))})))
+                 (cond-> {:pdf-path (:pdf options)
+                          :campaign-id (:campaign-id options)
+                          :campaign-title (:campaign-title options)
+                          :game-system (:game-system options)
+                          :db-spec (:db options)
+                          :reimport (not (:no-reimport options))}
+                   (:coverage-threshold options)
+                   (assoc :coverage-threshold (:coverage-threshold options))))))
               0
               (catch Exception e
                 (println (result-json {:error (.getMessage e)}))
