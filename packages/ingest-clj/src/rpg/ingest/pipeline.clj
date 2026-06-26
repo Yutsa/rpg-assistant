@@ -2,6 +2,7 @@
   "Full import: extract PDFBox pages + blocks, sections, chunks → SQLite."
   (:require [clojure.string :as str]
             [next.jdbc :as jdbc]
+            [rpg.ingest.block-merging :as block-merging]
             [rpg.ingest.chunks :as chunks]
             [rpg.ingest.coverage :as coverage]
             [rpg.ingest.extract.pdf :as pdf]
@@ -131,7 +132,8 @@
   [{:keys [pdf-path campaign-id campaign-title game-system reimport db-spec
            coverage-threshold]
     :or {reimport true}}]
-  (let [threshold (or coverage-threshold coverage/default-coverage-threshold)run-id (ids/new-id "run")
+  (let [threshold (or coverage-threshold coverage/default-coverage-threshold)
+        run-id (ids/new-id "run")
         content-hash (ids/hash-file pdf-path)
         document-id (ids/document-id-from-hash content-hash)
         ds (db/connect :db-spec db-spec)]
@@ -141,16 +143,18 @@
                                    :status "running"})
     (try
       (let [extracted (pdf/extract-document pdf-path)
-            page-ratios (page-coverage-ratios extracted)
+            {:keys [pages]} (block-merging/merge-fragmented-pages (:pages extracted))
+            extracted' (assoc extracted :pages pages)
+            page-ratios (page-coverage-ratios extracted')
             avg-coverage (coverage/document-coverage-ratio page-ratios)]
         (if (coverage/scanned-or-unusable? page-ratios threshold)
           (reject-import! ds run-id campaign-id document-id
-                          avg-coverage (count (:pages extracted)) threshold)
-          (let [{:keys [pages blocks]} (build-page-records document-id extracted page-ratios)
-                section-result (sections/assign-sections (:pages extracted)
+                          avg-coverage (count (:pages extracted')) threshold)
+          (let [{:keys [pages blocks]} (build-page-records document-id extracted' page-ratios)
+                section-result (sections/assign-sections (:pages extracted')
                                                          {:campaign-id campaign-id
                                                           :document-id document-id})
-                built-chunks (chunks/build-chunks-1to1 (:pages extracted)
+                built-chunks (chunks/build-chunks-1to1 (:pages extracted')
                                                        {:campaign-id campaign-id
                                                         :document-id document-id
                                                         :block-assignments (:block-assignments section-result)})
