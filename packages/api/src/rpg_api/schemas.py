@@ -61,7 +61,6 @@ class ChunkListItem(BaseModel):
     page_end: int
     chunk_type: str | None = None
     chunk_type_hint: str | None = None
-    token_count: int
     needs_rechunk: bool = False
     text_preview: str
 
@@ -82,7 +81,6 @@ class ChunkOut(BaseModel):
     text: str
     chunk_type: str | None = None
     chunk_type_hint: str | None = None
-    token_count: int
     source_spans: list[SourceSpan] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
     needs_rechunk: bool = False

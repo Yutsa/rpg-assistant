@@ -28,7 +28,6 @@ def _stat_chunk(
         page_end=block_page,
         text=name,
         chunk_type_hint="stat_block",
-        token_count=10,
         source_spans=[
             SourceSpan(
                 page=block_page,

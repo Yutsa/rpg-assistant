@@ -172,7 +172,6 @@ Each chunk should include source references:
   "page_end": 43,
   "section_id": "sec_chapter_03_tower",
   "text": "...",
-  "estimated_tokens": 850,
   "chunk_type_hint": "location",
   "source_spans": [
     {
@@ -573,7 +572,6 @@ page_start
 page_end
 text
 chunk_type
-token_count
 embedding
 source_spans_json
 metadata_json

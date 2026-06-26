@@ -65,7 +65,6 @@ def api_client() -> TestClient:
                 page_end=1,
                 text="Hello adventurer",
                 chunk_type_hint="narrative",
-                token_count=3,
                 source_spans=[
                     SourceSpan(page=1, page_block_ids=["blk_1"], bbox=BBox(x0=10, y0=20, x1=100, y1=40))
                 ],
@@ -79,7 +78,6 @@ def api_client() -> TestClient:
                 page_end=1,
                 text="Gobelin NC 1",
                 chunk_type_hint="stat_block",
-                token_count=5,
                 metadata={
                     "stat_block": {
                         "name": "Gobelin",

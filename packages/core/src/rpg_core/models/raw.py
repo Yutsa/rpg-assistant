@@ -73,7 +73,6 @@ class ChunkRecord(BaseModel):
     text: str
     chunk_type: str | None = None
     chunk_type_hint: str | None = None
-    token_count: int
     source_spans: list[SourceSpan] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
     needs_rechunk: bool = False

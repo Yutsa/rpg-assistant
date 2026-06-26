@@ -1,10 +1,7 @@
 from __future__ import annotations
 
-import functools
 import re
 from dataclasses import dataclass
-
-import tiktoken
 
 from rpg_ingest.raw.block_merging import is_wrap_around_pair
 from rpg_ingest.raw.layout import LayoutBlock, LayoutPage, merge_block_bboxes
@@ -35,8 +32,7 @@ from rpg_ingest.raw.stat_blocks.types import StatBlockSpan
 from rpg_core.models.raw import ChunkRecord, SectionRecord, SourceSpan
 from rpg_core.storage.ids import chunk_id, page_block_id
 
-DEFAULT_MAX_TOKENS = 1200
-ENCODING_NAME = "cl100k_base"
+DEFAULT_MAX_CHARS = 4800
 
 
 @dataclass(frozen=True)
@@ -48,16 +44,6 @@ class _HeadingRef:
     title: str
     is_content_only: bool
     tier: str = "other"
-
-
-@functools.lru_cache(maxsize=1)
-def _get_encoding() -> tiktoken.Encoding:
-    return tiktoken.get_encoding(ENCODING_NAME)
-
-
-def estimate_tokens(text: str) -> int:
-    return len(_get_encoding().encode(text))
-
 
 def _chunk_type_hint(
     text: str,
@@ -1269,20 +1255,20 @@ def _split_at_page_gaps(
 
 def _split_blocks_into_chunks(
     block_items: list[tuple[LayoutPage, LayoutBlock]],
-    max_tokens: int,
+    max_chars: int,
 ) -> list[list[tuple[LayoutPage, LayoutBlock]]]:
     chunks: list[list[tuple[LayoutPage, LayoutBlock]]] = []
     current: list[tuple[LayoutPage, LayoutBlock]] = []
-    current_tokens = 0
+    current_chars = 0
 
     for page, block in block_items:
-        block_tokens = estimate_tokens(block.text)
-        if current and current_tokens + block_tokens > max_tokens:
+        block_chars = len(block.text)
+        if current and current_chars + block_chars > max_chars:
             chunks.append(current)
             current = []
-            current_tokens = 0
+            current_chars = 0
         current.append((page, block))
-        current_tokens += block_tokens
+        current_chars += block_chars
 
     if current:
         chunks.append(current)
@@ -1342,7 +1328,7 @@ def _split_at_subordinate_heading_boundaries(
 
 def _group_blocks_for_chunking(
     block_items: list[tuple[LayoutPage, LayoutBlock]],
-    max_tokens: int,
+    max_chars: int,
     heading_positions: set[tuple[int, int]] | None = None,
     heading_refs: list[_HeadingRef] | None = None,
     section_index: int | None = None,
@@ -1374,7 +1360,7 @@ def _group_blocks_for_chunking(
                 else:
                     page_segments = [segment]
                 for page_segment in page_segments:
-                    groups.extend(_split_blocks_into_chunks(page_segment, max_tokens))
+                    groups.extend(_split_blocks_into_chunks(page_segment, max_chars))
     return groups
 
 
@@ -1475,7 +1461,6 @@ def _make_chunk(
         page_end=page_end,
         text=text,
         chunk_type_hint=chunk_hint,
-        token_count=estimate_tokens(text),
         source_spans=source_spans,
         metadata=metadata,
         needs_rechunk=needs_rechunk,
@@ -1490,7 +1475,7 @@ def build_chunks(
     document_id: str,
     heading_anchors: list[tuple[int, int]] | None = None,
     content_only_section_ids: frozenset[str] | None = None,
-    max_tokens: int = DEFAULT_MAX_TOKENS,
+    max_chars: int = DEFAULT_MAX_CHARS,
     stat_spans: list[StatBlockSpan] | None = None,
     profile: StatBlockProfile | None = None,
 ) -> list[ChunkRecord]:
@@ -1506,7 +1491,7 @@ def build_chunks(
         block_items = _blocks_for_page_range(
             pages, sections[0].page_start, sections[0].page_end
         )
-        for group in _group_blocks_for_chunking(block_items, max_tokens, None):
+        for group in _group_blocks_for_chunking(block_items, max_chars, None):
             expanded_group = _expand_stat_block_group(group, span_by_id, pages)
             chunks.append(
                 _make_chunk(
@@ -1534,7 +1519,7 @@ def build_chunks(
             )
             if not block_items:
                 continue
-            groups = _group_blocks_for_chunking(block_items, max_tokens, None)
+            groups = _group_blocks_for_chunking(block_items, max_chars, None)
             for group in groups:
                 expanded_group = _expand_stat_block_group(group, span_by_id, pages)
                 chunks.append(
@@ -1649,7 +1634,7 @@ def build_chunks(
             continue
         groups = _group_blocks_for_chunking(
             block_items,
-            max_tokens,
+            max_chars,
             chunk_split_positions,
             heading_refs=heading_refs,
             section_index=section_index,

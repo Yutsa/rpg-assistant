@@ -57,8 +57,8 @@ def _insert_stat_chunk(
             """
             INSERT INTO chunks (
                 id, campaign_id, document_id, page_start, page_end,
-                text, chunk_type_hint, token_count, source_spans_json, metadata_json
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                text, chunk_type_hint, source_spans_json, metadata_json
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (
                 chunk_id,
@@ -68,7 +68,6 @@ def _insert_stat_chunk(
                 page_end,
                 "stat text",
                 "stat_block",
-                10,
                 json.dumps([{"page": page_start, "page_block_ids": ["pb_1"]}]),
                 json.dumps(metadata),
             ),
@@ -212,7 +211,6 @@ def test_chunk_to_stat_block_detail_rulebook():
         page_end=15,
         text="stat text",
         chunk_type_hint="stat_block",
-        token_count=10,
         metadata={
             "stat_block": {
                 "name": "TALESS RHANN",
@@ -238,7 +236,6 @@ def test_chunk_to_stat_block_detail():
         page_end=15,
         text="stat text",
         chunk_type_hint="stat_block",
-        token_count=10,
         source_spans=[SourceSpan(page=15, page_block_ids=["pb_1"])],
         metadata=_azulria_metadata(),
     )
