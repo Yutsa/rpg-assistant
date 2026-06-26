@@ -492,9 +492,9 @@ class RawRepository:
                 f"""
                 INSERT INTO chunks
                     (id, campaign_id, document_id, section_id, page_start, page_end,
-                     text, chunk_type, chunk_type_hint, token_count, source_spans_json,
+                     text, chunk_type, chunk_type_hint, source_spans_json,
                      metadata_json, needs_rechunk)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, {self.dialect.json_param()}, {self.dialect.json_param()}, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, {self.dialect.json_param()}, {self.dialect.json_param()}, %s)
                 ON CONFLICT (id) DO UPDATE SET
                     campaign_id = EXCLUDED.campaign_id,
                     document_id = EXCLUDED.document_id,
@@ -504,7 +504,6 @@ class RawRepository:
                     text = EXCLUDED.text,
                     chunk_type = EXCLUDED.chunk_type,
                     chunk_type_hint = EXCLUDED.chunk_type_hint,
-                    token_count = EXCLUDED.token_count,
                     source_spans_json = EXCLUDED.source_spans_json,
                     metadata_json = EXCLUDED.metadata_json,
                     needs_rechunk = EXCLUDED.needs_rechunk
@@ -520,7 +519,6 @@ class RawRepository:
                         c.text,
                         c.chunk_type,
                         c.chunk_type_hint,
-                        c.token_count,
                         dump_json([s.model_dump() for s in c.source_spans]),
                         dump_json(
                             enrich_chunk_metadata(c.metadata)
@@ -586,7 +584,7 @@ class RawRepository:
             cur.execute(
                 f"""
                 SELECT id, campaign_id, document_id, section_id, page_start, page_end,
-                       text, chunk_type, chunk_type_hint, token_count,
+                       text, chunk_type, chunk_type_hint,
                        source_spans_json, metadata_json, needs_rechunk
                 FROM chunks
                 WHERE {' AND '.join(clauses)}
@@ -610,7 +608,7 @@ class RawRepository:
             cur.execute(
                 f"""
                 SELECT id, campaign_id, document_id, section_id, page_start, page_end,
-                       text, chunk_type, chunk_type_hint, token_count,
+                       text, chunk_type, chunk_type_hint,
                        source_spans_json, metadata_json, needs_rechunk
                 FROM chunks
                 WHERE document_id = %s AND {in_clause}
@@ -689,7 +687,7 @@ class RawRepository:
             cur.execute(
                 f"""
                 SELECT id, campaign_id, document_id, section_id, page_start, page_end,
-                       text, chunk_type, chunk_type_hint, token_count,
+                       text, chunk_type, chunk_type_hint,
                        source_spans_json, metadata_json, needs_rechunk
                 FROM chunks
                 WHERE document_id = %s AND chunk_type_hint = 'stat_block'
@@ -738,7 +736,7 @@ class RawRepository:
             cur.execute(
                 f"""
                 SELECT id, campaign_id, document_id, section_id, page_start, page_end,
-                       text, chunk_type, chunk_type_hint, token_count,
+                       text, chunk_type, chunk_type_hint,
                        source_spans_json, metadata_json, needs_rechunk
                 FROM chunks
                 WHERE document_id = %s AND chunk_type_hint = 'stat_block'
@@ -752,7 +750,7 @@ class RawRepository:
             row
             for row in rows
             if matches_stat_block_name(
-                name, parse_json(row[11]).get("stat_block") or {}
+                name, parse_json(row[10]).get("stat_block") or {}
             )
         ]
 
@@ -761,7 +759,7 @@ class RawRepository:
             cur.execute(
                 """
                 SELECT id, campaign_id, document_id, section_id, page_start, page_end,
-                       text, chunk_type, chunk_type_hint, token_count,
+                       text, chunk_type, chunk_type_hint,
                        source_spans_json, metadata_json, needs_rechunk
                 FROM chunks WHERE id = %s
                 """,
@@ -844,7 +842,7 @@ class RawRepository:
         )
 
     def _row_to_chunk(self, row: tuple) -> ChunkRecord:
-        spans_data = parse_json(row[10]) or []
+        spans_data = parse_json(row[9]) or []
         return ChunkRecord(
             id=row[0],
             campaign_id=row[1],
@@ -855,8 +853,7 @@ class RawRepository:
             text=row[6],
             chunk_type=row[7],
             chunk_type_hint=row[8],
-            token_count=row[9],
             source_spans=[SourceSpan(**s) for s in spans_data],
-            metadata=parse_json(row[11]) or {},
-            needs_rechunk=row[12] or False,
+            metadata=parse_json(row[10]) or {},
+            needs_rechunk=row[11] or False,
         )

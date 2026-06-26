@@ -46,7 +46,6 @@ def _chunk(
         page_start=page_start,
         page_end=page_end,
         text=f"Text for {chunk_id}",
-        token_count=10,
         source_spans=[
             SourceSpan(page=page, page_block_ids=[f"block_{page:03d}_000"])
             for page in pages

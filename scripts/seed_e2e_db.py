@@ -85,7 +85,6 @@ def main() -> int:
                 page_end=1,
                 text="Bienvenue dans l'aventure E2E. Les héros arrivent au village.",
                 chunk_type_hint="narrative",
-                token_count=12,
             ),
             ChunkRecord(
                 id="chunk_ch1",
@@ -96,7 +95,6 @@ def main() -> int:
                 page_end=2,
                 text="Le chapitre 1 commence dans la taverne du village.",
                 chunk_type_hint="narrative",
-                token_count=10,
             ),
             ChunkRecord(
                 id="chunk_ch1b",
@@ -107,7 +105,6 @@ def main() -> int:
                 page_end=2,
                 text="Un message secret est glissé sous la porte.",
                 chunk_type_hint="clue",
-                token_count=9,
             ),
             ChunkRecord(
                 id="chunk_stat_gobelin",
@@ -118,7 +115,6 @@ def main() -> int:
                 page_end=3,
                 text="Gobelin NC 1",
                 chunk_type_hint="stat_block",
-                token_count=4,
                 metadata={
                     "stat_block": {
                         "name": "Gobelin",
@@ -137,7 +133,6 @@ def main() -> int:
                 page_end=3,
                 text="Orc NC 3",
                 chunk_type_hint="stat_block",
-                token_count=4,
                 metadata={
                     "stat_block": {
                         "name": "Orc",

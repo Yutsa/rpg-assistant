@@ -204,4 +204,4 @@ Restart Cursor after editing `.cursor/mcp.json`, then check **Settings → Tools
 4. Validate: `validate_semantic_layer` — fix errors and resubmit.
 5. Relations: `submit_relations`, then `get_semantic_summary`.
 
-Read `docs/technical-ingestion.md` for the full data model. The exploratory script `packages/ingest/scripts/count_pdf_tokens.py` is unchanged.
+Read `docs/technical-ingestion.md` for the full data model.

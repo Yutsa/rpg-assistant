@@ -51,7 +51,6 @@ export interface ChunkListItem {
   page_end: number;
   chunk_type: string | null;
   chunk_type_hint: string | null;
-  token_count: number;
   needs_rechunk: boolean;
   text_preview: string;
 }
@@ -72,7 +71,6 @@ export interface Chunk {
   text: string;
   chunk_type: string | null;
   chunk_type_hint: string | null;
-  token_count: number;
   source_spans: SourceSpan[];
   metadata: Record<string, unknown>;
   needs_rechunk: boolean;

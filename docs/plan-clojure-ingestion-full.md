@@ -313,7 +313,6 @@ Plus besoin de recalculer « dernier anchor avant bloc en même colonne » — c
  :section-id (get block-assignments block-id)
  :page-start page :page-end page
  :text (reflow-text block-text)
- :token-count (estimate-tokens text)
  :source-spans [{:page p :page-block-ids [block-id] :bbox ...}]
  :chunk-type-hint nil
  :metadata {}
@@ -321,8 +320,6 @@ Plus besoin de recalculer « dernier anchor avant bloc en même colonne » — c
 ```
 
 **Critère de done** : test porté `test_build_chunks_partitions_blocks_between_headings_on_same_page` — 3 chunks, signatures uniques, textes `Résumé court.` / `Niveau 5` / `Contenu principal.`
-
----
 
 ### Phase 4 — Pipeline complète
 
@@ -392,7 +389,7 @@ extract → normalize-reading-order
 
 ## Ce qu'il ne faut pas porter de Python
 
-- `_group_blocks_for_chunking` / budget ~1200 tokens
+- `_group_blocks_for_chunking` / budget ~4800 caractères
 - Mode `extractor-compare` / dual lanes (outil dev)
 - `raw_layout_json` PyMuPDF (optionnel)
 - Merge document-level (`merge_fragmented_blocks`, etc.) — réévaluer seulement si régressions sur blocs Clojure

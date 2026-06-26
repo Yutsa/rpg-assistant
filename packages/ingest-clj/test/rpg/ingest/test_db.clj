@@ -73,7 +73,6 @@
       text TEXT NOT NULL DEFAULT '',
       chunk_type TEXT,
       chunk_type_hint TEXT,
-      token_count INTEGER NOT NULL DEFAULT 0,
       source_spans_json TEXT NOT NULL DEFAULT '[]',
       metadata_json TEXT NOT NULL DEFAULT '{}',
       needs_rechunk INTEGER NOT NULL DEFAULT 0

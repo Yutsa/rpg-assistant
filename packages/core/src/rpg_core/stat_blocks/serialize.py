@@ -46,7 +46,6 @@ def chunk_to_list_item(chunk: ChunkRecord, *, preview_len: int = 200) -> dict[st
         "page_end": chunk.page_end,
         "chunk_type": chunk.chunk_type,
         "chunk_type_hint": chunk.chunk_type_hint,
-        "token_count": chunk.token_count,
         "needs_rechunk": chunk.needs_rechunk,
         "text_preview": _truncate_preview(chunk.text, preview_len),
     }
