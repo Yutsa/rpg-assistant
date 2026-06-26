@@ -27,7 +27,8 @@ Le schéma SQLite existant (`campaigns`, `documents`, `ingestion_runs`, `pages`,
 | Metadata `:is-bold` alignée Python | ✅ phase 1 |
 | CLI `extract-page` / `extract-document` / `serve` | ✅ |
 | Persistance SQLite depuis Clojure | ✅ phase 0 |
-| Sections | 🔲 phase 2 (en cours) |
+| Ordre de lecture (passe 1) | 🔲 à aligner sur tri `(x0, y0)` — voir PR #39 |
+| Sections | 🔲 phase 2 |
 | Chunks | ❌ phase 3 |
 | Import `full` sans Python | ❌ phase 4 |
 
@@ -44,7 +45,7 @@ packages/ingest-clj/src/rpg/
 │   │   ├── pdf.clj
 │   │   └── page.clj
 │   ├── coverage.clj            # rejet PDF scanné
-│   ├── reading_order.clj       # passe 1 : tri colonne-majeur, garde-fous géométrie
+│   ├── reading_order.clj       # passe 1 : tri spatial (x0, y0), garde-fous géométrie
 │   ├── sections.clj            # passe 2 : flux typo → sections + block-assignments
 │   ├── chunks.clj              # blocs contenu → chunks 1:1
 │   ├── stat_blocks.clj         # phase 5 : détection fiches monstre/PNJ (heuristique dédiée)
@@ -85,7 +86,7 @@ Smoke test : extrait + persiste **pages + blocs** uniquement.
 
 ### Phase 1 — Normalisation metadata bloc ✅
 
-**Décision** : pas d'exposition de `:column` en metadata (overkill ; la colonne reste dérivée à la volée depuis la bbox en phases 2–3, comme en Python via `column-side` / `is-in-column-band`). `page-median-font` calculé à la volée en phase 2 depuis les blocs de la page (pas stocké en metadata).
+**Décision** : pas d'exposition de `:column` en metadata. L'ordre de lecture est imposé par le tri spatial en passe 1 ; en passe 2, un **fil de lecture** (cluster x) peut être dérivé à la volée pour la pile de sections — sans nommer « colonne COF2 » dans les metadata bloc. `page-median-font` calculé à la volée en passe 2 (pas stocké en metadata).
 
 **Livré** (`page.clj`, PR #37) :
 - `:is-bold` dans les metadata bloc (JSON persisté : `is_bold`, aligné Python).
@@ -112,65 +113,103 @@ Le signal principal est le **changement de typo** (taille police, gras) entre bl
 
 #### 2.1 — Passe 1 : ordre de lecture (`reading_order.clj`)
 
-**Objectif** : garantir que `block-index` reflète l'ordre de lecture humain **avant** toute détection de section.
+**Objectif** : garantir que `block-index` reflète un ordre de lecture cohérent **avant** toute détection de section — avec une règle **générique** (pas de layout « colonnes COF2 » codé en dur).
 
-**Ordre retenu pour COF2** — **colonne-majeur** par page (pas un tri global `y0` puis `x0` qui entremêle les colonnes) :
+##### Décision : tri spatial `(x0, y0)`
 
-```
-page 1 : colonne gauche (haut→bas) → colonne droite (haut→bas)
-page 2 : idem
-…
-```
-
-Clé de tri : `column-major-sort-key` = `(page-number, column-side, y0, x0)` avec `column-side` dérivé du centre x de la bbox vs `page-width / 2`.
-
-**Fonction** :
+Clé de tri par bloc (par page) :
 
 ```clojure
-(defn normalize-reading-order
-  "Trie les blocs de chaque page en ordre colonne-majeur et réattribue block-index 0..n."
-  [pages]
-  ...)
+(defn spatial-sort-key [block]
+  [(get-in block [:bbox :x0])
+   (get-in block [:bbox :y0])
+   (get-in block [:bbox :x1])])  ; tie-breaker
 ```
 
-**Où l'appeler** :
-- En fin d'extraction (`page.clj` ou `pipeline.clj` avant persistance) — les IDs `block_*` reflètent alors l'ordre de lecture en base.
-- Remplacer le tri final actuel `(y0, x0)` global dans `merge-segments-by-font` par ce tri colonne-majeur.
+| Tri | Comportement | 1 colonne | 2 colonnes (COF2) |
+|-----|--------------|-----------|-------------------|
+| **`(y0, x0)`** ❌ | Bande horizontale : haut→bas, puis gauche→droite **à même hauteur** | ✓ | ✗ entremêle gauche/droite (ex. Momie p.7 : « Depuis lors » entre deux blocs MJ) |
+| **`(x0, y0)`** ✅ retenu | D'abord position horizontale, puis verticale | ✓ (x0 stable → ordre = y0) | ✓ (deux clusters x : fil gauche entier, puis fil droit) |
+| **`column-side` + y0** | Colonne nommée via centre x vs milieu page | ⚠️ blocs pleine largeur peuvent sauter à la fin du fil | ✓ mais hypothèse layout spécifique |
 
-**Conséquence** : un réimport sera nécessaire pour les documents déjà en BDD phase 0 (index ≠ ordre de lecture). Acceptable — pipeline pas encore en prod.
+**Pourquoi pas `column-side` en passe 1** : sur une page 1 colonne, un titre pleine largeur dont le centre dépasse `page-width/2` est classé « droite » et relu **après** tout le corps — ordre faux. `(x0, y0)` évite cette catégorisation.
 
-**Utilitaires à porter** depuis `reading_order.py` (géométrie + garde-fous, pas toute la logique `detect_sections` Python) :
+**Effet attendu** (Momie p.7) : blocs `x0≈43` par y croissant, puis blocs `x0≈248` par y croissant — sans appeler explicitement « colonne ».
 
-| Groupe | Fonctions |
-|--------|-----------|
-| Géométrie | `column-side`, `horizontal-overlap-ratio`, `is-in-column-band?`, `column-major-sort-key` |
-| Typo page | `page-median-font` |
-| Texte | `strip-glyphs`, regex chapitre / caps / numéroté / meta box |
-| Rejets visuels | `is-decorative-spread-title?`, `is-vertical-running-header?`, `is-list-item-block?` |
-| Titres | `is-meta-box-heading?`, `is-chapter-heading?`, `is-title-case-heading?`, `heading-level` |
+##### API
+
+```clojure
+(defn sort-blocks-spatial [blocks]
+  (vec (sort-by spatial-sort-key blocks)))
+
+(defn reindex-blocks [blocks]
+  (vec (map-indexed #(assoc %2 :block-index %1) blocks)))
+
+(defn normalize-page-blocks [blocks]
+  (-> blocks sort-blocks-spatial reindex-blocks))
+
+(defn normalize-reading-order [pages]
+  (mapv #(update % :blocks normalize-page-blocks) pages))
+```
+
+**Où appeler** : en fin de `page-blocks` (`page.clj`) et sur `extract-document` (`pdf.clj`) — les IDs `block_*` reflètent l'ordre en base.
+
+**Ne pas** réintroduire un tri `(y0, x0)` global dans `merge-segments-by-font` : la fusion de paragraphes peut regrouper par bande x (heuristique extraction), mais l'**index final** passe toujours par `normalize-page-blocks`.
+
+**Conséquence** : réimport nécessaire pour les documents BDD phase 0 dont l'index ≠ ordre spatial.
+
+##### Utilitaires `reading_order.clj` (passe 1 + réutilisés en passe 2)
+
+| Groupe | Fonctions | Passe |
+|--------|-----------|-------|
+| Tri | `spatial-sort-key`, `sort-blocks-spatial`, `normalize-page-blocks`, `spatial-ordered?` | 1 |
+| Géométrie | `horizontal-overlap-ratio`, `is-in-column-band?` | 2 (affectation / fils parallèles) |
+| Typo page | `page-median-font` | 2 |
+| Texte / titres | `strip-glyphs`, regex, `is-meta-box-heading?`, `heading-level`, … | 2 |
+| Rejets visuels | `is-decorative-spread-title?`, `is-vertical-running-header?`, … | 2 |
+
+`is-in-column-band?` reste utile en **passe 2** pour savoir si deux blocs partagent le même fil de lecture ; il ne sert **pas** à réordonner les blocs en passe 1.
+
+##### Tests passe 1
+
+| Test | Attendu |
+|------|---------|
+| Synthétique 2 clusters x | `(x0,y0)` place tout `x=40` avant tout `x=260`, même si droite commence plus haut en y |
+| PDF 1 colonne synthétique | indices croissants = y croissant |
+| Momie p.7 | `spatial-ordered?` ; idx 0–3 `x0<120` ; idx 4+ `x0>200` ; y croissant dans chaque cluster |
+| `extract_test` existants | pas de régression extraction |
 
 #### 2.2 — Passe 2 : flux sections + affectation (`sections.clj`)
 
 **Objectif** : un seul parcours linéaire des blocs (déjà en ordre de lecture) qui produit **à la fois** l'arbre de sections et l'affectation bloc→section.
 
-**État du parcours** (par colonne — voir ci-dessous) :
+**État du parcours** :
 
 ```clojure
-{:section-stack [{:id :level :title :column}]   ; pile hiérarchique
- :body-baseline {:max-font median :is-bold false} ; typo corps courante
- :column :left|:right                             ; colonne en cours
- :sections []                                     ; SectionRecord accumulés
- :block-assignments {block-id section-id}          ; affectation directe
+{:section-stack [{:id :level :title :stream-x}]  ; pile hiérarchique par fil de lecture
+ :body-baseline {:max-font median :is-bold false}
+ :stream-x nil                                   ; x0 de référence du fil en cours
+ :sections []
+ :block-assignments {block-id section-id}
  :heading-anchors [[page block-index] ...]}
 ```
 
-**Contexte par colonne** : sur une page 2 colonnes COF2, chaque colonne a son propre fil de lecture. Au changement de `column-side`, on **ne propage pas** la section active de l'autre colonne — on reprend la section parente de la pile qui correspond à cette colonne, ou la section racine `"Document"` / dernière section chapitre de cette colonne.
+**Fils de lecture parallèles** : sur une page multi-clusters x (ex. 2 colonnes COF2), quand le `x0` du bloc courant n'est plus dans la même bande que le fil actif (`is-in-column-band?` avec le bloc de référence, ou saut significatif de `x0`), on **change de fil** — on ne propage pas la section active de l'autre bande. Pas besoin du concept nommé « colonne » : le cluster x suffit.
+
+**Détection de changement de fil** (heuristique simple) :
+
+```clojure
+(defn same-reading-stream? [ref-block block]
+  (is-in-column-band? block ref-block))
+;; Au début de chaque page ou quand same-reading-stream? est false :
+;; reprendre la section racine ou la dernière section ouverte sur ce fil (stream-x).
+```
 
 **Pour chaque bloc** `(page, block-index, text, metadata)` en ordre de lecture :
 
 | Étape | Action |
 |-------|--------|
-| 1 | Détecter changement de colonne → ajuster contexte section |
+| 1 | Si changement de fil (`x0` / `is-in-column-band?`) → ajuster pile section pour ce fil |
 | 2 | Calculer `font-signal` vs `body-baseline` : Δ taille, passage gras, texte court |
 | 3 | Si `heading-candidate?` (signal typo **+** garde-fous texte/visuels) → **nouvelle section** : pousser pile, enregistrer anchor, bloc **non chunké** |
 | 4 | Sinon → **corps** : affecter `block-id → section-id` courant, mettre à jour `body-baseline` (moyenne glissante ou médiane locale) |
@@ -191,7 +230,7 @@ Clé de tri : `column-major-sort-key` = `(page-number, column-side, y0, x0)` ave
 
 Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…`, drop-cap, listes) suffisent pour la narration — **sans** traiter les faux positifs liés aux fiches monstre (nom en gras, NC, stats), reportés à la phase 5.
 
-**Hiérarchie** : au moment d'ouvrir une section, `heading-level` + `heading-visual-tier` déterminent le `level` et le `parent-section-id` (chapitre vide la pile, subordinate s'accroche au chapitre actif de la colonne, etc.) — logique reprise de `sections.py` mais déclenchée **au fil de l'eau** plutôt qu'après scan global.
+**Hiérarchie** : au moment d'ouvrir une section, `heading-level` + `heading-visual-tier` déterminent le `level` et le `parent-section-id` (chapitre vide la pile du fil courant, subordinate s'accroche au chapitre actif sur ce fil, etc.).
 
 **Fallback** : aucun titre détecté → section unique `"Document"`, tous les blocs lui sont affectés.
 
@@ -212,7 +251,7 @@ Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…
 |---------|------|
 | `reading_order.clj` | Passe 1 : `normalize-reading-order`, clés de tri, garde-fous géométrie/texte |
 | `sections.clj` | Passe 2 : `assign-sections` (flux + détection + affectation) |
-| `test/.../reading_order_test.clj` | Tri colonne-majeur page 7 Momie, colonnes non entremêlées |
+| `test/.../reading_order_test.clj` | Tri `(x0,y0)` : synthétique, 1 colonne, Momie p.7 |
 | `test/.../sections_test.clj` | Cas portés depuis `test_sections.py` + affectation bloc→section |
 | `test/.../test_fixtures/layout.clj` | `make-block`, `make-page` |
 
@@ -220,11 +259,11 @@ Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…
 
 | # | Tâche | Done quand |
 |---|-------|------------|
-| 2.5.1 | `column-major-sort-key` + `normalize-reading-order` | test page 7 : index croît en colonne-majeur |
-| 2.5.2 | Intégrer passe 1 dans `page.clj` (remplace tri `(y0,x0)`) | `extract_test` verts + ordre vérifié Momie |
+| 2.5.1 | `spatial-sort-key` + `normalize-reading-order` | tests synthétique + Momie p.7 ; **pas** de `column-side` en passe 1 |
+| 2.5.2 | Intégrer passe 1 dans `page.clj` | `extract_test` verts ; `spatial-ordered?` sur pages réelles |
 | 2.5.3 | `font-transition-heading?` + garde-fous | tests spread p.5, drop-cap, meta box |
-| 2.5.4 | `assign-sections` flux mono-colonne | tests chapitres simples + fallback Document |
-| 2.5.5 | Contexte bi-colonne (pile par colonne) | tests PARTIE I/II, page 8 sans faux préambule |
+| 2.5.4 | `assign-sections` flux mono-fil (1 colonne) | tests chapitres simples + fallback Document |
+| 2.5.5 | Fils parallèles (`is-in-column-band?`) | tests PARTIE I/II, page 8 sans faux préambule |
 | 2.5.6 | `block-assignments` + hiérarchie (subordinates, numérotés) | tests nesting `Les abattoirs` / `1 - Cave` |
 
 #### 2.6 — Tests et oracle
@@ -233,4 +272,166 @@ Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…
 
 **Oracle Python** : utile en dev pour comparer sections sur le **texte narratif** ; ne pas benchmarker les pages à fiches monstre avant phase 5.
 
-**Test clé Momie p.5** : 3 sections (`EN QUELQUES MOTS`, `FICHE TECHNIQUE`, `LES GRANDES LIGNES`) + 3 blocs corps affectés — p
+**Test clé Momie p.5** : 3 sections (`EN QUELQUES MOTS`, `FICHE TECHNIQUE`, `LES GRANDES LIGNES`) + 3 blocs corps affectés — préfigure directement la phase 3. Pages avec fiches PNJ : hors critères de done phase 2.
+
+#### 2.7 — Critères de done
+
+- [ ] `block-index` = ordre tri spatial `(x0, y0, x1)` après extraction
+- [ ] `assign-sections` retourne sections + `block-assignments` + anchors
+- [ ] Tests `test_sections.py` portés (structure hiérarchique)
+- [ ] Test affectation page 5 : 3 sections, 3 blocs corps correctement assignés
+- [ ] Passe 1 branchée dans `page.clj` / `pdf.clj` ; passe 2 pas encore en prod
+
+#### 2.8 — Comparaison avec Python
+
+| | Python actuel | Clojure cible |
+|--|---------------|---------------|
+| Ordre blocs | Ordre extraction + merge ; `column_major_sort_key` au chunking | **Passe 1** : `(x0, y0)` dès l'extraction |
+| Sections | Scan global → tri spatial titres → pile | **Passe 2** flux linéaire |
+| Affectation | Rétrospective dans `chunking.py` | **Passe 2** simultanée (`block-assignments`) |
+| Signal titre | Règles explicites par type | **Transition typo** + garde-fous |
+| Fils parallèles | `is-in-column-band?` au chunking | Même utilitaire en passe 2, pas en passe 1 |
+
+---
+
+### Phase 3 — Chunks 1:1
+
+**`chunks.clj`** — trivialisé par la passe 2 :
+
+```
+1. Pour chaque bloc avec une entrée dans block-assignments :
+     créer un chunk 1:1 (texte du bloc, section-id déjà connu)
+2. Blocs anchor (titres) → pas de chunk
+3. refine-section-page-ends depuis les spans des chunks
+```
+
+Plus besoin de recalculer « dernier anchor avant bloc en même colonne » — c'est fait en phase 2.
+
+**Structure chunk** :
+```clojure
+{:id (chunk-id document-id page block-index)
+ :section-id (get block-assignments block-id)
+ :page-start page :page-end page
+ :text (reflow-text block-text)
+ :token-count (estimate-tokens text)
+ :source-spans [{:page p :page-block-ids [block-id] :bbox ...}]
+ :chunk-type-hint nil
+ :metadata {}
+ :needs-rechunk false}
+```
+
+**Critère de done** : test porté `test_build_chunks_partitions_blocks_between_headings_on_same_page` — 3 chunks, signatures uniques, textes `Résumé court.` / `Niveau 5` / `Contenu principal.`
+
+---
+
+### Phase 4 — Pipeline complète
+
+**`pipeline.clj`** — équivalent de `importer.run()` mode `full` :
+
+1. Hash PDF → `document-id`
+2. `ensure-campaign`, `create-run` (`status: running`)
+3. `extract-document` (PDFBox)
+4. Coverage → `rejected` si scan
+5. `delete-document-raw-data` si reimport
+6. `normalize-reading-order` sur chaque page (passe 1)
+7. Matérialiser `pages` + `page_blocks`
+8. `assign-sections` (passe 2 — sections + block-assignments)
+9. `build-chunks-1to1` depuis `block-assignments`
+10. `refine-section-page-ends`
+11. `insert-*` en transaction
+12. `update-run` (`status: completed`, stats JSON)
+
+**Stats du run** : `page_count`, `block_count`, `section_count`, `chunk_count`, `text_coverage_ratio`, `source_pdf_path`, `extraction_method: "pdfbox"`.
+
+**CLI** :
+```bash
+clojure -M:ingest import --pdf PATH --campaign-id momie
+clojure -M:ingest import --pdf PATH --campaign-id momie --coverage-threshold 0.3 --no-reimport
+```
+
+**Critère de done** : import Momie complet sans Python ; `sections` et `chunks` peuplés.
+
+---
+
+### Phase 5 — Fiches monstre / PNJ COF2
+
+**Objectif** : ajouter une **fonction heuristique dédiée** dans la chaîne de traitement — pas un patch dans `sections.clj`.
+
+**Module** : `stat_blocks.clj` (équivalent simplifié de `packages/ingest/.../stat_blocks/cof2.py`).
+
+**Point d'injection pipeline** (ordre cible) :
+
+```
+extract → normalize-reading-order
+       → detect-stat-blocks        ← NOUVEAU : marque les spans fiche, exclut du flux sections
+       → assign-sections
+       → build-chunks-1to1         ← chunks narratifs
+       → materialize-stat-chunks   ← chunks dédiés fiche (metadata structurée)
+       → persist
+```
+
+**Responsabilités `detect-stat-blocks`** :
+- Repérer les spans de blocs constituant une fiche (nom, NC, PV, etc.) via layout + motifs texte COF2
+- Marquer les blocs concernés (`:stat-block-role` ou liste de spans) pour que `assign-sections` les **ignore** (pas de faux titre sur le nom du monstre)
+- Produire des `ChunkRecord` dédiés (`chunk_type` / metadata structurée) — schéma aligné Python
+
+**Hors scope phase 5 initiale** : `false-heading?` générique dans sections ; `chunk_type_hint` narratif ; tests audit complets `test_cof2_audit_*` — itérations suivantes.
+
+**Critère de done** : fiches Momie reconnues sur au moins 2 pages ; sections adjacentes non polluées ; `list_stat_blocks` MCP/API alimentable depuis metadata chunk.
+
+---
+
+### Phase 6 — Au-delà (plus tard)
+
+| Composant | Remplace |
+|-----------|----------|
+| Couche sémantique | `submit_chunk_classifications`, entités, relations |
+| API HTTP | `rpg-api` |
+| MCP | `rpg-assistant-mcp` |
+| Rendu PDF / visual review | `rendering.py`, MCP `prepare_visual_ingestion_review` |
+
+## Ce qu'il ne faut pas porter de Python
+
+- `_group_blocks_for_chunking` / budget ~1200 tokens
+- Mode `extractor-compare` / dual lanes (outil dev)
+- `raw_layout_json` PyMuPDF (optionnel)
+- Merge document-level (`merge_fragmented_blocks`, etc.) — réévaluer seulement si régressions sur blocs Clojure
+
+## Stratégie de tests
+
+1. **Unitaires Clojure** — PDF synthétiques (`test/rpg/ingest/test_fixtures/pdf.clj`)
+2. **Intégration BDD** — import → requêtes SQL
+3. **Régression COF2 narratif** — structure sections + chunks sur Momie (pages sans fiches en phases 2–4 ; fiches en phase 5)
+4. **Python comme oracle temporaire** — comparer structure sections sur Momie ; l'affectation bloc→section n'a pas d'équivalent direct (chunking Python rétrospectif)
+
+## Campagne de référence
+
+| Clé | Valeur |
+|-----|--------|
+| `campaign_id` | `momie` |
+| PDF | `data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf` |
+| Page piège colonnes | **7** |
+
+## Ordre de travail
+
+```
+Phase 0 (storage) → Phase 1 (is-bold) → Phase 2 (sections) → Phase 3 (chunks) → Phase 4 (pipeline full) → Phase 5 (fiches monstre)
+```
+
+## Références code existant
+
+| Rôle | Chemin Python (spécification) | Chemin Clojure (cible / existant) |
+|------|-------------------------------|-----------------------------------|
+| Extraction blocs | `packages/ingest/.../layout.py` | `packages/ingest-clj/.../extract/page.clj` |
+| Sections | `packages/ingest/.../sections.py` | `packages/ingest-clj/.../sections.clj` |
+| Reading order | `packages/ingest/.../reading_order.py` | `packages/ingest-clj/.../reading_order.clj` |
+| IDs | `packages/core/.../ids.py` | `packages/ingest-clj/.../ids.clj` |
+| Coverage | `packages/ingest/.../coverage.py` | `packages/ingest-clj/.../coverage.clj` |
+| Persistance | `packages/core/.../repositories/raw.py` | `packages/ingest-clj/.../storage/raw.clj` |
+| Orchestration | `packages/ingest/.../importer.py` | `packages/ingest-clj/.../pipeline.clj` |
+| Stat blocks COF2 | `packages/ingest/.../stat_blocks/cof2.py` | `packages/ingest-clj/.../stat_blocks.clj` (phase 5) |
+| Schéma BDD | `migrations/versions/001_initial_schema.py` | inchangé |
+
+## Comparateur extracteur (contexte)
+
+Le plan [`plan-extractor-compare.md`](plan-extractor-compare.md) reste valide comme **outil de dev** pour affiner `page.clj`. Il n'est pas le chemin de production une fois la pipeline full Clojure en place.
