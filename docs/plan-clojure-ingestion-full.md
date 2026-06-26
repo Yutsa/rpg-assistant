@@ -24,11 +24,12 @@ Le schéma SQLite existant (`campaigns`, `documents`, `ingestion_runs`, `pages`,
 |-----------|--------|
 | Extraction PDFBox page par page | ✅ `packages/ingest-clj` |
 | Blocs (texte, bbox, metadata) | ✅ |
+| Metadata `:is-bold` alignée Python | ✅ phase 1 |
 | CLI `extract-page` / `extract-document` / `serve` | ✅ |
 | Persistance SQLite depuis Clojure | ✅ phase 0 |
-| Sections | ❌ |
-| Chunks | ❌ |
-| Import `full` sans Python | ❌ (phase 4) |
+| Sections | 🔲 phase 2 (en cours) |
+| Chunks | ❌ phase 3 |
+| Import `full` sans Python | ❌ phase 4 |
 
 Aujourd'hui, Clojure est branché uniquement sur le workflow `extractor-compare` via un pont Python (`clojure_pdfbox.py`).
 
@@ -43,9 +44,10 @@ packages/ingest-clj/src/rpg/
 │   │   ├── pdf.clj
 │   │   └── page.clj
 │   ├── coverage.clj            # rejet PDF scanné
-│   ├── reading_order.clj       # heuristiques titres, colonnes, tri spatial
-│   ├── sections.clj            # détection titres → arbre de sections
+│   ├── reading_order.clj       # passe 1 : tri colonne-majeur, garde-fous géométrie
+│   ├── sections.clj            # passe 2 : flux typo → sections + block-assignments
 │   ├── chunks.clj              # blocs contenu → chunks 1:1
+│   ├── stat_blocks.clj         # phase 5 : détection fiches monstre/PNJ (heuristique dédiée)
 │   ├── ids.clj                 # doc_*, block_*, sec_*, chunk_*, run_*
 │   ├── pipeline.clj            # orchestration import full
 │   └── storage/
@@ -53,7 +55,9 @@ packages/ingest-clj/src/rpg/
 │       └── raw.clj             # INSERT campaigns…chunks
 ```
 
-Plus tard (hors ce plan) : `api/`, `mcp/`, `semantic/`, `stat_blocks/`.
+Plus tard (hors ce plan) : `api/`, `mcp/`, `semantic/`.
+
+**Fiches monstre / PNJ (COF2)** : ignorées en phases 2–4. Une **étape dédiée** `detect-stat-blocks` sera branchée dans la chaîne en phase 5 (après chunks, ou en pré-filtre avant sections — à trancher à l'implémentation).
 
 ## Phases
 
@@ -79,158 +83,154 @@ Smoke test : extrait + persiste **pages + blocs** uniquement.
 
 ---
 
-### Phase 1 — Normalisation metadata bloc
+### Phase 1 — Normalisation metadata bloc ✅
 
-**Décision** : pas d'exposition de `:column` en metadata (overkill ; la colonne reste dérivée à la volée depuis la bbox en phases 2–3, comme en Python via `column-side` / `is-in-column-band`). Pas de `page-median-font` non plus — à réévaluer en phase 2 si les heuristiques titres en ont besoin.
+**Décision** : pas d'exposition de `:column` en metadata (overkill ; la colonne reste dérivée à la volée depuis la bbox en phases 2–3, comme en Python via `column-side` / `is-in-column-band`). `page-median-font` calculé à la volée en phase 2 depuis les blocs de la page (pas stocké en metadata).
 
-**Travail** (`page.clj`) :
-- Remplacer `:bold?` par `:is-bold` dans les metadata bloc (JSON persisté : `is_bold`, aligné Python).
-- Supprimer `:bold?` des metadata exposées.
-
----
-
-### Phase 2 — Détection de sections
-
-Porter depuis Python (`sections.py`, `reading_order.py`) :
-
-**`reading_order.clj`** :
-- Regex : `CHAPTER_RE`, `ALL_CAPS_RE`, `NUMBERED_HEADING_RE`
-- Encadrés COF2 : `EN QUELQUES MOTS`, `FICHE TECHNIQUE`, `CRÉDITS`, etc.
-- `heading-visual-tier`, `page-median-font`, `column-major-sort-key`
-- Garde-fous : titre trop long, drop-cap, en-tête vertical, spread décoratif
-
-**`sections.clj`** :
-- `heading-candidate?` — texte + gras + taille police vs médiane page
-- `detect-sections` → `{:sections [...] :heading-anchors #{[page idx]} :content-only-section-ids #{...}}`
-- Pile hiérarchique (`parent-section-id`, `level`)
-- Section fallback `"Document"` si aucun titre
-- `refine-section-page-ends` (après chunks)
-
-**Signaux déjà disponibles sur les blocs** : `text`, `bbox`, `max-font-size`, `is-bold`, `line-count`.
-
-**Référence de validation** : tests portés depuis `tests/test_sections.py`, `tests/test_chunking.py` (page 5, 3 sections / 3 chunks).
+**Livré** (`page.clj`, PR #37) :
+- `:is-bold` dans les metadata bloc (JSON persisté : `is_bold`, aligné Python).
+- `:bold?` supprimé des metadata exposées.
 
 ---
 
-### Phase 3 — Chunks 1:1
+### Phase 2 — Ordre de lecture + sections (deux passes)
 
-**`chunks.clj`** — logique dédiée, **sans** porter `chunking.py` (pas de fusion par budget tokens).
+**Prérequis** : phase 1 livrée (`:is-bold` dans les metadata bloc).
+
+**Changement de design** (vs portage direct Python) : au lieu de scanner tous les titres puis reconstruire la hiérarchie a posteriori, on adopte un modèle **deux passes** plus simple et aligné avec le chunking 1:1 :
 
 ```
-1. Construire l'ensemble des heading-anchors
-2. Pour chaque bloc (ordre lecture : page → colonne → y0 → x0) :
-     si anchor → ignorer (section uniquement)
-     sinon → créer un chunk
-3. refine-section-page-ends
+Passe 1 — normaliser l'ordre de lecture (ré-indexer les blocs)
+Passe 2 — parcourir en flux : détecter titre/corps + affecter chaque bloc à sa section
 ```
 
-**Assignation bloc → section** :
-- Section du dernier anchor **avant** le bloc en ordre de lecture
-- Filtrer par **même colonne** (bbox overlap / `column-side`, pas de clé metadata)
-- Blocs avant le premier titre → section `"Document"`
+Le signal principal est le **changement de typo** (taille police, gras) entre blocs consécutifs en ordre de lecture — indicateur titre↔corps — complété par des garde-fous COF2 (spread décoratif, drop-cap, encadrés…).
 
-**Structure chunk** :
+**Hors scope phases 2–4** :
+- Fiches monstre / PNJ COF2 — pas de `false-heading?`, pas de `stat_block_role`, pas de garde-fous spécifiques fiches ; les blocs de fiches passent dans le flux sections/chunks comme du texte normal (imperfections acceptées)
+- `insert-sections!` / `insert-chunks!` → phase 4
+
+#### 2.1 — Passe 1 : ordre de lecture (`reading_order.clj`)
+
+**Objectif** : garantir que `block-index` reflète l'ordre de lecture humain **avant** toute détection de section.
+
+**Ordre retenu pour COF2** — **colonne-majeur** par page (pas un tri global `y0` puis `x0` qui entremêle les colonnes) :
+
+```
+page 1 : colonne gauche (haut→bas) → colonne droite (haut→bas)
+page 2 : idem
+…
+```
+
+Clé de tri : `column-major-sort-key` = `(page-number, column-side, y0, x0)` avec `column-side` dérivé du centre x de la bbox vs `page-width / 2`.
+
+**Fonction** :
+
 ```clojure
-{:id (chunk-id document-id page index)
- :section-id ...
- :page-start page :page-end page
- :text (reflow-text block-text)
- :token-count (estimate-tokens text)
- :source-spans [{:page p :page-block-ids [block-id] :bbox ...}]
- :chunk-type-hint nil
- :metadata {}
- :needs-rechunk false}
+(defn normalize-reading-order
+  "Trie les blocs de chaque page en ordre colonne-majeur et réattribue block-index 0..n."
+  [pages]
+  ...)
 ```
 
----
+**Où l'appeler** :
+- En fin d'extraction (`page.clj` ou `pipeline.clj` avant persistance) — les IDs `block_*` reflètent alors l'ordre de lecture en base.
+- Remplacer le tri final actuel `(y0, x0)` global dans `merge-segments-by-font` par ce tri colonne-majeur.
 
-### Phase 4 — Pipeline complète
+**Conséquence** : un réimport sera nécessaire pour les documents déjà en BDD phase 0 (index ≠ ordre de lecture). Acceptable — pipeline pas encore en prod.
 
-**`pipeline.clj`** — équivalent de `importer.run()` mode `full` :
+**Utilitaires à porter** depuis `reading_order.py` (géométrie + garde-fous, pas toute la logique `detect_sections` Python) :
 
-1. Hash PDF → `document-id`
-2. `ensure-campaign`, `create-run` (`status: running`)
-3. `extract-document` (PDFBox)
-4. Coverage → `rejected` si scan
-5. `delete-document-raw-data` si reimport
-6. Matérialiser `pages` + `page_blocks`
-7. `detect-sections`
-8. `build-chunks-1to1`
-9. `refine-section-page-ends`
-10. `insert-*` en transaction
-11. `update-run` (`status: completed`, stats JSON)
+| Groupe | Fonctions |
+|--------|-----------|
+| Géométrie | `column-side`, `horizontal-overlap-ratio`, `is-in-column-band?`, `column-major-sort-key` |
+| Typo page | `page-median-font` |
+| Texte | `strip-glyphs`, regex chapitre / caps / numéroté / meta box |
+| Rejets visuels | `is-decorative-spread-title?`, `is-vertical-running-header?`, `is-list-item-block?` |
+| Titres | `is-meta-box-heading?`, `is-chapter-heading?`, `is-title-case-heading?`, `heading-level` |
 
-**Stats du run** : `page_count`, `block_count`, `section_count`, `chunk_count`, `text_coverage_ratio`, `source_pdf_path`, `extraction_method: "pdfbox"`.
+#### 2.2 — Passe 2 : flux sections + affectation (`sections.clj`)
 
-**CLI** :
-```bash
-clojure -M:ingest import --pdf PATH --campaign-id momie
-clojure -M:ingest import --pdf PATH --campaign-id momie --coverage-threshold 0.3 --no-reimport
+**Objectif** : un seul parcours linéaire des blocs (déjà en ordre de lecture) qui produit **à la fois** l'arbre de sections et l'affectation bloc→section.
+
+**État du parcours** (par colonne — voir ci-dessous) :
+
+```clojure
+{:section-stack [{:id :level :title :column}]   ; pile hiérarchique
+ :body-baseline {:max-font median :is-bold false} ; typo corps courante
+ :column :left|:right                             ; colonne en cours
+ :sections []                                     ; SectionRecord accumulés
+ :block-assignments {block-id section-id}          ; affectation directe
+ :heading-anchors [[page block-index] ...]}
 ```
 
-**Critère de done** : import Momie complet sans Python ; `sections` et `chunks` peuplés.
+**Contexte par colonne** : sur une page 2 colonnes COF2, chaque colonne a son propre fil de lecture. Au changement de `column-side`, on **ne propage pas** la section active de l'autre colonne — on reprend la section parente de la pile qui correspond à cette colonne, ou la section racine `"Document"` / dernière section chapitre de cette colonne.
 
----
+**Pour chaque bloc** `(page, block-index, text, metadata)` en ordre de lecture :
 
-### Phase 5 — Qualité COF2
+| Étape | Action |
+|-------|--------|
+| 1 | Détecter changement de colonne → ajuster contexte section |
+| 2 | Calculer `font-signal` vs `body-baseline` : Δ taille, passage gras, texte court |
+| 3 | Si `heading-candidate?` (signal typo **+** garde-fous texte/visuels) → **nouvelle section** : pousser pile, enregistrer anchor, bloc **non chunké** |
+| 4 | Sinon → **corps** : affecter `block-id → section-id` courant, mettre à jour `body-baseline` (moyenne glissante ou médiane locale) |
+| 5 | Mettre à jour `page-end` de la section courante |
 
-- Porter profil COF2 : `false-heading?` (noms de fiches monstre, etc.)
-- `stat_blocks/` (chunks dédiés, metadata structurée) — **second temps**
-- Tests régression sur `data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf`
-- Heuristiques `chunk_type_hint` optionnelles
+**Signal typo (cœur de la détection)** :
 
----
-
-### Phase 6 — Au-delà (plus tard)
-
-| Composant | Remplace |
-|-----------|----------|
-| Couche sémantique | `submit_chunk_classifications`, entités, relations |
-| API HTTP | `rpg-api` |
-| MCP | `rpg-assistant-mcp` |
-| Rendu PDF / visual review | `rendering.py`, MCP `prepare_visual_ingestion_review` |
-
-## Ce qu'il ne faut pas porter de Python
-
-- `_group_blocks_for_chunking` / budget ~1200 tokens
-- Mode `extractor-compare` / dual lanes (outil dev)
-- `raw_layout_json` PyMuPDF (optionnel)
-- Merge document-level (`merge_fragmented_blocks`, etc.) — réévaluer seulement si régressions sur blocs Clojure
-
-## Stratégie de tests
-
-1. **Unitaires Clojure** — PDF synthétiques (`test/rpg/ingest/test_fixtures/pdf.clj`)
-2. **Intégration BDD** — import → requêtes SQL
-3. **Régression COF2** — structure sections + nombre de chunks sur Momie
-4. **Python comme oracle temporaire** — comparer sorties pendant le port de `sections.clj` ; retirer une fois tests Clojure suffisants
-
-## Campagne de référence
-
-| Clé | Valeur |
-|-----|--------|
-| `campaign_id` | `momie` |
-| PDF | `data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf` |
-| Page piège colonnes | **7** |
-
-## Ordre de travail
-
-```
-Phase 0 (storage) → Phase 1 (is-bold) → Phase 2 (sections) → Phase 3 (chunks) → Phase 4 (pipeline) → Phase 5 (COF2)
+```clojure
+(defn font-transition-heading?
+  [block prev-block page median]
+  ;; Corps → titre probable si :
+  ;;   max-font >= median * 1.15 ET is-bold
+  ;;   OU max-font >= prev max-font * 1.1 avec texte court (<= 14 mots, <= 120 car.)
+  ;;   OU is-chapter-heading? / is-meta-box-heading? (regex prioritaire)
+  ;; Rejeter si : spread décoratif, drop-cap, list-item, texte trop long
+  ...)
 ```
 
-## Références code existant
+Les regex et garde-fous COF2 (spread Momie p.5, `EN QUELQUES MOTS`, hooks `Si…`, drop-cap, listes) suffisent pour la narration — **sans** traiter les faux positifs liés aux fiches monstre (nom en gras, NC, stats), reportés à la phase 5.
 
-| Rôle | Chemin Python (spécification) | Chemin Clojure (cible / existant) |
-|------|-------------------------------|-----------------------------------|
-| Extraction blocs | `packages/ingest/.../layout.py` | `packages/ingest-clj/.../extract/page.clj` |
-| Sections | `packages/ingest/.../sections.py` | `packages/ingest-clj/.../sections.clj` |
-| Reading order | `packages/ingest/.../reading_order.py` | `packages/ingest-clj/.../reading_order.clj` |
-| IDs | `packages/core/.../ids.py` | `packages/ingest-clj/.../ids.clj` |
-| Coverage | `packages/ingest/.../coverage.py` | `packages/ingest-clj/.../coverage.clj` |
-| Persistance | `packages/core/.../repositories/raw.py` | `packages/ingest-clj/.../storage/raw.clj` |
-| Orchestration | `packages/ingest/.../importer.py` | `packages/ingest-clj/.../pipeline.clj` |
-| Schéma BDD | `migrations/versions/001_initial_schema.py` | inchangé |
+**Hiérarchie** : au moment d'ouvrir une section, `heading-level` + `heading-visual-tier` déterminent le `level` et le `parent-section-id` (chapitre vide la pile, subordinate s'accroche au chapitre actif de la colonne, etc.) — logique reprise de `sections.py` mais déclenchée **au fil de l'eau** plutôt qu'après scan global.
 
-## Comparateur extracteur (contexte)
+**Fallback** : aucun titre détecté → section unique `"Document"`, tous les blocs lui sont affectés.
 
-Le plan [`plan-extractor-compare.md`](plan-extractor-compare.md) reste valide comme **outil de dev** pour affiner `page.clj`. Il n'est pas le chemin de production une fois la pipeline full Clojure en place.
+#### 2.3 — Contrat de sortie
+
+```clojure
+{:sections [...]                                    ; SectionRecord
+ :heading-anchors [[page block-index] ...]         ; ordre = ordre de lecture
+ :block-assignments {"block_doc_005_003" "sec_..."}  ; NOUVEAU — clé pour phase 3
+ :content-only-section-ids #{...}}                  ; si préambule « Introduction » conservé
+```
+
+`block-assignments` évite de recalculer « dernier anchor avant bloc en même colonne » en phase 3 — l'affectation est déjà faite en passe 2.
+
+#### 2.4 — Fichiers
+
+| Fichier | Rôle |
+|---------|------|
+| `reading_order.clj` | Passe 1 : `normalize-reading-order`, clés de tri, garde-fous géométrie/texte |
+| `sections.clj` | Passe 2 : `assign-sections` (flux + détection + affectation) |
+| `test/.../reading_order_test.clj` | Tri colonne-majeur page 7 Momie, colonnes non entremêlées |
+| `test/.../sections_test.clj` | Cas portés depuis `test_sections.py` + affectation bloc→section |
+| `test/.../test_fixtures/layout.clj` | `make-block`, `make-page` |
+
+#### 2.5 — Sous-tâches
+
+| # | Tâche | Done quand |
+|---|-------|------------|
+| 2.5.1 | `column-major-sort-key` + `normalize-reading-order` | test page 7 : index croît en colonne-majeur |
+| 2.5.2 | Intégrer passe 1 dans `page.clj` (remplace tri `(y0,x0)`) | `extract_test` verts + ordre vérifié Momie |
+| 2.5.3 | `font-transition-heading?` + garde-fous | tests spread p.5, drop-cap, meta box |
+| 2.5.4 | `assign-sections` flux mono-colonne | tests chapitres simples + fallback Document |
+| 2.5.5 | Contexte bi-colonne (pile par colonne) | tests PARTIE I/II, page 8 sans faux préambule |
+| 2.5.6 | `block-assignments` + hiérarchie (subordinates, numérotés) | tests nesting `Les abattoirs` / `1 - Cave` |
+
+#### 2.6 — Tests et oracle
+
+**Priorité** : tests portés depuis `test_sections.py` (structure sections) **+** assertions sur `block-assignments` (chaque bloc corps pointe vers la bonne `section-id`).
+
+**Oracle Python** : utile en dev pour comparer sections sur le **texte narratif** ; ne pas benchmarker les pages à fiches monstre avant phase 5.
+
+**Test clé Momie p.5** : 3 sections (`EN QUELQUES MOTS`, `FICHE TECHNIQUE`, `LES GRANDES LIGNES`) + 3 blocs corps affectés — p
