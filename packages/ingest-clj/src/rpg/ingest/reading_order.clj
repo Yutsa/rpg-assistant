@@ -173,14 +173,19 @@
          (<= (count (str/split text #"\s+")) 4)
          (<= (count (str/split text #"\n")) 2))))
 
+(defn- spread-title-vertical-gap [upper lower]
+  (- (get-in lower [:bbox :y0]) (get-in upper [:bbox :y1])))
+
 (defn is-spread-title-pair?
   [upper lower page median-font]
-  (let [lower-text (strip-glyphs (:text lower))]
+  (let [lower-text (strip-glyphs (:text lower))
+        gap (spread-title-vertical-gap upper lower)]
     (and (is-decorative-spread-title? upper page median-font)
          (seq lower-text)
          (re-matches all-caps-re lower-text)
          (<= (get-in lower [:bbox :y0]) (* (:height page) decorative-top-ratio))
-         (>= (get-in lower [:bbox :y0]) (- (get-in upper [:bbox :y1]) 5))
+         (<= gap 8.0)
+         (>= gap -30.0)
          (<= (count (str/split lower-text #"\s+")) 4))))
 
 (defn is-vertical-running-header?
