@@ -1,5 +1,6 @@
 (ns rpg.ingest.extract.pdf
   (:require [rpg.ingest.extract.page :as page]
+            [rpg.ingest.reading-order :as reading-order]
             [rpg.ingest.schema :as schema])
   (:import [java.io File]
            [org.apache.pdfbox Loader]
@@ -46,8 +47,9 @@
 (defn extract-document [pdf-path]
   (with-open [document (Loader/loadPDF (File. pdf-path))]
     (let [page-count (.getNumberOfPages document)
-          pages (mapv #(extract-page-at-index document %)
-                        (range page-count))]
+          pages (->> (range page-count)
+                     (mapv #(extract-page-at-index document %))
+                     reading-order/normalize-reading-order)]
       (schema/validate schema/DocumentOutput
                        {:extraction-method "pdfbox"
                         :provider-id "clojure"

@@ -1,6 +1,7 @@
 (ns rpg.ingest.extract.page
   "PDFBox extraction: TextPosition → Y bands, horizontal gaps, paragraph clusters."
-  (:require [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [rpg.ingest.reading-order :as reading-order])
   (:import [org.apache.pdfbox.text TextPosition]))
 
 (def ^:private line-tolerance 2.0)
@@ -382,11 +383,11 @@
 (defn- merge-segments-by-font [segments page-width]
   (->> segments
        (group-by #(segment-column % page-width))
+       (sort-by (fn [[col _]] (if (= col :col-0) 0 1)))
        (mapcat (fn [[_column segs]]
                  (->> segs
                       (sort-by (comp :y0 :bbox))
                       merge-segments-in-column)))
-       (sort-by (juxt (comp :y0 :bbox) (comp :x0 :bbox)))
        vec))
 
 (defn- segment-metadata [segment]
@@ -463,7 +464,10 @@
                       (remove #(parasite-block? % ctx))
                       (#(merge-segments-by-font % width))
                       vec)
-        blocks (keep-indexed segment-as-block segments)]
+        blocks (->> segments
+                    (keep-indexed segment-as-block)
+                    vec
+                    (#(reading-order/normalize-page-blocks %)))]
     {:page-number page-number
      :width width
      :height height
