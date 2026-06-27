@@ -160,7 +160,7 @@ Quand l'utilisateur dit **« continue l'implémentation de la prochaine phase du
 3. Tests : `cd packages/ingest-clj && clojure -M:test`.
 4. Mettre à jour le suivi d'avancement en fin de PR (cocher la phase, pointer la suivante).
 
-**État au 2026-06-26** : phases 0–4 livrées ; **prochaine = phase 5** (fiches monstre COF2 : `stat_blocks.clj`).
+**État au 2026-06-27** : phases 0–4 livrées ; **prochaine = phase 5** (fiches monstre : profils jeu Malli + multimethodes, `stat_blocks/`, profil `:cof2`).
 
 ## Campagne de référence (dev)
 

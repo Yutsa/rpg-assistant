@@ -13,22 +13,30 @@
 | 2 | Ordre de lecture + sections | ✅ fait | `reading_order.clj`, `sections.clj`, tests |
 | 3 | Chunks 1:1 | ✅ fait | `chunks.clj`, `text/reflow.clj`, tests — PR #42 |
 | **4** | **Pipeline complète** | **✅ fait** | **`pipeline.clj` full, `insert-sections!` / `insert-chunks!`, `coverage.clj`** |
-| 5 | Fiches monstre COF2 | **🔲 à faire** | `stat_blocks.clj` |
+| 5 | Fiches monstre (profils jeu) | **🔲 à faire** | `stat_blocks/` — Malli + multimethodes, profil `:cof2` |
 | 6 | API / MCP / sémantique | hors scope | — |
 
-### Prochaine phase : **5 — Fiches monstre COF2**
+### Prochaine phase : **5 — Fiches monstre (profils jeu)**
 
-**Objectif** : détecter les fiches monstre/PNJ COF2 et les exclure du flux sections.
+**Objectif** : framework **profil par jeu** (Malli pour les formes de données, **multimethodes** pour le dispatch) ; première implémentation **`:cof2`**, extensible à d'autres jeux.
 
 **Fichiers à modifier / créer** :
 
 | Fichier | Action |
 |---------|--------|
-| `packages/ingest-clj/src/rpg/ingest/stat_blocks.clj` | **Nouveau** — détection spans fiche, exclusion sections |
-| `packages/ingest-clj/src/rpg/ingest/pipeline.clj` | Brancher `detect-stat-blocks` avant `assign-sections` |
-| `packages/ingest-clj/test/rpg/ingest/stat_blocks_test.clj` | Tests fiches Momie |
+| `stat_blocks/schema.clj` | **Nouveau** — schémas Malli (`StatBlockSpan`, `ParsedStatBlock`, …) |
+| `stat_blocks/registry.clj` | **Nouveau** — `resolve-profile` depuis `--game-system` + aliases |
+| `stat_blocks/core.clj` | **Nouveau** — `defmulti` + `annotate-stat-blocks` |
+| `stat_blocks/cof2.clj` | **Nouveau** — `defmethod` `:cof2` (port de `cof2.py`) |
+| `stat_blocks/generic.clj` | **Nouveau** — `defmethod` `:generic` (fallback minimal) |
+| `stat_blocks/text_utils.clj` | **Nouveau** — glyphes icônes, strip layout |
+| `pipeline.clj` | Résoudre profil, annoter fiches, chaîne complète |
+| `sections.clj` | `is-false-heading?` via profil actif |
+| `block-merging.clj` | Ne pas fusionner les blocs de fiche |
+| `chunks.clj` | Exclure blocs fiche du 1:1 ; `materialize-stat-chunks` |
+| `test/.../stat_blocks_test.clj` | Tests fiches Momie |
 
-**Critère de done** : fiches Momie reconnues sur au moins 2 pages ; sections adjacentes non polluées.
+**Critères de done** : profil `:cof2` opérationnel ; fiches Momie sur ≥ 2 pages ; sections adjacentes non polluées ; chunks `stat_block` avec metadata compatible API/MCP.
 
 **Tests** :
 
@@ -36,7 +44,7 @@
 cd packages/ingest-clj && clojure -M:test
 ```
 
-**Dernière mise à jour du suivi** : 2026-06-26 (phases 0–4 livrées ; phase 5 prochaine).
+**Dernière mise à jour du suivi** : 2026-06-27 (phases 0–4 livrées ; phase 5 affinée — profils Malli + multimethodes).
 
 ---
 
@@ -44,7 +52,7 @@ cd packages/ingest-clj && clojure -M:test
 
 Remplacer entièrement la pipeline Python d'ingestion raw (`rpg-ingest`, provider PyMuPDF) par une pipeline **100 % Clojure** (PDFBox). L'API et le MCP seront réécrits en Clojure plus tard ; ce plan couvre uniquement l'ingestion jusqu'à la persistance SQLite.
 
-**Hors scope immédiat** : comparateur PyMuPDF/PDFBox (`extractor-compare`), couche sémantique, stat blocks COF2 (phase ultérieure), API HTTP, MCP.
+**Hors scope immédiat** : comparateur PyMuPDF/PDFBox (`extractor-compare`), couche sémantique, API HTTP, MCP.
 
 ## Modèle de données retenu
 
@@ -52,7 +60,7 @@ Remplacer entièrement la pipeline Python d'ingestion raw (`rpg-ingest`, provide
 |--------|------|-------|
 | **Blocs** | Extraction layout (texte + bbox + metadata typo) | Produits par `extract/page.clj` |
 | **Sections** | Structure hiérarchique du document | Blocs-titres ; pas de chunk |
-| **Chunks** | Unité de contenu exposée (future API/MCP) | **Au plus 1 bloc = 1 chunk** ; pas de fusion multi-blocs |
+| **Chunks** | Unité de contenu exposée (future API/MCP) | **Narratif** : 1 bloc = 1 chunk. **Fiches** (phase 5) : 1 span fiche = 1 chunk `stat_block` (exception explicite) |
 
 Enrichissement sémantique ultérieur : `section_id`, `chunk_type`, metadata (texte MJ, texte à lire aux joueurs, etc.).
 
@@ -71,9 +79,9 @@ Le schéma SQLite existant (`campaigns`, `documents`, `ingestion_runs`, `pages`,
 | Sections + `block-assignments` (passe 2) | ✅ `sections.clj` |
 | Chunks 1:1 | ✅ `chunks.clj` (phase 3) |
 | Import `full` sans Python | ✅ phase 4 |
-| Fiches monstre COF2 | ❌ **phase 5** |
+| Fiches monstre (profils jeu) | ❌ **phase 5** |
 
-Aujourd'hui, `import-pdf!` ne persiste que **pages + page_blocks**. Les modules sections/chunks existent mais ne sont pas encore branchés sur l'import ni écrits en BDD. Clojure reste aussi branché sur `extractor-compare` via un pont Python (`clojure_pdfbox.py`).
+Aujourd'hui, `import-pdf!` persiste **pages, blocs, sections et chunks narratifs** (phase 4). Les blocs de fiches monstre passent encore dans le flux sections/chunks sans traitement dédié — d'où les faux titres et chunks fragmentés sur les pages COF2. Le comparateur extracteur reste un pont Python (`clojure_pdfbox.py`, outil dev).
 
 ## Architecture cible
 
@@ -88,8 +96,14 @@ packages/ingest-clj/src/rpg/
 │   ├── coverage.clj            # rejet PDF scanné
 │   ├── reading_order.clj       # passe 1 : tri spatial (x0, y0), garde-fous géométrie
 │   ├── sections.clj            # passe 2 : flux typo → sections + block-assignments
-│   ├── chunks.clj              # blocs contenu → chunks 1:1
-│   ├── stat_blocks.clj         # phase 5 : détection fiches monstre/PNJ (heuristique dédiée)
+│   ├── chunks.clj              # blocs narratifs → chunks 1:1 ; materialize-stat-chunks
+│   ├── stat_blocks/            # phase 5 : profils fiche monstre/PNJ
+│   │   ├── schema.clj          # Malli : StatBlockSpan, ParsedStatBlock, …
+│   │   ├── registry.clj        # resolve-profile (game-system → keyword profil)
+│   │   ├── core.clj            # defmulti + annotate-stat-blocks
+│   │   ├── cof2.clj            # defmethod :cof2
+│   │   ├── generic.clj         # defmethod :generic
+│   │   └── text_utils.clj
 │   ├── ids.clj                 # doc_*, block_*, sec_*, chunk_*, run_*
 │   ├── pipeline.clj            # orchestration import full
 │   └── storage/
@@ -99,7 +113,7 @@ packages/ingest-clj/src/rpg/
 
 Plus tard (hors ce plan) : `api/`, `mcp/`, `semantic/`.
 
-**Fiches monstre / PNJ (COF2)** : ignorées en phases 2–4. Une **étape dédiée** `detect-stat-blocks` sera branchée dans la chaîne en phase 5 (après chunks, ou en pré-filtre avant sections — à trancher à l'implémentation).
+**Fiches monstre / PNJ** : ignorées en phases 2–4. Phase 5 : **profil par jeu** (`:cof2` en premier) via multimethodes ; annotation des blocs **avant** `assign-sections` (aligné Python).
 
 ## Phases
 
@@ -384,71 +398,138 @@ Le reflow aligne le texte chunk sur la pipeline Python (`reflow_chunk_text`) : e
 - [x] Test Momie : sections > 0, chunks > 0
 - [x] CLI `--coverage-threshold`
 
-### Phase 5 — Fiches monstre / PNJ COF2 🔲 **PROCHAINE**
+### Phase 5 — Fiches monstre / PNJ (profils jeu) 🔲 **PROCHAINE**
 
-**`pipeline.clj`** — équivalent de `importer.run()` mode `full` :
+**Objectif** : framework **extensible par jeu** pour détecter, parser et chunker les fiches monstre/PNJ. Pas de `defprotocol` : **Malli** pour valider les formes de données, **`defmulti` / `defmethod`** pour router le comportement par profil (`:cof2`, `:generic`, futurs jeux).
 
-1. Hash PDF → `document-id`
-2. `ensure-campaign`, `create-run` (`status: running`)
-3. `extract-document` (PDFBox)
-4. Coverage → `rejected` si scan
-5. `delete-document-raw-data` si reimport
-6. `normalize-reading-order` sur chaque page (passe 1)
-7. Matérialiser `pages` + `page_blocks`
-8. `assign-sections` (passe 2 — sections + block-assignments)
-9. `build-chunks-1to1` depuis `block-assignments`
-10. `refine-section-page-ends`
-11. `insert-*` en transaction
-12. `update-run` (`status: completed`, stats JSON)
+**Spécification Python** (référence comportementale, pas à copier mot pour mot) :
 
-**Stats du run** : `page_count`, `block_count`, `section_count`, `chunk_count`, `text_coverage_ratio`, `source_pdf_path`, `extraction_method: "pdfbox"`.
+| Python | Clojure cible |
+|--------|---------------|
+| `stat_blocks/profile.py` (`Protocol`) | `stat_blocks/core.clj` (`defmulti` sur `:profile-id`) |
+| `stat_blocks/registry.py` | `stat_blocks/registry.clj` |
+| `stat_blocks/types.py` (`Pydantic`) | `stat_blocks/schema.clj` (`Malli`) |
+| `stat_blocks/cof2.py` | `stat_blocks/cof2.clj` (`defmethod` `:cof2`) |
+| `stat_blocks/generic.py` | `stat_blocks/generic.clj` (`defmethod` `:generic`) |
 
-**CLI** :
-```bash
-clojure -M:ingest import --pdf PATH --campaign-id momie
-clojure -M:ingest import --pdf PATH --campaign-id momie --coverage-threshold 0.3 --no-reimport
+#### 5.1 — Formes de données (Malli)
+
+Schémas dans `stat_blocks/schema.clj`, alignés sur `packages/ingest/.../stat_blocks/types.py` pour compatibilité API/MCP :
+
+```clojure
+;; Exemples — formes cibles, pas d'interface à implémenter
+StatBlockSpan     ; {:id :blocks :page-start :page-end}
+ParsedStatBlock   ; {:name :subtitle :nc :attributes :abilities :rulebook-reference …}
+StatAbility       ; {:title :text}
+BlockRef          ; {:page-number :block-index}
 ```
 
-**Critère de done** : import Momie complet sans Python ; `sections` et `chunks` peuplés.
+Validation via `rpg.ingest.schema/validate` aux frontières (sortie `detect-spans`, sortie `parse-span`).
 
-#### 4.1 — Sous-tâches (checklist agent)
+Metadata bloc annotée en place (comme Python) : `stat_block_id`, `stat_block_role` (`"header"`, `"stats"`, `"icon"`, `"ability"`, …).
+
+#### 5.2 — Dispatch par profil (multimethodes)
+
+`stat_blocks/core.clj` déclare les multimethodes dispatchées sur le **keyword profil** (`:cof2`, `:generic`, …) :
+
+| Multiméthode | Rôle |
+|--------------|------|
+| `matches-document?` | Auto-détection si `--game-system` absent ou inconnu |
+| `detect-spans` | Parcourt les pages, annote les blocs, retourne `[StatBlockSpan …]` |
+| `parse-span` | `StatBlockSpan` → `ParsedStatBlock` |
+| `false-heading?` | Bloc à exclure de la détection de titre section |
+| `normalize-block-text` | Nettoyage texte spécifique jeu (optionnel) |
+
+`stat_blocks/registry.clj` :
+
+```clojure
+(resolve-profile game-system pages) → :cof2 | :generic | …
+```
+
+Résolution (identique Python) :
+
+1. `--game-system` normalisé → alias map (`"cof2"`, `"chroniques oubliées fantasy 2"`, …)
+2. Sinon essai `matches-document?` sur chaque profil enregistré (sauf `:generic`)
+3. Sinon `:generic`
+
+Nouveau jeu = nouveau namespace + `defmethod` + entrée dans le registre. Aucun protocole à étendre.
+
+#### 5.3 — Chaîne pipeline (ordre cible)
+
+```
+extract-document
+→ normalize-reading-order          ; passe 1 (déjà en place)
+→ resolve-profile                  ; game-system + pages
+→ merge-fragmented-pages           ; avec false-heading? du profil
+→ annotate-stat-blocks             ; detect-spans + metadata blocs
+→ assign-sections                  ; false-heading? du profil
+→ build-chunks-1to1                ; blocs narratifs uniquement (hors stat_block_id)
+→ materialize-stat-chunks          ; 1 span → 1 chunk stat_block
+→ reassign-stat-block-sections     ; rattacher fiche à section narrative voisine
+→ refine-section-page-ends
+→ persist
+```
+
+**Points d'injection** (le profil n'est pas limité à `detect-spans`) :
+
+| Module | Changement |
+|--------|------------|
+| `pipeline.clj` | `resolve-profile`, `annotate-stat-blocks`, stats `stat_block_count` / `stat_block_profile` |
+| `block-merging.clj` | Ne pas fusionner les blocs annotés fiche |
+| `sections.clj` | Appeler `false-heading?` du profil dans `heading-candidate?` |
+| `chunks.clj` | Exclure blocs `stat_block_id` du 1:1 ; `materialize-stat-chunks` + `reassign-stat-block-sections` |
+
+Chunk fiche produit :
+
+```clojure
+{:chunk-type-hint "stat_block"
+ :metadata {:stat_block <ParsedStatBlock>
+            :stat_block_span_id <span-id>}
+ …}
+```
+
+Metadata compatible `rpg_core.stat_blocks` / `list_stat_blocks` / `get_stat_block` (API et MCP inchangés).
+
+#### 5.4 — Profil `:cof2` (v1)
+
+Port de `packages/ingest/.../stat_blocks/cof2.py` :
+
+- Détection spans : nom + NC, lignes stats AGI/FOR/CON…, icônes glyphe, capacités
+- `false-heading?` : header, stats, icône, nom en capitales, ligne NC
+- `parse-span` : nom, subtitle, nc, attributes, abilities, rulebook-reference
+- `matches-document?` : au moins 1 NC + 1 ligne stats sur le document
+
+Référence tests : pages fiches Momie (≥ 2 pages distinctes).
+
+#### 5.5 — Profil `:generic` (stub)
+
+Fallback minimal (comme Python) : `detect-spans` → `[]`, `false-heading?` sur rôles annotés, `parse-span` → texte brut. Permet d'enregistrer un futur profil sans casser le pipeline.
+
+#### 5.6 — Sous-tâches (checklist agent)
 
 | # | Tâche | Fichier(s) | Done quand |
 |---|-------|------------|------------|
-| 4.1.1 | `insert-sections!` + `insert-chunks!` | `storage/raw.clj` | INSERT alignés schéma SQLite / `raw.py` |
-| 4.1.2 | Calcul `text_coverage_ratio` par page + document | `coverage.clj`, `pipeline.clj` | rejet si ratio < seuil (défaut 0.3) |
-| 4.1.3 | Orchestration full dans `import-pdf!` | `pipeline.clj` | enchaîne extract → sections → chunks → persist |
-| 4.1.4 | Stats run complètes | `pipeline.clj` | `section_count`, `chunk_count`, `text_coverage_ratio` dans JSON stats |
-| 4.1.5 | Test intégration Momie | `import_test.clj` | `count-rows` sections > 0, chunks > 0 après import |
-| 4.1.6 | CLI flags `--coverage-threshold`, `--no-reimport` | `cli.clj` | si pas déjà exposés |
+| 5.6.1 | Schémas Malli | `stat_blocks/schema.clj` | `StatBlockSpan`, `ParsedStatBlock` validés |
+| 5.6.2 | Registre + `resolve-profile` | `stat_blocks/registry.clj` | aliases COF2, fallback `:generic` |
+| 5.6.3 | Multimethodes + `annotate-stat-blocks` | `stat_blocks/core.clj` | annotation metadata + liste spans |
+| 5.6.4 | Implémentation `:cof2` | `stat_blocks/cof2.clj`, `text_utils.clj` | port heuristiques `cof2.py` |
+| 5.6.5 | Implémentation `:generic` | `stat_blocks/generic.clj` | stub non régressif |
+| 5.6.6 | `false-heading?` dans sections | `sections.clj` | noms monstre non titres |
+| 5.6.7 | Merge + profil | `block-merging.clj` | blocs fiche non fusionnés |
+| 5.6.8 | Chunks fiche | `chunks.clj` | `materialize-stat-chunks`, exclusion 1:1 |
+| 5.6.9 | Réaffectation section | `chunks.clj` ou `stat_blocks/core.clj` | fiche rattachée section narrative |
+| 5.6.10 | Orchestration | `pipeline.clj` | chaîne complète + stats run |
+| 5.6.11 | Tests Momie | `stat_blocks_test.clj`, `import_test.clj` | ≥ 2 fiches, sections propres, chunks `stat_block` |
 
----
+#### 5.7 — Critères de done
 
-### Phase 5 — Fiches monstre / PNJ COF2
+- [ ] `resolve-profile` + multimethodes opérationnels (`:cof2`, `:generic`)
+- [ ] Fiches Momie reconnues sur **≥ 2 pages** ; sections adjacentes **non polluées**
+- [ ] Chunks `stat_block` avec metadata structurée ; `list_stat_blocks` / `get_stat_block` alimentables sans changement API
+- [ ] Stats run : `stat_block_count`, `stat_block_profile`
+- [ ] Tests `clojure -M:test` verts
 
-**Objectif** : ajouter une **fonction heuristique dédiée** dans la chaîne de traitement — pas un patch dans `sections.clj`.
-
-**Module** : `stat_blocks.clj` (équivalent simplifié de `packages/ingest/.../stat_blocks/cof2.py`).
-
-**Point d'injection pipeline** (ordre cible) :
-
-```
-extract → normalize-reading-order
-       → detect-stat-blocks        ← NOUVEAU : marque les spans fiche, exclut du flux sections
-       → assign-sections
-       → build-chunks-1to1         ← chunks narratifs
-       → materialize-stat-chunks   ← chunks dédiés fiche (metadata structurée)
-       → persist
-```
-
-**Responsabilités `detect-stat-blocks`** :
-- Repérer les spans de blocs constituant une fiche (nom, NC, PV, etc.) via layout + motifs texte COF2
-- Marquer les blocs concernés (`:stat-block-role` ou liste de spans) pour que `assign-sections` les **ignore** (pas de faux titre sur le nom du monstre)
-- Produire des `ChunkRecord` dédiés (`chunk_type` / metadata structurée) — schéma aligné Python
-
-**Hors scope phase 5 initiale** : `false-heading?` générique dans sections ; `chunk_type_hint` narratif ; tests audit complets `test_cof2_audit_*` — itérations suivantes.
-
-**Critère de done** : fiches Momie reconnues sur au moins 2 pages ; sections adjacentes non polluées ; `list_stat_blocks` MCP/API alimentable depuis metadata chunk.
+**Hors scope phase 5 initiale** : nouveaux profils jeu (D&D, etc.) ; `chunk_type_hint` narratif avancé ; tests audit complets `test_cof2_audit_*` ; `false-heading?` générique hors profil.
 
 ---
 
@@ -500,7 +581,9 @@ Phase 0 (storage) → Phase 1 (is-bold) → Phase 2 (sections) → Phase 3 (chun
 | Coverage | `packages/ingest/.../coverage.py` | `packages/ingest-clj/.../coverage.clj` |
 | Persistance | `packages/core/.../repositories/raw.py` | `packages/ingest-clj/.../storage/raw.clj` |
 | Orchestration | `packages/ingest/.../importer.py` | `packages/ingest-clj/.../pipeline.clj` |
-| Stat blocks COF2 | `packages/ingest/.../stat_blocks/cof2.py` | `packages/ingest-clj/.../stat_blocks.clj` (phase 5) |
+| Stat blocks (profils) | `packages/ingest/.../stat_blocks/` | `packages/ingest-clj/.../stat_blocks/` (phase 5) |
+| Profil COF2 | `.../stat_blocks/cof2.py` | `.../stat_blocks/cof2.clj` |
+| Registre profils | `.../stat_blocks/registry.py` | `.../stat_blocks/registry.clj` |
 | Schéma BDD | `migrations/versions/001_initial_schema.py` | inchangé |
 
 ## Comparateur extracteur (contexte)
