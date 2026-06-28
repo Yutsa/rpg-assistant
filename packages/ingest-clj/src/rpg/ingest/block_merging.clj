@@ -1,7 +1,9 @@
 (ns rpg.ingest.block-merging
   "Post-extraction block merges: spread titles, meta-box bodies, layout-glyphs."
   (:require [clojure.string :as str]
-            [rpg.ingest.reading-order :as ro]))
+            [rpg.ingest.reading-order :as ro]
+            [rpg.ingest.stat-blocks.core :as stat-core]
+            [rpg.ingest.stat-blocks.registry]))
 
 (def ^:private max-vertical-gap 15.0)
 (def ^:private max-vertical-overlap 5.0)
@@ -76,18 +78,25 @@
        (<= (get-in block [:bbox :x1]) (+ (get-in heading [:bbox :x1]) narrow-box-x-margin))
        (> (get-in block [:bbox :y0]) (get-in heading [:bbox :y0]))))
 
+(defn- stat-block-protected?
+  [block page-blocks block-idx page profile-id]
+  (or (stat-core/stat-block-block? block)
+      (and profile-id
+           (stat-core/profile-false-heading? profile-id block page-blocks block-idx page))))
+
 (defn- meta-box-body-block?
-  [block heading page median-font page-blocks block-idx]
+  [block heading page median-font page-blocks block-idx profile-id]
   (and (in-meta-box? block heading)
        (not (ro/is-meta-box-heading? (:text block)))
        (not (ro/is-decorative-spread-title? block page median-font))
+       (not (stat-block-protected? block page-blocks block-idx page profile-id))
        (not (and (pos? block-idx)
                  (ro/is-spread-title-pair?
                   (nth page-blocks (dec block-idx)) block page median-font)))
        (not (layout-glyph-parasite? block))))
 
 (defn- merge-meta-box-bodies
-  [blocks page median-font]
+  [blocks page median-font profile-id]
   (let [headings (vec (filter #(ro/is-meta-box-heading? (:text %)) blocks))
         absorbed (atom #{})
         replacements (atom {})]
@@ -97,7 +106,7 @@
              (for [[idx block] (map-indexed vector blocks)
                    :when (and (not (contains? @absorbed (:block-index block)))
                               (not= block heading)
-                              (meta-box-body-block? block heading page median-font blocks idx))]
+                              (meta-box-body-block? block heading page median-font blocks idx profile-id))]
                block))]
         (when (>= (count body-blocks) 2)
           (let [ordered (vec (sort-by (comp :y0 :bbox) body-blocks))
@@ -116,19 +125,20 @@
             merged-count (- (count blocks) (count result))]
         {:blocks result :merged-count merged-count}))))
 
-(defn- merge-page-blocks [page]
+(defn- merge-page-blocks [page profile-id]
   (let [median-font (ro/page-median-font (:blocks page))
         after-glyphs (filter-layout-glyphs (:blocks page))
         after-spread (merge-spread-title-pairs after-glyphs page median-font)
-        after-meta (merge-meta-box-bodies (:blocks after-spread) page median-font)]
+        after-meta (merge-meta-box-bodies (:blocks after-spread) page median-font profile-id)]
     {:page (assoc page :blocks (ro/normalize-page-blocks (:blocks after-meta)))
      :merged-count (+ (:merged-count after-spread) (:merged-count after-meta))}))
 
 (defn merge-fragmented-pages
   "Merge spread-title pairs and meta-box body fragments on each page."
-  [pages]
-  (let [results (mapv merge-page-blocks pages)
-        pages' (mapv :page results)
-        total (reduce + (map :merged-count results))]
-    {:pages pages'
-     :merged-block-count total}))
+  ([pages] (merge-fragmented-pages pages nil))
+  ([pages profile-id]
+   (let [results (mapv #(merge-page-blocks % profile-id) pages)
+         pages' (mapv :page results)
+         total (reduce + (map :merged-count results))]
+     {:pages pages'
+      :merged-block-count total})))

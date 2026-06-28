@@ -147,6 +147,16 @@
   (boolean (or (get-in block [:metadata :is-bold])
                (get-in block [:metadata :is_bold]))))
 
+(defn column-side
+  [block page-width]
+  (let [center (/ (+ (get-in block [:bbox :x0]) (get-in block [:bbox :x1])) 2.0)]
+    (if (< center (/ page-width 2.0)) "left" "right")))
+
+(defn column-major-sort-key
+  [page block]
+  (let [side (if (= "left" (column-side block (:width page))) 0 1)]
+    [(:page-number page) side (get-in block [:bbox :y0]) (get-in block [:bbox :x0])]))
+
 (defn page-median-font
   [blocks]
   (let [sizes (->> blocks
