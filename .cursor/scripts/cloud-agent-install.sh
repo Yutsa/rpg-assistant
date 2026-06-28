@@ -29,6 +29,16 @@ download_pdfs() {
   done
 }
 
+ensure_clojure_mcp() {
+  if [[ -f "${HOME}/.clojure/tools/mcp.edn" ]]; then
+    echo "Clojure MCP: already installed"
+    return
+  fi
+  echo "Installing Clojure MCP (io.github.bhauman/clojure-mcp)..."
+  clojure -Ttools install-latest :lib io.github.bhauman/clojure-mcp :as mcp
+  echo "Clojure MCP installed."
+}
+
 ensure_clojure() {
   if command -v clojure >/dev/null 2>&1; then
     echo "Clojure CLI: $(clojure --version)"
@@ -131,6 +141,7 @@ ensure_port_tools() {
 }
 
 ensure_clojure
+ensure_clojure_mcp
 ensure_port_tools
 download_pdfs
 setup_env_file
