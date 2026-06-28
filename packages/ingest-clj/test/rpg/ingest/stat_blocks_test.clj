@@ -7,8 +7,19 @@
             [rpg.ingest.test-fixtures.layout :as layout])
   (:import [java.io File]))
 
+(defn- pdf-path [filename]
+  (File. (str "../../data/pdfs/" filename)))
+
 (defn- momie-pdf-path []
-  (File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf"))
+  (pdf-path "COF2_10_Mondanites_Et_Momies_web_v1a.pdf"))
+
+(defn- stat-block-names [pdf-path]
+  (let [pdf (.getAbsolutePath pdf-path)
+        extracted (pdf/extract-document pdf)
+        profile (registry/resolve-profile "cof2" (:pages extracted))
+        {:keys [pages]} (bm/merge-fragmented-pages (:pages extracted) profile)
+        {:keys [spans]} (stat-core/annotate-stat-blocks profile pages)]
+    (set (keep #(not-empty (:name (stat-core/parse-span :cof2 %))) spans))))
 
 (defn- momie-pages []
   (let [pdf (.getAbsolutePath (momie-pdf-path))
@@ -51,3 +62,26 @@
     (let [page (layout/make-page [(layout/make-block 1 0 "| NC 4 AZULRIA" 12)])
           block (first (:blocks page))]
       (is (stat-core/false-heading? :cof2 block (:blocks page) 0 page)))))
+
+(deftest cof2-faelys-named-stat-blocks-like-python
+  (testing "Faelys PDF detects the same named stat blocks as Python"
+    (let [pdf (pdf-path "COF2_07_Le_Dernier_Faelys_web_v0.pdf")]
+      (when (.exists pdf)
+        (is (= #{"LES FLEURS GARDIENNES" "PLANTE CARNIVORE" "ABEILLE GÉANTE"
+                 "MILLE-PATTES" "FÉE" "CENTAURE" "SOMBRE FÉE (ARACHNOÏDE)"}
+               (stat-block-names pdf)))))))
+
+(deftest cof2-croissez-named-stat-blocks-like-python
+  (testing "Croissez PDF detects the same named stat blocks as Python"
+    (let [pdf (pdf-path "COF2_Croissez_Et_Multipliez.pdf")]
+      (when (.exists pdf)
+        (is (= #{"ORC DE BASE" "SERGENT ORC" "PANTHÈRE" "ROGÙN"}
+               (stat-block-names pdf)))))))
+
+(deftest cof2-xelys-named-stat-blocks-at-least-python
+  (testing "Xélys PDF detects at least the Python named stat blocks"
+    (let [pdf (pdf-path "COF2_Mortelle_Xelys.pdf")]
+      (when (.exists pdf)
+        (let [names (stat-block-names pdf)]
+          (is (contains? names "HERMÉSIA"))
+          (is (contains? names "DECTIANN")))))))

@@ -5,8 +5,11 @@
             [rpg.ingest.stat-blocks.core :as core]
             [rpg.ingest.stat-blocks.text-utils :as tu]))
 
-(def ^:private nc-re #"(?i)\|\s*NC\s*(\d+)")
-(def ^:private name-nc-re #"(?im)^(.+?)\s*\|\s*NC\s*(\d+)\s*$")
+(def ^:private nc-re #"(?i)(?:\|\s*)?NC\s*(\d+(?:/\d+)?)")
+(def ^:private nc-name-trailing-re #"(?i)(?:\|\s*)?NC\s*(\d+(?:/\d+)?)\s+(.+)$")
+(def ^:private nc-only-line-re #"(?i)^NC\s*\d+(?:/\d+)?$")
+(def ^:private meta-type-prefix-re #"(?i)^(?:TAILLE|CRÉATURE|TYPE)\b")
+(def ^:private name-nc-re #"(?im)^(.+?)\s*\|\s*NC\s*(\d+(?:/\d+)?)\s*$")
 (def ^:private stats-line-re #"(?i)\b(AGI|FOR|CON|INT|PER|CHA|VOL)\s*([+-])\s*(\d+)")
 (def ^:private stats-line-start-re #"(?i)^(AGI|FOR|CON|INT|PER|CHA|VOL)\s*[+-]?\s*\d")
 (def ^:private stat-block-body-re
@@ -53,6 +56,38 @@
 
 (defn- has-nc? [text] (boolean (re-find nc-re (tu/strip-layout-glyphs text))))
 
+(defn- parse-nc-value [raw]
+  (Integer/parseInt (re-find #"\d+" (str raw))))
+
+(defn- header-name-candidate [text]
+  (let [t (str/trim text)]
+    (if (str/starts-with? t "|")
+      (str/trim (subs t 1))
+      t)))
+
+(defn- is-type-label? [text]
+  (contains? type-label-words (-> text str/trim str/upper-case)))
+
+(defn- is-meta-type-label? [text]
+  (boolean (re-find meta-type-prefix-re (str/trim text))))
+
+(defn- is-stat-token-heading? [text]
+  (boolean (re-find #"(?i)^(DEF|PV|Init|PM)\b" (str/trim text))))
+
+(defn- is-piped-name-header? [text]
+  (when (str/starts-with? (str/trim text) "|")
+    (when-let [candidate (header-name-candidate text)]
+      (and (seq candidate)
+           (not (has-nc? candidate))
+           (not (is-type-label? candidate))
+           (not (is-meta-type-label? candidate))
+           (not (is-stat-token-heading? candidate))
+           (not (ro/is-meta-box-heading? candidate))
+           (or (re-matches all-caps-name-re candidate)
+               (re-matches #"(?i)^[A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ].*\(.+\)$" candidate)
+               (and (str/includes? candidate ",")
+                    (re-matches #"(?i)^[A-ZÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ].+" candidate)))))))
+
 (defn- is-stats-line? [text]
   (let [normalized (tu/strip-layout-glyphs text)]
     (and (seq normalized)
@@ -62,9 +97,6 @@
   (or (= "icon" (get-in block [:metadata :stat-block-role]))
       (and (tu/has-icon-glyphs? (:text block))
            (not (seq (tu/strip-layout-glyphs (:text block)))))))
-
-(defn- is-type-label? [text]
-  (contains? type-label-words (-> text str/trim str/upper-case)))
 
 (defn- is-icon-prefixed-name? [block]
   (and (tu/has-icon-glyphs? (:text block))
@@ -80,16 +112,22 @@
     (let [text (normalized block)]
       (cond
         (or (not (seq text)) (ro/is-page-number-label? text)) false
-        (has-nc? text) true
+        (has-nc? text) (not (re-matches nc-only-line-re (str/trim text)))
+        (is-piped-name-header? text) true
         (is-stats-line? text) false
         (and (re-matches stats-line-start-re text) (is-stats-line? text)) false
         (is-type-label? text) false
+        (is-meta-type-label? text) false
+        (is-stat-token-heading? text) false
         :else
         (when-let [next-block (nth page-blocks (inc idx) nil)]
           (when (is-stats-line? (normalized next-block))
             (let [candidate text]
               (cond
                 (is-type-label? candidate) false
+                (is-meta-type-label? candidate) false
+                (is-stat-token-heading? candidate) false
+                (ro/is-meta-box-heading? candidate) false
                 (or (re-matches all-caps-name-re candidate)
                     (str/includes? candidate ",")) true
                 (and (ro/block-bold? block) (string-uppercase? candidate)) true
@@ -125,7 +163,8 @@
       (if (.find matcher)
         (recur (conj acc {:start (.start matcher)
                           :end (.end matcher)
-                          :group1 (.group matcher 1)}))
+                          :group1 (when (pos? (.groupCount matcher))
+                                    (.group matcher 1))}))
         acc))))
 
 (defn- parse-ability-heuristics [text]
@@ -164,7 +203,7 @@
           matches (regex-matches inline-ability-title-re search-text)]
       (vec
        (for [[idx m] (map-indexed vector matches)
-             :let [title (normalize-ability-title (:group1 m))]
+             :let [title (when (:group1 m) (normalize-ability-title (:group1 m)))]
              :when (and (seq title) (not (re-find inline-ability-skip-re title)))]
          (let [body-start (:end m)
                body-end (if (< (inc idx) (count matches))
@@ -192,6 +231,8 @@
       (cond
         (not (seq text)) false
         (is-type-label? text) true
+        (is-meta-type-label? text) true
+        (re-matches nc-only-line-re (str/trim text)) true
         (is-stats-line? text) true
         (is-ability-block? block) true
         (re-find stat-block-body-re text) true
@@ -215,6 +256,7 @@
 (defn- is-callout-interrupt-block? [block]
   (let [text (normalized block)]
     (and (seq text)
+         (not (is-meta-type-label? text))
          (ro/block-bold? block)
          (string-uppercase? (.replace text "\n" " "))
          (<= (count (str/split text #"\s+")) 4))))
@@ -251,6 +293,7 @@
     :else
     (let [text (normalized block)]
       (and (seq text)
+           (not (is-meta-type-label? text))
            (not (is-ability-block? block))
            (not (is-stats-line? text))
            (not (is-icon-prefixed-name? block))
@@ -349,7 +392,10 @@
                      span-blocks []
                      span-id nil]
                 (if (>= idx (count (:blocks page)))
-                  {:pages pages :spans spans}
+                  {:pages pages
+                   :spans (if (and span-id (seq span-blocks))
+                            (flush-span spans span-id span-blocks)
+                            spans)}
                   (let [page-num (:page-number page)
                         blocks (:blocks page)
                         block (nth blocks idx)]
@@ -367,6 +413,9 @@
                                      name-line (str/trim (first (str/split first-line #"\|" 2)))]
                                  (and (seq name-line)
                                       (re-matches all-caps-name-re name-line)
+                                      (not (is-type-label? name-line))
+                                      (not (is-meta-type-label? name-line))
+                                      (not (is-stat-token-heading? name-line))
                                       (not (ro/is-meta-box-heading? name-line))))))
                       (let [new-span-id (ids/new-id "sb")
                             pages' (reduce #(tag-block %1 page-num %2 new-span-id "icon") pages pending)
@@ -433,7 +482,9 @@
                                span-id)
 
                         :else
-                        (recur pages idx pending (flush-span spans span-id span-blocks) [] nil))
+                        (if (some is-ability-block? (subvec blocks (inc idx)))
+                          (recur pages (inc idx) pending spans span-blocks span-id)
+                          (recur pages idx pending (flush-span spans span-id span-blocks) [] nil)))
 
                       :else
                       (recur pages (inc idx) pending spans span-blocks span-id))))))]
@@ -466,6 +517,7 @@
       (is-icon-block? block) true
       (is-icon-prefixed-name? block) true
       (is-type-label? text) true
+      (is-meta-type-label? text) true
       :else (is-stat-header-block? block page-blocks idx))))
 
 (defmethod core/detect-spans :cof2 [_ pages]
@@ -483,14 +535,24 @@
       (when (seq text)
         (when-let [header-match (re-find name-nc-re text)]
           (let [header-part (str/trim (nth header-match 1))]
-            (swap! parsed assoc :nc (Integer/parseInt (nth header-match 2)))
+            (swap! parsed assoc :nc (parse-nc-value (nth header-match 2)))
             (if (str/includes? header-part ",")
               (let [[name-part sub-part] (str/split header-part #"," 2)]
                 (swap! parsed assoc :name (str/trim name-part) :subtitle (str/trim sub-part)))
               (swap! parsed assoc :name header-part))))
-        (when-let [nc-line (first (filter #(re-find #"(?i)\|\s*NC\s*\d+" %) (str/split-lines text)))]
-          (when-let [m (re-find #"(?i)\|\s*NC\s*(\d+)\s+(.+)$" (str/trim nc-line))]
-            (swap! parsed assoc :nc (Integer/parseInt (second m)))
+        (when (is-piped-name-header? text)
+          (let [candidate (header-name-candidate text)]
+            (when (str/includes? candidate ",")
+              (let [[name-part sub-part] (str/split candidate #"," 2)]
+                (swap! parsed assoc :name (str/trim name-part) :subtitle (str/trim sub-part))))
+            (when-not (seq (:name @parsed))
+              (swap! parsed assoc :name (str/trim (first (str/split candidate #",")))))))
+        (when (re-matches nc-only-line-re (str/trim text))
+          (when-let [m (re-find nc-re text)]
+            (swap! parsed assoc :nc (parse-nc-value (second m)))))
+        (when-let [nc-line (first (filter #(re-find nc-re %) (str/split-lines text)))]
+          (when-let [m (re-find nc-name-trailing-re (str/trim nc-line))]
+            (swap! parsed assoc :nc (parse-nc-value (second m)))
             (let [header-part (str/trim (nth m 2))]
               (when (str/includes? header-part ",")
                 (let [[name-part sub-part] (str/split header-part #"," 2)]
@@ -507,17 +569,17 @@
         (when (contains? cof-attributes key)
           (swap! parsed assoc-in [:attributes (keyword key)]
                  (if (= sign "+") (Integer/parseInt value) (- (Integer/parseInt value)))))))
-    (doseq [block (ability-blocks-in-reading-order span page-width)]
+    (doseq [block (:blocks span)]
       (let [text (tu/strip-layout-glyphs (:text block))
-            ability (or (parse-ability-block text)
-                        (some identity
-                              (for [a (parse-ability-heuristics text)
-                                    :when (and (:title a)
-                                               (not (re-find #"^(?i)(Masse|Équipement)\b" (:title a))))]
-                                a)))]
-        (when (and ability
-                   (not (some #(= (:title ability) (:title %)) (:abilities @parsed))))
-          (swap! parsed update :abilities conj ability))))
+            from-block (remove nil?
+                               (concat
+                                (when-let [a (parse-ability-block text)] [a])
+                                (parse-ability-heuristics text)))]
+        (doseq [ability from-block
+                :when (and (:title ability)
+                           (not (re-find #"^(?i)(Masse|Équipement)\b" (:title ability))))]
+          (when-not (some #(= (:title ability) (:title %)) (:abilities @parsed))
+            (swap! parsed update :abilities conj ability)))))
     (let [inline (parse-abilities-from-inline-text combined)
           abilities (:abilities @parsed)
           use-inline? (or (empty? abilities)
@@ -540,6 +602,7 @@
           (when (and (seq candidate)
                      (re-matches all-caps-name-re candidate)
                      (not (is-stats-line? candidate))
+                     (not (is-meta-type-label? candidate))
                      (not (re-find #"(?i)^(DEF|PV|Init|PM)\b" candidate)))
             (swap! parsed assoc :name (-> candidate (str/split #",") first str/trim))))))
     (let [p @parsed
