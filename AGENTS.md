@@ -178,6 +178,7 @@ Projet Python géré par `uv` (voir `readme.md` pour install/CLI/MCP/API). Quatr
 Au démarrage, Cursor exécute `uv sync` puis `.cursor/scripts/cloud-agent-install.sh` :
 
 - **Clojure CLI** (`clojure`, `clj`) — installé par le script si absent (Java 21 déjà présent sur la VM).
+- **Clojure MCP** ([`io.github.bhauman/clojure-mcp`](https://github.com/bhauman/clojure-mcp)) — installé globalement (`clojure -Ttools install-latest`) ; serveur MCP `clojure-mcp` dans `.cursor/mcp.json` (profil `:cli-assist` pour Cursor).
 - **Node.js 22.22.3** (via nvm, version `apps/web/.nvmrc`) + **`npm install`** dans `apps/web` — évite le téléchargement Node et les dépendances au premier `dev-stack.sh`.
 - **Playwright Chromium** — pré-installé (`npx playwright install chromium`) pour les captures d'écran de preuve sans téléchargement (~115 Mo).
 - **`lsof`** — installé si absent (libération des ports 8000/4200).

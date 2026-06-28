@@ -20,6 +20,16 @@
       "env": {
         "PATH": "/home/edouard/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/bin"
       }
+    },
+    "clojure-mcp": {
+      "type": "stdio",
+      "command": "clojure",
+      "args": [
+        "-Tmcp",
+        "start",
+        ":config-profile",
+        ":cli-assist"
+      ]
     }
   }
 }
