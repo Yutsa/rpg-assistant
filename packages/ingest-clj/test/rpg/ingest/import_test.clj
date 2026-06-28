@@ -74,7 +74,9 @@
             (is (> (:block_count (:stats run)) 150))
             (is (> (:section_count (:stats run)) 5))
             (is (> (:chunk_count (:stats run)) 50))
-            (is (>= (:text_coverage_ratio (:stats run)) 0.3))))))))
+            (is (>= (:text_coverage_ratio (:stats run)) 0.3))
+            (is (>= (:stat_block_count (:stats run)) 2))
+            (is (= "cof2" (:stat_block_profile (:stats run))))))))))
 
 (deftest import-rejects-low-coverage-pdf
   (testing "Synthetic sparse PDF is rejected at default coverage threshold"

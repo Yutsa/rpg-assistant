@@ -3,7 +3,9 @@
   (:require [clojure.set :as set]
             [clojure.string :as str]
             [rpg.ingest.ids :as ids]
-            [rpg.ingest.reading-order :as ro]))
+            [rpg.ingest.reading-order :as ro]
+            [rpg.ingest.stat-blocks.core :as stat-core]
+            [rpg.ingest.stat-blocks.registry]))
 
 (def ^:private spatial-y-tolerance 5.0)
 (def ^:private preamble-title "Introduction")
@@ -40,7 +42,7 @@
                 headings)))
 
 (defn- heading-candidate?
-  [block page median page-blocks block-idx]
+  [block page median page-blocks block-idx profile-id]
   (let [text (str/trim (:text block))
         max-font (ro/block-max-font block)
         is-bold (ro/block-bold? block)]
@@ -52,6 +54,8 @@
          (not (ro/is-decorative-spread-title? block page median))
          (not (and (pos? block-idx)
                    (ro/is-spread-title-pair? (nth page-blocks (dec block-idx)) block page median)))
+         (not (when profile-id
+                (stat-core/profile-false-heading? profile-id block page-blocks block-idx page)))
          (or (ro/is-chapter-heading? text)
              (ro/is-meta-box-heading? text)
              (ro/is-reward-box-heading? text)
@@ -298,7 +302,7 @@
              (section-for-body-block pages page-num block idx sections anchors)]))))
 
 (defn assign-sections
-  [pages {:keys [campaign-id document-id]}]
+  [pages {:keys [campaign-id document-id profile-id]}]
   (let [pages (ro/normalize-reading-order pages)
         page-count (if (seq pages) (:page-number (last pages)) 1)
         page-medians (into {} (map (fn [p] [(:page-number p) (ro/page-median-font (:blocks p))]) pages))
@@ -307,7 +311,9 @@
          (for [page pages
                :let [median (get page-medians (:page-number page))]
                [idx block] (map-indexed vector (:blocks page))
-               :when (heading-candidate? block page median (:blocks page) idx)]
+               :when (and (not (#{"header" "stats" "icon"}
+                                (get-in block [:metadata :stat-block-role])))
+                          (heading-candidate? block page median (:blocks page) idx profile-id))]
            [(:page-number page) (:block-index block) (str/trim (:text block))
             (heading-level (str/trim (:text block)) block median)]))]
     (if (empty? headings)

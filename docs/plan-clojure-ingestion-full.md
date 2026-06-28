@@ -13,10 +13,10 @@
 | 2 | Ordre de lecture + sections | ✅ fait | `reading_order.clj`, `sections.clj`, tests |
 | 3 | Chunks 1:1 | ✅ fait | `chunks.clj`, `text/reflow.clj`, tests — PR #42 |
 | **4** | **Pipeline complète** | **✅ fait** | **`pipeline.clj` full, `insert-sections!` / `insert-chunks!`, `coverage.clj`** |
-| 5 | Fiches monstre (profils jeu) | **🔲 à faire** | `stat_blocks/` — Malli + multimethodes, profil `:cof2` |
+| 5 | Fiches monstre (profils jeu) | ✅ fait | `stat_blocks/` — Malli + multimethodes, profil `:cof2` |
 | 6 | API / MCP / sémantique | hors scope | — |
 
-### Prochaine phase : **5 — Fiches monstre (profils jeu)**
+### Prochaine phase : **6 — API / MCP / sémantique** (hors scope ingestion raw)
 
 **Objectif** : framework **profil par jeu** (Malli pour les formes de données, **multimethodes** pour le dispatch) ; première implémentation **`:cof2`**, extensible à d'autres jeux.
 
@@ -44,7 +44,7 @@
 cd packages/ingest-clj && clojure -M:test
 ```
 
-**Dernière mise à jour du suivi** : 2026-06-27 (phases 0–4 livrées ; phase 5 affinée — profils Malli + multimethodes).
+**Dernière mise à jour du suivi** : 2026-06-28 (phase 5 livrée — profils `:cof2` / `:generic`, chunks `stat_block`).
 
 ---
 

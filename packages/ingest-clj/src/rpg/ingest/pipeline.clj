@@ -8,6 +8,8 @@
             [rpg.ingest.extract.pdf :as pdf]
             [rpg.ingest.ids :as ids]
             [rpg.ingest.sections :as sections]
+            [rpg.ingest.stat-blocks.core :as stat-blocks]
+            [rpg.ingest.stat-blocks.registry :as stat-registry]
             [rpg.ingest.storage.db :as db]
             [rpg.ingest.storage.raw :as raw]))
 
@@ -58,14 +60,17 @@
         (:pages extracted)))
 
 (defn- run-stats
-  [pdf-path page-count block-count section-count chunk-count avg-coverage uniqueness]
+  [pdf-path page-count block-count section-count chunk-count avg-coverage uniqueness
+   stat-block-count stat-block-profile]
   (merge {:page_count page-count
           :block_count block-count
           :section_count section-count
           :chunk_count chunk-count
           :text_coverage_ratio avg-coverage
           :source_pdf_path (.getAbsolutePath (java.io.File. pdf-path))
-          :extraction_method "pdfbox"}
+          :extraction_method "pdfbox"
+          :stat_block_count stat-block-count
+          :stat_block_profile stat-block-profile}
          uniqueness))
 
 (defn- import-result [run-id campaign-id document-id status & {:keys [stats error-message]}]
@@ -92,13 +97,15 @@
     (raw/insert-chunks! tx chunks)))
 
 (defn- complete-import!
-  [ds run-id campaign-id document-id pdf-path pages blocks sections chunks]
+  [ds run-id campaign-id document-id pdf-path pages blocks sections chunks
+   stat-block-count stat-block-profile]
   (let [uniqueness (chunks/chunk-uniqueness-stats chunks)
         stats (run-stats pdf-path (count pages) (count blocks)
                          (count sections) (count chunks)
                          (coverage/document-coverage-ratio
                           (map :text-coverage-ratio pages))
-                         uniqueness)]
+                         uniqueness
+                         stat-block-count stat-block-profile)]
     (raw/update-ingestion-run! ds run-id :status "completed" :stats stats :finished true)
     (import-result run-id campaign-id document-id "completed" :stats stats)))
 
@@ -143,34 +150,40 @@
                                    :status "running"})
     (try
       (let [extracted (pdf/extract-document pdf-path)
-            {:keys [pages]} (block-merging/merge-fragmented-pages (:pages extracted))
+            profile-id (stat-registry/resolve-profile game-system (:pages extracted))
+            {:keys [pages]} (block-merging/merge-fragmented-pages (:pages extracted) profile-id)
             extracted' (assoc extracted :pages pages)
-            page-ratios (page-coverage-ratios extracted')
+            {:keys [pages spans profile-id]}
+            (stat-blocks/annotate-stat-blocks profile-id (:pages extracted'))
+            extracted'' (assoc extracted' :pages pages)
+            page-ratios (page-coverage-ratios extracted'')
             avg-coverage (coverage/document-coverage-ratio page-ratios)]
         (if (coverage/scanned-or-unusable? page-ratios threshold)
           (reject-import! ds run-id campaign-id document-id
-                          avg-coverage (count (:pages extracted')) threshold)
-          (let [{:keys [pages blocks]} (build-page-records document-id extracted' page-ratios)
-                section-result (sections/assign-sections (:pages extracted')
+                          avg-coverage (count (:pages extracted'')) threshold)
+          (let [layout-pages pages
+                {:keys [pages blocks]} (build-page-records document-id extracted'' page-ratios)
+                section-result (sections/assign-sections layout-pages
                                                          {:campaign-id campaign-id
-                                                          :document-id document-id})
-                built-chunks (chunks/build-chunks-1to1 (:pages extracted')
-                                                       {:campaign-id campaign-id
-                                                        :document-id document-id
-                                                        :block-assignments (:block-assignments section-result)})
+                                                          :document-id document-id
+                                                          :profile-id profile-id})
+                built-chunks (chunks/build-chunks layout-pages section-result spans profile-id
+                                                  {:campaign-id campaign-id
+                                                   :document-id document-id})
                 refined-sections (chunks/refine-section-page-ends (:sections section-result)
                                                                   built-chunks)]
             (persist-extracted-data! ds {:run-id run-id
-                                       :document-id document-id
-                                       :campaign-id campaign-id
-                                       :pdf-path pdf-path
-                                       :content-hash content-hash
-                                       :pages pages
-                                       :blocks blocks
-                                       :sections refined-sections
-                                       :chunks built-chunks
-                                       :reimport reimport})
+                                         :document-id document-id
+                                         :campaign-id campaign-id
+                                         :pdf-path pdf-path
+                                         :content-hash content-hash
+                                         :pages pages
+                                         :blocks blocks
+                                         :sections refined-sections
+                                         :chunks built-chunks
+                                         :reimport reimport})
             (complete-import! ds run-id campaign-id document-id pdf-path
-                              pages blocks refined-sections built-chunks))))
+                              pages blocks refined-sections built-chunks
+                              (count spans) (name profile-id)))))
       (catch Exception e
         (fail-import! ds run-id campaign-id document-id e)))))

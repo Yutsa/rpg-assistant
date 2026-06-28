@@ -67,6 +67,20 @@
             "FICHE TECHNIQUE section should have one body chunk")
         (is (re-find #"Action/Enquête" (:text (first fiche-chunks))))))))
 
+(deftest wrap-around-merge-page-15-stat-block
+  (let [blocks [(layout/make-block 15 0
+                                  "PASSAGE DANS LA PIERRE :\nDeux fois par jour, la momie peut se déplacer dans toutes les"
+                                  :font-size 10 :bold true :x0 51.0 :y0 512.0 :x1 213.8 :y1 559.8)
+                (layout/make-block 15 1
+                                  "directions. Elle peut emmener une personne avec elle grâce à ce pouvoir."
+                                  :font-size 10 :x0 260.8 :y0 45.7 :x1 426.3 :y1 70.2)]
+        page (layout/make-page blocks :width 500 :height 700)
+        {:keys [pages merged-block-count]} (merge/merge-fragmented-pages [page] :cof2)
+        merged (:blocks (first pages))]
+    (is (pos? merged-block-count))
+    (is (= 1 (count merged)))
+    (is (re-find #"dans toutes les directions" (:text (first merged))))))
+
 (deftest synthetic-page-5-block-assignments-still-valid
   (let [page (layout/make-page [(block 5 0 "MONDANITÉS" 42 :bold true :x0 104 :y0 36 :x1 384 :y1 88)
                                 (block 5 1 "ET MOMIE" 42 :bold true :x0 139 :y0 82 :x1 333 :y1 134)
