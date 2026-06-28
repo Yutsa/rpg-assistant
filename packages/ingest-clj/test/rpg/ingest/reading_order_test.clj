@@ -12,8 +12,8 @@
    :bbox {:x0 x0 :y0 y0 :x1 x1 :y1 y1}
    :metadata {}})
 
-(deftest spatial-sort-key-orders-by-x0-then-y0
-  (is (= [[40 100 200] [40 200 200] [260 50 400] [260 150 400]]
+(deftest spatial-sort-key-orders-by-y-then-x0
+  (is (= [[50.0 260] [100.0 40] [150.0 260] [200.0 40]]
          (mapv ro/spatial-sort-key
                (ro/sort-blocks-spatial
                 [(block 0 "R-haut" 260 50 400 70)
@@ -21,14 +21,14 @@
                  (block 2 "L-haut" 40 100 200 120)
                  (block 3 "R-bas" 260 150 400 170)])))))
 
-(deftest normalize-page-blocks-spatial-not-y-interleaved
-  (testing "Cluster x0 bas avant cluster x0 haut, même si droite commence plus haut en y"
+(deftest normalize-page-blocks-spatial-y-interleaved
+  (testing "Tri par bande y puis x0 (comme PyMuPDF / Python)"
     (let [blocks [(block 0 "R-haut" 260 50 400 70)
                   (block 1 "L-bas" 40 200 200 220)
                   (block 2 "L-haut" 40 100 200 120)
                   (block 3 "R-bas" 260 150 400 170)]
           ordered (ro/normalize-page-blocks blocks)]
-      (is (= ["L-haut" "L-bas" "R-haut" "R-bas"] (mapv :text ordered)))
+      (is (= ["R-haut" "L-haut" "R-bas" "L-bas"] (mapv :text ordered)))
       (is (= [0 1 2 3] (mapv :block-index ordered)))
       (is (ro/spatial-ordered? ordered)))))
 
@@ -52,16 +52,13 @@
         (is (ro/spatial-ordered? blocks))
         (is (= (range (count blocks)) (mapv :block-index blocks)))))))
 
-(deftest momie-page-7-low-x-cluster-before-high-x-cluster
+(deftest momie-page-7-blocks-sorted-by-y-then-x
   (let [momie (File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
     (when (.exists momie)
       (let [blocks (:blocks (pdf/extract-page (.getAbsolutePath momie) 7))
-            xs (mapv #(get-in % [:bbox :x0]) blocks)
-            pivot (count (take-while #(< % 120.0) xs))]
-        (is (pos? pivot))
-        (is (< pivot (count xs)))
-        (is (every? #(< % 120.0) (take pivot xs)))
-        (is (every? #(> % 200.0) (drop pivot xs)))))))
+            keys (mapv ro/spatial-sort-key blocks)]
+        (is (ro/spatial-ordered? blocks))
+        (is (= keys (sort keys)))))))
 
 (deftest momie-page-7-left-cluster-y-non-decreasing
   (let [momie (File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]
@@ -78,7 +75,7 @@
             left-blocks (filter #(< (get-in % [:bbox :x0]) 120.0) blocks)
             right-blocks (filter #(> (get-in % [:bbox :x0]) 200.0) blocks)]
         (is (re-find #"Dans les vestiges" (:text (first blocks))))
-        (is (re-find #"L.histoire pour le MJ" (:text (second blocks))))
+        (is (some #(re-find #"L.histoire pour le MJ" (:text %)) blocks))
         (is (re-find #"Depuis lors" (:text (first right-blocks))))
         (is (some #(re-find #"Taless Rhann" (:text %)) left-blocks))))))
 

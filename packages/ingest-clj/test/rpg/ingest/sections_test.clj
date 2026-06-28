@@ -132,11 +132,11 @@
         assignments (:block-assignments result)]
     (is (= 3 (count sections)))
     (is (= (:id (first (filter #(= "EN QUELQUES MOTS" (:title %)) sections)))
-           (get assignments "block_doc_test_005_000")))
+           (get assignments "block_doc_test_005_004")))
     (is (= (:id (first (filter #(= "FICHE TECHNIQUE" (:title %)) sections)))
-           (get assignments "block_doc_test_005_006")))
+           (get assignments "block_doc_test_005_005")))
     (is (= (:id (first (filter #(= "LES GRANDES LIGNES" (:title %)) sections)))
-           (get assignments "block_doc_test_005_005")))))
+           (get assignments "block_doc_test_005_007")))))
 
 (deftest momie-page-5-real-pdf-sections-and-assignments
   (let [momie (File. "../../data/pdfs/COF2_10_Mondanites_Et_Momies_web_v1a.pdf")]

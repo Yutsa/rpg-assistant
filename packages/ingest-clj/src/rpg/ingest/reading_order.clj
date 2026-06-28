@@ -54,12 +54,17 @@
 (def ^:private conditional-hook-re
   #"(?i)^Si\s+")
 
+(def ^:private spatial-y-tolerance 5.0)
+
+(defn- y-bucket [block]
+  (let [y0 (double (get-in block [:bbox :y0]))]
+    (* (Math/round (/ y0 spatial-y-tolerance)) spatial-y-tolerance)))
+
 (defn spatial-sort-key
-  "Tri générique : position horizontale puis verticale."
+  "Tri aligné Python : bande verticale (y) puis x0."
   [block]
-  [(get-in block [:bbox :x0])
-   (get-in block [:bbox :y0])
-   (get-in block [:bbox :x1])])
+  [(y-bucket block)
+   (get-in block [:bbox :x0])])
 
 (defn sort-blocks-spatial
   [blocks]
@@ -85,7 +90,7 @@
   (mapv normalize-page pages))
 
 (defn spatial-ordered?
-  "Vérifie qu'une liste de blocs respecte l'ordre (x0, y0, x1)."
+  "Vérifie qu'une liste de blocs respecte l'ordre (y_bucket, x0)."
   [blocks]
   (every? true?
           (map (fn [[prev cur]]

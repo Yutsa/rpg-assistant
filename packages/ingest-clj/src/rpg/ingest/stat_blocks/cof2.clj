@@ -157,20 +157,20 @@
 
 (defn- parse-abilities-from-inline-text [text]
   (let [normalized (tu/strip-layout-glyphs text)
-        init-match (re-find #"(?i)\(I\)\s*Init\." normalized)
-        search-text (if init-match
-                      (subs normalized (count init-match))
-                      normalized)
-        matches (regex-matches inline-ability-title-re search-text)]
-    (vec
-     (for [[idx m] (map-indexed vector matches)
-           :let [title (normalize-ability-title (:group1 m))]
-           :when (and (seq title) (not (re-find inline-ability-skip-re title)))]
-       (let [body-start (:end m)
-             body-end (if (< (inc idx) (count matches))
-                        (:start (nth matches (inc idx)))
-                        (count search-text))]
-         {:title title :text (str/trim (subs search-text body-start body-end))})))))
+        init-match (re-matcher #"(?i)\(I\)\s*Init\." normalized)]
+    (let [search-text (if (.find init-match)
+                        (subs normalized (.end init-match))
+                        normalized)
+          matches (regex-matches inline-ability-title-re search-text)]
+      (vec
+       (for [[idx m] (map-indexed vector matches)
+             :let [title (normalize-ability-title (:group1 m))]
+             :when (and (seq title) (not (re-find inline-ability-skip-re title)))]
+         (let [body-start (:end m)
+               body-end (if (< (inc idx) (count matches))
+                          (:start (nth matches (inc idx)))
+                          (count search-text))]
+           {:title title :text (str/trim (subs search-text body-start body-end))}))))))
 
 (defn- is-ability-body-continuation? [block previous]
   (and previous
@@ -318,6 +318,11 @@
 (defn- with-page-number [block page-num]
   (assoc block :page-number page-num))
 
+(defn- span-entry [block page-num role]
+  (-> block
+      (with-page-number page-num)
+      (assoc-in [:metadata :stat-block-role] role)))
+
 (defn- flush-span [spans span-id span-blocks]
   (if (seq span-blocks)
     (let [page-nums (map :page-number span-blocks)]
@@ -328,102 +333,116 @@
     spans))
 
 (defn- detect-spans-on-pages [pages]
-  (letfn [(process-page [pages spans page pending-icons]
-            (loop [pages pages
-                   idx 0
-                   pending pending-icons
-                   spans spans
-                   span-blocks []
-                   span-id nil]
-              (if (>= idx (count (:blocks page)))
-                {:pages pages :spans spans}
-                (let [page-num (:page-number page)
-                      blocks (:blocks page)
-                      block (nth blocks idx)]
-                  (cond
-                    (is-icon-block? block)
-                    (if (and span-id
-                             (some #(= "header" (get-in % [:metadata :stat-block-role])) span-blocks))
-                      (let [pages' (tag-block pages page-num block span-id "icon")]
-                        (recur pages' (inc idx) [block] (flush-span spans span-id span-blocks) [] nil))
-                      (recur pages (inc idx) (conj pending block) spans span-blocks span-id))
-
-                    (is-stat-header-block? block blocks idx)
-                    (let [new-span-id (ids/new-id "sb")
-                          pages' (reduce #(tag-block %1 page-num %2 new-span-id "icon") pages pending)
-                          span-blocks' (mapv #(with-page-number % page-num) pending)]
-                      (if (and (pos? idx)
-                               (not (get-in (nth blocks (dec idx)) [:metadata :stat-block-id])))
-                        (let [prev (nth blocks (dec idx))
-                              prev-text (normalized prev)
-                              header-text (normalized block)]
-                          (if (and (seq prev-text) (str/includes? header-text prev-text))
-                            (recur (tag-block (tag-block pages' page-num prev new-span-id "header")
-                                              page-num block new-span-id "header")
-                                   (inc idx) []
-                                   spans
-                                   (-> span-blocks'
-                                       (conj (with-page-number prev page-num))
-                                       (conj (with-page-number block page-num)))
-                                   new-span-id)
-                            (recur (tag-block pages' page-num block new-span-id "header")
-                                   (inc idx) []
-                                   spans
-                                   (conj span-blocks' (with-page-number block page-num))
-                                   new-span-id)))
-                        (recur (tag-block pages' page-num block new-span-id "header")
-                               (inc idx) []
-                               spans
-                               (conj span-blocks' (with-page-number block page-num))
-                               new-span-id)))
-
-                    span-id
+  (let [pages' (mapv (fn [page]
+                         (update page :blocks
+                                 (fn [blocks]
+                                   (->> blocks
+                                        (sort-by #(ro/column-major-sort-key page %))
+                                        vec
+                                        ro/reindex-blocks))))
+                     pages)]
+    (letfn [(process-page [pages spans page pending-icons]
+              (loop [pages pages
+                     idx 0
+                     pending pending-icons
+                     spans spans
+                     span-blocks []
+                     span-id nil]
+                (if (>= idx (count (:blocks page)))
+                  {:pages pages :spans spans}
+                  (let [page-num (:page-number page)
+                        blocks (:blocks page)
+                        block (nth blocks idx)]
                     (cond
-                      (ends-stat-block? block blocks idx)
-                      (if (and (is-callout-interrupt-block? block)
-                               (not (is-stat-header-block? block blocks idx)))
+                      (is-icon-block? block)
+                      (if (and span-id
+                               (some #(= "header" (get-in % [:metadata :stat-block-role])) span-blocks))
+                        (let [pages' (tag-block pages page-num block span-id "icon")]
+                          (recur pages' (inc idx) [block] (flush-span spans span-id span-blocks) [] nil))
+                        (recur pages (inc idx) (conj pending block) spans span-blocks span-id))
+
+                      (or (is-stat-header-block? block blocks idx)
+                          (and (seq pending)
+                               (let [first-line (str/trim (first (str/split-lines (normalized block))))
+                                     name-line (str/trim (first (str/split first-line #"\|" 2)))]
+                                 (and (seq name-line)
+                                      (re-matches all-caps-name-re name-line)
+                                      (not (ro/is-meta-box-heading? name-line))))))
+                      (let [new-span-id (ids/new-id "sb")
+                            pages' (reduce #(tag-block %1 page-num %2 new-span-id "icon") pages pending)
+                            span-blocks' (mapv #(span-entry % page-num "icon") pending)]
+                        (if (and (pos? idx)
+                                 (not (get-in (nth blocks (dec idx)) [:metadata :stat-block-id])))
+                          (let [prev (nth blocks (dec idx))
+                                prev-text (normalized prev)
+                                header-text (normalized block)]
+                            (if (and (seq prev-text) (str/includes? header-text prev-text))
+                              (recur (tag-block (tag-block pages' page-num prev new-span-id "header")
+                                                page-num block new-span-id "header")
+                                     (inc idx) []
+                                     spans
+                                     (-> span-blocks'
+                                         (conj (span-entry prev page-num "header"))
+                                         (conj (span-entry block page-num "header")))
+                                     new-span-id)
+                              (recur (tag-block pages' page-num block new-span-id "header")
+                                     (inc idx) []
+                                     spans
+                                     (conj span-blocks' (span-entry block page-num "header"))
+                                     new-span-id)))
+                          (recur (tag-block pages' page-num block new-span-id "header")
+                                 (inc idx) []
+                                 spans
+                                 (conj span-blocks' (span-entry block page-num "header"))
+                                 new-span-id)))
+
+                      span-id
+                      (cond
+                        (ends-stat-block? block blocks idx)
+                        (if (and (is-callout-interrupt-block? block)
+                                 (not (is-stat-header-block? block blocks idx)))
+                          (recur pages (inc idx) pending spans span-blocks span-id)
+                          (recur pages idx pending (flush-span spans span-id span-blocks) [] nil))
+
+                        (is-stats-line? (normalized block))
+                        (recur (tag-block pages page-num block span-id "stats")
+                               (inc idx) pending spans
+                               (conj span-blocks (span-entry block page-num "stats"))
+                               span-id)
+
+                        (is-ability-block? block)
+                        (recur (tag-block pages page-num block span-id "ability")
+                               (inc idx) pending spans
+                               (conj span-blocks (span-entry block page-num "ability"))
+                               span-id)
+
+                        (is-ability-body-continuation? block (last span-blocks))
+                        (recur (tag-block pages page-num block span-id "ability")
+                               (inc idx) pending spans
+                               (conj span-blocks (span-entry block page-num "ability"))
+                               span-id)
+
+                        (and (is-narrative-interrupt-block? block blocks idx)
+                             (some is-ability-block? (subvec blocks (inc idx))))
                         (recur pages (inc idx) pending spans span-blocks span-id)
+
+                        (and (seq span-blocks) (is-stat-continuation? block blocks idx))
+                        (recur (tag-block pages page-num block span-id "body")
+                               (inc idx) pending spans
+                               (conj span-blocks (span-entry block page-num "body"))
+                               span-id)
+
+                        :else
                         (recur pages idx pending (flush-span spans span-id span-blocks) [] nil))
 
-                      (is-stats-line? (normalized block))
-                      (recur (tag-block pages page-num block span-id "stats")
-                             (inc idx) pending spans
-                             (conj span-blocks (with-page-number block page-num))
-                             span-id)
-
-                      (is-ability-block? block)
-                      (recur (tag-block pages page-num block span-id "ability")
-                             (inc idx) pending spans
-                             (conj span-blocks (with-page-number block page-num))
-                             span-id)
-
-                      (is-ability-body-continuation? block (last span-blocks))
-                      (recur (tag-block pages page-num block span-id "ability")
-                             (inc idx) pending spans
-                             (conj span-blocks (with-page-number block page-num))
-                             span-id)
-
-                      (and (is-narrative-interrupt-block? block blocks idx)
-                           (some is-ability-block? (subvec blocks (inc idx))))
-                      (recur pages (inc idx) pending spans span-blocks span-id)
-
-                      (and (seq span-blocks) (is-stat-continuation? block blocks idx))
-                      (recur (tag-block pages page-num block span-id "body")
-                             (inc idx) pending spans
-                             (conj span-blocks (with-page-number block page-num))
-                             span-id)
-
                       :else
-                      (recur pages idx pending (flush-span spans span-id span-blocks) [] nil))
-
-                    :else
-                    (recur pages (inc idx) pending spans span-blocks span-id))))))]
-    (loop [pages pages spans [] page-idx 0 pending []]
-      (if (>= page-idx (count pages))
-        {:pages pages :spans spans}
-        (let [page (nth pages page-idx)
-              {:keys [pages spans]} (process-page pages spans page pending)]
-          (recur pages spans (inc page-idx) []))))))
+                      (recur pages (inc idx) pending spans span-blocks span-id))))))]
+      (loop [pages pages' spans [] page-idx 0 pending []]
+        (if (>= page-idx (count pages))
+          {:pages pages :spans spans}
+          (let [page (nth pages page-idx)
+                {:keys [pages spans]} (process-page pages spans page pending)]
+            (recur pages spans (inc page-idx) [])))))))
 
 (defmethod core/matches-document? :cof2 [_ pages]
   (let [counts (reduce
@@ -478,20 +497,37 @@
                   (swap! parsed assoc :name (str/trim name-part) :subtitle (str/trim sub-part))))
               (when-not (seq (:name @parsed))
                 (swap! parsed assoc :name (str/trim (first (str/split header-part #","))))))))
-        (doseq [[attr sign value] (re-seq stats-line-re text)]
+        (doseq [[_ attr sign value] (re-seq stats-line-re text)]
           (let [key (str/upper-case attr)]
             (when (contains? cof-attributes key)
               (swap! parsed assoc-in [:attributes (keyword key)]
                      (if (= sign "+") (Integer/parseInt value) (- (Integer/parseInt value)))))))))
+    (doseq [[_ attr sign value] (re-seq stats-line-re combined)]
+      (let [key (str/upper-case attr)]
+        (when (contains? cof-attributes key)
+          (swap! parsed assoc-in [:attributes (keyword key)]
+                 (if (= sign "+") (Integer/parseInt value) (- (Integer/parseInt value)))))))
     (doseq [block (ability-blocks-in-reading-order span page-width)]
-      (let [ability (or (parse-ability-block (tu/strip-layout-glyphs (:text block)))
-                        (first (parse-ability-heuristics (:text block))))]
+      (let [text (tu/strip-layout-glyphs (:text block))
+            ability (or (parse-ability-block text)
+                        (some identity
+                              (for [a (parse-ability-heuristics text)
+                                    :when (and (:title a)
+                                               (not (re-find #"^(?i)(Masse|Équipement)\b" (:title a))))]
+                                a)))]
         (when (and ability
                    (not (some #(= (:title ability) (:title %)) (:abilities @parsed))))
           (swap! parsed update :abilities conj ability))))
-    (let [inline (parse-abilities-from-inline-text combined)]
-      (when (or (empty? (:abilities @parsed))
-                (< (count (:abilities @parsed)) (count inline)))
+    (let [inline (parse-abilities-from-inline-text combined)
+          abilities (:abilities @parsed)
+          use-inline? (or (empty? abilities)
+                          (< (count abilities) (count inline))
+                          (some #(empty? (:text %)) abilities))]
+      (when use-inline?
+        (swap! parsed assoc :abilities [])
+        (doseq [ability inline]
+          (swap! parsed update :abilities conj ability)))
+      (when-not use-inline?
         (doseq [ability inline]
           (when-not (some #(= (:title ability) (:title %)) (:abilities @parsed))
             (swap! parsed update :abilities conj ability))))

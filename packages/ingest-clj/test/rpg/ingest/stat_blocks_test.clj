@@ -1,6 +1,5 @@
 (ns rpg.ingest.stat-blocks-test
-  (:require [clojure.string :as str]
-            [clojure.test :refer [deftest is testing]]
+  (:require [clojure.test :refer [deftest is testing]]
             [rpg.ingest.extract.pdf :as pdf]
             [rpg.ingest.block-merging :as bm]
             [rpg.ingest.stat-blocks.core :as stat-core]
@@ -29,20 +28,23 @@
       (let [pages (:pages (pdf/extract-document (.getAbsolutePath (momie-pdf-path))))]
         (is (stat-core/matches-document? :cof2 pages))))))
 
-(deftest detect-spans-on-mondanites-page-15
-  (testing "Page 15 contains AZULRIA and TALESS stat block spans"
+(deftest parse-mondanites-page-15-like-python
+  (testing "Page 15 stat blocks align with Python extraction"
     (when (.exists (momie-pdf-path))
       (let [pages (momie-pages)
             spans (:spans (stat-core/annotate-stat-blocks :cof2 pages))
             page-15-spans (filter #(= 15 (:page-start %)) spans)
-            names (->> page-15-spans
-                       (map #(stat-core/parse-span :cof2 %))
-                       (map :name)
-                       (map str/upper-case)
-                       (str/join " "))]
-        (is (>= (count page-15-spans) 2))
-        (is (re-find #"AZULRIA" names))
-        (is (re-find #"TALESS" names))))))
+            parsed (map #(stat-core/parse-span :cof2 %) page-15-spans)
+            by-name (into {} (map (juxt :name identity) parsed))
+            azulria (get by-name "AZULRIA")
+            taless (get by-name "TALESS RHANN")]
+        (is (= 2 (count page-15-spans)))
+        (is (= 4 (:nc azulria)))
+        (is (= "PRÊTRESSE 7" (:subtitle azulria)))
+        (is (= {:AGI 1 :CON 2 :FOR 1 :PER 0 :CHA 0 :INT 0 :VOL 3} (:attributes azulria)))
+        (is (= "momie" (get-in taless [:rulebook-reference :profile-name])))
+        (is (= 4 (count (:abilities taless))))
+        (is (every? #(pos? (count (:text %))) (:abilities taless)))))))
 
 (deftest false-heading-skips-stat-line
   (testing "COF2 profile treats NC line as false heading"
