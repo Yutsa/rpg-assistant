@@ -11,7 +11,12 @@
         >
           <span class="preview">{{ chunk.text_preview }}</span>
           <span class="meta">
-            <app-page-range-badge [pageStart]="chunk.page_start" [pageEnd]="chunk.page_end" />
+            <app-page-range-badge
+              [pageStart]="chunk.page_start"
+              [pageEnd]="chunk.page_end"
+              [actionable]="true"
+              (pageClick)="openPdfAtPage(chunk.page_start)"
+            />
             @if (chunk.chunk_type_hint) {
               <span>{{ chunk.chunk_type_hint }}</span>
             }

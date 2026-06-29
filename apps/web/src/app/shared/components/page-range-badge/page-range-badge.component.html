@@ -1,3 +1,15 @@
-<span class="page-badge" data-testid="page-range-badge">
-  p. {{ pageStart() }}@if (pageEnd() !== pageStart()) {–{{ pageEnd() }}}
-</span>
+@if (actionable()) {
+  <button
+    type="button"
+    class="page-badge page-badge--action"
+    data-testid="page-range-badge"
+    [attr.aria-label]="'Voir la page ' + pageStart() + ' dans le PDF'"
+    (click)="onClick($event)"
+  >
+    p. {{ pageStart() }}@if (pageEnd() !== pageStart()) {–{{ pageEnd() }}}
+  </button>
+} @else {
+  <span class="page-badge" data-testid="page-range-badge">
+    p. {{ pageStart() }}@if (pageEnd() !== pageStart()) {–{{ pageEnd() }}}
+  </span>
+}

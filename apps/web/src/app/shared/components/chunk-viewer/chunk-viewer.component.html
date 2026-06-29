@@ -2,10 +2,25 @@
   <header>
     <h2>Chunk</h2>
     <div class="meta">
-      <app-page-range-badge [pageStart]="chunk().page_start" [pageEnd]="chunk().page_end" />
+      <app-page-range-badge
+        [pageStart]="chunk().page_start"
+        [pageEnd]="chunk().page_end"
+        [actionable]="true"
+        (pageClick)="openPdf()"
+      />
       @if (chunk().chunk_type_hint) {
         <span class="type-badge">{{ chunk().chunk_type_hint }}</span>
       }
+      <button
+        type="button"
+        mat-stroked-button
+        class="pdf-link"
+        data-testid="chunk-open-pdf"
+        (click)="openPdf()"
+      >
+        <mat-icon>picture_as_pdf</mat-icon>
+        Voir dans le PDF
+      </button>
     </div>
   </header>
   <div class="chunk-text" data-testid="chunk-text">
