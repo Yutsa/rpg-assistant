@@ -61,9 +61,12 @@ def test_croissez_panthere_abilities() -> None:
         if chunk.chunk_type_hint == "stat_block"
         and (chunk.metadata.get("stat_block") or {}).get("name") == "PANTHÈRE"
     )
-    titles = {ability["title"] for ability in panthere.metadata["stat_block"]["abilities"]}
+    stat_block = panthere.metadata["stat_block"]
+    titles = {ability["title"] for ability in stat_block["abilities"]}
     assert "EMBUSCADE" in titles
     assert "DÉVORER" in titles
+    assert stat_block.get("defense") == 16
+    assert stat_block.get("attacks")
 
 
 @pytest.mark.skipif(not RETOUR.is_file(), reason="COF2 Retour en grâce PDF not available")

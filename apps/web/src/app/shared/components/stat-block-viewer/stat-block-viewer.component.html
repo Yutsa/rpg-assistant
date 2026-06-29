@@ -37,6 +37,39 @@
     }
   }
 
+  @if (hasCombatStats()) {
+    <section>
+      <h3>Combat</h3>
+      <p class="combat-stats" data-testid="stat-block-combat-stats">
+        @if (statBlock().defense != null) {
+          <span>Défense {{ statBlock().defense }}</span>
+        }
+        @if (statBlock().vigor != null) {
+          <span>PV {{ statBlock().vigor }}</span>
+        }
+        @if (statBlock().initiative != null) {
+          <span>Init. {{ statBlock().initiative }}</span>
+        }
+        @if (statBlock().mana != null) {
+          <span>PM {{ statBlock().mana }}</span>
+        }
+      </p>
+    </section>
+  }
+
+  @if (statBlock().attacks?.length) {
+    <section>
+      <h3>Attaques</h3>
+      <ul class="attacks" data-testid="stat-block-attacks">
+        @for (attack of statBlock().attacks; track attack.name) {
+          <li>
+            {{ attack.name }} +{{ attack.attack_bonus }} · DM {{ attack.damage }}
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
   @if (statBlock().abilities?.length) {
     <section>
       <h3>Capacités</h3>

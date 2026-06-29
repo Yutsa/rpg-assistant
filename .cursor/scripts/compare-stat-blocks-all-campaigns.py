@@ -28,9 +28,13 @@ PYTHON_ABILITY_FALSE_POSITIVES = {
 class StatBlockSummary:
     name: str
     pages: tuple[int, int]
-    nc: int | None
+    nc: int | str | None
     subtitle: str | None
     attributes: dict
+    defense: int | None
+    vigor: int | None
+    initiative: int | None
+    attacks: list[dict]
     ability_titles: list[str]
     ability_text_lens: list[int]
     rulebook: str | None
@@ -44,6 +48,10 @@ class StatBlockSummary:
             "nc": self.nc,
             "subtitle": self.subtitle,
             "attributes": self.attributes,
+            "defense": self.defense,
+            "vigor": self.vigor,
+            "initiative": self.initiative,
+            "attacks": self.attacks,
             "abilities": [
                 {"title": t, "text_len": n}
                 for t, n in zip(self.ability_titles, self.ability_text_lens)
@@ -79,6 +87,17 @@ def python_stat_blocks(pdf: Path) -> list[StatBlockSummary]:
                 nc=parsed.nc,
                 subtitle=parsed.subtitle,
                 attributes=dict(parsed.attributes or {}),
+                defense=parsed.defense,
+                vigor=parsed.vigor,
+                initiative=parsed.initiative,
+                attacks=[
+                    {
+                        "name": attack.name,
+                        "attack_bonus": attack.attack_bonus,
+                        "damage": attack.damage,
+                    }
+                    for attack in (parsed.attacks or [])
+                ],
                 ability_titles=[a.title for a in abilities],
                 ability_text_lens=[len(a.text or "") for a in abilities],
                 rulebook=(
@@ -115,6 +134,10 @@ def clojure_stat_blocks(pdf: Path) -> list[StatBlockSummary]:
                  :nc (:nc p)
                  :subtitle (:subtitle p)
                  :attributes (:attributes p)
+                 :defense (:defense p)
+                 :vigor (:vigor p)
+                 :initiative (:initiative p)
+                 :attacks (:attacks p)
                  :abilities (mapv (fn [a] {{:title (:title a) :text (:text a)}})
                                   (:abilities p))
                  :rulebook (get-in p [:rulebook-reference :profile-name])
@@ -133,6 +156,15 @@ def clojure_stat_blocks(pdf: Path) -> list[StatBlockSummary]:
     summaries = []
     for d in raw:
         abilities = d.get("abilities", [])
+        attacks = [
+            {
+                "name": attack.get("name"),
+                "attack_bonus": attack.get("attack_bonus", attack.get("attack-bonus")),
+                "damage": attack.get("damage"),
+            }
+            for attack in (d.get("attacks") or [])
+            if attack.get("name")
+        ]
         summaries.append(
             StatBlockSummary(
                 name=d.get("name") or "",
@@ -140,6 +172,10 @@ def clojure_stat_blocks(pdf: Path) -> list[StatBlockSummary]:
                 nc=d.get("nc"),
                 subtitle=d.get("subtitle"),
                 attributes=dict(d.get("attributes") or {}),
+                defense=d.get("defense"),
+                vigor=d.get("vigor"),
+                initiative=d.get("initiative"),
+                attacks=attacks,
                 ability_titles=[a["title"] for a in abilities],
                 ability_text_lens=[len(a.get("text") or "") for a in abilities],
                 rulebook=d.get("rulebook"),
@@ -178,15 +214,27 @@ def compare_campaign(campaign_id: str, pdf_name: str) -> dict:
         c = clj_by_name[name]
         if p.nc is not None and c.nc != p.nc:
             issues.append(f"{name}: nc py={p.nc} clj={c.nc}")
+        for field in ("defense", "vigor", "initiative"):
+            py_val = getattr(p, field)
+            clj_val = getattr(c, field)
+            if py_val is not None and py_val != clj_val:
+                issues.append(f"{name}: {field} py={py_val} clj={clj_val}")
         if p.attributes and p.attributes != c.attributes:
             warnings.append(f"{name}: attrs differ py={p.attributes} clj={c.attributes}")
         if p.rulebook != c.rulebook:
             issues.append(f"{name}: rulebook py={p.rulebook} clj={c.rulebook}")
 
+        py_attack_names = {a["name"] for a in p.attacks}
+        clj_attack_names = {a.get("name") for a in c.attacks}
+        missing_attacks = sorted(py_attack_names - clj_attack_names)
+        if missing_attacks:
+            warnings.append(f"{name}: missing attacks {missing_attacks}")
+
         py_titles = set(p.ability_titles)
         clj_titles = set(c.ability_titles)
         false_pos = PYTHON_ABILITY_FALSE_POSITIVES.get((campaign_id, name), set())
         py_titles -= false_pos
+        py_titles -= py_attack_names
         missing_abilities = sorted(py_titles - clj_titles)
         if missing_abilities:
             warnings.append(f"{name}: missing abilities {missing_abilities}")

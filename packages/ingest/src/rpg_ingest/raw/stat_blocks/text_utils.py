@@ -37,3 +37,18 @@ def has_icon_glyphs(text: str) -> bool:
     if PUA_RE.search(text):
         return True
     return any(ICON_LINE_RE.match(line.strip()) for line in text.splitlines() if line.strip())
+
+
+def normalize_attack_separators(text: str) -> str:
+    """Normalize COF2 attack damage separators corrupted by PDF font encoding."""
+    return text.replace("Åàé", "· DM").replace("\u00b7", "·")
+
+
+ATTACK_RE = re.compile(
+    r"([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s\-']+?)\s*\+(\d+)\s*(?:[·\s]|·\s*DM\s*)*(\d+d\d+(?:[+-]\d+)?)",
+    re.IGNORECASE,
+)
+DEFENSE_RE = re.compile(r"(?:\(S\)\s*)?(?:Défense|DEF)\s*(\d+)", re.IGNORECASE)
+VIGOR_RE = re.compile(r"(?:\(V\)\s*)?(?:Points de vigueur|PV)\s*(\d+)", re.IGNORECASE)
+INITIATIVE_RE = re.compile(r"(?:\(I\)\s*)?(?:Initiative|Init\.?)\s*(\d+)", re.IGNORECASE)
+MANA_RE = re.compile(r"(?:\(M\)\s*)?PM\s*(\d+)", re.IGNORECASE)

@@ -10,6 +10,15 @@
 (def ^:private nc-only-line-re #"(?i)^NC\s*\d+(?:/\d+)?$")
 (def ^:private meta-type-prefix-re #"(?i)^(?:TAILLE|CRÉATURE|TYPE)\b")
 (def ^:private name-nc-re #"(?im)^(.+?)\s*\|\s*NC\s*(\d+(?:/\d+)?)\s*$")
+(def ^:private combat-marker-re #"^\([SVIM]\)$")
+(def ^:private combat-value-label-re
+  #"(?i)^(?:Défense|Points de vigueur|Initiative|Init\.?)\s+\d+")
+(def ^:private defense-re #"(?i)(?:\(S\)\s*)?(?:Défense|DEF)\s*(\d+)")
+(def ^:private vigor-re #"(?i)(?:\(V\)\s*)?(?:Points de vigueur|PV)\s*(\d+)")
+(def ^:private initiative-re #"(?i)(?:\(I\)\s*)?(?:Initiative|Init\.?)\s*(\d+)")
+(def ^:private mana-re #"(?i)(?:\(M\)\s*)?PM\s*(\d+)")
+(def ^:private attack-re
+  #"(?i)([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s\-']+?)\s*\+(\d+)\s*(?:[·\s]|·\s*DM\s*)*(\d+d\d+(?:[+-]\d+)?)")
 (def ^:private stats-line-re #"(?i)\b(AGI|FOR|CON|INT|PER|CHA|VOL)\s*([+-])\s*(\d+)")
 (def ^:private stats-line-start-re #"(?i)^(AGI|FOR|CON|INT|PER|CHA|VOL)\s*[+-]?\s*\d")
 (def ^:private stat-block-body-re
@@ -47,7 +56,10 @@
    [#"(?i)premier round de combat" "EMBUSCADE"]
    [#"(?i)cible doit faire un test de PER difficulté 19" "EMBUSCADE"]
    [#"(?i)Lorsque la créature réussit une attaque" "DÉVORER"]
-   [#"(?i)un résultat de 15-20 au d20" "DÉVORER"]])
+   [#"(?i)un résultat de 15-20 au d20" "DÉVORER"]
+   [#"(?is)Créatures souterraines.+dé malus" "SENSIBLE À LA LUMIÈRE"]
+   [#"(?is)lumière du soleil.*dé malus" "SENSIBLE À LA LUMIÈRE"]
+   [#"(?is)15-20 sur le d20" "COUP CRITIQUE"]])
 
 (defn- normalized [block] (tu/strip-layout-glyphs (:text block)))
 
@@ -57,7 +69,23 @@
 (defn- has-nc? [text] (boolean (re-find nc-re (tu/strip-layout-glyphs text))))
 
 (defn- parse-nc-value [raw]
-  (Integer/parseInt (re-find #"\d+" (str raw))))
+  (let [s (str/trim (str raw))]
+    (if (str/includes? s "/")
+      s
+      (Integer/parseInt (re-find #"\d+" s)))))
+
+(defn- is-combat-related-text? [text]
+  (let [t (str/trim text)]
+    (or (re-matches combat-marker-re t)
+        (re-find combat-value-label-re t)
+        (re-find defense-re t)
+        (re-find vigor-re t)
+        (re-find initiative-re t)
+        (re-find mana-re t)
+        (re-find attack-re t))))
+
+(defn- is-combat-related-block? [block]
+  (is-combat-related-text? (normalized block)))
 
 (defn- header-name-candidate [text]
   (let [t (str/trim text)]
@@ -132,6 +160,25 @@
                     (str/includes? candidate ",")) true
                 (and (ro/block-bold? block) (string-uppercase? candidate)) true
                 :else false))))))))
+
+(defn- is-ability-title-block? [block page-blocks idx]
+  (let [text (normalized block)]
+    (and (seq text)
+         (ro/block-bold? block)
+         (<= (count text) 80)
+         (not (is-stats-line? text))
+         (not (has-nc? text))
+         (not (is-combat-related-text? text))
+         (not (re-matches all-caps-name-re text))
+         (not (is-type-label? text))
+         (not (is-meta-type-label? text))
+         (< idx (dec (count page-blocks)))
+         (let [nxt (nth page-blocks (inc idx))
+               nxt-text (normalized nxt)]
+           (and (seq nxt-text)
+                (not (ro/block-bold? nxt))
+                (> (count nxt-text) 40)
+                (not (is-combat-related-text? nxt-text)))))))
 
 (defn- is-ability-block? [block]
   (let [text (normalized block)]
@@ -213,18 +260,23 @@
 
 (defn- is-ability-body-continuation? [block previous]
   (and previous
-       (= "ability" (get-in previous [:metadata :stat-block-role]))
+       (or (= "ability" (get-in previous [:metadata :stat-block-role]))
+           (and (= "body" (get-in previous [:metadata :stat-block-role]))
+                (ro/block-bold? previous)
+                (<= (count (normalized previous)) 80)))
        (let [text (normalized block)]
          (and (seq text)
               (not (ro/block-bold? block))
               (not (is-stats-line? text))
               (not (has-nc? text))
               (not (is-ability-block? block))
+              (not (is-combat-related-text? text))
               (not (re-matches list-item-marker-re text))
               (<= (count text) 400)))))
 
 (defn- is-stat-continuation? [block page-blocks block-idx]
   (cond
+    (is-combat-related-block? block) true
     (and page-blocks block-idx (is-stat-header-block? block page-blocks block-idx)) false
     :else
     (let [text (normalized block)]
@@ -235,6 +287,7 @@
         (re-matches nc-only-line-re (str/trim text)) true
         (is-stats-line? text) true
         (is-ability-block? block) true
+        (and page-blocks block-idx (is-ability-title-block? block page-blocks block-idx)) true
         (re-find stat-block-body-re text) true
         (has-nc? text) false
         (#{"stats" "ability" "body"} (get-in block [:metadata :stat-block-role])) true
@@ -266,6 +319,7 @@
 
 (defn- ends-stat-block? [block page-blocks idx]
   (cond
+    (is-combat-related-block? block) false
     (is-real-section-heading? block) true
     (is-icon-prefixed-name? block) true
     (is-stat-header-block? block page-blocks idx) true
@@ -275,6 +329,7 @@
     (let [text (normalized block)]
       (cond
         (or (not (seq text)) (is-ability-block? block) (is-stats-line? text)) false
+        (and page-blocks idx (is-ability-title-block? block page-blocks idx)) false
         (ro/block-bold? block)
         (let [font (or (get-in block [:metadata :max-font-size]) 0.0)]
           (and (>= font 12.0)
@@ -315,6 +370,48 @@
               [(inc ri) (conj ordered' (nth right ri))]
               [ri ordered'])]
         (recur (subvec left (inc li)) right ordered'' (inc li) ri')))))
+
+(defn- parse-combat-stats [text]
+  (let [normalized (tu/normalize-attack-separators (tu/strip-layout-glyphs text))]
+    (cond-> {}
+      (re-find defense-re normalized)
+      (assoc :defense (Integer/parseInt (second (re-find defense-re normalized))))
+      (re-find vigor-re normalized)
+      (assoc :vigor (Integer/parseInt (second (re-find vigor-re normalized))))
+      (re-find initiative-re normalized)
+      (assoc :initiative (Integer/parseInt (second (re-find initiative-re normalized))))
+      (re-find mana-re normalized)
+      (assoc :mana (Integer/parseInt (second (re-find mana-re normalized)))))))
+
+(defn- parse-attacks [text]
+  (let [normalized (tu/normalize-attack-separators (tu/strip-layout-glyphs text))]
+    (vec
+     (for [[_ name bonus damage] (re-seq attack-re normalized)
+           :let [attack-name (str/trim name)]
+           :when (seq attack-name)]
+       {:name attack-name
+        :attack-bonus (Integer/parseInt bonus)
+        :damage damage}))))
+
+(defn- valid-ability-title? [title]
+  (let [t (str/trim title)]
+    (and (seq t)
+         (> (count t) 2)
+         (not (re-matches #"^PJ$" t))
+         (not (re-find inline-ability-skip-re t)))))
+
+(defn- attack-title? [title attacks]
+  (or (some #(= title (:name %)) attacks)
+      (boolean (re-find attack-re title))))
+
+(defn- strip-attack-lines [text attacks]
+  (let [lines (str/split-lines (tu/normalize-attack-separators text))]
+    (str/trim
+     (str/join "\n"
+               (remove (fn [line]
+                         (or (re-find attack-re line)
+                             (some #(str/includes? line (:name %)) attacks)))
+                       lines)))))
 
 (defn- ability-blocks-in-reading-order [span page-width]
   (let [abilities (vec (filter #(= "ability" (get-in % [:metadata :stat-block-role]))
@@ -447,6 +544,12 @@
 
                       span-id
                       (cond
+                        (and (seq span-blocks) (is-stat-continuation? block blocks idx))
+                        (recur (tag-block pages page-num block span-id "body")
+                               (inc idx) pending spans
+                               (conj span-blocks (span-entry block page-num "body"))
+                               span-id)
+
                         (ends-stat-block? block blocks idx)
                         (if (and (is-callout-interrupt-block? block)
                                  (not (is-stat-header-block? block blocks idx)))
@@ -465,6 +568,12 @@
                                (conj span-blocks (span-entry block page-num "ability"))
                                span-id)
 
+                        (and blocks (is-ability-title-block? block blocks idx))
+                        (recur (tag-block pages page-num block span-id "ability")
+                               (inc idx) pending spans
+                               (conj span-blocks (span-entry block page-num "ability"))
+                               span-id)
+
                         (is-ability-body-continuation? block (last span-blocks))
                         (recur (tag-block pages page-num block span-id "ability")
                                (inc idx) pending spans
@@ -475,7 +584,7 @@
                              (some is-ability-block? (subvec blocks (inc idx))))
                         (recur pages (inc idx) pending spans span-blocks span-id)
 
-                        (and (seq span-blocks) (is-stat-continuation? block blocks idx))
+                        (is-combat-related-block? block)
                         (recur (tag-block pages page-num block span-id "body")
                                (inc idx) pending spans
                                (conj span-blocks (span-entry block page-num "body"))
@@ -529,7 +638,8 @@
 (defmethod core/parse-span :cof2 [_ span]
   (let [texts (mapv #(tu/strip-layout-glyphs (:text %)) (:blocks span))
         combined (str/join "\n\n" (filter seq texts))
-        parsed (atom {:name "" :subtitle nil :nc nil :attributes {} :abilities []})
+        normalized-combined (tu/normalize-attack-separators combined)
+        parsed (atom {:name "" :subtitle nil :nc nil :attributes {} :abilities [] :attacks []})
         page-width (* (apply max 0 (map #(get-in % [:bbox :x1]) (:blocks span))) 1.2)]
     (doseq [text texts]
       (when (seq text)
@@ -564,12 +674,14 @@
             (when (contains? cof-attributes key)
               (swap! parsed assoc-in [:attributes (keyword key)]
                      (if (= sign "+") (Integer/parseInt value) (- (Integer/parseInt value)))))))))
-    (doseq [[_ attr sign value] (re-seq stats-line-re combined)]
+    (doseq [[_ attr sign value] (re-seq stats-line-re normalized-combined)]
       (let [key (str/upper-case attr)]
         (when (contains? cof-attributes key)
           (swap! parsed assoc-in [:attributes (keyword key)]
                  (if (= sign "+") (Integer/parseInt value) (- (Integer/parseInt value)))))))
-    (doseq [block (:blocks span)]
+    (swap! parsed merge (parse-combat-stats normalized-combined))
+    (swap! parsed assoc :attacks (parse-attacks normalized-combined))
+    (doseq [block (ability-blocks-in-reading-order span page-width)]
       (let [text (tu/strip-layout-glyphs (:text block))
             from-block (remove nil?
                                (concat
@@ -577,23 +689,47 @@
                                 (parse-ability-heuristics text)))]
         (doseq [ability from-block
                 :when (and (:title ability)
-                           (not (re-find #"^(?i)(Masse|Équipement)\b" (:title ability))))]
+                           (valid-ability-title? (:title ability))
+                           (not (re-find #"^(?i)(Masse|Équipement)\b" (:title ability)))
+                           (not (attack-title? (:title ability) (:attacks @parsed))))]
           (when-not (some #(= (:title ability) (:title %)) (:abilities @parsed))
             (swap! parsed update :abilities conj ability)))))
-    (let [inline (parse-abilities-from-inline-text combined)
+    (let [ability-blocks (vec (filter #(= "ability" (get-in % [:metadata :stat-block-role]))
+                                      (:blocks span)))]
+      (doseq [[idx block] (map-indexed vector ability-blocks)]
+        (let [text (tu/strip-layout-glyphs (:text block))
+              role (get-in block [:metadata :stat-block-role])]
+          (when (and (ro/block-bold? block)
+                     (<= (count text) 80)
+                     (not (re-matches ability-title-re (first (str/split-lines text))))
+                     (< idx (dec (count ability-blocks))))
+            (let [next-block (nth ability-blocks (inc idx))
+                  body (tu/strip-layout-glyphs (:text next-block))]
+              (when (and (seq body) (not (ro/block-bold? next-block)) (> (count body) 40))
+                (doseq [[pattern title] ability-body-patterns
+                        :when (re-find pattern body)]
+                  (when-not (some #(= title (:title %)) (:abilities @parsed))
+                    (swap! parsed update :abilities conj {:title title :text body})))))))))
+    (let [inline (parse-abilities-from-inline-text normalized-combined)
           abilities (:abilities @parsed)
           use-inline? (or (empty? abilities)
                           (< (count abilities) (count inline))
                           (some #(empty? (:text %)) abilities))]
       (when use-inline?
         (swap! parsed assoc :abilities [])
-        (doseq [ability inline]
+        (doseq [ability inline
+                :when (and (valid-ability-title? (:title ability))
+                           (not (attack-title? (:title ability) (:attacks @parsed))))]
           (swap! parsed update :abilities conj ability)))
       (when-not use-inline?
-        (doseq [ability inline]
+        (doseq [ability inline
+                :when (and (valid-ability-title? (:title ability))
+                           (not (attack-title? (:title ability) (:attacks @parsed))))]
           (when-not (some #(= (:title ability) (:title %)) (:abilities @parsed))
             (swap! parsed update :abilities conj ability))))
-      (doseq [ability (or (parse-ability-heuristics combined) [])]
+      (doseq [ability (or (parse-ability-heuristics normalized-combined) [])
+              :when (and (valid-ability-title? (:title ability))
+                         (not (attack-title? (:title ability) (:attacks @parsed))))]
         (when-not (some #(= (:title ability) (:title %)) (:abilities @parsed))
           (swap! parsed update :abilities conj ability))))
     (when-not (seq (:name @parsed))
@@ -606,10 +742,15 @@
                      (not (re-find #"(?i)^(DEF|PV|Init|PM)\b" candidate)))
             (swap! parsed assoc :name (-> candidate (str/split #",") first str/trim))))))
     (let [p @parsed
+          attacks (:attacks p)
+          abilities (vec (remove #(or (attack-title? (:title %) attacks)
+                                       (not (valid-ability-title? (:title %))))
+                                (:abilities p)))
           block-refs (mapv (fn [b] {:page-number (:page-number b)
                                     :block-index (:block-index b)})
                            (:blocks span))]
       (cond-> (assoc p
+                     :abilities abilities
                      :raw-text combined
                      :block-refs block-refs
                      :game-system "cof2")

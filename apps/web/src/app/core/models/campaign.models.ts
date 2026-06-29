@@ -78,7 +78,7 @@ export interface Chunk {
 
 export interface StatBlockIndex {
   name: string;
-  nc: number | null;
+  nc: number | string | null;
   chunk_id: string;
   section_id: string | null;
   uses_rulebook: boolean;
@@ -95,11 +95,22 @@ export interface StatAbility {
   text: string;
 }
 
+export interface StatAttack {
+  name: string;
+  attack_bonus: number;
+  damage: string;
+}
+
 export interface StatBlockDetail {
   name?: string;
   subtitle?: string;
-  nc?: number;
+  nc?: number | string;
   attributes?: Record<string, string | number>;
+  defense?: number;
+  vigor?: number;
+  initiative?: number;
+  mana?: number;
+  attacks?: StatAttack[];
   abilities?: StatAbility[];
   rulebook_reference?: RulebookReference;
   game_system?: string;

@@ -645,11 +645,8 @@ class RawRepository:
             if not name:
                 continue
             nc = row[5]
-            if nc is not None and not isinstance(nc, int):
-                try:
-                    nc = int(nc)
-                except (TypeError, ValueError):
-                    nc = None
+            if isinstance(nc, str) and nc.isdigit():
+                nc = int(nc)
             uses_rulebook = row[6]
             if isinstance(uses_rulebook, str):
                 uses_rulebook = uses_rulebook.lower() in ("1", "true", "t")

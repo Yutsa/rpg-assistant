@@ -34,7 +34,8 @@
     font-size: 0.9375rem;
   }
 
-  .abilities {
+  .abilities,
+  .attacks {
     margin: 0;
     padding-left: 1.25rem;
 
@@ -45,6 +46,14 @@
     strong {
       font-weight: 600;
     }
+  }
+
+  .combat-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0;
+    font-weight: 600;
   }
 
   h3 {

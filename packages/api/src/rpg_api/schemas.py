@@ -92,7 +92,7 @@ class ChunkOut(BaseModel):
 
 class StatBlockIndexOut(BaseModel):
     name: str
-    nc: int | None = None
+    nc: int | str | None = None
     chunk_id: str
     section_id: str | None = None
     uses_rulebook: bool = False

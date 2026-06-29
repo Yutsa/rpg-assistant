@@ -39,3 +39,10 @@
   (or (boolean (re-find pua-re text))
       (some #(re-matches icon-line-re (str/trim %))
             (filter seq (str/split-lines text)))))
+
+(defn normalize-attack-separators
+  "Normalize COF2 attack damage separators corrupted by PDF font encoding."
+  [text]
+  (-> text
+      (str/replace #"Åàé" "· DM")
+      (str/replace #"[\u00b7]" "·")))

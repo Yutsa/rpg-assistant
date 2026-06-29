@@ -10,6 +10,12 @@
    [:title string?]
    [:text string?]])
 
+(def StatAttack
+  [:map
+   [:name string?]
+   [:attack-bonus int?]
+   [:damage string?]])
+
 (def RulebookReference
   [:map
    [:profile-name string?]
@@ -19,8 +25,13 @@
   [:map
    [:name string?]
    [:subtitle {:optional true} [:maybe string?]]
-   [:nc {:optional true} [:maybe int?]]
+   [:nc {:optional true} [:maybe [:or string? int?]]]
    [:attributes {:optional true} [:map-of keyword? int?]]
+   [:defense {:optional true} [:maybe int?]]
+   [:vigor {:optional true} [:maybe int?]]
+   [:initiative {:optional true} [:maybe int?]]
+   [:mana {:optional true} [:maybe int?]]
+   [:attacks {:optional true} [:sequential StatAttack]]
    [:abilities {:optional true} [:sequential StatAbility]]
    [:rulebook-reference {:optional true} [:maybe RulebookReference]]
    [:raw-text {:optional true} string?]
