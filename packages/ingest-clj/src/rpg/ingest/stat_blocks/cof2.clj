@@ -214,6 +214,20 @@
                                     (.group matcher 1))}))
         acc))))
 
+(defn- next-ability-body-end [text start-offset current-title]
+  (let [tail (subs text start-offset)
+        boundary-offsets
+        (concat
+         (keep :start (regex-matches inline-ability-title-re tail))
+         (for [[pattern title] ability-body-patterns
+               :when (not= title current-title)
+               match (regex-matches pattern tail)
+               :when (pos? (:start match))]
+           (:start match)))]
+    (if (seq boundary-offsets)
+      (+ start-offset (apply min boundary-offsets))
+      (count text))))
+
 (defn- parse-ability-heuristics [text]
   (let [normalized (tu/strip-layout-glyphs text)]
     (when (seq normalized)
@@ -226,7 +240,9 @@
         (doseq [[pattern title] ability-body-patterns]
           (when-let [m (first (regex-matches pattern normalized))]
             (when-not (some #(= title (:title %)) @abilities)
-              (swap! abilities conj {:title title :text (str/trim (subs normalized (:start m)))}))))
+              (let [start (:start m)
+                    end (next-ability-body-end normalized start title)]
+                (swap! abilities conj {:title title :text (str/trim (subs normalized start end))})))))
         @abilities))))
 
 (defn- parse-ability-block [text]
@@ -258,6 +274,11 @@
                           (count search-text))]
            {:title title :text (str/trim (subs search-text body-start body-end))}))))))
 
+(defn- is-gm-narrative-text? [text]
+  (boolean (re-find #"(?i)\bles PJ\b" text)))
+
+(declare is-callout-interrupt-block? is-narrative-interrupt-block?)
+
 (defn- is-ability-body-continuation? [block previous]
   (and previous
        (or (= "ability" (get-in previous [:metadata :stat-block-role]))
@@ -272,16 +293,20 @@
               (not (is-ability-block? block))
               (not (is-combat-related-text? text))
               (not (re-matches list-item-marker-re text))
+              (not (is-gm-narrative-text? text))
               (<= (count text) 400)))))
 
 (defn- is-stat-continuation? [block page-blocks block-idx]
   (cond
     (is-combat-related-block? block) true
     (and page-blocks block-idx (is-stat-header-block? block page-blocks block-idx)) false
+    (is-callout-interrupt-block? block) false
+    (and page-blocks block-idx (is-narrative-interrupt-block? block page-blocks block-idx)) false
     :else
     (let [text (normalized block)]
       (cond
         (not (seq text)) false
+        (is-gm-narrative-text? text) false
         (is-type-label? text) true
         (is-meta-type-label? text) true
         (re-matches nc-only-line-re (str/trim text)) true
@@ -310,6 +335,7 @@
   (let [text (normalized block)]
     (and (seq text)
          (not (is-meta-type-label? text))
+         (not (str/includes? text ":"))
          (ro/block-bold? block)
          (string-uppercase? (.replace text "\n" " "))
          (<= (count (str/split text #"\s+")) 4))))
@@ -544,6 +570,9 @@
 
                       span-id
                       (cond
+                        (is-callout-interrupt-block? block)
+                        (recur pages (inc idx) pending spans span-blocks span-id)
+
                         (and (seq span-blocks) (is-stat-continuation? block blocks idx))
                         (recur (tag-block pages page-num block span-id "body")
                                (inc idx) pending spans
@@ -743,9 +772,10 @@
             (swap! parsed assoc :name (-> candidate (str/split #",") first str/trim))))))
     (let [p @parsed
           attacks (:attacks p)
-          abilities (vec (remove #(or (attack-title? (:title %) attacks)
-                                       (not (valid-ability-title? (:title %))))
-                                (:abilities p)))
+          abilities (vec (->> (:abilities p)
+                              (remove #(or (attack-title? (:title %) attacks)
+                                           (not (valid-ability-title? (:title %)))))
+                              (map #(update % :text tu/clean-ability-text))))
           block-refs (mapv (fn [b] {:page-number (:page-number b)
                                     :block-index (:block-index b)})
                            (:blocks span))]
