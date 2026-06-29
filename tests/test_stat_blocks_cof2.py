@@ -418,3 +418,43 @@ def test_cof2_parse_fleurs_gardiennes_rulebook_reference_multiline():
 
     assert parsed.rulebook_reference is not None
     assert parsed.rulebook_reference.profile_name == "serpent constricteur"
+
+
+def test_cof2_parse_orc_de_base_combat_fields():
+    profile = Cof2StatBlockProfile()
+    pages = [
+        _page(
+            [
+                _block(
+                    9,
+                    0,
+                    (
+                        "ORC DE BASE | NC 1/2\n"
+                        "TAILLE MOYENNE\n"
+                        "AGI +0 | CON +2 | FOR +2 | PER +0 | CHA -2 | INT -2 | VOL -1\n"
+                        "(S) Défense 13\n"
+                        "(V) Points de vigueur 12\n"
+                        "(I) Initiative 10\n"
+                        "Hache ou masse +3 · DM 1d8+2\n"
+                        "SENSIBLE À LA LUMIÈRE :\n"
+                        "Créatures souterraines, les orcs détestent la lumière du jour."
+                    ),
+                    font_size=10,
+                    y0=40,
+                ),
+            ]
+        )
+    ]
+    stat_result = annotate_stat_blocks(pages, profile)
+    parsed = profile.parse_span(stat_result.spans[0])
+
+    assert parsed.name == "ORC DE BASE"
+    assert parsed.nc == "1/2"
+    assert parsed.defense == 13
+    assert parsed.vigor == 12
+    assert parsed.initiative == 10
+    assert len(parsed.attacks) == 1
+    assert parsed.attacks[0].name == "Hache ou masse"
+    assert parsed.attacks[0].attack_bonus == 3
+    assert parsed.attacks[0].damage == "1d8+2"
+    assert any(ability.title == "SENSIBLE À LA LUMIÈRE" for ability in parsed.abilities)

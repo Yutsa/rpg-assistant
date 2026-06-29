@@ -4,19 +4,29 @@ import re
 
 from rpg_ingest.raw.layout import LayoutBlock, LayoutPage
 from rpg_ingest.raw.reading_order import column_major_sort_key, column_side, is_page_number_label
-from rpg_ingest.raw.stat_blocks.text_utils import has_icon_glyphs, strip_layout_glyphs
+from rpg_ingest.raw.stat_blocks.text_utils import (
+    ATTACK_RE,
+    DEFENSE_RE,
+    INITIATIVE_RE,
+    MANA_RE,
+    VIGOR_RE,
+    has_icon_glyphs,
+    normalize_attack_separators,
+    strip_layout_glyphs,
+)
 from rpg_ingest.raw.stat_blocks.types import (
     BlockRef,
     ParsedStatBlock,
     RulebookReference,
     StatAbility,
+    StatAttack,
     StatBlockSpan,
 )
 from rpg_core.storage.ids import new_id
 
-NC_RE = re.compile(r"\|\s*NC\s*(\d+)", re.IGNORECASE)
+NC_RE = re.compile(r"(?:\|\s*)?NC\s*(\d+(?:/\d+)?)", re.IGNORECASE)
 NAME_NC_RE = re.compile(
-    r"^(.+?)\s*\|\s*NC\s*(\d+)\s*$", re.IGNORECASE | re.MULTILINE
+    r"^(.+?)\s*\|\s*NC\s*(\d+(?:/\d+)?)\s*$", re.IGNORECASE | re.MULTILINE
 )
 STATS_LINE_RE = re.compile(
     r"\b(AGI|FOR|CON|INT|PER|CHA|VOL)\s*([+-])\s*(\d+)", re.IGNORECASE
@@ -183,7 +193,57 @@ ABILITY_BODY_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"cible doit faire un test de PER difficulté 19", re.IGNORECASE), "EMBUSCADE"),
     (re.compile(r"Lorsque la créature réussit une attaque", re.IGNORECASE), "DÉVORER"),
     (re.compile(r"un résultat de 15-20 au d20", re.IGNORECASE), "DÉVORER"),
+    (re.compile(r"Créatures souterraines.+dé malus", re.IGNORECASE | re.DOTALL), "SENSIBLE À LA LUMIÈRE"),
+    (re.compile(r"lumière du soleil.*dé malus", re.IGNORECASE | re.DOTALL), "SENSIBLE À LA LUMIÈRE"),
+    (re.compile(r"15-20 sur le d20", re.IGNORECASE | re.DOTALL), "COUP CRITIQUE"),
 )
+
+
+def _parse_nc_value(raw: str) -> int | str:
+    value = raw.strip()
+    if "/" in value:
+        return value
+    return int(re.search(r"\d+", value).group())
+
+
+def _parse_combat_stats(text: str) -> dict[str, int]:
+    normalized = normalize_attack_separators(strip_layout_glyphs(text))
+    stats: dict[str, int] = {}
+    if match := DEFENSE_RE.search(normalized):
+        stats["defense"] = int(match.group(1))
+    if match := VIGOR_RE.search(normalized):
+        stats["vigor"] = int(match.group(1))
+    if match := INITIATIVE_RE.search(normalized):
+        stats["initiative"] = int(match.group(1))
+    if match := MANA_RE.search(normalized):
+        stats["mana"] = int(match.group(1))
+    return stats
+
+
+def _parse_attacks(text: str) -> list[StatAttack]:
+    normalized = normalize_attack_separators(strip_layout_glyphs(text))
+    attacks: list[StatAttack] = []
+    for match in ATTACK_RE.finditer(normalized):
+        name = match.group(1).strip()
+        if not name:
+            continue
+        attacks.append(
+            StatAttack(
+                name=name,
+                attack_bonus=int(match.group(2)),
+                damage=match.group(3),
+            )
+        )
+    return attacks
+
+
+def _valid_ability_title(title: str) -> bool:
+    cleaned = title.strip()
+    return bool(cleaned) and len(cleaned) > 2 and cleaned != "PJ" and not INLINE_ABILITY_SKIP_RE.search(cleaned)
+
+
+def _attack_title(title: str, attacks: list[StatAttack]) -> bool:
+    return any(attack.name == title for attack in attacks) or bool(ATTACK_RE.search(title))
 
 
 def _parse_ability_heuristics(text: str) -> list[StatAbility]:
@@ -605,9 +665,10 @@ class Cof2StatBlockProfile:
     def parse_span(self, span: StatBlockSpan) -> ParsedStatBlock:
         texts = [self.normalize_block_text(block.text) for block in span.blocks]
         combined = "\n\n".join(t for t in texts if t)
+        normalized_combined = normalize_attack_separators(combined)
         name = ""
         subtitle: str | None = None
-        nc: int | None = None
+        nc: int | str | None = None
         attributes: dict[str, int] = {}
         abilities: list[StatAbility] = []
 
@@ -617,7 +678,7 @@ class Cof2StatBlockProfile:
             header_match = NAME_NC_RE.search(text)
             if header_match:
                 header_part = header_match.group(1).strip()
-                nc = int(header_match.group(2))
+                nc = _parse_nc_value(header_match.group(2))
                 if "," in header_part:
                     name_part, sub_part = header_part.split(",", 1)
                     name = name_part.strip()
@@ -627,7 +688,7 @@ class Cof2StatBlockProfile:
             elif _has_nc(text):
                 nc_match = NC_RE.search(text)
                 if nc_match:
-                    nc = int(nc_match.group(1))
+                    nc = _parse_nc_value(nc_match.group(1))
                 header_part = NC_RE.split(text)[0].strip().rstrip("|").strip()
                 if "," in header_part:
                     name_part, sub_part = header_part.split(",", 1)
@@ -643,22 +704,48 @@ class Cof2StatBlockProfile:
                 if key in COF_ATTRIBUTES:
                     attributes[key] = int(value) if sign == "+" else -int(value)
 
+        for attr, sign, value in STATS_LINE_RE.findall(normalized_combined):
+            key = attr.upper()
+            if key in COF_ATTRIBUTES:
+                attributes[key] = int(value) if sign == "+" else -int(value)
+
+        combat_stats = _parse_combat_stats(normalized_combined)
+        attacks = _parse_attacks(normalized_combined)
+
         for block in _ability_blocks_in_reading_order(span):
             ability = _parse_ability_block(self.normalize_block_text(block.text))
-            if ability and ability.title not in {a.title for a in abilities}:
+            if (
+                ability
+                and _valid_ability_title(ability.title)
+                and not _attack_title(ability.title, attacks)
+                and ability.title not in {a.title for a in abilities}
+            ):
                 abilities.append(ability)
             else:
                 for ability in _parse_ability_heuristics(block.text):
-                    if ability.title not in {a.title for a in abilities}:
+                    if (
+                        _valid_ability_title(ability.title)
+                        and not _attack_title(ability.title, attacks)
+                        and ability.title not in {a.title for a in abilities}
+                    ):
                         abilities.append(ability)
 
-        if not abilities or len(abilities) < len(_parse_abilities_from_inline_text(combined)):
-            for ability in _parse_abilities_from_inline_text(combined):
-                if ability.title not in {a.title for a in abilities}:
+        inline_abilities = _parse_abilities_from_inline_text(normalized_combined)
+        if not abilities or len(abilities) < len(inline_abilities):
+            for ability in inline_abilities:
+                if (
+                    _valid_ability_title(ability.title)
+                    and not _attack_title(ability.title, attacks)
+                    and ability.title not in {a.title for a in abilities}
+                ):
                     abilities.append(ability)
 
-        for ability in _parse_ability_heuristics(combined):
-            if ability.title not in {a.title for a in abilities}:
+        for ability in _parse_ability_heuristics(normalized_combined):
+            if (
+                _valid_ability_title(ability.title)
+                and not _attack_title(ability.title, attacks)
+                and ability.title not in {a.title for a in abilities}
+            ):
                 abilities.append(ability)
 
         if not name:
@@ -669,6 +756,11 @@ class Cof2StatBlockProfile:
                     break
 
         rulebook_reference = _extract_rulebook_reference(combined)
+        abilities = [
+            ability
+            for ability in abilities
+            if _valid_ability_title(ability.title) and not _attack_title(ability.title, attacks)
+        ]
 
         block_refs = [
             BlockRef(page_number=block.page_number, block_index=block.block_index)
@@ -679,6 +771,11 @@ class Cof2StatBlockProfile:
             subtitle=subtitle,
             nc=nc,
             attributes=attributes,
+            defense=combat_stats.get("defense"),
+            vigor=combat_stats.get("vigor"),
+            initiative=combat_stats.get("initiative"),
+            mana=combat_stats.get("mana"),
+            attacks=attacks,
             abilities=abilities,
             rulebook_reference=rulebook_reference,
             raw_text=combined,

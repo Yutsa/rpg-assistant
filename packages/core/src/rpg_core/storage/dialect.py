@@ -95,9 +95,7 @@ class Dialect:
         return f"{self.stat_block_json_path('name')} AS stat_block_name"
 
     def stat_block_nc_expr(self) -> str:
-        if self.is_postgresql:
-            return "(metadata_json->'stat_block'->>'nc')::int AS stat_block_nc"
-        return "CAST(json_extract(metadata_json, '$.stat_block.nc') AS INTEGER) AS stat_block_nc"
+        return f"{self.stat_block_json_path('nc')} AS stat_block_nc"
 
     def stat_block_uses_rulebook_expr(self) -> str:
         if self.is_postgresql:

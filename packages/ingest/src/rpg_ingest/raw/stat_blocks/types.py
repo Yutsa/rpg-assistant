@@ -17,6 +17,12 @@ class StatAbility(BaseModel):
     text: str
 
 
+class StatAttack(BaseModel):
+    name: str
+    attack_bonus: int
+    damage: str
+
+
 class RulebookReference(BaseModel):
     profile_name: str
     source_label: str = "Livre de règles, COF"
@@ -25,8 +31,13 @@ class RulebookReference(BaseModel):
 class ParsedStatBlock(BaseModel):
     name: str
     subtitle: str | None = None
-    nc: int | None = None
+    nc: int | str | None = None
     attributes: dict[str, int] = Field(default_factory=dict)
+    defense: int | None = None
+    vigor: int | None = None
+    initiative: int | None = None
+    mana: int | None = None
+    attacks: list[StatAttack] = Field(default_factory=list)
     abilities: list[StatAbility] = Field(default_factory=list)
     rulebook_reference: RulebookReference | None = None
     raw_text: str = ""

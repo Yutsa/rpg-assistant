@@ -13,11 +13,23 @@ import { PageRangeBadgeComponent } from '../page-range-badge/page-range-badge.co
 export class StatBlockViewerComponent {
   readonly statBlock = input.required<StatBlockDetail>();
 
+  readonly hasCombatStats = computed(() => {
+    const block = this.statBlock();
+    return (
+      block.defense != null ||
+      block.vigor != null ||
+      block.initiative != null ||
+      block.mana != null
+    );
+  });
+
   readonly showBodyText = computed(() => {
     const block = this.statBlock();
     const hasStructuredStats =
       block.nc != null ||
+      this.hasCombatStats() ||
       (block.attributes != null && Object.keys(block.attributes).length > 0) ||
+      (block.attacks?.length ?? 0) > 0 ||
       (block.abilities?.length ?? 0) > 0;
     return !hasStructuredStats && !!this.bodyText();
   });

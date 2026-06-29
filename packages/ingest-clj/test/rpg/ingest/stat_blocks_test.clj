@@ -71,6 +71,30 @@
                  "MILLE-PATTES" "FÉE" "CENTAURE" "SOMBRE FÉE (ARACHNOÏDE)"}
                (stat-block-names pdf)))))))
 
+(deftest cof2-croissez-orc-de-base-combat-fields
+  (testing "ORC DE BASE exposes combat stats, attacks and named ability"
+    (let [pdf (pdf-path "COF2_Croissez_Et_Multipliez.pdf")]
+      (when (.exists pdf)
+        (let [pdf-path' (.getAbsolutePath pdf)
+              extracted (pdf/extract-document pdf-path')
+              profile (registry/resolve-profile "cof2" (:pages extracted))
+              {:keys [pages]} (bm/merge-fragmented-pages (:pages extracted) profile)
+              {:keys [spans]} (stat-core/annotate-stat-blocks profile pages)
+              orc-span (first (filter #(re-find #"ORC DE BASE"
+                                                  (clojure.string/join " " (map :text (:blocks %))))
+                                       spans))
+              parsed (stat-core/parse-span profile orc-span)]
+          (is (= "ORC DE BASE" (:name parsed)))
+          (is (= "1/2" (:nc parsed)))
+          (is (= 13 (:defense parsed)))
+          (is (= 12 (:vigor parsed)))
+          (is (= 10 (:initiative parsed)))
+          (is (= 1 (count (:attacks parsed))))
+          (is (= "Hache ou masse" (:name (first (:attacks parsed)))))
+          (is (= 3 (:attack-bonus (first (:attacks parsed)))))
+          (is (= "1d8+2" (:damage (first (:attacks parsed)))))
+          (is (some #(= "SENSIBLE À LA LUMIÈRE" (:title %)) (:abilities parsed))))))))
+
 (deftest cof2-croissez-named-stat-blocks-like-python
   (testing "Croissez PDF detects the same named stat blocks as Python"
     (let [pdf (pdf-path "COF2_Croissez_Et_Multipliez.pdf")]
