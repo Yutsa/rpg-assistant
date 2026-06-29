@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { filter, map } from 'rxjs';
+import { filter } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -15,6 +15,7 @@ import { buildSectionTree } from '../../../../core/utils/section-tree';
 import { ChunkListComponent } from '../../../../shared/components/chunk-list/chunk-list.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SectionTreeComponent } from '../../../../shared/components/section-tree/section-tree.component';
+import { PageLayoutViewerComponent } from '../../../../shared/components/page-layout-viewer/page-layout-viewer.component';
 import { StatBlockListComponent } from '../../../../shared/components/stat-block-list/stat-block-list.component';
 
 const CHUNK_PAGE_SIZE = 20;
@@ -32,6 +33,7 @@ const CHUNK_PAGE_SIZE = 20;
     SectionTreeComponent,
     ChunkListComponent,
     StatBlockListComponent,
+    PageLayoutViewerComponent,
     EmptyStateComponent,
   ],
   templateUrl: './document-explorer.page.html',
@@ -41,7 +43,7 @@ export class DocumentExplorerPage {
   private readonly api = inject(CampaignApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly pdfViewer = inject(PdfViewerService);
+  readonly pdfViewer = inject(PdfViewerService);
 
   readonly documentId = this.route.snapshot.paramMap.get('documentId') ?? '';
   readonly loading = signal(true);

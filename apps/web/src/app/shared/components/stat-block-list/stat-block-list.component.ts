@@ -19,8 +19,8 @@ export class StatBlockListComponent {
   readonly selectedChunkId = input<string | null>(null);
   readonly statBlockSelected = output<string>();
 
-  openPdfAtPage(pageNumber: number, event?: Event): void {
-    event?.stopPropagation();
+  openPdfAtPage(chunkId: string, pageNumber: number): void {
+    this.statBlockSelected.emit(chunkId);
     this.pdfViewer.open(this.documentId(), pageNumber);
   }
 }

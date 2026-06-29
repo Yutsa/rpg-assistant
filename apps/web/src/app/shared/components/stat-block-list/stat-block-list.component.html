@@ -23,7 +23,7 @@
             [pageStart]="block.pages.start"
             [pageEnd]="block.pages.end"
             [actionable]="true"
-            (pageClick)="openPdfAtPage(block.pages.start)"
+            (pageClick)="openPdfAtPage(block.chunk_id, block.pages.start)"
           />
         </span>
       </a>

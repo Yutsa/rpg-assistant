@@ -25,14 +25,8 @@
     min-height: 0;
   }
 
-  @media (min-width: 961px) {
-    .viewer-body {
-      max-height: calc(92vh - 7rem);
-    }
-
-    .detail-panel {
-      max-height: calc(92vh - 7rem);
-    }
+  .viewer-body--detail-open .canvas-wrap {
+    margin-bottom: 0;
   }
 }
 

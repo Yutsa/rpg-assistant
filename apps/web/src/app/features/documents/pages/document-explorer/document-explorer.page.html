@@ -74,15 +74,49 @@
       </mat-tab-group>
     </section>
 
-    <aside class="panel detail-panel" data-testid="detail-panel">
-      <h2>Détail</h2>
-      <router-outlet />
-      @if (!selectedChunkId() && !selectedStatBlockChunkId()) {
-        <app-empty-state
-          title="Sélectionnez un élément"
-          message="Choisissez un chunk ou une fiche pour afficher le détail."
-        />
-      }
+    <aside
+      class="panel detail-panel"
+      [class.detail-panel--split]="pdfViewer.isOpen()"
+      data-testid="detail-panel"
+    >
+      <div class="detail-panel__header">
+        <h2>Détail</h2>
+        @if (pdfViewer.isOpen()) {
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Fermer le PDF"
+            aria-label="Fermer le PDF"
+            data-testid="close-pdf-panel"
+            (click)="pdfViewer.close()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </div>
+
+      <div class="detail-panel__body" [class.detail-panel__body--split]="pdfViewer.isOpen()">
+        <div class="detail-panel__content" [class.detail-panel__content--split]="pdfViewer.isOpen()">
+          <router-outlet />
+          @if (!selectedChunkId() && !selectedStatBlockChunkId()) {
+            <app-empty-state
+              title="Sélectionnez un élément"
+              message="Choisissez un chunk ou une fiche pour afficher le détail."
+            />
+          }
+        </div>
+
+        @if (pdfViewer.isOpen() && pdfViewer.documentId()) {
+          <div class="detail-panel__pdf" data-testid="detail-pdf-panel">
+            <app-page-layout-viewer
+              [documentId]="pdfViewer.documentId()!"
+              [pageNumber]="pdfViewer.pageNumber()"
+              (pageNumberChange)="pdfViewer.setPage($event)"
+              [embedded]="true"
+            />
+          </div>
+        }
+      </div>
     </aside>
   }
 </section>

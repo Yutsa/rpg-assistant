@@ -15,7 +15,7 @@
               [pageStart]="chunk.page_start"
               [pageEnd]="chunk.page_end"
               [actionable]="true"
-              (pageClick)="openPdfAtPage(chunk.page_start)"
+              (pageClick)="openPdfAtPage(chunk.id, chunk.page_start)"
             />
             @if (chunk.chunk_type_hint) {
               <span>{{ chunk.chunk_type_hint }}</span>

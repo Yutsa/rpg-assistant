@@ -21,7 +21,8 @@ export class ChunkListComponent {
   readonly chunkSelected = output<string>();
   readonly loadMore = output<void>();
 
-  openPdfAtPage(pageNumber: number): void {
+  openPdfAtPage(chunkId: string, pageNumber: number): void {
+    this.chunkSelected.emit(chunkId);
     this.pdfViewer.open(this.documentId(), pageNumber);
   }
 }

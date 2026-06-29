@@ -39,6 +39,7 @@ const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
 try {
   await page.goto(`${baseURL}/documents/${documentId}`, { waitUntil: 'networkidle' });
   await page.getByTestId('open-pdf-viewer').click();
+  await page.getByTestId('detail-pdf-panel').waitFor({ state: 'visible', timeout: 30_000 });
   await page.getByTestId('page-layout-viewer').waitFor({ state: 'visible', timeout: 30_000 });
 
   const current = await page.getByTestId('page-layout-viewer').locator('.page-label').textContent();
@@ -62,7 +63,7 @@ try {
   });
 
   await page.waitForTimeout(1500);
-  await page.getByTestId('pdf-viewer-dialog').screenshot({ path: absOutput });
+  await page.getByTestId('detail-pdf-panel').screenshot({ path: absOutput });
   console.log(absOutput);
 } finally {
   await browser.close();

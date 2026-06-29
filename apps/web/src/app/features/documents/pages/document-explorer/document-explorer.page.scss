@@ -45,6 +45,53 @@
 
 .detail-panel {
   border-bottom: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.detail-panel--split {
+  overflow: hidden;
+}
+
+.detail-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
+.detail-panel__body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.detail-panel__body--split {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-panel__content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.detail-panel__content--split {
+  flex: 0 0 42%;
+  min-height: 8rem;
+  border-bottom: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+}
+
+.detail-panel__pdf {
+  flex: 1;
+  min-height: 12rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .loading {

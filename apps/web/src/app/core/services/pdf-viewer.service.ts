@@ -1,20 +1,22 @@
-import { inject, Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-
-import { PdfViewerDialogComponent } from '../../features/documents/dialogs/pdf-viewer-dialog.component';
+import { Injectable, computed, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class PdfViewerService {
-  private readonly dialog = inject(MatDialog);
+  readonly documentId = signal<string | null>(null);
+  readonly pageNumber = signal(1);
 
-  open(documentId: string, pageNumber?: number): void {
-    this.dialog.open(PdfViewerDialogComponent, {
-      data: { documentId, pageNumber },
-      panelClass: 'pdf-viewer-dialog-panel',
-      width: 'min(96vw, 1200px)',
-      maxWidth: '96vw',
-      height: '92vh',
-      autoFocus: false,
-    });
+  readonly isOpen = computed(() => this.documentId() !== null);
+
+  open(documentId: string, pageNumber = 1): void {
+    this.documentId.set(documentId);
+    this.pageNumber.set(pageNumber);
+  }
+
+  close(): void {
+    this.documentId.set(null);
+  }
+
+  setPage(pageNumber: number): void {
+    this.pageNumber.set(pageNumber);
   }
 }
