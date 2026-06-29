@@ -95,7 +95,8 @@ start_stack() {
   node -v
   npm install --no-audit --no-fund
 
-  WEB_START="export PATH=\"${web_bin}:\$PATH\"; export NG_CLI_ANALYTICS=false; cd \"$ROOT/apps/web\"; npm start -- --host 127.0.0.1 --port ${WEB_PORT}"
+  # 0.0.0.0 required for Cloud Agent port forwarding (p-4200-pod-*.agent.cvm.dev).
+  WEB_START="export PATH=\"${web_bin}:\$PATH\"; export NG_CLI_ANALYTICS=false; cd \"$ROOT/apps/web\"; npm start -- --host 0.0.0.0 --port ${WEB_PORT}"
 
   tmux_cmd new-session -d -s "$WEB_SESSION" -c "$ROOT/apps/web" -- "${SHELL:-bash}" -lc "$WEB_START"
 
