@@ -23,12 +23,4 @@
     font-weight: 600;
     color: var(--mat-sys-tertiary, #7d5260);
   }
-
-  .section {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 0.8125rem;
-  }
 }

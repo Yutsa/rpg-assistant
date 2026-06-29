@@ -5,4 +5,16 @@
   font-size: 0.75rem;
   background: var(--mat-sys-surface-container-high, #ece6f0);
   color: var(--mat-sys-on-surface-variant, #49454f);
+
+  &--action {
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: var(--mat-sys-primary-container, #d3e3fd);
+      color: var(--mat-sys-on-primary-container, #001d35);
+    }
+  }
 }

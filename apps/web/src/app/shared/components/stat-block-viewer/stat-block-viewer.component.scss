@@ -17,8 +17,16 @@
 
   .meta {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
+  }
+
+  .pdf-link mat-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    font-size: 1.125rem;
+    margin-right: 0.25rem;
   }
 
   .nc {

@@ -1,22 +1,22 @@
 import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { filter, map } from 'rxjs';
+import { filter } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { CampaignApiService } from '../../../../core/services/campaign-api.service';
+import { PdfViewerService } from '../../../../core/services/pdf-viewer.service';
 import { ChunkListItem, SectionNode, StatBlockIndex } from '../../../../core/models/campaign.models';
 import { buildSectionTree } from '../../../../core/utils/section-tree';
 import { ChunkListComponent } from '../../../../shared/components/chunk-list/chunk-list.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SectionTreeComponent } from '../../../../shared/components/section-tree/section-tree.component';
+import { PageLayoutViewerComponent } from '../../../../shared/components/page-layout-viewer/page-layout-viewer.component';
 import { StatBlockListComponent } from '../../../../shared/components/stat-block-list/stat-block-list.component';
-import { PdfViewerDialogComponent } from '../../dialogs/pdf-viewer-dialog.component';
 
 const CHUNK_PAGE_SIZE = 20;
 
@@ -33,6 +33,7 @@ const CHUNK_PAGE_SIZE = 20;
     SectionTreeComponent,
     ChunkListComponent,
     StatBlockListComponent,
+    PageLayoutViewerComponent,
     EmptyStateComponent,
   ],
   templateUrl: './document-explorer.page.html',
@@ -42,7 +43,7 @@ export class DocumentExplorerPage {
   private readonly api = inject(CampaignApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly dialog = inject(MatDialog);
+  readonly pdfViewer = inject(PdfViewerService);
 
   readonly documentId = this.route.snapshot.paramMap.get('documentId') ?? '';
   readonly loading = signal(true);
@@ -57,7 +58,6 @@ export class DocumentExplorerPage {
 
   readonly selectedChunkId = signal<string | null>(null);
   readonly selectedStatBlockChunkId = signal<string | null>(null);
-  readonly sectionTitleById = signal<Record<string, string>>({});
 
   private chunkRequestGeneration = 0;
 
@@ -78,9 +78,6 @@ export class DocumentExplorerPage {
     this.api.listSections(documentId).subscribe({
       next: (sections) => {
         this.sectionTree.set(buildSectionTree(sections));
-        this.sectionTitleById.set(
-          Object.fromEntries(sections.map((section) => [section.id, section.title])),
-        );
         this.loading.set(false);
       },
       error: () => {
@@ -136,14 +133,7 @@ export class DocumentExplorerPage {
   }
 
   openPdfViewer(): void {
-    this.dialog.open(PdfViewerDialogComponent, {
-      data: { documentId: this.documentId },
-      panelClass: 'pdf-viewer-dialog-panel',
-      width: 'min(96vw, 1200px)',
-      maxWidth: '96vw',
-      height: '92vh',
-      autoFocus: false,
-    });
+    this.pdfViewer.open(this.documentId);
   }
 
   private loadChunks(reset: boolean): void {

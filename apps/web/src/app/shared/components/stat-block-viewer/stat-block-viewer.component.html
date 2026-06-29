@@ -11,7 +11,21 @@
       <app-page-range-badge
         [pageStart]="statBlock().pages.start"
         [pageEnd]="statBlock().pages.end"
+        [actionable]="true"
+        (pageClick)="openPdf()"
       />
+      @if (documentId()) {
+        <button
+          type="button"
+          mat-stroked-button
+          class="pdf-link"
+          data-testid="stat-block-open-pdf"
+          (click)="openPdf()"
+        >
+          <mat-icon>picture_as_pdf</mat-icon>
+          Voir dans le PDF
+        </button>
+      }
     </div>
   </header>
 

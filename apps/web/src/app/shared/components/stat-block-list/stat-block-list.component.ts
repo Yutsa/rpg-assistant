@@ -1,6 +1,7 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 
+import { PdfViewerService } from '../../../core/services/pdf-viewer.service';
 import { StatBlockIndex } from '../../../core/models/campaign.models';
 import { PageRangeBadgeComponent } from '../page-range-badge/page-range-badge.component';
 
@@ -11,15 +12,15 @@ import { PageRangeBadgeComponent } from '../page-range-badge/page-range-badge.co
   styleUrl: './stat-block-list.component.scss',
 })
 export class StatBlockListComponent {
+  private readonly pdfViewer = inject(PdfViewerService);
+
+  readonly documentId = input.required<string>();
   readonly statBlocks = input.required<StatBlockIndex[]>();
   readonly selectedChunkId = input<string | null>(null);
-  readonly sectionTitles = input<Record<string, string>>({});
   readonly statBlockSelected = output<string>();
 
-  sectionTitle(sectionId: string | null): string | null {
-    if (!sectionId) {
-      return null;
-    }
-    return this.sectionTitles()[sectionId] ?? null;
+  openPdfAtPage(chunkId: string, pageNumber: number): void {
+    this.statBlockSelected.emit(chunkId);
+    this.pdfViewer.open(this.documentId(), pageNumber);
   }
 }

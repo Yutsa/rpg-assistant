@@ -25,13 +25,22 @@
     min-height: 0;
   }
 
+  .viewer-body--detail-open .canvas-wrap {
+    margin-bottom: 0;
+  }
+
   @media (min-width: 961px) {
     .viewer-body {
-      max-height: calc(92vh - 7rem);
+      display: flex;
+      flex-direction: column;
     }
 
     .detail-panel {
-      max-height: calc(92vh - 7rem);
+      display: none;
+    }
+
+    .canvas-wrap {
+      max-height: none;
     }
   }
 }

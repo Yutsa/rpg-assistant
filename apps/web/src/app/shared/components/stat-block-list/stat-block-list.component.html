@@ -17,12 +17,14 @@
           } @else if (block.nc != null) {
             <span>NC {{ block.nc }}</span>
           }
-          @if (sectionTitle(block.section_id); as title) {
-            <span class="section" [attr.title]="title">{{ title }}</span>
-          }
         </span>
         <span matListItemMeta>
-          <app-page-range-badge [pageStart]="block.pages.start" [pageEnd]="block.pages.end" />
+          <app-page-range-badge
+            [pageStart]="block.pages.start"
+            [pageEnd]="block.pages.end"
+            [actionable]="true"
+            (pageClick)="openPdfAtPage(block.chunk_id, block.pages.start)"
+          />
         </span>
       </a>
     }

@@ -23,6 +23,13 @@
     color: var(--mat-sys-on-surface-variant, #49454f);
   }
 
+  .pdf-link mat-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    font-size: 1.125rem;
+    margin-right: 0.25rem;
+  }
+
   .chunk-text {
     flex: 1;
     margin: 0;

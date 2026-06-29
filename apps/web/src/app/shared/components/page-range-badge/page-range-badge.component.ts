@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-page-range-badge',
@@ -8,4 +8,12 @@ import { Component, input } from '@angular/core';
 export class PageRangeBadgeComponent {
   readonly pageStart = input.required<number>();
   readonly pageEnd = input.required<number>();
+  readonly actionable = input(false);
+  readonly pageClick = output<void>();
+
+  onClick(event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.pageClick.emit();
+  }
 }
