@@ -28,6 +28,21 @@
   .viewer-body--detail-open .canvas-wrap {
     margin-bottom: 0;
   }
+
+  @media (min-width: 961px) {
+    .viewer-body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-panel {
+      display: none;
+    }
+
+    .canvas-wrap {
+      max-height: none;
+    }
+  }
 }
 
 .viewer {
