@@ -95,12 +95,24 @@
           (is (= "1d8+2" (:damage (first (:attacks parsed)))))
           (is (some #(= "SENSIBLE À LA LUMIÈRE" (:title %)) (:abilities parsed))))))))
 
-(deftest cof2-croissez-named-stat-blocks-like-python
-  (testing "Croissez PDF detects the same named stat blocks as Python"
+(deftest cof2-croissez-panthere-embuscade-skips-gm-callout
+  (testing "PANTHÈRE EMBUSCADE excludes REBROUSSER CHEMIN GM callout on page 13"
     (let [pdf (pdf-path "COF2_Croissez_Et_Multipliez.pdf")]
       (when (.exists pdf)
-        (is (= #{"ORC DE BASE" "SERGENT ORC" "PANTHÈRE" "ROGÙN"}
-               (stat-block-names pdf)))))))
+        (let [pdf-path' (.getAbsolutePath pdf)
+              extracted (pdf/extract-document pdf-path')
+              profile (registry/resolve-profile "cof2" (:pages extracted))
+              {:keys [pages]} (bm/merge-fragmented-pages (:pages extracted) profile)
+              {:keys [spans]} (stat-core/annotate-stat-blocks profile pages)
+              panthere (first (filter #(= "PANTHÈRE" (:name (stat-core/parse-span :cof2 %))) spans))
+              parsed (stat-core/parse-span :cof2 panthere)
+              embuscade (first (filter #(= "EMBUSCADE" (:title %)) (:abilities parsed)))]
+          (is (= "PANTHÈRE" (:name parsed)))
+          (is (some? embuscade))
+          (is (re-find #"premier round de combat" (:text embuscade)))
+          (is (re-find #"test de PER difficulté 19" (:text embuscade)))
+          (is (not (re-find #"REBROUSSER CHEMIN" (:text embuscade))))
+          (is (not (re-find #"(?i)\bles PJ\b" (:text embuscade)))))))))
 
 (deftest cof2-xelys-named-stat-blocks-at-least-python
   (testing "Xélys PDF detects at least the Python named stat blocks"

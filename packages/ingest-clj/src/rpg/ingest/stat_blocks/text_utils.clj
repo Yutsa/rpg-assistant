@@ -40,6 +40,31 @@
       (some #(re-matches icon-line-re (str/trim %))
             (filter seq (str/split-lines text)))))
 
+(defn- leaked-ability-title-line? [line]
+  (let [t (str/trim line)]
+    (and (seq t)
+         (<= (count t) 20)
+         (not (re-find #"[.!?]$" t))
+         (not (re-find #"(?i)\b(de|la|le|un|une|du|des|les|et|ou|si|au|en|par|pour|avec|sur|est|tous|que|qui)\b" t))
+         (or (has-icon-glyphs? t)
+             (and (not (re-find #"\s" t))
+                  (>= (count (re-seq #"[A-ZÀ-ÿ]" t)) 2))))))
+
+(defn- icon-only-ability-title-line? [line]
+  (or (leaked-ability-title-line? line)
+      (and (has-icon-glyphs? line)
+           (let [stripped (strip-layout-glyphs line)]
+             (and (seq stripped)
+                  (<= (count stripped) 20))))))
+
+(defn clean-ability-text
+  "Drop icon-glyph ability title lines leaked into body text."
+  [text]
+  (->> (str/split-lines text)
+       (remove icon-only-ability-title-line?)
+       (str/join "\n")
+       str/trim))
+
 (defn normalize-attack-separators
   "Normalize COF2 attack damage separators corrupted by PDF font encoding."
   [text]
