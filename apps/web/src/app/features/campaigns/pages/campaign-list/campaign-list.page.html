@@ -1,7 +1,19 @@
 <section class="page" data-testid="campaign-list-page">
-  <header>
-    <h1>Campagnes</h1>
-    <p>Parcourez les aventures ingérées et leurs documents.</p>
+  <header class="page-header">
+    <div>
+      <h1>Campagnes</h1>
+      <p>Parcourez les aventures ingérées et leurs documents.</p>
+    </div>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      data-testid="open-import-dialog"
+      (click)="openImportDialog()"
+    >
+      <mat-icon>upload_file</mat-icon>
+      Importer un PDF
+    </button>
   </header>
 
   @if (loading()) {
@@ -11,10 +23,17 @@
   } @else if (error()) {
     <app-empty-state [title]="error() ?? ''" />
   } @else if (campaigns().length === 0) {
-    <app-empty-state
-      title="Aucune campagne"
-      message="Importez un PDF pour commencer."
-    />
+    <app-empty-state title="Aucune campagne" message="Importez un PDF pour commencer.">
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        data-testid="empty-import-cta"
+        (click)="openImportDialog()"
+      >
+        Importer un PDF
+      </button>
+    </app-empty-state>
   } @else {
     <div class="campaign-grid" data-testid="campaign-grid">
       @for (campaign of campaigns(); track campaign.id) {

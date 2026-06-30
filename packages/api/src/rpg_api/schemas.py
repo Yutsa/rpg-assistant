@@ -141,3 +141,29 @@ class PageExtractorsCompareOut(BaseModel):
     height: float
     pymupdf: ExtractorPageOut
     pdfbox: ExtractorPageOut
+
+
+class GameSystemOut(BaseModel):
+    id: str
+    label: str
+    description: str = ""
+    supports_stat_blocks: bool = False
+    default: bool = False
+
+
+class ImportCreateOut(BaseModel):
+    ingestion_run_id: str
+    campaign_id: str
+    status: str
+
+
+class IngestionRunOut(BaseModel):
+    id: str
+    campaign_id: str
+    document_id: str | None = None
+    status: str
+    stage: str
+    stats: dict[str, Any] | None = None
+    error_message: str | None = None
+    started_at: datetime | None = None
+    finished_at: datetime | None = None

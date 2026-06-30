@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from rpg_api.errors import ApiError, api_error_handler
-from rpg_api.routers import campaigns, chunks, documents, pages, stat_blocks
+from rpg_api.routers import campaigns, chunks, documents, imports, pages, stat_blocks
 
 _DEFAULT_CORS_ORIGINS = "http://localhost:4200,http://127.0.0.1:4200"
 
@@ -36,6 +36,7 @@ def create_app() -> FastAPI:
     app.include_router(chunks.router)
     app.include_router(stat_blocks.router)
     app.include_router(pages.router)
+    app.include_router(imports.router)
 
     @app.get("/health")
     def health() -> dict[str, str]:
