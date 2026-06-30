@@ -588,4 +588,4 @@ Phase 0 (storage) → Phase 1 (is-bold) → Phase 2 (sections) → Phase 3 (chun
 
 ## Comparateur extracteur (contexte)
 
-Le plan [`plan-extractor-compare.md`](plan-extractor-compare.md) reste valide comme **outil de dev** pour affiner `page.clj`. Il n'est pas le chemin de production une fois la pipeline full Clojure en place.
+L'**outil de dev** comparateur PyMuPDF/PDFBox (`--ingest-mode extractor-compare`, route `/extractors-compare`) reste disponible pour affiner `page.clj`. Ce n'est pas le chemin de production une fois la pipeline full Clojure en place.
