@@ -9,6 +9,9 @@ import {
   Chunk,
   ChunkListItem,
   Document,
+  GameSystem,
+  ImportCreateResponse,
+  IngestionRun,
   PageExtractorsCompare,
   PageMeta,
   PageNode,
@@ -120,5 +123,17 @@ export class CampaignApiService {
     return this.http.get<PageExtractorsCompare>(
       `${API_URL}/documents/${documentId}/pages/${pageNumber}/extractors-compare`,
     );
+  }
+
+  listGameSystems(): Observable<GameSystem[]> {
+    return this.http.get<GameSystem[]>(`${API_URL}/ingestion/game-systems`);
+  }
+
+  importPdf(formData: FormData): Observable<ImportCreateResponse> {
+    return this.http.post<ImportCreateResponse>(`${API_URL}/imports`, formData);
+  }
+
+  getIngestionRun(runId: string): Observable<IngestionRun> {
+    return this.http.get<IngestionRun>(`${API_URL}/ingestion-runs/${runId}`);
   }
 }

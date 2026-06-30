@@ -176,3 +176,29 @@ export interface PageExtractorsCompare {
   pymupdf: ExtractorPage;
   pdfbox: ExtractorPage;
 }
+
+export interface GameSystem {
+  id: string;
+  label: string;
+  description: string;
+  supports_stat_blocks: boolean;
+  default: boolean;
+}
+
+export interface ImportCreateResponse {
+  ingestion_run_id: string;
+  campaign_id: string;
+  status: string;
+}
+
+export interface IngestionRun {
+  id: string;
+  campaign_id: string;
+  document_id: string | null;
+  status: string;
+  stage: string;
+  stats: Record<string, unknown> | null;
+  error_message: string | null;
+  started_at: string | null;
+  finished_at: string | null;
+}

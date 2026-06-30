@@ -1,0 +1,127 @@
+<div class="import-campaign-dialog" data-testid="import-campaign-dialog">
+  <div class="import-campaign-dialog__header" mat-dialog-title>
+    <span>Importer un PDF</span>
+    <button mat-icon-button type="button" (click)="close()" aria-label="Fermer">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    @if (phase() === 'form') {
+      <form class="import-form" (ngSubmit)="submit()">
+        <div class="file-field">
+          <label class="file-label" for="import-pdf-file">Fichier PDF</label>
+          <input
+            id="import-pdf-file"
+            type="file"
+            accept=".pdf,application/pdf"
+            data-testid="import-file-input"
+            (change)="onFileSelected($event)"
+          />
+          @if (selectedFile) {
+            <p class="file-name">{{ selectedFile.name }}</p>
+          }
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Identifiant campagne</mat-label>
+          <input
+            matInput
+            name="campaignId"
+            [(ngModel)]="campaignId"
+            required
+            data-testid="import-campaign-id"
+            placeholder="momie"
+          />
+          <mat-hint>Slug minuscule (a-z, 0-9, tirets)</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Titre campagne (optionnel)</mat-label>
+          <input
+            matInput
+            name="campaignTitle"
+            [(ngModel)]="campaignTitle"
+            data-testid="import-campaign-title"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Système de jeu / profil d'ingestion</mat-label>
+          <mat-select
+            name="gameSystem"
+            [(ngModel)]="gameSystem"
+            required
+            data-testid="import-game-system"
+            [disabled]="gameSystemsLoading() || !!gameSystemsError()"
+          >
+            @for (system of gameSystems(); track system.id) {
+              <mat-option [value]="system.id">{{ system.label }}</mat-option>
+            }
+          </mat-select>
+          <mat-icon
+            matSuffix
+            matTooltip="Détermine la détection et le parsing des fiches monstre/PNJ"
+          >
+            info
+          </mat-icon>
+        </mat-form-field>
+
+        @if (gameSystemsError()) {
+          <p class="field-error">{{ gameSystemsError() }}</p>
+        }
+
+        <mat-checkbox
+          name="reimport"
+          [(ngModel)]="reimport"
+          data-testid="import-reimport"
+        >
+          Réimporter si le PDF existe déjà
+        </mat-checkbox>
+
+        @if (errorMessage()) {
+          <p class="form-error" data-testid="import-error">{{ errorMessage() }}</p>
+        }
+
+        <div class="dialog-actions">
+          <button mat-button type="button" (click)="close()">Annuler</button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            data-testid="import-submit"
+            [disabled]="!selectedFile || !campaignId.trim() || gameSystemsLoading()"
+          >
+            Lancer l'import
+          </button>
+        </div>
+      </form>
+    } @else if (phase() === 'importing') {
+      <div class="import-progress" data-testid="import-progress">
+        <mat-spinner diameter="48" />
+        <p>{{ statusMessage() }}</p>
+        <p class="hint">L'import peut prendre 1 à 2 minutes.</p>
+      </div>
+    } @else if (phase() === 'success') {
+      <div class="import-success" data-testid="import-success">
+        <mat-icon>check_circle</mat-icon>
+        <p>Import terminé.</p>
+        @if (successSummary()) {
+          <p>{{ successSummary() }}</p>
+        }
+        <p class="hint">Redirection vers le document…</p>
+      </div>
+    } @else {
+      <div class="import-error" data-testid="import-error-state">
+        <mat-icon>error</mat-icon>
+        <p>{{ errorMessage() }}</p>
+        <div class="dialog-actions">
+          <button mat-button type="button" (click)="close()">Fermer</button>
+          <button mat-raised-button color="primary" type="button" data-testid="import-retry" (click)="retry()">
+            Réessayer
+          </button>
+        </div>
+      </div>
+    }
+  </mat-dialog-content>
+</div>
