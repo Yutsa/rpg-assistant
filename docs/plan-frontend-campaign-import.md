@@ -51,9 +51,80 @@ flowchart TD
 | **Création campagne** | Créée automatiquement par `ensure-campaign!` (déjà dans la pipeline) | `POST /campaigns` séparé |
 | **Réimport même PDF** | `reimport=true` par défaut (comportement CLI actuel) | Case à cocher « Écraser si existant » |
 | **Pipeline par défaut** | Clojure uniquement pour ce flux UI | Choix Python/Clojure (complexité inutile) |
+| **Profil de jeu** | Choix **explicite** dans le dialog (`game_system` → profil fiches) | Auto-détection silencieuse (déconseillé en UI) |
 | **Limite taille** | ~50 Mo (PDF COF2 ≈ 5–15 Mo) | Configurable via env |
 
 ---
+
+## Profils de jeu (`game_system`)
+
+Le plan initial mentionnait un champ `game_system` avec défaut `cof2`, mais **sans détailler le choix utilisateur ni le lien avec les profils fiches**. C'est un prérequis fonctionnel : sans profil explicite, l'import peut retomber sur `:generic` et **ne pas parser les fiches COF2**.
+
+### Deux notions liées
+
+| Notion | Où | Rôle |
+|--------|-----|------|
+| **`game_system`** (string) | `campaigns.game_system`, param `--game-system` CLI | Métadonnée campagne + entrée du registre |
+| **`stat_block_profile`** (keyword) | Résolu à l'import via `resolve-profile`, stocké dans `stats.stat_block_profile` | Dispatch des multimethodes fiches (`:cof2`, `:generic`, …) |
+
+Chaîne actuelle (Clojure) :
+
+```
+UI game_system="cof2"
+  → POST /imports (game_system=cof2)
+  → clojure -M:ingest import --game-system cof2
+  → stat_blocks/registry resolve-profile → :cof2
+  → annotate-stat-blocks + chunks stat_block
+  → stats.stat_block_profile = "cof2"
+```
+
+Registre actuel (`packages/ingest-clj/src/rpg/ingest/stat_blocks/registry.clj`) :
+
+| ID (`game_system`) | Label UI (v1) | Fiches structurées |
+|--------------------|---------------|---------------------|
+| `cof2` | Chroniques Oubliées Fantasy 2 | ✅ profil `:cof2` |
+| `generic` | Autre / sans fiches dédiées | ⚠️ fallback minimal (`:generic`) |
+
+> **v1** : seul **CoF 2** est proposé comme choix « métier » dans le dialog. Le profil `:generic` reste disponible côté API pour les PDF hors COF2, mais n'est pas mis en avant tant qu'aucun autre jeu n'est supporté.
+
+### Endpoint catalogue (recommandé)
+
+Éviter de hardcoder la liste des profils dans Angular :
+
+| Méthode | Path | Rôle |
+|---------|------|------|
+| `GET` | `/ingestion/game-systems` | Liste des profils importables |
+
+**Réponse v1** (source : `rpg_ingest.raw.stat_blocks.registry`, alignée Clojure) :
+
+```json
+[
+  {
+    "id": "cof2",
+    "label": "Chroniques Oubliées Fantasy 2",
+    "description": "Fiches monstre/PNJ COF2 (NC, attributs, attaques, capacités)",
+    "supports_stat_blocks": true,
+    "default": true
+  }
+]
+```
+
+Le profil `generic` peut être omis du catalogue UI v1 ou exposé avec `supports_stat_blocks: false` pour un mode « PDF narratif seulement ».
+
+### Règles métier
+
+1. **Choix obligatoire en UI** — pas d'auto-détection silencieuse : l'utilisateur sélectionne le profil avant l'upload.
+2. **Défaut UI** : `cof2` (pré-sélectionné dans le `mat-select`).
+3. **Validation API** : `game_system` doit être un ID connu du registre ; sinon `422` avec la liste des valeurs acceptées.
+4. **Confirmation post-import** : afficher `stats.stat_block_profile` dans l'état succès (ex. « Profil appliqué : COF2 — 12 fiches détectées »).
+5. **Extensibilité** : ajouter un profil = implémenter `defmethod` Clojure + entrée registre Python/API ; le select UI se remplit via `GET /ingestion/game-systems` sans changement de composant.
+
+### Impact sur les phases existantes
+
+- **Phase 1 (wrapper)** : `game_system` reste un paramètre obligatoire (défaut `"cof2"` côté API si absent, jamais chaîne vide).
+- **Phase 2 (API)** : ajouter `GET /ingestion/game-systems` + validation `game_system` sur `POST /imports`.
+- **Phase 3 (frontend)** : `mat-select` alimenté par le catalogue ; libellé « Système de jeu / profil d'ingestion » ; tooltip expliquant l'impact sur les fiches monstre.
+
 
 ## Phase 1 — Pont Python → Clojure import
 
@@ -111,6 +182,7 @@ def run_clojure_import(
 
 | Méthode | Path | Rôle |
 |---------|------|------|
+| `GET` | `/ingestion/game-systems` | Catalogue des profils importables (labels, défaut) |
 | `POST` | `/imports` | Upload PDF + lancer import Clojure (async) |
 | `GET` | `/ingestion-runs/{ingestion_run_id}` | Statut + stats (miroir MCP `get_ingestion_status`) |
 
@@ -122,6 +194,13 @@ Optionnel en v1 :
 ### Schémas (`schemas.py`)
 
 ```python
+class GameSystemOut(BaseModel):
+    id: str
+    label: str
+    description: str = ""
+    supports_stat_blocks: bool = False
+    default: bool = False
+
 class ImportCreateOut(BaseModel):
     ingestion_run_id: str
     campaign_id: str
@@ -148,13 +227,14 @@ class IngestionRunOut(BaseModel):
 | `file` | oui | PDF |
 | `campaign_id` | oui | slug (`momie`, `ma-campagne`) |
 | `campaign_title` | non | = `campaign_id` |
-| `game_system` | non | `cof2` |
+| `game_system` | **oui** (UI) / non (API avec défaut) | `cof2` — **doit** correspondre à un profil du catalogue |
 | `reimport` | non | `true` |
 
 **Flow** :
 
 1. Valider extension/MIME, taille max
-2. Sauvegarder dans `data/uploads/{uuid}_{filename_sanitized}.pdf`
+2. Valider `game_system` contre le registre (`422` si inconnu)
+3. Sauvegarder dans `data/uploads/{uuid}_{filename_sanitized}.pdf`
 3. Créer le run en base avec `status=running` **ou** lancer directement le subprocess en background
 4. Retourner immédiatement `202 Accepted` + `{ ingestion_run_id, campaign_id, status: "running" }`
 
@@ -198,11 +278,14 @@ Reprendre la logique MCP (`packages/mcp/src/rpg_mcp/server.py` → `get_ingestio
 Étendre `apps/web/src/app/core/services/campaign-api.service.ts` :
 
 ```typescript
+listGameSystems(): Observable<GameSystem[]>
 importPdf(formData: FormData): Observable<ImportCreateResponse>
 getIngestionRun(runId: string): Observable<IngestionRun>
 ```
 
-Modèles dans `campaign.models.ts` : `ImportCreateResponse`, `IngestionRun`.
+Modèles dans `campaign.models.ts` : `GameSystem`, `ImportCreateResponse`, `IngestionRun`.
+
+Au montage du dialog : `listGameSystems()` → pré-sélectionner l'entrée `default: true` (`cof2` en v1).
 
 ### UI — composant dialog
 
@@ -213,7 +296,7 @@ Nouveau : `apps/web/src/app/features/campaigns/dialogs/import-campaign-dialog/`
 - Fichier PDF (`input type="file"`, accept `.pdf`)
 - Identifiant campagne (`campaign_id`, slug auto-généré depuis le nom de fichier)
 - Titre campagne (optionnel)
-- Système de jeu (`mat-select` : `cof2`, `generic`, …)
+- **Système de jeu / profil** (`mat-select`, obligatoire) — alimenté par `GET /ingestion/game-systems` ; v1 : seule entrée **« Chroniques Oubliées Fantasy 2 »** (`cof2`) ; tooltip : « Détermine la détection et le parsing des fiches monstre/PNJ »
 - Case « Réimporter si le PDF existe déjà »
 
 **États** :
@@ -221,7 +304,7 @@ Nouveau : `apps/web/src/app/features/campaigns/dialogs/import-campaign-dialog/`
 1. Formulaire
 2. Upload + spinner « Import en cours… »
 3. Polling `getIngestionRun` toutes les 2 s (max ~5 min)
-4. Succès → fermer dialog + `router.navigate(['/documents', documentId])`
+4. Succès → fermer dialog + `router.navigate(['/documents', documentId])` ; afficher brièvement le profil appliqué (`stat_block_profile`, `stat_block_count` depuis les stats du run)
 5. Erreur (`rejected` couverture, `failed`) → message + bouton réessayer
 
 **Pattern réutilisable** : structure du dialog `pdf-viewer-dialog`, `EmptyStateComponent`, spinners existants.
@@ -289,8 +372,8 @@ Pas de nouvelle route obligatoire en v1 (dialog modal). Option v2 : `/campaigns/
 
 ## Critères d'acceptation (definition of done)
 
-- [ ] Depuis `http://127.0.0.1:4200/campaigns`, l'utilisateur peut uploader un PDF COF2
-- [ ] L'import passe par `clojure -M:ingest import` (vérifiable via `stats.extraction_method = "pdfbox"`)
+- [ ] Depuis `http://127.0.0.1:4200/campaigns`, l'utilisateur peut uploader un PDF COF2 **en choisissant explicitement le profil CoF 2**
+- [ ] L'import passe par `clojure -M:ingest import` (vérifiable via `stats.extraction_method = "pdfbox"` et `stats.stat_block_profile = "cof2"`)
 - [ ] Progression visible (spinner + statut terminal)
 - [ ] Succès → redirection vers `/documents/{document_id}` avec sections/chunks/fiches exploitables
 - [ ] Échec couverture → message explicite (`rejected`)
@@ -308,6 +391,8 @@ Pas de nouvelle route obligatoire en v1 (dialog modal). Option v2 : `/campaigns/
 | Java/Clojure absent en prod | Healthcheck étendu ou erreur 503 explicite au POST |
 | PDF scanné rejeté | Message UI + lien doc sur `coverage_threshold` |
 | Divergence Python (seed) vs Clojure (UI) | Documenter ; migration `seed-campaigns.sh` vers Clojure en follow-up |
+| Mauvais profil choisi (PDF non-COF2 avec `cof2`) | Message post-import si `stat_block_count = 0` ; doc sur le choix de profil |
+| Profil inconnu soumis à l'API | `422` + liste des profils via `GET /ingestion/game-systems` |
 | Gros PDF | Limite taille + barre de progression upload (v2) |
 
 ---
