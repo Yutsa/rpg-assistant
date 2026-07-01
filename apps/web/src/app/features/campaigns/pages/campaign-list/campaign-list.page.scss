@@ -42,6 +42,7 @@
 }
 
 .campaign-card {
+  position: relative;
   text-decoration: none;
   color: inherit;
 
@@ -52,6 +53,20 @@
   &:active mat-card {
     box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
   }
+}
+
+.campaign-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.delete-button {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  z-index: 1;
+  background: var(--mat-sys-surface, #fff);
 }
 
 .system-badge {
@@ -77,5 +92,9 @@
 
   .campaign-card:hover mat-card {
     box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+  }
+
+  .delete-button:hover {
+    background: var(--mat-sys-error-container, #ffdad6);
   }
 }

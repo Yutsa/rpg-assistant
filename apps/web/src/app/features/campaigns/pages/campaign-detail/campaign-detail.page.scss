@@ -5,7 +5,13 @@
   margin: 0 auto;
 }
 
-header {
+header,
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1rem;
 
   h1 {
@@ -13,6 +19,10 @@ header {
     font-size: 1.375rem;
     line-height: 1.2;
     word-break: break-word;
+  }
+
+  button mat-icon {
+    margin-right: 0.35rem;
   }
 }
 

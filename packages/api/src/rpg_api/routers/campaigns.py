@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 
 from rpg_api.deps import get_raw_repo, get_semantic_repo
+from rpg_api.errors import not_found
 from rpg_api.schemas import CampaignOut, CampaignSummaryOut, DocumentOut
 from rpg_core.storage.repositories.raw import RawRepository
 from rpg_core.storage.repositories.semantic import SemanticRepository
@@ -13,6 +14,16 @@ router = APIRouter(prefix="/campaigns", tags=["campaigns"])
 @router.get("", response_model=list[CampaignOut])
 def list_campaigns(repo: RawRepository = Depends(get_raw_repo)) -> list[CampaignOut]:
     return [CampaignOut(**c.model_dump()) for c in repo.list_campaigns()]
+
+
+@router.delete("/{campaign_id}", status_code=204)
+def delete_campaign(
+    campaign_id: str,
+    repo: RawRepository = Depends(get_raw_repo),
+) -> Response:
+    if not repo.delete_campaign(campaign_id):
+        raise not_found(f"Campaign not found: {campaign_id}")
+    return Response(status_code=204)
 
 
 @router.get("/{campaign_id}/documents", response_model=list[DocumentOut])
