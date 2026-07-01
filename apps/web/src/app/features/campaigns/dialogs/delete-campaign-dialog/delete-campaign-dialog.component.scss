@@ -1,0 +1,42 @@
+.delete-campaign-dialog {
+  min-width: min(440px, 92vw);
+}
+
+.delete-campaign-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.warning-text {
+  margin: 0 0 0.75rem;
+}
+
+.warning-detail {
+  margin: 0;
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.delete-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.form-error {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  color: #c62828;
+}

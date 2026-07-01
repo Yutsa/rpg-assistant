@@ -126,6 +126,11 @@ class RawRepository:
             cur.execute("SELECT 1 FROM campaigns WHERE id = %s", (campaign_id,))
             return cur.fetchone() is not None
 
+    def delete_campaign(self, campaign_id: str) -> bool:
+        with self.conn.cursor() as cur:
+            cur.execute("DELETE FROM campaigns WHERE id = %s", (campaign_id,))
+            return cur.rowcount > 0
+
     def list_campaigns(self) -> list[CampaignRecord]:
         with self.conn.cursor() as cur:
             cur.execute(

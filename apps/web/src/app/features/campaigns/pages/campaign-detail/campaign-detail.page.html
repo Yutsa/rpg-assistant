@@ -1,13 +1,25 @@
 <section class="page" data-testid="campaign-detail-page">
-  <header>
-    <h1 data-testid="campaign-title">{{ campaignId() }}</h1>
-    @if (summary(); as s) {
-      <div class="stats" data-testid="campaign-stats">
-        <span>{{ s.document_count }} doc.</span>
-        <span>{{ s.section_count }} sections</span>
-        <span>{{ s.chunk_count }} chunks</span>
-      </div>
-    }
+  <header class="page-header">
+    <div>
+      <h1 data-testid="campaign-title">{{ campaignId() }}</h1>
+      @if (summary(); as s) {
+        <div class="stats" data-testid="campaign-stats">
+          <span>{{ s.document_count }} doc.</span>
+          <span>{{ s.section_count }} sections</span>
+          <span>{{ s.chunk_count }} chunks</span>
+        </div>
+      }
+    </div>
+    <button
+      mat-stroked-button
+      color="warn"
+      type="button"
+      data-testid="delete-campaign-button"
+      (click)="openDeleteDialog()"
+    >
+      <mat-icon>delete</mat-icon>
+      Supprimer
+    </button>
   </header>
 
   @if (loading()) {

@@ -5,10 +5,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { CampaignApiService } from '../../../../core/services/campaign-api.service';
 import { Campaign } from '../../../../core/models/campaign.models';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { DeleteCampaignDialogComponent } from '../../dialogs/delete-campaign-dialog/delete-campaign-dialog.component';
 import { ImportCampaignDialogComponent } from '../../dialogs/import-campaign-dialog/import-campaign-dialog.component';
 
 @Component({
@@ -19,6 +21,7 @@ import { ImportCampaignDialogComponent } from '../../dialogs/import-campaign-dia
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
     EmptyStateComponent,
   ],
   templateUrl: './campaign-list.page.html',
@@ -44,6 +47,26 @@ export class CampaignListPage {
       })
       .afterClosed()
       .subscribe(() => this.reloadCampaigns());
+  }
+
+  openDeleteDialog(campaign: Campaign, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dialog
+      .open(DeleteCampaignDialogComponent, {
+        width: '480px',
+        data: {
+          campaignId: campaign.id,
+          campaignTitle: campaign.title,
+          documentCount: campaign.document_count,
+        },
+      })
+      .afterClosed()
+      .subscribe((deleted) => {
+        if (deleted) {
+          this.reloadCampaigns();
+        }
+      });
   }
 
   private reloadCampaigns(): void {

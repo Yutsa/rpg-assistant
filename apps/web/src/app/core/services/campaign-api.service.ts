@@ -47,6 +47,10 @@ export class CampaignApiService {
     return this.http.get<CampaignSummary>(`${API_URL}/campaigns/${campaignId}/summary`);
   }
 
+  deleteCampaign(campaignId: string): Observable<void> {
+    return this.http.delete<void>(`${API_URL}/campaigns/${campaignId}`);
+  }
+
   listSections(documentId: string): Observable<Section[]> {
     return this.http.get<Section[]>(`${API_URL}/documents/${documentId}/sections`);
   }

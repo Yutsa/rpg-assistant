@@ -138,6 +138,25 @@ def test_list_campaigns(api_client: TestClient) -> None:
     assert data[0]["id"] == "momie"
 
 
+def test_delete_campaign_cascade(api_client: TestClient) -> None:
+    assert api_client.get("/campaigns/momie/documents").status_code == 200
+    assert api_client.get("/documents/doc_test/chunks").status_code == 200
+
+    response = api_client.delete("/campaigns/momie")
+    assert response.status_code == 204
+
+    assert api_client.get("/campaigns").json() == []
+    assert api_client.get("/campaigns/momie/documents").status_code == 200
+    assert api_client.get("/campaigns/momie/documents").json() == []
+    assert api_client.get("/documents/doc_test/chunks").status_code == 404
+
+
+def test_delete_campaign_not_found(api_client: TestClient) -> None:
+    response = api_client.delete("/campaigns/unknown")
+    assert response.status_code == 404
+    assert response.json()["code"] == "not_found"
+
+
 def test_list_documents_and_sections(api_client: TestClient) -> None:
     docs = api_client.get("/campaigns/momie/documents").json()
     assert docs[0]["id"] == "doc_test"

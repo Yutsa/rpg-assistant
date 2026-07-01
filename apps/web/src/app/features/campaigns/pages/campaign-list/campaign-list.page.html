@@ -37,24 +37,33 @@
   } @else {
     <div class="campaign-grid" data-testid="campaign-grid">
       @for (campaign of campaigns(); track campaign.id) {
-        <a
-          class="campaign-card"
-          [routerLink]="['/campaigns', campaign.id]"
-          [attr.data-testid]="'campaign-card-' + campaign.id"
-        >
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>{{ campaign.title || campaign.id }}</mat-card-title>
-              <mat-card-subtitle>{{ campaign.id }}</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>{{ campaign.document_count }} document(s)</p>
-              @if (campaign.game_system) {
-                <span class="system-badge">{{ campaign.game_system }}</span>
-              }
-            </mat-card-content>
-          </mat-card>
-        </a>
+        <div class="campaign-card" [attr.data-testid]="'campaign-card-' + campaign.id">
+          <a class="campaign-card-link" [routerLink]="['/campaigns', campaign.id]">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>{{ campaign.title || campaign.id }}</mat-card-title>
+                <mat-card-subtitle>{{ campaign.id }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{ campaign.document_count }} document(s)</p>
+                @if (campaign.game_system) {
+                  <span class="system-badge">{{ campaign.game_system }}</span>
+                }
+              </mat-card-content>
+            </mat-card>
+          </a>
+          <button
+            mat-icon-button
+            type="button"
+            class="delete-button"
+            matTooltip="Supprimer la campagne"
+            [attr.data-testid]="'delete-campaign-' + campaign.id"
+            (click)="openDeleteDialog(campaign, $event)"
+            aria-label="Supprimer la campagne"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
       }
     </div>
   }
