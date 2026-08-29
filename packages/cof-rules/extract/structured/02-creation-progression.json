@@ -1,0 +1,2887 @@
+{
+  "batch_id": "02-creation-progression",
+  "page_start": 19,
+  "page_end": 43,
+  "notes": "Pages 19–43. Filigrane et en-têtes/pieds retirés ; césures recollées. La page 21 est décorative (filet de numéros, pas de corps extractible). Incohérences du livre conservées telles quelles : Lhagva PV 12 dans les exemples de création (p. 30, p. 39) contre PV 15 sur la fiche (p. 37) ; Ionas voie du mage rang 1 : « Lumière des étoiles » (p. 30) contre « Lumière intérieure » (p. 37). Les profils, peuples et voies ne sont listés ici qu’au niveau de la création ; fiches détaillées dans les lots suivants. Pas de table d’attaque chiffrée dans le livre : seulement la règle +1/niveau jusqu’au niveau 10.",
+  "sections": [
+    {
+      "title": "Partie I — Le personnage",
+      "kind": "chapter",
+      "page_start": 19,
+      "page_end": 19,
+      "summary": "Page de titre de la Partie I, consacrée au personnage.",
+      "body": "# Partie I — Le personnage\n"
+    },
+    {
+      "title": "Chapitre 1 — Création du personnage",
+      "kind": "chapter",
+      "page_start": 20,
+      "page_end": 37,
+      "summary": "Création d’un personnage joueur : prétirés ou quinze étapes, de l’idée du rôle à la touche finale.",
+      "body": "# Chapitre 1 — Création du personnage\n\nPour pouvoir se lancer dans une partie de Chroniques Oubliées Fantasy, il est indispensable que chaque joueur dispose d’un personnage joueur (PJ). S’il n’a encore jamais joué, il y a deux possibilités : utiliser un personnage déjà prêt à jouer (ou « prétiré », dans le jargon rôliste), ou bien créer un personnage en utilisant les règles fournies dans ce chapitre.\n\nLes explications de ce chapitre sont illustrées par les étapes de création de **Lhagva** (barbare) et **Ionas** (ensorceleur).\n"
+    },
+    {
+      "title": "En quelques mots",
+      "kind": "section",
+      "page_start": 20,
+      "page_end": 22,
+      "summary": "Prétirés ou création maison ; collaboration joueur/MJ ; feuille de personnage.",
+      "body": "# En quelques mots\n\nS’il n’a encore jamais joué, le joueur a deux possibilités : utiliser un personnage déjà prêt à jouer (« prétiré »), ou créer un personnage avec les règles de ce chapitre.\n\n## Personnages prétirés\n\nSi le temps est limité ou si cela semble plus confortable pour une première expérience, des PJ prétirés sont fournis à la fin de l’ouvrage. On peut les recopier sur la feuille de personnage vierge (fin d’ouvrage) ou télécharger gratuitement leurs feuilles sur www.black-book-editions.fr. Une fois le personnage choisi, il reste à lui apporter la touche finale au point 15 de ce chapitre (langues connues, idéal héroïque ou travers).\n\n## Création d’un PJ\n\nSi le joueur a un peu de temps ou l’envie (même en étant débutant), créer soi-même un PJ permet de définir le héros correspondant le plus à ses aspirations. La création d’un PJ se fait idéalement en collaboration entre le joueur concerné et le meneur de jeu (MJ).\n\nUn personnage est défini par un certain nombre d’éléments à inscrire sur une feuille de personnage (feuille vierge en fin d’ouvrage ou sur www.black-book-editions.fr).\n"
+    },
+    {
+      "title": "La création de personnage (résumé)",
+      "kind": "sidebar",
+      "page_start": 22,
+      "page_end": 22,
+      "summary": "Liste des quinze étapes de création avec renvois de pages.",
+      "body": "# La création de personnage (résumé)\n\nAprès avoir réfléchi au personnage que vous voulez jouer, voici les différentes étapes à suivre pour lui donner corps.\n\n1. Rôle (page 20)\n2. Profil (page 22)\n3. Peuple (page 25)\n4. Caractéristiques (page 26)\n5. Voies et capacités (page 29)\n6. Points de vigueur (page 30)\n7. Dé de récupération (page 30)\n8. Points de chance (page 30)\n9. Points de mana (page 31)\n10. Initiative (page 31)\n11. Équipement (page 31)\n12. Défense (page 31)\n13. Valeurs d’attaque (page 32)\n14. Dommages (page 32)\n15. Touche finale (page 33)\n"
+    },
+    {
+      "title": "1 · Rôle",
+      "kind": "section",
+      "page_start": 20,
+      "page_end": 22,
+      "summary": "Imaginer le personnage, son rôle dans l’équipe et un groupe complémentaire.",
+      "body": "# 1 · Rôle\n\nLa première chose à déterminer est le rôle que vous voulez jouer. Avant de traiter votre personnage du point de vue des règles, il vous faut commencer par l’imaginer, par le rêver. Essayez de vous faire une image mentale de votre futur alter ego.\n\nVous ressemble-t-il ou est-il tout votre contraire ? Est-ce une guerrière aux muscles d’acier ou un magicien chétif doté de grands pouvoirs ? Quel rôle avez-vous envie de tenir au sein de votre équipe de héros en herbe ? Un combattant sans peur ? Une lanceuse de sorts ? Un mystique habité par la foi ? Une aventurière polyvalente ? Un voleur pernicieux ? Souhaitez-vous plutôt jouer une naine bourrue ou un gracieux elfe ? À moins qu’un humain ne vous semble moins caricatural à interpréter…\n\nSi vous manquez d’idées, il est souvent plus aisé de partir d’une illustration. Elle peut être choisie dans cet ouvrage, mais Internet fourmille de propositions grandioses et inspirantes. Ce peut être un très bon point de départ. Et si vous n’avez pas plus d’idées que ça au départ, ce n’est pas grave du tout : vous pouvez très bien commencer avec un concept vague (un guerrier, une magicienne…), le reste viendra au fur et à mesure de la création du personnage, voire plus tard, en cours d’aventure.\n\nEnfin, il est toujours bon de tenir compte des autres joueurs. L’idéal est que les joueurs soient réunis pour créer leurs personnages de façon à créer un groupe équilibré. Ils auront moins de difficultés à surmonter les défis qui leur seront proposés si les personnages sont complémentaires plutôt que concurrents, et chacun pourra briller à son tour. La diversité est une force, qu’on se le dise !\n\nTout au long de cet ouvrage, les exemples s’appuient sur la table suivante :\n\n- Anaïs joue **Lhagva**, fille de Nuala, puissante combattante qui ne connaît pas la peur.\n- Salim joue **Ionas Melenwë**, lanceur de sorts.\n- Léo joue un personnage féminin proche de la nature, **Skodja**.\n- Ilona interprète **Wilibert Sûreté**, personnage discret, un tantinet filou.\n- La meneuse de jeu se prénomme Valentine.\n\nDans ce chapitre, les règles de création sont illustrées par Lhagva et Ionas.\n"
+    },
+    {
+      "title": "2 · Profil",
+      "kind": "section",
+      "page_start": 22,
+      "page_end": 25,
+      "summary": "Quatre familles (aventuriers, combattants, mages, mystiques) et quatorze profils ; niveau 1 à la création.",
+      "body": "# 2 · Profil\n\nVous trouverez ci-après une brève présentation des quatre familles de profils et des quatorze profils de COF qui y sont associés.\n\n- Chaque famille détermine les points de vigueur (PV) et éventuellement les points de chance (PC) et les dés de récupération (DR) associés (voir les points 6, « Points de vigueur », 7, « Dé de récupération », et 8, « Points de chance »).\n- Chaque profil indique entre crochets quelles sont les caractéristiques les plus utiles au personnage par ordre d’importance et donne accès à des capacités réparties dans cinq voies (voir le point 5, « Voies et capacités ») et détermine l’équipement que le personnage peut utiliser (voir le point 11, « Équipement »).\n\nCommencez par choisir une famille de profils (aventuriers, combattants, mages et mystiques) avant de choisir en son sein le profil qui correspond le mieux à l’idée que vous avez de votre futur personnage. Ce sera le **profil principal** du personnage, qui représente son occupation d’origine. Plus tard, votre héros pourra éventuellement sortir de cette formation initiale si vous le souhaitez et faire l’acquisition de capacités et de voies en dehors de ce profil (voir le chapitre « Progression & niveaux », page 38).\n\n**Niveau.** À la création, chaque personnage débute au niveau 1 de son profil (inscrivez 1 sur la ligne niveau de la fiche de héros).\n\n## Aventuriers\n\nLa famille des aventuriers regroupe tous ceux qui sont taillés pour l’aventure avec un grand A, le voyage et l’exploration et, dans une certaine mesure, le combat. Ce sont des personnages polyvalents et des débrouillards professionnels.\n\nLes aventuriers partagent une vigueur intermédiaire (4 PV) et la maîtrise d’une liste intermédiaire d’armes. Ils portent des armures légères (cuir ou cuir renforcé) et leur caractéristique commune est l’Agilité.\n\nLes aventuriers débutent avec 1 point de chance (PC) de plus que les autres personnages.\n\n- **Arquebusier** : un spécialiste de l’usage des armes à feu et des explosifs, souvent mercenaire [Agilité, Intelligence, Constitution] ; voir page 62.\n- **Barde** : un artiste polyvalent capable d’utiliser la rapière autant que la magie [Charisme, Agilité, Volonté] ; voir page 66.\n- **Rôdeur** : un spécialiste de la survie en milieu naturel, ami des animaux et archer hors pair [Agilité, Perception, Constitution] ; voir page 70.\n- **Voleur** : un filou agile et sournois taillé pour l’infiltration ou la criminalité [Agilité, Intelligence, Charisme] ; voir page 74.\n\n## Combattants\n\nLa famille des combattants regroupe tous ceux qui sont taillés pour le combat et l’art de la guerre.\n\nLes combattants partagent une vigueur élevée (5 PV) et la maîtrise de très nombreuses armes. Ils portent des armures lourdes (cotte de mailles ou armure de plaque, même si le barbare est plus limité). Leur caractéristique commune est la Force.\n\n- **Barbare** : un guerrier sauvage issu d’une culture primitive capable d’entrer en rage [Force, Constitution, Agilité] ; voir page 79.\n- **Chevalier** : un héros en armure rutilante qui chevauche une monture magique [Force, Charisme, Constitution] ; voir page 83.\n- **Guerrier** : un spécialiste du combat au corps à corps, un soldat d’élite [Force, Constitution, Agilité] ; voir page 87.\n\nExemple : Anaïs veut un personnage brutal et pas trop civilisé et a décidé que son personnage, Lhagva, serait une barbare. Ses caractéristiques les plus importantes sont donc la Force et la Constitution ; nous devons le garder à l’esprit lors de l’étape suivante.\n\n## Mages\n\nLa famille des mages regroupe tous ceux qui emploient la magie profane (par opposition à la magie divine des mystiques). Ils sont peu nombreux dans la société et détiennent entre leurs mains un pouvoir extraordinaire et dangereux.\n\nLes mages partagent une vigueur faible (3 PV), ils ne portent aucune armure (à l’exception du forgesort) et maîtrisent très peu d’armes. Leur caractéristique commune est l’Intelligence (remplacée par le Charisme pour l’ensorceleur).\n\nLes mages débutent avec 1 capacité de rang 2 en plus des capacités de rang 1 acquises par les autres personnages (voir le point 5, « Voies et capacités »).\n\n- **Ensorceleur** : un magicien charismatique qui emploie une magie subtile [Charisme, Volonté, Agilité] ; voir page 92.\n- **Forgesort** : un magicien et artisan qui crée des élixirs ou inscrit des runes [Intelligence, Volonté, Constitution] ; voir page 97.\n- **Magicien** : un intellectuel qui pratique une magie académique efficace et directe [Intelligence, Volonté, Agilité] ; voir page 102.\n- **Sorcier** : un adepte de la magie noire qui contrôle les morts et les démons [Intelligence, Volonté, Constitution] ; voir page 107.\n\nExemple : Salim souhaite jouer un lanceur de sorts, mais pas un érudit, plutôt un contemplatif et un artiste. Il a décidé que Ionas sera un ensorceleur, le CHA sera donc sa caractéristique la plus importante (suivi de la VOL et de l’AGI).\n\n## Mystiques\n\nLa famille des mystiques regroupe tous ceux qui ont une vie spirituelle intense. Ils ont en commun la méditation et la prière ainsi que des capacités qui défient les lois naturelles habituelles, notamment en ce qui concerne la récupération. Ils bénéficient d’une combinaison de capacités magiques et de capacités de combat intermédiaires, et leur caractéristique commune est la Volonté (VOL), généralement associée à une autre caractéristique mentale.\n\nComme les aventuriers, les mystiques gagnent des PV intermédiaires (4 PV).\n\nLes mystiques débutent avec 1 dé de récupération (DR) de plus que les autres personnages.\n\n- **Druide** : un protecteur de la nature et un magicien des forces naturelles [Perception, Volonté, Constitution ou Agilité] ; voir page 113.\n- **Moine** : un ascète qui endurcit son corps, son esprit et maîtrise le combat à mains nues [Volonté, Perception, Agilité] ; voir page 118.\n- **Prêtre** : le bras armé d’une religion capable de soigner ceux qui en ont besoin comme d’occire les infidèles [Charisme, Volonté, Force] ; voir page 122.\n"
+    },
+    {
+      "title": "Profils hybrides",
+      "kind": "sidebar",
+      "page_start": 24,
+      "page_end": 24,
+      "summary": "Option pour joueur averti : mélanger les voies de plusieurs profils.",
+      "body": "# Profils hybrides\n\nSi vous êtes un joueur averti ou si vous avez en tête un concept original de personnage qui ne correspond à aucun des profils standard, il est possible de mélanger les voies de plusieurs profils pour obtenir un profil hybride (voir le chapitre « Profils hybrides », page 176). Si cette option vous intéresse, discutez-en avec votre MJ.\n"
+    },
+    {
+      "title": "Les familles de profil en résumé",
+      "kind": "table",
+      "page_start": 25,
+      "page_end": 25,
+      "summary": "PV et bonus de famille à la création.",
+      "body": "# Les familles de profil en résumé\n\n| Famille | Bonus |\n|---|---|\n| Aventurier | 4 PV et 1 PC supplémentaire |\n| Combattant | 5 PV |\n| Mage | 3 PV et 1 capacité de rang 2 supplémentaire |\n| Mystique | 4 PV et +1 DR supplémentaire |\n"
+    },
+    {
+      "title": "3 · Peuples",
+      "kind": "section",
+      "page_start": 25,
+      "page_end": 26,
+      "summary": "Huit peuples de base ; deux conséquences mécaniques (caractéristiques et voie de peuple).",
+      "body": "# 3 · Peuples\n\nChoisissez le peuple de votre personnage parmi l’un des huit peuples de base (voir leurs descriptions au chapitre « Peuples »).\n\n- **Demi-elfe** : un être entre deux cultures, souvent d’une grande sensibilité (profils typiques : barde, prêtre) ; voir page 45.\n- **Demi-orc** : une force de la nature en butte aux préjugés (profils typiques : barbare, guerrier) ; voir page 46.\n- **Elfe haut** : un peuple d’intellectuels et d’artistes (profils typiques : barde, magicien, ensorceleur) ; voir page 48.\n- **Elfe sylvain** : le peuple de la forêt, vif et en alerte (profils typiques : druide, rôdeur) ; voir page 50.\n- **Gnome** : un petit peuple passé maître dans les sciences (profils typiques : forgesort, arquebusier) ; voir page 52.\n- **Halfelin** : un petit peuple discret, mais plein d’astuce et de courage (profils typiques : voleur, rôdeur) ; voir page 54.\n- **Humain** : le peuple le plus polyvalent (profils typiques : tous) ; voir page 57.\n- **Nain** : un peuple bourru, idéaliste et résistant (profils typiques : guerrier, prêtre) ; voir page 58.\n\nLe choix du peuple peut être influencé par celui du profil, de façon que le personnage profite de ses points forts, comme un demi-orc barbare ou un elfe sylvain rôdeur. Mais il est aussi possible d’en prendre le contrepied, comme un halfelin barbare ou un demi-orc barde. Des choix plus originaux vous permettent de ne pas jouer un archétype de personnage déjà vu et revu.\n\nLe peuple choisi a deux conséquences mécaniques sur le personnage (toutes deux précisées dans le paragraphe dédié au peuple, dans le chapitre « Peuples ») :\n\n- modification de deux valeurs de caractéristiques (une seule pour les humains ; voir ci-après, au point 4, « Caractéristiques ») ;\n- ajout d’une voie de peuple (voir ci-après, au point 5, « Voies et capacités »).\n\nExemple : Anaïs décide que son personnage barbare sera une humaine, tandis que Salim choisit un elfe haut, déjà parce que c’est classe, mais aussi parce qu’il a repéré que cela lui donnerait un bonus supplémentaire de CHA, la caractéristique la plus importante pour un ensorceleur.\n"
+    },
+    {
+      "title": "4 · Caractéristiques",
+      "kind": "section",
+      "page_start": 26,
+      "page_end": 28,
+      "summary": "Sept caractéristiques ; trois séries de valeurs ; modificateur de peuple.",
+      "body": "# 4 · Caractéristiques\n\nLe personnage est défini par sept caractéristiques (quatre physiques, et trois mentales) que l’on associe à certains types d’action. À la création, chaque caractéristique a une valeur comprise entre −2 à +5 (voir ci-après).\n\n## Les quatre caractéristiques physiques\n\n- **L’Agilité (AGI)** évalue la coordination générale, la vitesse, la souplesse, les réflexes et la dextérité.\n  Actions type : faire des acrobaties, tenir en équilibre, grimper, sauter, sprinter, se déplacer en silence, crocheter, chaparder. Esquiver une attaque et attaquer à distance.\n- **La Constitution (CON)** représente la santé, la vitalité, la résistance et l’endurance.\n  Actions type : résister aux éléments, à la fatigue, aux poisons, aux privations, courir longtemps. Encaisser des blessures.\n- **La Force (FOR)** mesure la puissance physique et musculaire. Elle est directement reliée au gabarit.\n  Actions type : gagner un bras de fer, soulever, tordre, lancer un objet lourd, immobiliser un adversaire. Attaquer au contact et infliger des blessures.\n- **La Perception (PER)** représente les cinq sens, mais aussi l’intuition et la capacité à percevoir les émotions des autres. Elle permet d’analyser son environnement rapidement et donc de réagir vite. La PER détermine aussi l’ordre d’action en combat.\n  Actions type : être vigilant, observer, entendre, détecter, repérer, pister, deviner, ressentir, faire preuve de psychologie et de spiritualité. Utiliser la magie druidique.\n\n## Les trois caractéristiques mentales\n\n- **Le Charisme (CHA)** traduit la force de persuasion, la personnalité, les capacités de séduction, mais aussi la destinée du personnage. Les points de chance découlent du CHA.\n  Actions type : bluffer, mentir, négocier, séduire, intimider, convaincre. Utiliser la magie innée ou divine (barde, ensorceleur, prêtre).\n- **L’Intelligence (INT)** représente l’érudition générale, la mémoire, les capacités d’apprentissage et de raisonnement. Un personnage avec une INT négative ne sait ni lire, ni écrire.\n  Actions type : raisonner, comprendre, connaître, apprendre, se souvenir, chercher, trouver une information (livre). Utiliser la magie profane (magicien, forgesort, sorcier).\n- **La Volonté (VOL)** correspond à la force de caractère, au courage, ainsi qu’à l’énergie interne. Elle détermine l’attaque magique et les points de mana, et est donc primordiale pour les lanceurs de sorts.\n  Actions type : résister à la magie ou à la peur.\n\nDans Chroniques Oubliées Fantasy, contrairement à d’autres jeux de rôle, les caractéristiques ne représentent pas seulement l’inné, mais aussi l’acquis. Ainsi, elles représentent les compétences générales du personnage tant que celui-ci n’a pas acquis un entraînement particulier : courir et sauter (AGI), détecter et observer (PER) ou convaincre (CHA), etc. En complément, un personnage peut acquérir des capacités (voir le point 5, « Voies et capacités ») qui correspondent à des compétences spécialisées le distinguant du commun des mortels.\n\n## Valeur de base des caractéristiques\n\nÀ la création d’un personnage, commencez par choisir l’une des trois séries de valeurs suivantes (polyvalent, expert, spécialiste) selon ce qui correspond le mieux à l’image que vous vous faites du personnage. L’échelle des valeurs de caractéristiques ci-dessous vous permet de vous faire une idée de la valeur d’une caractéristique à travers des mots.\n\nRépartissez les sept valeurs de la série choisie dans les différentes caractéristiques dans l’ordre que vous souhaitez. Rappelez-vous toutefois que chaque profil est associé à trois caractéristiques ; il est vivement conseillé de leur affecter vos trois meilleures valeurs.\n\n- **Polyvalent** : +2, +2, +2, +1, +1, +0, −1\n- **Expert** : +3, +2, +1, +1, +0, +0, −1\n- **Spécialiste** : +4, +2, +1, +0, +0, −1, −1\n\n**Magie.** Si vous voulez que votre personnage pratique la magie, veillez à mettre au moins une valeur de +1 dans la caractéristique de magie correspondante (INT pour les sorts de magicien, de forgesort et de sorcier, CHA pour les sorts d’ensorceleur, de barde et prêtre, PER pour les sorts de druide).\n\nExemple : Salim choisit la série de l’expert. Pour utiliser la magie, il doit privilégier le charisme (CHA) et la volonté (VOL), il assigne donc au CHA la valeur de +3. S’il veut lancer de nombreux sorts, il lui faut aussi une bonne Volonté (VOL), il assigne +2 en VOL. Il assigne enfin +1 en AGI et +1 en CON, car on a toujours besoin d’un peu plus de vigueur pour résister aux dangers de la vie de héros ! Pour le −1 il choisit la FOR, car il ne compte pas combattre au corps à corps.\n\n## Modificateur de peuple\n\nUne fois les valeurs de base des caractéristiques attribuées, il convient de les ajuster en appliquant des modificateurs liés au peuple du personnage (voir la table « Modificateur de peuple »). Dans certains cas, vous aurez à choisir entre deux caractéristiques.\n\nExemple : Ionas perd 1 point en FOR (ce qui fait un total de −2 ! Il choisit d’augmenter son CHA de +1, ce qui donne finalement le profil suivant : AGI +1, CON +1, FOR −2, PER +0, CHA +4, INT +0, VOL +2.\n\nLhagva gagne +1 à une de ses deux plus faibles caractéristiques au choix. Elle peut donc choisir de compenser son malus de CHA ou gagner +1 dans une caractéristique pour le moment à +0. Cela lui plaît d’avoir un défaut et de se comporter comme un ours, elle décide donc de conserver son −1 en CHA et elle préfère mettre +1 en PER afin d’être vigilante, car elle a grandi dans une nature sauvage et dangereuse.\n\nFinalement, elle obtient : AGI +1, CON +2, FOR +3, PER +1, CHA −1, INT +0, VOL +1.\n"
+    },
+    {
+      "title": "Méthode rapide pour les débutants",
+      "kind": "sidebar",
+      "page_start": 28,
+      "page_end": 28,
+      "summary": "Série expert : trois plus hautes valeurs sur les trois caractéristiques du profil.",
+      "body": "# Méthode rapide pour les débutants\n\nSi vous êtes débutant et que vous hésitez, nous vous conseillons la méthode suivante, gage d’efficacité et de sécurité pour obtenir un personnage cohérent.\n\nChoisissez la série de valeurs du personnage expert et assignez les trois plus hautes valeurs aux trois caractéristiques importantes indiquées pour votre profil au point 2, « Profil ». Assignez ensuite le dernier +1 et le −1, selon l’idée que vous vous faites de votre personnage. Les deux dernières caractéristiques reçoivent la valeur 0.\n\nExemple : Lhagva est une barbare, les trois caractéristiques indiquées sont [Force, Constitution, Agilité]. Cela donne : FOR +3, CON +2, AGI +1. La joueuse de Lhagva décide de mettre le dernier +1 en VOL, car Lhagva est courageuse ! Elle décide d’assigner −1 en CHA car Lhagva n’est pas très causante.\n"
+    },
+    {
+      "title": "L’équité est différente de l’égalité",
+      "kind": "sidebar",
+      "page_start": 28,
+      "page_end": 28,
+      "summary": "Sommes des séries : polyvalent +7, expert +6, spécialiste +5.",
+      "body": "# L’équité est différente de l’égalité\n\nAlors que la somme des valeurs d’un personnage polyvalent atteint +7, vous remarquerez qu’elle baisse pour les experts (+6) et les spécialistes (+5). La logique derrière cette répartition est double : d’une part la spécialisation à haut niveau est généralement très gourmande en ressource. D’autre part, du point de vue des règles, une très haute valeur dans une spécialité est beaucoup plus efficace que de multiples valeurs moyennes. Cette répartition a donc été pensée pour équilibrer les différents types de personnages. Vous trouverez des méthodes alternatives de répartition des valeurs des caractéristiques dans l’*Atlas d’Osgild & règles optionnelles*.\n"
+    },
+    {
+      "title": "5 · Voies et capacités",
+      "kind": "section",
+      "page_start": 29,
+      "page_end": 30,
+      "summary": "Deux voies de profil + une voie de peuple (rang 1) ; exception mages (rang 2 et voie du mage).",
+      "body": "# 5 · Voies et capacités\n\nÀ sa création, votre personnage se voit attribuer trois voies, dans lesquelles il obtient automatiquement la capacité de rang 1.\n\n- Choisissez deux voies parmi les cinq du profil de votre personnage (voir les chapitres « Famille des aventuriers », « Famille des combattants », « Famille des mages » et « Familles des mystiques », à partir de la page 61).\n- Votre personnage reçoit automatiquement une troisième voie, la voie de peuple associée au peuple que vous avez choisi.\n\nNotez-les sur votre feuille de personnage (ou cochez les cases correspondantes si vous utilisez la feuille de personnage spécifique au profil que vous avez choisi).\n\nExemple : Lhagva possède automatiquement la capacité de rang 1 de la voie de l’humain (Diversité). De plus, après avoir pris connaissance des cinq voies auxquelles son profil donne accès, Anaïs choisit la voie du pourfendeur et la voie de la rage, deux voies résolument tournées vers la baston. Elle fait l’acquisition des deux capacités de rang 1 correspondantes : Réflexes éclair (voie du pourfendeur) et Cri de guerre (voie de la rage).\n\n## Mages\n\nEn plus de leurs deux capacités de rang 1, les personnages issus de la famille des mages peuvent choisir entre :\n\n- obtenir une capacité de rang 2 de leur choix dans l’une des deux voies de profil qu’ils ont choisie ;\n- obtenir le rang 2 de la voie du mage.\n\n**Voie du mage.** Les profils issus de la famille des mages peuvent choisir la voie du mage en remplacement de leur voie de peuple (voir page 60 et chaque profil de la famille des mages). Le personnage qui choisit la voie du mage bénéficie toutefois des effets du rang 1 de la voie de peuple correspondant à son peuple (il peut le cocher sur sa feuille de personnage), mais il ne pourra pas acquérir les rangs suivants de cette voie.\n\nIl est possible d’obtenir le rang 2 de la voie du mage, Maîtrise de la magie, dès le niveau 1 si le joueur le souhaite, en investissant le point de capacité supplémentaire des mages.\n\nExemple : Salim décide que son ensorceleur se consacre tout entier à son art et pour cela il sacrifie les connaissances traditionnelles des elfes. Il choisit donc de remplacer sa voie de peuple par la voie du mage, et il obtient automatiquement et gratuitement le rang 1 de cette voie. Exceptionnellement, au rang 1, il bénéficie tout de même des effets de la capacité du rang 1 de sa voie de peuple, comme cela est indiqué dans la voie du mage ; il obtient donc à la fois la Lumière des étoiles, mais aussi Occultisme (un bonus égal au rang + 2 en connaissances de la magie).\n\nPour ses deux autres voies, Salim choisit la voie de l’air et la voie de l’invocation pour avoir au moins un sort d’attaque dès le premier niveau (Choc).\n\nEn tant que mage, il lui reste à choisir une capacité de rang 2 parmi :\n\n- Sous tension (voie de l’air) ;\n- Serviteur invisible (voie de l’invocation) ;\n- Maîtrise de la magie (voie du mage).\n\nFinalement, il choisit Serviteur invisible comme capacité de rang 2 pour son côté polyvalent.\n"
+    },
+    {
+      "title": "6 · Points de vigueur (PV)",
+      "kind": "section",
+      "page_start": 30,
+      "page_end": 30,
+      "summary": "PV au niveau 1 : (2 × PV de la famille) + CON.",
+      "body": "# 6 · Points de vigueur (PV)\n\nAu niveau 1, un personnage dispose d’un nombre de points de vigueur égal à la somme de sa valeur de CON et du double des PV de base de sa famille de profil.\n\nParfois, une capacité peut venir modifier cette valeur.\n\n**PV = (2 × PV de la famille) + CON**\n\nExemple : Lhagva possède +2 en CON et son profil de barbare appartient à la famille des combattants, qui a 5 PV de base. Au niveau 1, elle a donc (2 × 5) + 2 = 12 PV.\n\nIonas appartient à la famille des mages et possède +1 en CON, il a donc (3 × 2) + 1 = 7 PV.\n"
+    },
+    {
+      "title": "7 · Dé de récupération (DR)",
+      "kind": "section",
+      "page_start": 30,
+      "page_end": 30,
+      "summary": "Nombre de DR = 2 + CON (mystiques : 3 + CON) ; type selon la famille.",
+      "body": "# 7 · Dé de récupération (DR)\n\nAu niveau 1, chaque personnage reçoit [2 + CON] DR dont le type dépend de sa famille (voir ci-après).\n\nAttention : les mystiques reçoivent 1 DR de plus que les autres profils à la création, soit [3 + CON] DR.\n\nCas particulier : un PJ ayant −2 en CON n’a pas de dé de récupération (2 − 2 = 0). Il ne peut donc pas régénérer ses PV en prenant une récupération rapide, mais seulement avec une récupération complète. Il doit alors toujours lancer le dé de récupération (il n’obtient pas le résultat maximal sur le dé).\n\nLe type du DR dépend de la famille du profil du PJ.\n\n- Aventuriers : d8\n- Combattants : d10\n- Mages : d6\n- Mystiques : d8\n\nExemple : Lhagva possède une CON de +2, elle a donc 4 DR. Comme elle est une barbare, son type de DR est le d10. Sur sa feuille de personnage, Anaïs indique donc : « DR : 4 d10 ».\n\nIonas ayant quant à lui +1 en CON, Salim note sur la feuille de son PJ : « DR : 3 d6 ».\n"
+    },
+    {
+      "title": "8 · Points de chance (PC)",
+      "kind": "section",
+      "page_start": 30,
+      "page_end": 30,
+      "summary": "PC = 2 + CHA ; aventuriers : +1 PC.",
+      "body": "# 8 · Points de chance (PC)\n\nChaque personnage reçoit [2 + CHA] points de chance (PC).\n\nAttention : les PJ de la famille des aventuriers gagnent 1 PC de plus que les autres profils.\n\nExemple : avec son CHA de −1, Lhagva possède seulement 2 − 1 = 1 PC. Toutefois, en tant qu’humaine (voie de l’humain), elle gagne 1 PC supplémentaire pour un total de 2 PC.\n\nAvec +4 en CHA, Ionas obtient quant à lui 6 PC.\n"
+    },
+    {
+      "title": "9 · Points de mana (PM)",
+      "kind": "section",
+      "page_start": 31,
+      "page_end": 31,
+      "summary": "PM seulement si au moins un sort (*) ; PM = VOL + nombre de sorts.",
+      "body": "# 9 · Points de mana (PM)\n\nPour avoir des points de mana, un personnage doit avoir au moins une capacité signalée par un * (c’est-à-dire un sort).\n\nLorsque c’est le cas, le PJ dispose d’un nombre de points de mana égal à la somme de sa VOL et du nombre de sorts appris.\n\n**Total de points de mana = VOL + Nbre de sorts**\n\nExemple : Salim a choisi de donner à Ionas trois capacités qui sont des sorts (Murmure dans le vent, Choc et Serviteur invisible), et sa valeur de VOL est de +2. Il dispose donc de 5 points de mana pour lancer ses sorts.\n\nDe son côté, au niveau 1, Lhagva ne connaît aucun sort ; elle n’a donc aucun point de mana.\n"
+    },
+    {
+      "title": "10 · Initiative",
+      "kind": "section",
+      "page_start": 31,
+      "page_end": 31,
+      "summary": "Initiative = 10 + PER, plus capacités.",
+      "body": "# 10 · Initiative\n\nÀ la création du personnage, son Initiative est égale à [10 + PER].\n\nExemple : Avec une Perception de +1, Lhagva a une Initiative de 11 (10 + 1). Toutefois la capacité Réflexes éclair (rang 1 de la voie du pourfendeur) augmente cette valeur de +3. Son Initiative finale est donc égale à 14.\n\nIonas n’a pas de bonus de Perception, mais sa capacité Murmure dans le vent lui octroie un bonus de +1. Son initiative est donc égale à 11.\n"
+    },
+    {
+      "title": "11 · Équipement",
+      "kind": "section",
+      "page_start": 31,
+      "page_end": 31,
+      "summary": "Sac d’aventurier, 2d6 pa, équipement de profil ; maîtrise d’armure par bonus de DEF.",
+      "body": "# 11 · Équipement\n\nVotre personnage débute avec un sac d’aventurier qui contient :\n\n- une couverture,\n- une torche,\n- un briquet à silex,\n- une outre,\n- une gamelle,\n- une bourse de 2d6 pa.\n\nChaque personnage reçoit aussi un équipement indiqué dans son profil.\n\nSi vous souhaitez un objet particulier pour votre personnage, discutez-en avec le MJ. Vous devrez probablement sacrifier un autre objet de valeur similaire, sinon, il faudra que votre personnage attende de trouver un trésor ou fasse quelques économies. Reportez-vous au chapitre « Équipement », page 181 pour plus de détails sur les différents objets.\n\n**Armure :** les armures sont classées par ordre croissant de valeur de protection (et de limitation de l’AGI). Lorsqu’un profil indique par exemple « peut porter jusqu’à la chemise de mailles », cela signifie que le personnage peut porter toutes les armures dont le bonus de Défense est inférieur ou égal à celui de la chemise de mailles. Dans cet exemple, cela correspond à cuir, cuir renforcé et enfin chemise de mailles.\n\nExemple : Lhagva obtient l’équipement standard d’un barbare. Elle préfère une arme à une main et un bouclier à une arme à deux mains.\n\nIonas pourrait maîtriser une arme supplémentaire, mais cela ne correspond pas à l’idée que Salim se fait de son personnage. Il négocie donc avec le MJ de ne pas avoir d’arme supplémentaire en échange de vêtements luxueux.\n"
+    },
+    {
+      "title": "12 · Défense",
+      "kind": "section",
+      "page_start": 31,
+      "page_end": 31,
+      "summary": "DEF = 10 + AGI + capacités + armure.",
+      "body": "# 12 · Défense\n\nLa DEF d’un personnage est égale à : 10 + AGI + éventuels modificateurs de capacités et d’armure (voir le chapitre « Équipement », page 181).\n\nExemple : Lhagva porte une armure de cuir (DEF +2) et un bouclier (DEF +2), et son Agilité est de +1. Sa Défense est donc de 10 + 2 + 2 + 1 = 15. De plus sa capacité Réflexes éclair de la voie du pourfendeur lui donne un bonus supplémentaire de +1 pour un total final de 16.\n\nIonas, lui, ne porte aucune armure et son bonus d’agilité est égal à +1. De plus, sa capacité Murmure dans le vent lui octroie un bonus de +1 en Défense, ce qui lui permet d’avoir finalement une Défense de 12.\n"
+    },
+    {
+      "title": "13 · Valeurs d’attaque",
+      "kind": "section",
+      "page_start": 32,
+      "page_end": 32,
+      "summary": "Contact = niveau + FOR ; distance = niveau + AGI ; magique = niveau + VOL.",
+      "body": "# 13 · Valeurs d’attaque\n\nLes valeurs d’attaque d’un personnage dépendent de son niveau et des caractéristiques liées aux types d’attaque :\n\n- Attaque au contact = niveau + FOR\n- Attaque à distance = niveau + AGI\n- Attaque magique = niveau + VOL\n\nAinsi, au niveau 1, les valeurs d’attaque sont les suivantes :\n\n- Attaque au contact = 1 + FOR\n- Attaque à distance = 1 + AGI\n- Attaque magique = 1 + VOL\n\nExemple : Lhagva est un personnage de niveau 1. Sa valeur d’attaque au contact est donc de +4 (niveau +1 et FOR +3) et sa valeur d’attaque à distance de +2 (niveau 1 et AGI +1). Sa valeur d’attaque magique est égale à +2 (niveau 1 et VOL +1).\n\nIonas possède un total de −1 en attaque au contact (niveau 1 et −2 en FOR), de +2 en attaque à distance (niveau 1 et +1 en AGI) et enfin de +3 en attaque magique (niveau 1 et +2 en VOL).\n"
+    },
+    {
+      "title": "14 · Dommages (DM)",
+      "kind": "section",
+      "page_start": 32,
+      "page_end": 32,
+      "summary": "FOR aux DM de contact ; rien aux armes à distance ; magie selon la capacité.",
+      "body": "# 14 · Dommages (DM)\n\nLes DM de chaque arme sont indiqués au chapitre « Équipement », et ceux des sorts sont précisés dans la description des capacités concernées.\n\nPar principe :\n\n- la FOR s’ajoute aux DM des armes de contact ;\n- aucune valeur n’est ajoutée aux DM des armes à distance ;\n- lorsqu’une attaque magique bénéficie d’un bonus aux DM, cela est précisé dans la description de la capacité.\n\nDans tous les cas, certaines capacités peuvent venir modifier cette règle générale (par exemple, ajouter la PER en attaque à distance pour simuler un bonus de perception).\n\nExemple : Lhagva utilise un cimeterre (une épée courbe que son peuple des steppes du nord utilise et qui inflige des dommages égaux à une épée longue). Avec cette arme, elle inflige 1d8+3 DM (1d8 pour une épée longue, +3 de FOR).\n\nSalim décide que Ionas se battra au bâton, mais seulement en dernier recours ! En effet, il inflige 1d6−2 DM avec cette arme. Son sort de Choc est bien plus efficace, puisqu’il inflige 1d4+CHA soit 1d4+4 DM avec, en plus, la possibilité de renverser un adversaire !\n"
+    },
+    {
+      "title": "15 · Touche finale",
+      "kind": "section",
+      "page_start": 33,
+      "page_end": 37,
+      "summary": "Nom, physique, idéal et travers, secrets, âge, langues, talent secondaire ; fiches Lhagva et Ionas.",
+      "body": "# 15 · Touche finale\n\nIl ne vous reste plus qu’à donner un nom et un peu d’épaisseur à votre personnage pour vous lancer à l’aventure et le faire entrer dans la légende. Vous pouvez le créer en partant de zéro ou l’imaginer en vous inspirant de personnages connus de BD, de films ou de romans. Les quelques questions suivantes sont là pour vous aider :\n\nVotre personnage est-il grand ou petit ? Maigre ou gros ? De quelle couleur sont ses cheveux, ses yeux et sa peau ? A-t-il des signes distinctifs (tatouages, cicatrices, etc.) ? Quel est son caractère ? Est-il plutôt honnête ? Solitaire ? Timide ? Curieux ?\n\n## Idéal et travers\n\nSi vous n’avez pas d’idée ou si le MJ le souhaite, vous pouvez déterminer un idéal héroïque et un travers au hasard, en lançant un d20 et en consultant le résultat dans les listes ci-dessous. Cela vous donnera une sorte de boussole pour interpréter votre personnage afin de conserver un comportement à peu près cohérent d’une partie à l’autre.\n\nSi vous jouez une campagne dont le prérequis implique des héros avec des idéaux positifs, le meneur de jeu pourra vous indiquer de déterminer deux idéaux héroïques (ou éventuellement deux travers si c’est l’inverse).\n\nEnfin si vous tirez aléatoirement un idéal ou un travers qui ne correspond pas à votre envie de jouer ou à votre idée du personnage, n’hésitez pas à relancer.\n\n**Personnages prétirés :** si vous utilisez des personnages prétirés tels que Ionas ou Lhagva, vous pouvez constater que nous n’avons pas déterminé d’idéal héroïque ni de travers. En effet, cela nous semble une décision très personnelle qui influencera votre façon d’interpréter le personnage. Nous laissons donc ce choix à votre discrétion. Vous pouvez le noter au dos de la fiche de PJ ou dans un petit carnet où vous noterez aussi toutes vos aventures. À ce sujet, la tenue d’un petit journal de bord est vivement conseillée, si vous voulez vous rappeler l’avancée de vos aventures d’une session de jeu à l’autre. Tout particulièrement si vous jouez une campagne sur un rythme distendu.\n\n## Interprétation des traits\n\nCes traits vous permettent de déterminer la façon dont votre personnage devrait réagir dans les situations où vous hésitez sur la posture à adopter. Ils apportent également une certaine cohérence dans le comportement des PJ sur la durée, d’une aventure à l’autre.\n\nSi votre interprétation d’un trait est particulièrement appropriée et qu’elle respecte les critères évoqués ci-après, votre MJ pourra vous récompenser par la récupération d’un point de chance.\n\nAttention toutefois, les traits ne doivent pas remplacer votre libre arbitre ni servir de prétexte à un comportement trop caricatural ; il ne doit ni saboter une aventure ni gâcher le plaisir des autres joueurs. Rappelez-vous toujours que ce n’est pas parce que ça vous amuse que ça amuse tout le monde…\n\nLorsqu’un trait entre en conflit avec un événement de jeu, essayez de mettre ce conflit au service de l’aventure plutôt que de choisir une interprétation radicale qui mette tout le groupe dans le pétrin. De même si un trait entre en conflit avec l’interprétation d’un autre joueur, chaque joueur doit être capable de compromis afin que la joute (verbale ou active) soit consentie par les deux parties et que son issue corresponde à un consensus ludique. Notre conseil : n’hésitez pas à surjouer la scène, mais toujours au second degré et dans la bonne humeur. Vous jouez un rôle, ces conflits doivent absolument rester entre les personnages et ne pas s’étendre aux joueurs !\n\nCes conseils sont d’ailleurs valables de façon plus générale. La notion de distanciation est très importante en jeu de rôle : si votre personnage est maltraité, blessé ou tué, cela ne doit pas vous affecter personnellement. Cela va sans dire, mais nous préférons tout de même le rappeler : n’oubliez jamais que ce n’est qu’un jeu ; mais même dans un jeu, vous devez tenir compte de la sensibilité des autres joueurs.\n\n## Origine et historique\n\nSimultanément, vous pouvez déterminer l’historique et la provenance géographique de votre PJ :\n\nD’où vient-il ? Qu’a-t-il fait durant sa jeunesse ? Quel événement l’a poussé à quitter son foyer ? Quel est son but (devenir riche, puissant, célèbre, rendre justice, servir sa nation, répandre ses idées, percer des mystères, réparer une humiliation…) ?\n\nPour répondre à ces questions, vous aurez besoin de l’aide du MJ, car vous devrez vous adapter au cadre de jeu, c’est-à-dire le monde dans lequel le personnage va évoluer. Si votre meneur de jeu a choisi le cadre de jeu optionnel de Chroniques Oubliées Fantasy, vous trouverez dans les chapitres suivants (en particulier les chapitres 3 à 7) des paragraphes intitulés « Dans les Terres d’Osgild », qui vous seront d’une aide précieuse pour enraciner votre personnage dans le monde où il va vivre ses aventures. Vous trouverez de tels paragraphes pour chaque peuple et pour chaque profil.\n\nVous n’êtes pas obligé d’imaginer ou d’écrire un historique détaillé. Pour le moment, vous pouvez le laisser dans l’ombre et si vous le souhaitez, vous pourrez construire cette histoire plus tard en accord avec votre MJ, par exemple sous forme de flash-back afin d’intégrer votre PJ au cadre de jeu ou de lui trouver une motivation supplémentaire dans les aventures en cours. Toutefois, ne prévoyez pas trop de détails, cela ne cadrera peut-être pas du tout avec ce que votre MJ va vous proposer plus tard.\n\nPour le moment, si vous n’avez pas particulièrement d’idée et que vous avez besoin d’un petit coup de pouce, n’hésitez pas à utiliser la table des secrets intimes : lancez un d20 sur chacune des colonnes et choisissez l’un des secrets obtenus ; si aucun des choix ne vous convient, rien ne vous oblige à avoir un secret intime. Vous pouvez également lire ces deux listes et choisir un secret qui correspond à l’idée que vous vous faites de votre personnage. Parlez-en aussi avec votre MJ afin de savoir si cela ne risque pas d’entrer en contradiction avec le cadre de jeu ou les aventures qu’il a prévu de vous proposer.\n\nCes éléments d’histoire personnelle ont volontairement été rédigés de façon très ouverte, ainsi chaque ligne peut cacher toute une histoire étonnante qu’il vous reste à développer.\n\n## Âge du personnage\n\nVous trouverez ci-dessous l’âge moyen de début de carrière des personnages. Cette valeur sert surtout à donner un ordre d’idée pour les peuples non humains, mais vous êtes libre de créer un personnage un peu plus jeune ou nettement plus vieux. L’espérance de vie est indiquée pour un individu ayant vécu dans des conditions optimales, la moyenne dans les sociétés humaines par exemple est souvent de la moitié de cet âge.\n\n## Taille et poids\n\nCes quelques valeurs doivent vous permettre d’imaginer plus facilement les mensurations des personnages nouvellement créés.\n\n## Langues maîtrisées\n\nChaque personnage débute en sachant parler la langue officielle de la région où débutent les aventures (généralement la langue humaine locale) en plus de la langue de son peuple ou de son ethnie.\n\n- Un personnage avec une Intelligence de +0 sait déchiffrer sa langue maternelle de façon hésitante.\n- Un personnage avec une valeur d’Intelligence négative ne sait pas lire. S’il veut apprendre à lire par la suite, il devra sacrifier 1 point de capacité à cet effet ou augmenter sa valeur d’Intelligence. Il sait parler la langue de son peuple, plus la langue commune des humains.\n- Un personnage avec une valeur d’INT de −2 ne parle que la langue de son peuple (souvent un patois dans le cas d’un humain) et à peine quelques mots dans la langue humaine officielle.\n- Un personnage avec une valeur d’Intelligence positive peut parler, lire et écrire une langue supplémentaire par point d’Intelligence. Selon l’historique du personnage, il peut les connaître dès le départ ou les apprendre par la suite durant ses aventures s’il n’a pas encore appris toutes les langues étrangères que son Intelligence lui permet.\n\nExemple : Lhagva et Ionas ont une Intelligence de +0 et ne connaissent donc pas de langues supplémentaires. Toutefois, en tant qu’elfe haut, Ionas sait parler le sylvestre et le commun.\n\n## Talent secondaire\n\nSi votre MJ vous y autorise, vous pouvez remplacer une langue par un talent secondaire ou un loisir. Un talent secondaire ne procure aucun bonus en combat, il ne doit pas être confondu avec un métier. Il apporte un bonus de +3 sur les tests concernés (considéré comme un bonus de voie de peuple dans le cadre d’un cumul).\n\nExemple : jouer d’un instrument de musique au choix, jouer aux échecs ou aux cartes, calligraphie, cuisine, etc.\n\n## La touche finale\n\nEnfin, n’oubliez pas que, souvent, une illustration vaut mieux que de longues descriptions : affichée en première page de votre fiche de personnage, elle vous inspirera plus sûrement que tous les mots que vous auriez pu écrire.\n\nÀ l’issue de la création de personnage, voici les fiches de personnage de Lhagva et Ionas.\n\n### Lhagva, barbare niveau 1\n\nHumaine\n\n| AGI +1 | CON +2 | FOR +3 | PER +1 | CHA −1 | INT +0 | VOL +1 |\n\nDR 4d10 | PC 2\n\n(S) DEF 16 · (V) PV 15 · (I) INIT 14\n\n(C) Attaque au contact +4 · (D) Attaque à distance +2 · (M) Attaque magique +2\n\nÉpée courbe +4 DM 1d8+3 · Javelot (portée 20 m) +2 DM 1d6\n\n- Voie du pourfendeur rang 1 (Réflexes éclair)\n- Voie de la rage rang 1 (Cri de guerre)\n- Voie de l’humain rang 1 (Diversité)\n\nÉquipement : armure de cuir, bouclier, cimeterre, dague, javelots (×2)\n\n### Ionas, ensorceleur niveau 1\n\nElfe haut\n\n| AGI +1 | CON +1 | FOR −2 | PER +0 | CHA +4 | INT +0 | VOL +2 |\n\nDR 3d6 | PC 6 | PM 5\n\n(S) DEF 12 · (V) PV 7 · (I) INIT 11\n\n(C) Attaque au contact −1 · (D) Attaque à distance +2 · (M) Attaque magique +3\n\nBâton ferré −1 · DM 1d6−2\n\n- Voie de l’air rang 1 (Murmure dans le vent)\n- Voie de l’invocation rang 2 (Choc et Serviteur invisible)\n- Voie du mage rang 1 (Lumière intérieure + Occultisme)\n\nÉquipement : bâton ferré, vêtement luxueux, dague.\n"
+    },
+    {
+      "title": "Chapitre 2 — Progression & niveaux",
+      "kind": "chapter",
+      "page_start": 38,
+      "page_end": 43,
+      "summary": "Passage de niveau : PV, attaque, capacités, PM, d4°, changement d’orientation.",
+      "body": "# Chapitre 2 — Progression & niveaux\n\nAu fil de ses aventures, un personnage apprend et devient plus performant, plus fort, plus puissant. Ses progrès et l’expérience qu’il acquiert se mesurent par le passage de niveaux. À sa création, un personnage est au niveau 1. Par la suite, au fil des aventures, il va pouvoir gagner des niveaux, qui vont lui apporter de meilleures capacités.\n\nOn considère généralement qu’un personnage peut passer au niveau supérieur dans deux situations.\n\n- Lorsqu’il a terminé une aventure.\n- Lorsqu’il a franchi une étape importante dans une campagne.\n\nÀ chaque passage de niveau, le personnage :\n\n- augmente ses PV selon son profil (voir tableau) ;\n- augmente toutes ses valeurs d’attaque de +1 (jusqu’au niveau 10) ;\n- gagne 2 points de capacité ;\n- augmente ses PM (s’il dispose de sorts).\n\nDe plus, à partir du niveau 6 et tous les 3 niveaux, son dé évolutif (d4°) augmente de la façon suivante : d4 devient d6 au niveau 6, puis d8 au niveau 9, etc.\n"
+    },
+    {
+      "title": "Temps d’apprentissage « réaliste »",
+      "kind": "sidebar",
+      "page_start": 38,
+      "page_end": 38,
+      "summary": "Option MJ : un mois par rang en solitaire, une semaine par rang avec un maître.",
+      "body": "# Temps d’apprentissage « réaliste »\n\nPar souci de réalisme, certains MJ souhaitent que les personnages disposent d’un temps d’apprentissage pour acquérir de nouvelles capacités entre deux aventures :\n\n- un mois environ par rang en solitaire ;\n- une semaine par rang avec un maître.\n\nIl revient au MJ de ménager des pauses dans la chronologie de sa campagne afin d’obtenir un rythme cohérent, de sorte que plusieurs années devraient être nécessaires pour qu’un héros passe du niveau 1 au niveau 12 !\n"
+    },
+    {
+      "title": "Points de vigueur (progression)",
+      "kind": "section",
+      "page_start": 38,
+      "page_end": 39,
+      "summary": "Gain de PV par niveau selon CON ; changement de CON rétroactif.",
+      "body": "# Points de vigueur\n\nÀ chaque passage de niveau, un personnage gagne un nombre de points de vigueur qui dépend de sa famille de profils. On y ajoute la valeur de Constitution.\n\nExemple : au niveau 1, Lhagva possède 12 PV. Lorsqu’elle passe au niveau 2, elle gagne 7 PV supplémentaires (5 pour sa famille de profils, +2 pour sa CON), pour un total de 19 PV.\n\n**Changement de valeur de Constitution :** si, durant le jeu, la valeur de Constitution d’un personnage change, ses points de vigueur changent rétroactivement pour chaque niveau déjà acquis, que ce soit en plus ou en moins.\n\nExemple : en passant au niveau 8, Lhagva choisit la capacité Constitution héroïque (voie du pagne) et augmente sa valeur de CON de +1. Cela lui permet de gagner immédiatement 8 PV supplémentaires (+1 par niveau déjà acquis).\n"
+    },
+    {
+      "title": "Valeurs d’attaque (progression)",
+      "kind": "section",
+      "page_start": 39,
+      "page_end": 39,
+      "summary": "Base d’attaque +1 au niveau 1, +1 par niveau jusqu’au niveau 10.",
+      "body": "# Valeurs d’attaque\n\nAu niveau 1, la valeur de base des différentes attaques est égale à +1, ensuite elle augmente de +1 à chaque niveau. Toutefois, elle cesse d’augmenter à partir du niveau 10. Le personnage a atteint son niveau maximal de compétence en attaque.\n\nExemple : au niveau 7, Lhagva possède une valeur d’attaque au contact de +10 (7 pour son niveau plus 3 pour sa FOR).\n"
+    },
+    {
+      "title": "Capacités et voies",
+      "kind": "section",
+      "page_start": 39,
+      "page_end": 42,
+      "summary": "2 points de capacité par niveau ; coûts, niveau requis, voies de peuple, orphelin, appel, nouvelles voies, prestige.",
+      "body": "# Capacités et voies\n\nÀ chaque passage de niveau, le personnage gagne 2 points de capacité supplémentaires.\n\nIl n’est pas possible de mettre de côté des points de capacités, ils doivent être immédiatement dépensés.\n\nL’obtention des nouvelles capacités doit respecter les règles suivantes :\n\n- les capacités de rang 1 et 2 coûtent chacune 1 point de capacité ;\n- les capacités de rang 3 et plus coûtent chacune 2 points de capacité ;\n- pour choisir une capacité de rang supérieur à 1, le personnage doit déjà avoir acquis toutes les capacités de rang inférieur de cette voie ;\n- le personnage doit avoir atteint le niveau minimal fixé par le tableau (rang 1 : niveau 1 ; rang 2 : niveau 2* ; rang 3 : niveau 3 ; rang 4 : niveau 5 ; rang 5 : niveau 7 ; rang 6 : niveau 9 ; rang 7 : niveau 11 ; rang 8 : niveau 13).\n\nLes capacités de rang 6 à 8 sont réservées aux voies de prestige.\n\n**Capacité supplémentaire de mage :** la capacité supplémentaire reçue par les mages au niveau 1 est une exception au niveau requis pour obtenir une capacité de rang 2. Toutefois, cette exception ne se prolonge pas au-delà du niveau 2 : les mages n’ont pas accès à une capacité de rang 3 avant les autres personnages.\n\n**Voie de peuple :** au niveau 1, le premier rang de la voie de peuple est gratuit pour tous les personnages. Les rangs suivants sont acquis selon la règle générale en dépensant des points de capacités. Certaines capacités de peuple vous permettent de choisir une capacité dans une autre voie. Si vous choisissez une capacité dans une voie de votre propre profil (par exemple, un demi-orc guerrier), cochez cette capacité et considérez-la comme déjà acquise dans la voie, notamment pour déterminer si vous pouvez choisir les capacités de rang plus élevé par la suite. Bien entendu, vous ne bénéficiez des bonus qu’elle apporte qu’une seule fois !\n\nExemple 1 : Au niveau 1, Lhagva possède les capacités suivantes : voie du pourfendeur (rang 1), voie de la rage (rang 1), voie de l’humain (rang 1). Lorsqu’elle passe au niveau 2, elle peut dépenser un point de capacité pour obtenir le rang 2 dans deux de ces trois voies. Elle ne peut pas atteindre le rang 3, parce qu’il faudrait 3 points de capacité (1 point pour le rang 2 et 2 points pour le rang 3), mais aussi parce qu’elle n’a pas encore atteint le niveau 3. Elle peut aussi décider d’investir 1 point ou les 2 dans une nouvelle voie. Pour plus de simplicité, nous décidons que Lhagva obtient le rang 2 dans chaque voie de son profil (voie du pourfendeur et voie de la rage).\n\nExemple 2 : Ionas passe au niveau 2, il gagne donc 2 points de capacité, mais ne peut pas encore dépasser le rang 2 dans ses voies. C’est donc tout naturellement qu’il choisit le rang 2 de la voie de l’air (Sous tension) et de la voie du mage (Maîtrise de la magie). Ces deux nouveaux sorts vont aussi lui permettre de gagner 2 points de mana (+2 PM). Avec ces points de capacité, Ionas aurait aussi pu acquérir une nouvelle voie jusqu’au rang 2.\n\nExemple 3 : Ionas veut faire l’acquisition de la capacité Arme de mana (rang 3 de la voie de l’invocation). Pour cela, il doit dépenser 2 points de capacité (le coût pour une capacité de rang 3) et remplir les deux conditions suivantes : avoir déjà acquis les capacités de rang 1 et 2 de la voie de l’invocation (Choc et Serviteur invisible) et avoir atteint le niveau 3.\n\n## Point de capacité orphelin\n\nIl peut arriver qu’un PJ ait acquis toutes les capacités possibles de rang 1 et 2 sauf une. Au changement de niveau, en achetant la dernière capacité de rang 2 avec un point de capacité, il lui serait alors impossible de dépenser son second point de capacité (puisqu’il ne peut plus qu’acheter des capacités qui coûtent deux points). Dans ce cas exceptionnel, il peut échanger le point de capacité orphelin au choix contre : 1 point de chance ou 1 dé de récupération ou 2 points de vigueur ou 2 points de mana supplémentaires.\n\n## Choix des capacités\n\nLe choix de vos capacités va définir l’orientation de votre personnage et cela aura une influence sur le jeu. La grande liberté de progression qu’offre COF est un atout, mais c’est un avantage à double tranchant. Vous ne pouvez pas tout avoir et être bon partout.\n\nPar exemple, si vous ne choisissez aucune capacité orientée vers le combat, il faudra ensuite l’assumer en jeu. Ce n’est absolument pas grave, vous brillerez à d’autres moments de la partie, mais pas en combat. Cela doit être un choix conscient, pas une expérience désagréable à découvrir en jeu.\n\nDiscutez-en aussi avec votre meneur de jeu, il pourra vous indiquer le type d’aventure qu’il veut faire jouer (plus ou moins basé sur les combats, les interactions sociales, l’enquête, l’exploration) afin que vous ne vous retrouviez pas avec un personnage inadapté. Et puis cela est aussi un moyen d’attirer son attention sur vos envies afin qu’il en tienne compte en préparant la prochaine aventure.\n\nEnfin, si vous êtes débutant, le MJ connaît peut-être mieux les règles de jeu. Il pourra vous conseiller et vous expliquer pourquoi telle ou telle idée ne fonctionne pas ou au contraire est efficace.\n\n## Appel à une autre capacité\n\nParfois une capacité d’une voie, nommons-la voie A, vous propose de choisir une capacité issue d’une autre voie, appelée B. La capacité choisie de la voie B devient une capacité de la voie A comme n’importe quelle autre. S’il s’agit d’une capacité qui évolue selon le rang atteint dans la voie, c’est bien le rang dans la voie A qui est utilisé. Un personnage ne peut pas choisir deux fois la même capacité par deux voies différentes.\n\nExemple : un elfe qui obtient la capacité de peuple de rang 2, Enfant de la forêt, peut choisir une capacité de rang 1 de n’importe quelle voie de druide ou de rôdeur. S’il choisit vitesse du félin (voie du fauve), il ajoute son rang + 2 aux tests de course, d’escalade ou de saut. Il s’agit alors du rang atteint dans la voie de peuple (soit +4, à ce moment-là). Comme la capacité indique que le personnage gagne +2 en DEF au rang 5, il s’agit là aussi du rang atteint dans la voie de peuple.\n\n**Poupées russes :** lorsqu’une capacité permet de choisir une autre capacité (comme dans l’exemple ci-dessus), il n’est pas possible de choisir une capacité qui permet elle-même de faire appel à une autre capacité. Les montages à tiroirs dignes d’une banque d’affaires de droit anglo-saxon ne sont pas autorisés à COF.\n\n**Armures autorisées :** lorsqu’une capacité d’une voie A vous permet de choisir une capacité d’une voie B, ce sont les limitations d’armure qui correspondent à la capacité de la voie B qui s’appliquent. Lorsqu’il existe des exceptions, elles sont indiquées dans le texte de la capacité de la voie A.\n\n**Sorts :** si la capacité appelée est un sort, la caractéristique de magie utilisée est celle du profil dont est issu le sort (par exemple, un chevalier qui apprend une capacité de druide utilisera sa Perception) et le coût du sort en points de mana est toujours calculé à partir du rang habituel du sort (par exemple, si une capacité de rang 5 vous permet d’apprendre un sort de rang 1, alors il coûte toujours 1 PM). Apprendre un sort, même par une autre capacité, rapporte toujours 1 point de mana au personnage.\n\n## Nouvelles voies\n\nDès le niveau 2, le joueur peut dépenser les points de capacité pour :\n\n- obtenir de nouvelles capacités dans les voies qu’il a choisies au niveau 1 ;\n- ouvrir de nouvelles voies parmi les cinq voies de son profil principal ;\n- ouvrir de nouvelles voies issues d’un autre profil : création d’un profil hybride.\n\nAvec des joueurs débutants, nous vous conseillons de privilégier l’obtention de nouvelles capacités issues des voies déjà acquises, puis des autres voies du même profil. Ces deux options suivent les règles de base indiquées auparavant. Les nouvelles voies issues du profil principal du personnage peuvent être ouvertes à n’importe quel niveau sans événement de jeu particulier.\n\nEn revanche, le MJ pourra demander un événement de jeu particulier pour déclencher l’ouverture d’une voie en dehors du profil principal, par exemple une formation avec l’aide d’un mentor. L’orientation vers un profil hybride peut aussi se faire naturellement à la suite d’événements de la vie du personnage (il est adoubé chevalier, il adhère à une guilde de voleurs, etc.).\n\nLa gestion des profils hybride est exposée au chapitre « Profils hybrides », page 176.\n\nAu total, un personnage ne peut jamais posséder plus de six voies, plus la voie de peuple.\n\n## Voies de prestige\n\nÀ partir du niveau 5, un personnage peut choisir une voie de prestige. Les voies de prestige sont des voies puissantes qui permettent à un personnage de se spécialiser dans un aspect particulier. Un PJ ne peut donc prendre qu’une seule voie de prestige dans toute sa carrière.\n\nIl existe des voies de prestige spécifiques à chaque famille de profils (aventuriers, combattants, mystiques et mages) ainsi que des voies de prestige génériques. Un personnage peut choisir sa voie de prestige soit dans la liste de la famille qui correspond à son profil principal, soit dans les voies de prestige générique (voir chapitre « Voies de prestige », page 128).\n\nChaque voie de prestige :\n\n- est constituée de cinq rangs, échelonnés du rang 4 jusqu’au rang 8. Le niveau requis pour obtenir chaque rang est indiqué dans la table « Voies de prestige – niveau requis » ;\n- octroie son propre bonus de vigueur, qui est utilisé lorsqu’un personnage choisit une capacité de cette voie lors d’un changement de niveau ;\n- impose les mêmes limitations d’armure que le profil principal du personnage sauf s’il en est spécifié autrement.\n\n**Prérequis.** Certaines voies de prestige peuvent nécessiter la possession au préalable d’une capacité particulière, mais nous avons volontairement choisi de limiter autant que possible ce type de limitation. En général, la seule condition d’accès est un prérequis d’interprétation. Il correspond à une action que le personnage doit avoir effectuée ou à un événement qu’il a vécu (parfois de façon répétée). Dans ce cas, le MJ a le dernier mot pour décider si les actions du PJ sont suffisantes pour ouvrir l’accès à la voie de prestige et le joueur doit faire l’effort d’interprétation nécessaire pour y parvenir.\n"
+    },
+    {
+      "title": "Points de mana (progression)",
+      "kind": "section",
+      "page_start": 42,
+      "page_end": 42,
+      "summary": "Les PM n’augmentent pas automatiquement ; +1 PM par sort appris. Total = sorts + VOL.",
+      "body": "# Points de mana\n\nLes points de mana n’augmentent pas automatiquement lorsqu’un PJ gagne un niveau.\n\nEn revanche, un PJ recevant 1 PM par capacité de sort connue, il acquiert automatiquement 1 PM par nouveau sort appris lors du changement de niveau.\n\n**Total des PM = nombre de capacités de sorts + VOL**\n\nExemple : Un personnage qui a VOL +2 et connaît trois sorts (il dispose donc de 2 + 3 = 5 PM) passe au niveau supérieur. Avec ses points de capacité, il décide d’acquérir les deux premiers rangs d’une voie, qui sont tous deux des sorts. Il obtient ainsi 2 PM qui viennent s’ajouter aux précédents, ce qui porte son total à 7 PM après le changement de niveau.\n"
+    },
+    {
+      "title": "D4°, les dés évolutifs",
+      "kind": "section",
+      "page_start": 43,
+      "page_end": 43,
+      "summary": "d4° : d4 aux niv. 1–5, d6 aux 6–8, d8 aux 9–11, d10 aux 12–14, d12 à 15+.",
+      "body": "# D4°, les dés évolutifs\n\nLes textes décrivant les capacités mentionnent souvent le « d4° ». Le petit symbole « ° » accolé à « d4 » indique que le dé est évolutif avec l’expérience du personnage. C’est-à-dire que la capacité s’améliore au niveau 6, puis tous les trois niveaux à partir de là.\n\nLe d4 devient donc un d6 au niveau 6. Puis, tous les trois niveaux suivants, il devient d8, puis d10 et enfin d12.\n\nSur la fiche de personnage, une case vous permet d’indiquer la valeur exacte du dé évolutif en fonction de votre niveau.\n\nExemple 1 : La capacité Explosion de feu inflige 4d4° DM. Au niveau 6, un magicien inflige 4d6 DM avec ce sort.\n\nExemple 2 : Un guerrier de niveau 13 qui utilise une attaque puissante (rang 3 de la voie du combat, +2d4° DM) obtient un bonus de +2d10 aux DM.\n"
+    },
+    {
+      "title": "Changement d’orientation",
+      "kind": "section",
+      "page_start": 43,
+      "page_end": 43,
+      "summary": "Oublier et remplacer une capacité par niveau (deux si INT ≥ +2) ; pas de voies à trous ; conserver les deux rangs 1 du profil.",
+      "body": "# Changement d’orientation\n\nParfois après quelques niveaux, un joueur peut se rendre compte qu’il a fait fausse route. Par exemple, un magicien voudrait infliger davantage de dommages et regrette de ne pas avoir investi dans l’Explosion de feu. Toutefois, s’il n’a choisi aucune capacité de la voie de la destruction, il lui faudrait gagner trois niveaux pour atteindre cette capacité. La règle du changement d’orientation lui permet d’aller plus vite en abandonnant certaines capacités.\n\nÀ chaque passage de niveau, le personnage peut « oublier » une capacité et la remplacer par une autre en suivant les règles normales de progression des voies. Un personnage ayant au moins +2 en INT peut oublier et remplacer jusqu’à deux capacités par niveau.\n\nIl n’est pas possible d’oublier une capacité acquise automatiquement et gratuitement (voie de peuple). Bien entendu si un personnage a atteint le rang 5 dans une voie, il ne peut pas oublier le rang 3. Il doit oublier le rang 5 puis le rang 4 et enfin le rang 3 ; il est impossible de construire des voies à trous.\n\nEnfin, il n’est pas possible d’oublier sa jeunesse, c’est-à-dire d’oublier toutes les capacités du profil principal du PJ. Un personnage doit donc toujours conserver les deux capacités de rang 1 qu’il a acquises au niveau 1.\n"
+    }
+  ],
+  "elements": [
+    {
+      "kind": "rule",
+      "name": "Rôle",
+      "slug": "role",
+      "page_start": 20,
+      "page_end": 22,
+      "summary": "Première étape : imaginer le personnage et son rôle dans un groupe complémentaire.",
+      "body": "# Rôle\n\nAvant les règles, imaginer le personnage : apparence, archétype (combattant, lanceur de sorts, mystique, aventurier, voleur), peuple. On peut partir d’une illustration ou d’un concept vague.\n\nL’idéal est que les joueurs créent ensemble un groupe équilibré et complémentaire plutôt que concurrent.\n",
+      "tags": [
+        "creation",
+        "etape-1"
+      ],
+      "data": {
+        "step": 1,
+        "examples_table": [
+          {
+            "joueur": "Anaïs",
+            "personnage": "Lhagva",
+            "concept": "combattante sans peur"
+          },
+          {
+            "joueur": "Salim",
+            "personnage": "Ionas Melenwë",
+            "concept": "lanceur de sorts"
+          },
+          {
+            "joueur": "Léo",
+            "personnage": "Skodja",
+            "concept": "proche de la nature"
+          },
+          {
+            "joueur": "Ilona",
+            "personnage": "Wilibert Sûreté",
+            "concept": "discret, filou"
+          }
+        ]
+      },
+      "see_also": [
+        {
+          "name": "Touche finale",
+          "kind": "rule",
+          "relation": "suite"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Profil",
+      "slug": "profil",
+      "page_start": 22,
+      "page_end": 25,
+      "summary": "Choisir une famille puis un profil principal ; début au niveau 1.",
+      "body": "# Profil\n\nChoisir d’abord une famille (aventuriers, combattants, mages, mystiques) puis un profil en son sein : c’est le **profil principal**.\n\nÀ la création, chaque personnage débute au **niveau 1**.\n\nChaque famille détermine PV, et éventuellement PC et DR. Chaque profil indique trois caractéristiques utiles (entre crochets, par ordre d’importance), cinq voies, et l’équipement utilisable.\n\nPlus tard, le héros peut acquérir des capacités et voies hors de ce profil (chapitre « Progression & niveaux », page 38).\n",
+      "tags": [
+        "creation",
+        "etape-2",
+        "profil"
+      ],
+      "data": {
+        "step": 2,
+        "starting_level": 1,
+        "families": [
+          {
+            "name": "aventuriers",
+            "hp_per_level": 4,
+            "chance_points_bonus": 1,
+            "armor": "armures légères (cuir ou cuir renforcé)",
+            "weapons": "liste intermédiaire",
+            "common_characteristic": "AGI",
+            "profiles": [
+              {
+                "name": "arquebusier",
+                "key_stats": [
+                  "AGI",
+                  "INT",
+                  "CON"
+                ],
+                "page": 62
+              },
+              {
+                "name": "barde",
+                "key_stats": [
+                  "CHA",
+                  "AGI",
+                  "VOL"
+                ],
+                "page": 66
+              },
+              {
+                "name": "rôdeur",
+                "key_stats": [
+                  "AGI",
+                  "PER",
+                  "CON"
+                ],
+                "page": 70
+              },
+              {
+                "name": "voleur",
+                "key_stats": [
+                  "AGI",
+                  "INT",
+                  "CHA"
+                ],
+                "page": 74
+              }
+            ]
+          },
+          {
+            "name": "combattants",
+            "hp_per_level": 5,
+            "armor": "armures lourdes (cotte de mailles ou armure de plaque ; barbare plus limité)",
+            "weapons": "très nombreuses armes",
+            "common_characteristic": "FOR",
+            "profiles": [
+              {
+                "name": "barbare",
+                "key_stats": [
+                  "FOR",
+                  "CON",
+                  "AGI"
+                ],
+                "page": 79
+              },
+              {
+                "name": "chevalier",
+                "key_stats": [
+                  "FOR",
+                  "CHA",
+                  "CON"
+                ],
+                "page": 83
+              },
+              {
+                "name": "guerrier",
+                "key_stats": [
+                  "FOR",
+                  "CON",
+                  "AGI"
+                ],
+                "page": 87
+              }
+            ]
+          },
+          {
+            "name": "mages",
+            "hp_per_level": 3,
+            "armor": "aucune (exception : forgesort)",
+            "weapons": "très peu d’armes",
+            "common_characteristic": "INT",
+            "common_characteristic_exception": {
+              "ensorceleur": "CHA"
+            },
+            "extra_rank_2_capacity": true,
+            "profiles": [
+              {
+                "name": "ensorceleur",
+                "key_stats": [
+                  "CHA",
+                  "VOL",
+                  "AGI"
+                ],
+                "page": 92
+              },
+              {
+                "name": "forgesort",
+                "key_stats": [
+                  "INT",
+                  "VOL",
+                  "CON"
+                ],
+                "page": 97
+              },
+              {
+                "name": "magicien",
+                "key_stats": [
+                  "INT",
+                  "VOL",
+                  "AGI"
+                ],
+                "page": 102
+              },
+              {
+                "name": "sorcier",
+                "key_stats": [
+                  "INT",
+                  "VOL",
+                  "CON"
+                ],
+                "page": 107
+              }
+            ]
+          },
+          {
+            "name": "mystiques",
+            "hp_per_level": 4,
+            "recovery_die_bonus": 1,
+            "common_characteristic": "VOL",
+            "profiles": [
+              {
+                "name": "druide",
+                "key_stats": [
+                  "PER",
+                  "VOL",
+                  "CON ou AGI"
+                ],
+                "page": 113
+              },
+              {
+                "name": "moine",
+                "key_stats": [
+                  "VOL",
+                  "PER",
+                  "AGI"
+                ],
+                "page": 118
+              },
+              {
+                "name": "prêtre",
+                "key_stats": [
+                  "CHA",
+                  "VOL",
+                  "FOR"
+                ],
+                "page": 122
+              }
+            ]
+          }
+        ]
+      },
+      "see_also": [
+        {
+          "name": "Les familles de profil en résumé",
+          "kind": "table",
+          "relation": "resume"
+        },
+        {
+          "name": "Profils hybrides",
+          "kind": "rule",
+          "relation": "option"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Profils hybrides",
+      "slug": "profils-hybrides",
+      "page_start": 24,
+      "page_end": 24,
+      "summary": "Option (joueur averti) : mélanger les voies de plusieurs profils.",
+      "body": "# Profils hybrides\n\nSi vous êtes un joueur averti ou si vous avez en tête un concept original de personnage qui ne correspond à aucun des profils standard, il est possible de mélanger les voies de plusieurs profils pour obtenir un profil hybride (voir le chapitre « Profils hybrides », page 176). Si cette option vous intéresse, discutez-en avec votre MJ.\n",
+      "tags": [
+        "creation",
+        "option",
+        "hybride"
+      ],
+      "data": {
+        "see_chapter_page": 176
+      },
+      "see_also": [
+        {
+          "name": "Nouvelles voies",
+          "kind": "rule",
+          "relation": "progression"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Peuples",
+      "slug": "peuples",
+      "page_start": 25,
+      "page_end": 26,
+      "summary": "Huit peuples ; modificateur de caractéristiques et voie de peuple.",
+      "body": "# Peuples\n\nChoisir l’un des huit peuples de base. Conséquences mécaniques :\n\n- modification de deux valeurs de caractéristiques (une seule pour les humains) ;\n- ajout d’une voie de peuple.\n",
+      "tags": [
+        "creation",
+        "etape-3",
+        "peuple"
+      ],
+      "data": {
+        "step": 3,
+        "mechanical_effects": [
+          "modificateur de caractéristiques (deux valeurs, une seule pour les humains)",
+          "voie de peuple"
+        ],
+        "peoples": [
+          {
+            "name": "Demi-elfe",
+            "typical_profiles": [
+              "barde",
+              "prêtre"
+            ],
+            "page": 45
+          },
+          {
+            "name": "Demi-orc",
+            "typical_profiles": [
+              "barbare",
+              "guerrier"
+            ],
+            "page": 46
+          },
+          {
+            "name": "Elfe haut",
+            "typical_profiles": [
+              "barde",
+              "magicien",
+              "ensorceleur"
+            ],
+            "page": 48
+          },
+          {
+            "name": "Elfe sylvain",
+            "typical_profiles": [
+              "druide",
+              "rôdeur"
+            ],
+            "page": 50
+          },
+          {
+            "name": "Gnome",
+            "typical_profiles": [
+              "forgesort",
+              "arquebusier"
+            ],
+            "page": 52
+          },
+          {
+            "name": "Halfelin",
+            "typical_profiles": [
+              "voleur",
+              "rôdeur"
+            ],
+            "page": 54
+          },
+          {
+            "name": "Humain",
+            "typical_profiles": [
+              "tous"
+            ],
+            "page": 57
+          },
+          {
+            "name": "Nain",
+            "typical_profiles": [
+              "guerrier",
+              "prêtre"
+            ],
+            "page": 58
+          }
+        ]
+      },
+      "see_also": [
+        {
+          "name": "Modificateur de peuple",
+          "kind": "table",
+          "relation": "mecanique"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Caractéristiques",
+      "slug": "caracteristiques",
+      "page_start": 26,
+      "page_end": 28,
+      "summary": "Sept caractéristiques ; séries polyvalent / expert / spécialiste ; modificateur de peuple.",
+      "body": "# Caractéristiques\n\nSept caractéristiques (quatre physiques, trois mentales). À la création, chaque caractéristique a une valeur comprise entre −2 et +5.\n\nLes caractéristiques représentent l’inné et l’acquis (compétences générales), en complément des capacités (compétences spécialisées).\n\nChoisir une série (polyvalent, expert, spécialiste) et répartir les sept valeurs. Il est vivement conseillé d’affecter les trois meilleures valeurs aux trois caractéristiques du profil.\n\n**Magie.** Mettre au moins +1 dans la caractéristique de magie : INT (magicien, forgesort, sorcier), CHA (ensorceleur, barde, prêtre), PER (druide).\n\nPuis appliquer le modificateur de peuple.\n",
+      "tags": [
+        "creation",
+        "etape-4"
+      ],
+      "data": {
+        "step": 4,
+        "physical": [
+          {
+            "abbr": "AGI",
+            "name": "Agilité"
+          },
+          {
+            "abbr": "CON",
+            "name": "Constitution"
+          },
+          {
+            "abbr": "FOR",
+            "name": "Force"
+          },
+          {
+            "abbr": "PER",
+            "name": "Perception"
+          }
+        ],
+        "mental": [
+          {
+            "abbr": "CHA",
+            "name": "Charisme"
+          },
+          {
+            "abbr": "INT",
+            "name": "Intelligence"
+          },
+          {
+            "abbr": "VOL",
+            "name": "Volonté"
+          }
+        ],
+        "range_at_creation": {
+          "min": -2,
+          "max": 5
+        },
+        "series": {
+          "polyvalent": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            0,
+            -1
+          ],
+          "expert": [
+            3,
+            2,
+            1,
+            1,
+            0,
+            0,
+            -1
+          ],
+          "specialiste": [
+            4,
+            2,
+            1,
+            0,
+            0,
+            -1,
+            -1
+          ]
+        },
+        "series_sums": {
+          "polyvalent": 7,
+          "expert": 6,
+          "specialiste": 5
+        },
+        "magic_stat_min": 1,
+        "magic_stats": {
+          "INT": [
+            "magicien",
+            "forgesort",
+            "sorcier"
+          ],
+          "CHA": [
+            "ensorceleur",
+            "barde",
+            "prêtre"
+          ],
+          "PER": [
+            "druide"
+          ]
+        },
+        "int_negative_cannot_read": true,
+        "cha_determines_pc": true,
+        "vol_determines_attaque_magique_and_pm": true,
+        "per_determines_initiative_order": true
+      },
+      "see_also": [
+        {
+          "name": "Échelle des valeurs de caractéristiques",
+          "kind": "table",
+          "relation": "echelle"
+        },
+        {
+          "name": "Séries de valeurs de caractéristiques",
+          "kind": "table",
+          "relation": "series"
+        },
+        {
+          "name": "Modificateur de peuple",
+          "kind": "table",
+          "relation": "ajustement"
+        },
+        {
+          "name": "Méthode rapide pour les débutants",
+          "kind": "rule",
+          "relation": "option"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Méthode rapide pour les débutants",
+      "slug": "methode-rapide-debutants",
+      "page_start": 28,
+      "page_end": 28,
+      "summary": "Série expert : trois plus hautes valeurs sur les trois caractéristiques du profil.",
+      "body": "# Méthode rapide pour les débutants\n\nChoisissez la série de valeurs du personnage expert et assignez les trois plus hautes valeurs aux trois caractéristiques importantes indiquées pour votre profil. Assignez ensuite le dernier +1 et le −1 selon l’idée du personnage. Les deux dernières caractéristiques reçoivent la valeur 0.\n",
+      "tags": [
+        "creation",
+        "option",
+        "debutant"
+      ],
+      "data": {
+        "series": "expert",
+        "assign_top3_to_profile_stats": true,
+        "remaining": {
+          "plus_one": "au choix",
+          "minus_one": "au choix",
+          "zeros": 2
+        }
+      },
+      "parent_kind": "rule",
+      "parent_name": "Caractéristiques"
+    },
+    {
+      "kind": "rule",
+      "name": "Voies et capacités",
+      "slug": "voies-et-capacites",
+      "page_start": 29,
+      "page_end": 30,
+      "summary": "Trois voies à la création (2 de profil + 1 de peuple), rang 1 automatique ; mages : rang 2 extra et voie du mage.",
+      "body": "# Voies et capacités\n\nÀ la création, trois voies, chacune avec la capacité de rang 1 automatique :\n\n- deux voies parmi les cinq du profil ;\n- la voie de peuple (automatique).\n\n## Mages\n\nEn plus de leurs deux capacités de rang 1, les mages choisissent :\n\n- une capacité de rang 2 dans l’une des deux voies de profil choisies ; **ou**\n- le rang 2 de la voie du mage.\n\n**Voie du mage.** Peut remplacer la voie de peuple. Le personnage bénéficie toutefois des effets du rang 1 de sa voie de peuple, mais ne pourra pas en acquérir les rangs suivants.\n\nIl est possible d’obtenir le rang 2 de la voie du mage (Maîtrise de la magie) dès le niveau 1 avec le point de capacité supplémentaire des mages.\n",
+      "tags": [
+        "creation",
+        "etape-5",
+        "voie",
+        "capacite"
+      ],
+      "data": {
+        "step": 5,
+        "starting_voies": 3,
+        "profile_voies_chosen": 2,
+        "people_voie": 1,
+        "rank_1_automatic": true,
+        "mages": {
+          "extra_rank_2": true,
+          "voie_du_mage_may_replace_people_voie": true,
+          "keeps_people_rank_1_effects": true,
+          "cannot_advance_replaced_people_voie": true,
+          "voie_du_mage_rank_2_name": "Maîtrise de la magie",
+          "voie_du_mage_rank_2_at_level_1": true
+        }
+      },
+      "see_also": [
+        {
+          "name": "Acquisition des capacités et voies",
+          "kind": "rule",
+          "relation": "progression"
+        },
+        {
+          "name": "Voie du mage",
+          "kind": "rule",
+          "relation": "exception-mages"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Voie du mage",
+      "slug": "voie-du-mage",
+      "page_start": 29,
+      "page_end": 30,
+      "summary": "Remplace la voie de peuple pour les mages ; conserve les effets du rang 1 de peuple.",
+      "body": "# Voie du mage\n\nLes profils issus de la famille des mages peuvent choisir la voie du mage en remplacement de leur voie de peuple (voir page 60 et chaque profil de la famille des mages). Le personnage qui choisit la voie du mage bénéficie toutefois des effets du rang 1 de la voie de peuple correspondant à son peuple (il peut le cocher sur sa feuille de personnage), mais il ne pourra pas acquérir les rangs suivants de cette voie.\n\nIl est possible d’obtenir le rang 2 de la voie du mage, Maîtrise de la magie, dès le niveau 1 si le joueur le souhaite, en investissant le point de capacité supplémentaire des mages.\n",
+      "tags": [
+        "creation",
+        "mages",
+        "voie"
+      ],
+      "data": {
+        "voie_type": "generic",
+        "family": "mages",
+        "replaces_people_voie": true,
+        "keeps_people_rank_1_effects": true,
+        "rank_2_name": "Maîtrise de la magie",
+        "see_page": 60
+      },
+      "parent_kind": "rule",
+      "parent_name": "Voies et capacités"
+    },
+    {
+      "kind": "rule",
+      "name": "Points de vigueur",
+      "slug": "points-de-vigueur",
+      "page_start": 30,
+      "page_end": 30,
+      "summary": "PV au niveau 1 = (2 × PV de la famille) + CON.",
+      "body": "# Points de vigueur (PV)\n\nAu niveau 1 : **PV = (2 × PV de la famille) + CON**.\n\nParfois, une capacité peut modifier cette valeur.\n\n| Famille | PV au niveau 1 |\n|---|---|\n| Aventuriers | 8 + CON |\n| Combattants | 10 + CON |\n| Mages | 6 + CON |\n| Mystiques | 8 + CON |\n",
+      "tags": [
+        "creation",
+        "etape-6",
+        "pv"
+      ],
+      "data": {
+        "step": 6,
+        "formula": "PV = (2 × PV de la famille) + CON",
+        "level_1_by_family": {
+          "aventuriers": "8 + CON",
+          "combattants": "10 + CON",
+          "mages": "6 + CON",
+          "mystiques": "8 + CON"
+        },
+        "family_base_hp": {
+          "aventuriers": 4,
+          "combattants": 5,
+          "mages": 3,
+          "mystiques": 4
+        }
+      },
+      "see_also": [
+        {
+          "name": "Points de vigueur selon les familles",
+          "kind": "table",
+          "relation": "table"
+        },
+        {
+          "name": "Gain de PV par niveau",
+          "kind": "rule",
+          "relation": "progression"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Dé de récupération",
+      "slug": "de-de-recuperation",
+      "page_start": 30,
+      "page_end": 30,
+      "summary": "DR = 2 + CON (mystiques : 3 + CON) ; type d8 / d10 / d6 / d8 ; CON −2 : aucun DR.",
+      "body": "# Dé de récupération (DR)\n\nAu niveau 1 : **[2 + CON] DR**, type selon la famille.\n\nLes mystiques reçoivent 1 DR de plus : **[3 + CON] DR**.\n\nCas particulier : un PJ ayant −2 en CON n’a pas de dé de récupération (2 − 2 = 0). Il ne peut pas régénérer ses PV en récupération rapide, seulement en récupération complète. Il doit alors toujours lancer le dé de récupération (il n’obtient pas le résultat maximal sur le dé).\n\n- Aventuriers : d8\n- Combattants : d10\n- Mages : d6\n- Mystiques : d8\n",
+      "tags": [
+        "creation",
+        "etape-7",
+        "dr"
+      ],
+      "data": {
+        "step": 7,
+        "formula": "2 + CON",
+        "mystiques_formula": "3 + CON",
+        "die_by_family": {
+          "aventuriers": "d8",
+          "combattants": "d10",
+          "mages": "d6",
+          "mystiques": "d8"
+        },
+        "con_minus_2": {
+          "dr_count": 0,
+          "no_quick_recovery": true,
+          "full_recovery_must_roll": true,
+          "no_max_on_die": true
+        }
+      }
+    },
+    {
+      "kind": "rule",
+      "name": "Points de chance",
+      "slug": "points-de-chance",
+      "page_start": 30,
+      "page_end": 30,
+      "summary": "PC = 2 + CHA ; aventuriers : +1 PC.",
+      "body": "# Points de chance (PC)\n\nChaque personnage reçoit **[2 + CHA] points de chance**.\n\nLes PJ de la famille des aventuriers gagnent 1 PC de plus que les autres profils.\n",
+      "tags": [
+        "creation",
+        "etape-8",
+        "pc"
+      ],
+      "data": {
+        "step": 8,
+        "formula": "2 + CHA",
+        "aventuriers_bonus": 1
+      }
+    },
+    {
+      "kind": "rule",
+      "name": "Points de mana",
+      "slug": "points-de-mana",
+      "page_start": 31,
+      "page_end": 31,
+      "summary": "PM si au moins un sort (*) ; PM = VOL + nombre de sorts.",
+      "body": "# Points de mana (PM)\n\nPour avoir des points de mana, un personnage doit avoir au moins une capacité signalée par un * (c’est-à-dire un sort).\n\n**Total de points de mana = VOL + Nbre de sorts**\n",
+      "tags": [
+        "creation",
+        "etape-9",
+        "pm",
+        "magie"
+      ],
+      "data": {
+        "step": 9,
+        "requires_at_least_one_spell": true,
+        "spell_marker": "*",
+        "formula": "VOL + nombre de sorts"
+      },
+      "see_also": [
+        {
+          "name": "Progression des points de mana",
+          "kind": "rule",
+          "relation": "progression"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Initiative",
+      "slug": "initiative",
+      "page_start": 31,
+      "page_end": 31,
+      "summary": "Initiative = 10 + PER.",
+      "body": "# Initiative\n\nÀ la création, l’Initiative est égale à **[10 + PER]**.\n",
+      "tags": [
+        "creation",
+        "etape-10",
+        "initiative"
+      ],
+      "data": {
+        "step": 10,
+        "formula": "10 + PER"
+      }
+    },
+    {
+      "kind": "rule",
+      "name": "Équipement",
+      "slug": "equipement-depart",
+      "page_start": 31,
+      "page_end": 31,
+      "summary": "Sac d’aventurier, 2d6 pa, équipement de profil ; maîtrise d’armure par bonus de DEF.",
+      "body": "# Équipement\n\nSac d’aventurier : couverture, torche, briquet à silex, outre, gamelle, bourse de **2d6 pa**.\n\nPlus l’équipement indiqué dans le profil. Un objet particulier se négocie avec le MJ (sacrifice d’un objet de valeur similaire, trésor ou économies). Chapitre « Équipement », page 181.\n\n**Armure :** classées par ordre croissant de protection (et de limitation de l’AGI). « Peut porter jusqu’à la chemise de mailles » = toutes les armures dont le bonus de Défense est ≤ celui de la chemise de mailles (cuir, cuir renforcé, chemise de mailles).\n",
+      "tags": [
+        "creation",
+        "etape-11",
+        "equipement"
+      ],
+      "data": {
+        "step": 11,
+        "adventurer_pack": [
+          "couverture",
+          "torche",
+          "briquet à silex",
+          "outre",
+          "gamelle",
+          "bourse de 2d6 pa"
+        ],
+        "starting_money": "2d6 pa",
+        "profile_equipment": true,
+        "armor_mastery_rule": "toutes les armures dont le bonus de DEF est inférieur ou égal à l’armure maximale indiquée",
+        "equipment_chapter_page": 181
+      }
+    },
+    {
+      "kind": "rule",
+      "name": "Défense",
+      "slug": "defense",
+      "page_start": 31,
+      "page_end": 31,
+      "summary": "DEF = 10 + AGI + capacités + armure.",
+      "body": "# Défense\n\n**DEF = 10 + AGI + éventuels modificateurs de capacités et d’armure** (chapitre « Équipement », page 181).\n",
+      "tags": [
+        "creation",
+        "etape-12",
+        "defense"
+      ],
+      "data": {
+        "step": 12,
+        "formula": "10 + AGI + capacités + armure",
+        "equipment_chapter_page": 181
+      }
+    },
+    {
+      "kind": "rule",
+      "name": "Valeurs d’attaque",
+      "slug": "valeurs-d-attaque",
+      "page_start": 32,
+      "page_end": 32,
+      "summary": "Contact = niveau + FOR ; distance = niveau + AGI ; magique = niveau + VOL.",
+      "body": "# Valeurs d’attaque\n\n- Attaque au contact = niveau + FOR\n- Attaque à distance = niveau + AGI\n- Attaque magique = niveau + VOL\n\nAu niveau 1 : 1 + FOR / 1 + AGI / 1 + VOL.\n",
+      "tags": [
+        "creation",
+        "etape-13",
+        "attaque"
+      ],
+      "data": {
+        "step": 13,
+        "formulas": {
+          "contact": "niveau + FOR",
+          "distance": "niveau + AGI",
+          "magique": "niveau + VOL"
+        },
+        "level_1": {
+          "contact": "1 + FOR",
+          "distance": "1 + AGI",
+          "magique": "1 + VOL"
+        }
+      },
+      "see_also": [
+        {
+          "name": "Progression des valeurs d’attaque",
+          "kind": "rule",
+          "relation": "progression"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Dommages",
+      "slug": "dommages",
+      "page_start": 32,
+      "page_end": 32,
+      "summary": "FOR aux DM de contact ; rien aux armes à distance ; magie selon la capacité.",
+      "body": "# Dommages (DM)\n\nLes DM des armes sont au chapitre « Équipement » ; ceux des sorts dans la description des capacités.\n\nPar principe :\n\n- la FOR s’ajoute aux DM des armes de contact ;\n- aucune valeur n’est ajoutée aux DM des armes à distance ;\n- lorsqu’une attaque magique bénéficie d’un bonus aux DM, cela est précisé dans la description de la capacité.\n\nCertaines capacités peuvent modifier cette règle (par exemple ajouter la PER en attaque à distance).\n",
+      "tags": [
+        "creation",
+        "etape-14",
+        "dm"
+      ],
+      "data": {
+        "step": 14,
+        "melee": "ajouter FOR",
+        "ranged": "aucune valeur ajoutée",
+        "magic": "selon la description de la capacité"
+      }
+    },
+    {
+      "kind": "rule",
+      "name": "Touche finale",
+      "slug": "touche-finale",
+      "page_start": 33,
+      "page_end": 37,
+      "summary": "Nom, physique, idéal et travers, secrets, âge, langues, talent secondaire.",
+      "body": "# Touche finale\n\nDonner un nom et de l’épaisseur au personnage (apparence, caractère). On peut s’inspirer de BD, films ou romans.\n\n## Idéal et travers\n\nDéterminer un idéal héroïque et un travers au hasard (d20) si besoin. Le MJ peut demander deux idéaux (campagne « positive ») ou deux travers. On peut relancer si le résultat ne convient pas.\n\nLes prétirés n’ont pas d’idéal ni de travers préremplis : choix laissé au joueur.\n\nUne interprétation de trait particulièrement appropriée peut être récompensée par la récupération d’un point de chance. Les traits ne doivent ni remplacer le libre arbitre, ni caricaturer, ni saboter l’aventure ou le plaisir des autres.\n\n## Origine, historique, secrets\n\nHistorique et provenance avec l’aide du MJ (cadre de jeu ; paragraphes « Dans les Terres d’Osgild » aux chapitres 3 à 7). Table des secrets intimes : d20 sur chacune des deux colonnes, choisir un secret — ou aucun.\n\n## Âge, taille, poids\n\nÂge moyen de début de carrière : ordre d’idée, surtout pour les non-humains. Espérance de vie : conditions optimales ; moyenne humaine souvent la moitié.\n\n## Langues\n\nLangue officielle de la région + langue du peuple ou de l’ethnie. INT +0 : déchiffre sa langue maternelle de façon hésitante. INT négative : ne sait pas lire (apprendre à lire = 1 point de capacité ou augmenter INT). INT −2 : seulement la langue du peuple (ou patois) et quelques mots d’officiel. INT positive : une langue supplémentaire par point d’INT.\n\nL’argotien compte pour deux langues si le profil principal n’est pas voleur ou barde.\n\n## Talent secondaire\n\nSi le MJ l’autorise, remplacer une langue par un talent secondaire ou un loisir : pas de bonus en combat, pas un métier ; **+3** sur les tests concernés (bonus de voie de peuple pour le cumul).\n",
+      "tags": [
+        "creation",
+        "etape-15",
+        "interpretation"
+      ],
+      "data": {
+        "step": 15,
+        "ideal_and_flaw": {
+          "method": "d20",
+          "can_reroll": true
+        },
+        "trait_reward": "récupération d’un point de chance",
+        "languages": {
+          "base": [
+            "langue officielle de la région",
+            "langue du peuple ou de l’ethnie"
+          ],
+          "int_0": "déchiffre sa langue maternelle de façon hésitante",
+          "int_negative": "ne sait pas lire ; parle peuple + commun",
+          "int_minus_2": "langue du peuple seulement, quelques mots d’officiel",
+          "int_positive": "une langue supplémentaire par point d’INT",
+          "argotien_counts_as_two_unless": [
+            "voleur",
+            "barde"
+          ]
+        },
+        "secondary_talent": {
+          "replaces_language": true,
+          "mj_permission": true,
+          "no_combat_bonus": true,
+          "not_a_profession": true,
+          "test_bonus": 3,
+          "bonus_stacks_as": "voie de peuple"
+        }
+      },
+      "see_also": [
+        {
+          "name": "Idéaux héroïques et travers",
+          "kind": "table",
+          "relation": "table"
+        },
+        {
+          "name": "Table des secrets intimes (1)",
+          "kind": "table",
+          "relation": "table"
+        },
+        {
+          "name": "Table des secrets intimes (2)",
+          "kind": "table",
+          "relation": "table"
+        },
+        {
+          "name": "Langues maîtrisées",
+          "kind": "rule",
+          "relation": "detail"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Langues maîtrisées",
+      "slug": "langues-maitrisees",
+      "page_start": 36,
+      "page_end": 36,
+      "summary": "Langues de départ selon l’INT ; argotien compte double sauf voleur/barde.",
+      "body": "# Langues maîtrisées\n\nChaque personnage débute en sachant parler la langue officielle de la région où débutent les aventures (généralement la langue humaine locale) en plus de la langue de son peuple ou de son ethnie.\n\n- INT +0 : déchiffre sa langue maternelle de façon hésitante.\n- INT négative : ne sait pas lire (sacrifier 1 point de capacité ou augmenter INT pour apprendre). Parle la langue de son peuple plus la langue commune des humains.\n- INT −2 : ne parle que la langue de son peuple (souvent un patois pour un humain) et à peine quelques mots dans la langue humaine officielle.\n- INT positive : parler, lire et écrire une langue supplémentaire par point d’Intelligence.\n\nL’argotien est l’argot des voleurs et une langue des signes ; il compte pour deux langues si le profil principal du PJ n’est pas voleur ou barde.\n",
+      "tags": [
+        "creation",
+        "langues"
+      ],
+      "data": {
+        "int_0": "déchiffre langue maternelle de façon hésitante",
+        "int_negative": {
+          "can_read": false,
+          "learn_to_read_cost": "1 point de capacité ou augmenter INT"
+        },
+        "int_minus_2": "langue du peuple seulement",
+        "int_positive": "une langue supplémentaire par point d’INT",
+        "argotien_counts_as": 2,
+        "argotien_counts_as_one_if_profile": [
+          "voleur",
+          "barde"
+        ]
+      },
+      "parent_kind": "rule",
+      "parent_name": "Touche finale"
+    },
+    {
+      "kind": "rule",
+      "name": "Talent secondaire",
+      "slug": "talent-secondaire",
+      "page_start": 37,
+      "page_end": 37,
+      "summary": "Remplacer une langue par un loisir : +3 aux tests, pas de bonus de combat.",
+      "body": "# Talent secondaire\n\nSi votre MJ vous y autorise, vous pouvez remplacer une langue par un talent secondaire ou un loisir. Un talent secondaire ne procure aucun bonus en combat, il ne doit pas être confondu avec un métier. Il apporte un bonus de +3 sur les tests concernés (considéré comme un bonus de voie de peuple dans le cadre d’un cumul).\n\nExemple : jouer d’un instrument de musique au choix, jouer aux échecs ou aux cartes, calligraphie, cuisine, etc.\n",
+      "tags": [
+        "creation",
+        "option"
+      ],
+      "data": {
+        "replaces": "langue",
+        "mj_permission": true,
+        "test_bonus": 3,
+        "combat_bonus": false,
+        "stacks_as": "voie de peuple",
+        "examples": [
+          "jouer d’un instrument de musique",
+          "jouer aux échecs ou aux cartes",
+          "calligraphie",
+          "cuisine"
+        ]
+      },
+      "parent_kind": "rule",
+      "parent_name": "Touche finale"
+    },
+    {
+      "kind": "rule",
+      "name": "Montée de niveau",
+      "slug": "montee-de-niveau",
+      "page_start": 38,
+      "page_end": 38,
+      "summary": "Après une aventure ou une étape de campagne : PV, +1 attaque (≤ 10), 2 points de capacité, PM, d4°.",
+      "body": "# Montée de niveau\n\nOn considère généralement qu’un personnage peut passer au niveau supérieur dans deux situations :\n\n- lorsqu’il a terminé une aventure ;\n- lorsqu’il a franchi une étape importante dans une campagne.\n\nÀ chaque passage de niveau, le personnage :\n\n- augmente ses PV selon son profil (voir tableau) ;\n- augmente toutes ses valeurs d’attaque de +1 (jusqu’au niveau 10) ;\n- gagne 2 points de capacité ;\n- augmente ses PM (s’il dispose de sorts).\n\nDe plus, à partir du niveau 6 et tous les 3 niveaux, son dé évolutif (d4°) augmente : d4 devient d6 au niveau 6, puis d8 au niveau 9, etc.\n",
+      "tags": [
+        "progression",
+        "niveau"
+      ],
+      "data": {
+        "triggers": [
+          "fin d’aventure",
+          "étape importante de campagne"
+        ],
+        "on_level_up": [
+          "PV selon le profil",
+          "+1 à toutes les valeurs d’attaque jusqu’au niveau 10",
+          "2 points de capacité",
+          "PM si sorts"
+        ],
+        "d4_upgrade_from_level": 6,
+        "d4_upgrade_every": 3
+      },
+      "see_also": [
+        {
+          "name": "Gain de PV par niveau",
+          "kind": "rule",
+          "relation": "detail"
+        },
+        {
+          "name": "Progression des valeurs d’attaque",
+          "kind": "rule",
+          "relation": "detail"
+        },
+        {
+          "name": "Acquisition des capacités et voies",
+          "kind": "rule",
+          "relation": "detail"
+        },
+        {
+          "name": "Progression des points de mana",
+          "kind": "rule",
+          "relation": "detail"
+        },
+        {
+          "name": "D4°, les dés évolutifs",
+          "kind": "rule",
+          "relation": "detail"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Temps d’apprentissage « réaliste »",
+      "slug": "temps-d-apprentissage-realiste",
+      "page_start": 38,
+      "page_end": 38,
+      "summary": "Option MJ : un mois par rang en solitaire, une semaine avec un maître.",
+      "body": "# Temps d’apprentissage « réaliste »\n\nPar souci de réalisme, certains MJ souhaitent que les personnages disposent d’un temps d’apprentissage pour acquérir de nouvelles capacités entre deux aventures :\n\n- un mois environ par rang en solitaire ;\n- une semaine par rang avec un maître.\n\nIl revient au MJ de ménager des pauses dans la chronologie de sa campagne afin d’obtenir un rythme cohérent, de sorte que plusieurs années devraient être nécessaires pour qu’un héros passe du niveau 1 au niveau 12 !\n",
+      "tags": [
+        "progression",
+        "option",
+        "mj"
+      ],
+      "data": {
+        "optional": true,
+        "solo_per_rank": "un mois environ",
+        "with_master_per_rank": "une semaine",
+        "level_1_to_12": "plusieurs années"
+      },
+      "parent_kind": "rule",
+      "parent_name": "Montée de niveau"
+    },
+    {
+      "kind": "rule",
+      "name": "Gain de PV par niveau",
+      "slug": "gain-de-pv-par-niveau",
+      "page_start": 38,
+      "page_end": 39,
+      "summary": "PV par niveau = PV de famille + CON ; changement de CON rétroactif.",
+      "body": "# Gain de PV par niveau\n\nÀ chaque passage de niveau, un personnage gagne un nombre de points de vigueur qui dépend de sa famille de profils. On y ajoute la valeur de Constitution.\n\n| Famille | PV par niveau |\n|---|---|\n| Aventuriers | 4 + CON |\n| Combattants | 5 + CON |\n| Mages | 3 + CON |\n| Mystiques | 4 + CON |\n\nSi la Constitution change en jeu, les PV changent rétroactivement pour chaque niveau déjà acquis, en plus ou en moins.\n",
+      "tags": [
+        "progression",
+        "pv"
+      ],
+      "data": {
+        "by_family": {
+          "aventuriers": "4 + CON",
+          "combattants": "5 + CON",
+          "mages": "3 + CON",
+          "mystiques": "4 + CON"
+        },
+        "constitution_change_retroactive": true
+      },
+      "see_also": [
+        {
+          "name": "Gain de PV par niveau (table)",
+          "kind": "table",
+          "relation": "table"
+        },
+        {
+          "name": "Points de vigueur",
+          "kind": "rule",
+          "relation": "creation"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Progression des valeurs d’attaque",
+      "slug": "progression-valeurs-d-attaque",
+      "page_start": 39,
+      "page_end": 39,
+      "summary": "Base +1 au niveau 1, +1 par niveau, plafond au niveau 10.",
+      "body": "# Progression des valeurs d’attaque\n\nAu niveau 1, la valeur de base des différentes attaques est égale à +1, ensuite elle augmente de +1 à chaque niveau. Toutefois, elle cesse d’augmenter à partir du niveau 10. Le personnage a atteint son niveau maximal de compétence en attaque.\n",
+      "tags": [
+        "progression",
+        "attaque"
+      ],
+      "data": {
+        "base_at_level_1": 1,
+        "bonus_per_level": 1,
+        "stops_increasing_at_level": 10
+      },
+      "see_also": [
+        {
+          "name": "Valeurs d’attaque",
+          "kind": "rule",
+          "relation": "creation"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Acquisition des capacités et voies",
+      "slug": "acquisition-capacites-et-voies",
+      "page_start": 39,
+      "page_end": 42,
+      "summary": "2 points de capacité par niveau, dépense immédiate ; coûts, niveau requis, voie de peuple.",
+      "body": "# Acquisition des capacités et voies\n\nÀ chaque passage de niveau : **2 points de capacité**, à dépenser immédiatement (pas de mise de côté).\n\n- rangs 1 et 2 : 1 point chacun ;\n- rang 3 et plus : 2 points chacun ;\n- pour un rang > 1, toutes les capacités de rang inférieur de la voie doivent être acquises ;\n- niveau minimal selon le tableau des rangs.\n\nRangs 6 à 8 : voies de prestige uniquement.\n\n**Exception mage :** la capacité de rang 2 au niveau 1 n’ouvre pas le rang 3 avant les autres.\n\n**Voie de peuple :** rang 1 gratuit au niveau 1 ; rangs suivants payés normalement. Une capacité de peuple choisie dans une voie du propre profil est considérée comme déjà acquise dans cette voie (bonus une seule fois).\n",
+      "tags": [
+        "progression",
+        "capacite",
+        "voie"
+      ],
+      "data": {
+        "points_per_level": 2,
+        "must_spend_immediately": true,
+        "cost_by_rank": {
+          "1": 1,
+          "2": 1,
+          "3+": 2
+        },
+        "must_have_lower_ranks": true,
+        "level_required": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "4": 5,
+          "5": 7,
+          "6": 9,
+          "7": 11,
+          "8": 13
+        },
+        "ranks_6_to_8": "voies de prestige",
+        "mage_rank_2_at_level_1_exception": true,
+        "mage_no_early_rank_3": true,
+        "people_voie_rank_1_free": true
+      },
+      "see_also": [
+        {
+          "name": "Niveau requis par rang de capacité",
+          "kind": "table",
+          "relation": "table"
+        },
+        {
+          "name": "Point de capacité orphelin",
+          "kind": "rule",
+          "relation": "exception"
+        },
+        {
+          "name": "Nouvelles voies",
+          "kind": "rule",
+          "relation": "suite"
+        },
+        {
+          "name": "Voies de prestige",
+          "kind": "rule",
+          "relation": "suite"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Point de capacité orphelin",
+      "slug": "point-de-capacite-orphelin",
+      "page_start": 40,
+      "page_end": 40,
+      "summary": "Si le 2e point ne peut plus être dépensé : 1 PC, 1 DR, 2 PV ou 2 PM.",
+      "body": "# Point de capacité orphelin\n\nS’il ne reste plus qu’une capacité de rang 1 ou 2 à acheter, le second point de capacité ne peut plus être dépensé (les autres capacités coûtent 2 points). Dans ce cas exceptionnel, échanger le point orphelin au choix contre :\n\n- 1 point de chance, ou\n- 1 dé de récupération, ou\n- 2 points de vigueur, ou\n- 2 points de mana supplémentaires.\n",
+      "tags": [
+        "progression",
+        "capacite",
+        "exception"
+      ],
+      "data": {
+        "exchange_options": [
+          {
+            "pc": 1
+          },
+          {
+            "dr": 1
+          },
+          {
+            "pv": 2
+          },
+          {
+            "pm": 2
+          }
+        ]
+      },
+      "parent_kind": "rule",
+      "parent_name": "Acquisition des capacités et voies"
+    },
+    {
+      "kind": "rule",
+      "name": "Appel à une autre capacité",
+      "slug": "appel-a-une-autre-capacite",
+      "page_start": 40,
+      "page_end": 41,
+      "summary": "Capacité de la voie B devenue capacité de la voie A ; rang de A ; pas de poupées russes.",
+      "body": "# Appel à une autre capacité\n\nUne capacité de la voie A peut proposer de choisir une capacité de la voie B. Celle-ci devient une capacité de la voie A. Si elle évolue selon le rang, c’est le rang dans la voie A qui compte. On ne peut pas choisir deux fois la même capacité par deux voies différentes.\n\n**Poupées russes :** impossible de choisir une capacité qui permet elle-même d’appeler une autre capacité.\n\n**Armures :** limitations de la capacité de la voie B, sauf exception indiquée dans A.\n\n**Sorts :** caractéristique de magie du profil d’origine du sort ; coût en PM selon le rang habituel du sort ; apprend un sort = toujours +1 PM.\n",
+      "tags": [
+        "progression",
+        "capacite"
+      ],
+      "data": {
+        "uses_calling_voie_rank": true,
+        "cannot_take_same_capacity_twice": true,
+        "no_nested_calls": true,
+        "armor_limits_from_called_capacity": true,
+        "spell_magic_stat_from_source_profile": true,
+        "spell_pm_cost_from_usual_rank": true,
+        "learning_spell_grants_pm": 1
+      },
+      "parent_kind": "rule",
+      "parent_name": "Acquisition des capacités et voies"
+    },
+    {
+      "kind": "rule",
+      "name": "Nouvelles voies",
+      "slug": "nouvelles-voies",
+      "page_start": 41,
+      "page_end": 42,
+      "summary": "Dès le niveau 2 : approfondir, ouvrir une voie du profil, ou voie hors profil (hybride). Max 6 voies + peuple.",
+      "body": "# Nouvelles voies\n\nDès le niveau 2, dépenser les points de capacité pour :\n\n- de nouvelles capacités dans les voies du niveau 1 ;\n- ouvrir de nouvelles voies parmi les cinq du profil principal ;\n- ouvrir des voies d’un autre profil (profil hybride).\n\nVoies du profil principal : ouvertes à n’importe quel niveau sans événement particulier.\n\nVoie hors profil : le MJ pourra demander un événement (mentor, adoubement, guilde, etc.). Voir « Profils hybrides », page 176.\n\n**Maximum : six voies, plus la voie de peuple.**\n",
+      "tags": [
+        "progression",
+        "voie",
+        "hybride"
+      ],
+      "data": {
+        "from_level": 2,
+        "options": [
+          "approfondir voies existantes",
+          "voie du profil principal",
+          "voie d’un autre profil (hybride)"
+        ],
+        "max_voies": 6,
+        "plus_people_voie": true,
+        "hybrid_chapter_page": 176
+      },
+      "see_also": [
+        {
+          "name": "Profils hybrides",
+          "kind": "rule",
+          "relation": "voir aussi"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Voies de prestige",
+      "slug": "voies-de-prestige",
+      "page_start": 42,
+      "page_end": 42,
+      "summary": "Une seule dès le niveau 5 ; rangs 4–8 ; bonus de vigueur propre ; armure du profil principal.",
+      "body": "# Voies de prestige\n\nÀ partir du niveau 5, une voie de prestige (une seule dans toute la carrière). Liste de la famille du profil principal ou voies génériques (chapitre page 128).\n\nChaque voie de prestige :\n\n- cinq rangs, du rang 4 au rang 8 ;\n- son propre bonus de vigueur, utilisé quand on choisit une capacité de cette voie au changement de niveau ;\n- les mêmes limitations d’armure que le profil principal, sauf mention contraire.\n\nPrérequis : parfois une capacité ; en général un prérequis d’interprétation (MJ a le dernier mot).\n",
+      "tags": [
+        "progression",
+        "prestige",
+        "voie"
+      ],
+      "data": {
+        "from_level": 5,
+        "max_per_career": 1,
+        "rank_min": 4,
+        "rank_max": 8,
+        "level_required": {
+          "4": 5,
+          "5": 7,
+          "6": 9,
+          "7": 11,
+          "8": 13
+        },
+        "own_hp_bonus": true,
+        "armor_limits": "celles du profil principal sauf mention contraire",
+        "chapter_page": 128
+      },
+      "see_also": [
+        {
+          "name": "Voies de prestige – niveau requis",
+          "kind": "table",
+          "relation": "table"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Progression des points de mana",
+      "slug": "progression-points-de-mana",
+      "page_start": 42,
+      "page_end": 42,
+      "summary": "Pas d’augmentation automatique ; +1 PM par sort appris. Total = sorts + VOL.",
+      "body": "# Progression des points de mana\n\nLes PM n’augmentent pas automatiquement à la montée de niveau. +1 PM par nouveau sort appris.\n\n**Total des PM = nombre de capacités de sorts + VOL**\n",
+      "tags": [
+        "progression",
+        "pm",
+        "magie"
+      ],
+      "data": {
+        "automatic_on_level_up": false,
+        "pm_per_spell": 1,
+        "formula": "nombre de capacités de sorts + VOL"
+      },
+      "see_also": [
+        {
+          "name": "Points de mana",
+          "kind": "rule",
+          "relation": "creation"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "D4°, les dés évolutifs",
+      "slug": "d4-des-evolutifs",
+      "page_start": 43,
+      "page_end": 43,
+      "summary": "d4° : d4 (1–5), d6 (6–8), d8 (9–11), d10 (12–14), d12 (15+).",
+      "body": "# D4°, les dés évolutifs\n\nLe symbole « ° » indique un dé évolutif : la capacité s’améliore au niveau 6, puis tous les trois niveaux.\n\nd4 → d6 (niveau 6) → d8 → d10 → d12.\n\n| Niveau | Dé évolutif |\n|---|---|\n| 1–5 | d4 |\n| 6–8 | d6 |\n| 9–11 | d8 |\n| 12–14 | d10 |\n| 15+ | d12 |\n",
+      "tags": [
+        "progression",
+        "d4",
+        "des"
+      ],
+      "data": {
+        "notation": "d4°",
+        "upgrade_at_level": 6,
+        "then_every": 3,
+        "by_level": {
+          "1-5": "d4",
+          "6-8": "d6",
+          "9-11": "d8",
+          "12-14": "d10",
+          "15+": "d12"
+        }
+      },
+      "see_also": [
+        {
+          "name": "Niveau d’acquisition des dés évolutifs",
+          "kind": "table",
+          "relation": "table"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Changement d’orientation",
+      "slug": "changement-d-orientation",
+      "page_start": 43,
+      "page_end": 43,
+      "summary": "Oublier/remplacer 1 capacité par niveau (2 si INT ≥ +2) ; pas de voie de peuple ni de voies à trous ; garder les deux rangs 1 du profil.",
+      "body": "# Changement d’orientation\n\nÀ chaque passage de niveau, le personnage peut « oublier » une capacité et la remplacer par une autre selon les règles normales de progression. INT au moins +2 : jusqu’à deux capacités par niveau.\n\nInterdit :\n\n- oublier une capacité acquise automatiquement et gratuitement (voie de peuple) ;\n- créer des voies à trous (oublier le rang 5, puis 4, puis 3 — jamais un rang intermédiaire) ;\n- oublier sa jeunesse : toujours conserver les deux capacités de rang 1 acquises au niveau 1.\n",
+      "tags": [
+        "progression",
+        "reorientation"
+      ],
+      "data": {
+        "per_level": 1,
+        "per_level_if_int_at_least_2": 2,
+        "cannot_forget_free_people_voie": true,
+        "no_holes_in_voie": true,
+        "must_keep_two_profile_rank_1": true
+      }
+    },
+    {
+      "kind": "table",
+      "name": "La création de personnage (résumé)",
+      "slug": "table-creation-resume",
+      "page_start": 22,
+      "page_end": 22,
+      "summary": "Les quinze étapes de création.",
+      "body": "| # | Étape | Page |\n|---|---|---|\n| 1 | Rôle | 20 |\n| 2 | Profil | 22 |\n| 3 | Peuple | 25 |\n| 4 | Caractéristiques | 26 |\n| 5 | Voies et capacités | 29 |\n| 6 | Points de vigueur | 30 |\n| 7 | Dé de récupération | 30 |\n| 8 | Points de chance | 30 |\n| 9 | Points de mana | 31 |\n| 10 | Initiative | 31 |\n| 11 | Équipement | 31 |\n| 12 | Défense | 31 |\n| 13 | Valeurs d’attaque | 32 |\n| 14 | Dommages | 32 |\n| 15 | Touche finale | 33 |\n",
+      "tags": [
+        "table",
+        "creation"
+      ],
+      "data": {
+        "columns": [
+          "etape",
+          "nom",
+          "page"
+        ],
+        "rows": [
+          {
+            "etape": 1,
+            "nom": "Rôle",
+            "page": 20
+          },
+          {
+            "etape": 2,
+            "nom": "Profil",
+            "page": 22
+          },
+          {
+            "etape": 3,
+            "nom": "Peuple",
+            "page": 25
+          },
+          {
+            "etape": 4,
+            "nom": "Caractéristiques",
+            "page": 26
+          },
+          {
+            "etape": 5,
+            "nom": "Voies et capacités",
+            "page": 29
+          },
+          {
+            "etape": 6,
+            "nom": "Points de vigueur",
+            "page": 30
+          },
+          {
+            "etape": 7,
+            "nom": "Dé de récupération",
+            "page": 30
+          },
+          {
+            "etape": 8,
+            "nom": "Points de chance",
+            "page": 30
+          },
+          {
+            "etape": 9,
+            "nom": "Points de mana",
+            "page": 31
+          },
+          {
+            "etape": 10,
+            "nom": "Initiative",
+            "page": 31
+          },
+          {
+            "etape": 11,
+            "nom": "Équipement",
+            "page": 31
+          },
+          {
+            "etape": 12,
+            "nom": "Défense",
+            "page": 31
+          },
+          {
+            "etape": 13,
+            "nom": "Valeurs d’attaque",
+            "page": 32
+          },
+          {
+            "etape": 14,
+            "nom": "Dommages",
+            "page": 32
+          },
+          {
+            "etape": 15,
+            "nom": "Touche finale",
+            "page": 33
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Les familles de profil en résumé",
+      "slug": "table-familles-profil",
+      "page_start": 25,
+      "page_end": 25,
+      "summary": "PV et bonus de famille.",
+      "body": "| Famille | Bonus |\n|---|---|\n| Aventurier | 4 PV et 1 PC supplémentaire |\n| Combattant | 5 PV |\n| Mage | 3 PV et 1 capacité de rang 2 supplémentaire |\n| Mystique | 4 PV et +1 DR supplémentaire |\n",
+      "tags": [
+        "table",
+        "profil"
+      ],
+      "data": {
+        "columns": [
+          "famille",
+          "pv",
+          "bonus"
+        ],
+        "rows": [
+          {
+            "famille": "Aventurier",
+            "pv": 4,
+            "bonus": "1 PC supplémentaire"
+          },
+          {
+            "famille": "Combattant",
+            "pv": 5,
+            "bonus": null
+          },
+          {
+            "famille": "Mage",
+            "pv": 3,
+            "bonus": "1 capacité de rang 2 supplémentaire"
+          },
+          {
+            "famille": "Mystique",
+            "pv": 4,
+            "bonus": "+1 DR supplémentaire"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Échelle des valeurs de caractéristiques",
+      "slug": "table-echelle-caracteristiques",
+      "page_start": 27,
+      "page_end": 27,
+      "summary": "De −3 (catastrophique) à +5 (extraordinaire).",
+      "body": "| Valeur | Description |\n|---|---|\n| −3 | Catastrophique |\n| −2 | Très faible |\n| −1 | Faible, sous la moyenne pour un humain |\n| 0 | Moyen pour un humain |\n| +1 | Supérieur à la moyenne pour un humain |\n| +2 | Bon |\n| +3 | Très bon |\n| +4 | Excellent, maximum pour un humain à la création |\n| +5 | Extraordinaire, maximum pour un héros non humain à la création |\n",
+      "tags": [
+        "table",
+        "caracteristiques"
+      ],
+      "data": {
+        "columns": [
+          "valeur",
+          "description"
+        ],
+        "rows": [
+          {
+            "valeur": -3,
+            "description": "Catastrophique"
+          },
+          {
+            "valeur": -2,
+            "description": "Très faible"
+          },
+          {
+            "valeur": -1,
+            "description": "Faible, sous la moyenne pour un humain"
+          },
+          {
+            "valeur": 0,
+            "description": "Moyen pour un humain"
+          },
+          {
+            "valeur": 1,
+            "description": "Supérieur à la moyenne pour un humain"
+          },
+          {
+            "valeur": 2,
+            "description": "Bon"
+          },
+          {
+            "valeur": 3,
+            "description": "Très bon"
+          },
+          {
+            "valeur": 4,
+            "description": "Excellent, maximum pour un humain à la création"
+          },
+          {
+            "valeur": 5,
+            "description": "Extraordinaire, maximum pour un héros non humain à la création"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Séries de valeurs de caractéristiques",
+      "slug": "table-series-caracteristiques",
+      "page_start": 27,
+      "page_end": 28,
+      "summary": "Polyvalent +7, expert +6, spécialiste +5.",
+      "body": "| Série | Valeurs | Somme |\n|---|---|---|\n| Polyvalent | +2, +2, +2, +1, +1, +0, −1 | +7 |\n| Expert | +3, +2, +1, +1, +0, +0, −1 | +6 |\n| Spécialiste | +4, +2, +1, +0, +0, −1, −1 | +5 |\n",
+      "tags": [
+        "table",
+        "caracteristiques"
+      ],
+      "data": {
+        "columns": [
+          "serie",
+          "valeurs",
+          "somme"
+        ],
+        "rows": [
+          {
+            "serie": "Polyvalent",
+            "valeurs": [
+              2,
+              2,
+              2,
+              1,
+              1,
+              0,
+              -1
+            ],
+            "somme": 7
+          },
+          {
+            "serie": "Expert",
+            "valeurs": [
+              3,
+              2,
+              1,
+              1,
+              0,
+              0,
+              -1
+            ],
+            "somme": 6
+          },
+          {
+            "serie": "Spécialiste",
+            "valeurs": [
+              4,
+              2,
+              1,
+              0,
+              0,
+              -1,
+              -1
+            ],
+            "somme": 5
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Modificateur de peuple",
+      "slug": "table-modificateur-peuple",
+      "page_start": 28,
+      "page_end": 28,
+      "summary": "Ajustements de caractéristiques par peuple.",
+      "body": "| Peuple | Ajustement |\n|---|---|\n| Demi-elfe | +1 PER ou CHA, −1 FOR ou CON |\n| Demi-orc | +1 FOR ou CON, −1 CHA ou INT |\n| Elfe haut | +1 INT ou CHA, −1 FOR |\n| Elfe sylvain | +1 AGI ou PER, −1 FOR |\n| Gnome | +1 INT ou PER, −1 FOR |\n| Halfelin | +1 AGI ou VOL, −1 FOR |\n| Humain | +1 à une des deux plus faibles carac. |\n| Nain | +1 CON ou VOL, −1 AGI |\n",
+      "tags": [
+        "table",
+        "peuple",
+        "caracteristiques"
+      ],
+      "data": {
+        "columns": [
+          "peuple",
+          "ajustement"
+        ],
+        "rows": [
+          {
+            "peuple": "Demi-elfe",
+            "ajustement": "+1 PER ou CHA, −1 FOR ou CON"
+          },
+          {
+            "peuple": "Demi-orc",
+            "ajustement": "+1 FOR ou CON, −1 CHA ou INT"
+          },
+          {
+            "peuple": "Elfe haut",
+            "ajustement": "+1 INT ou CHA, −1 FOR"
+          },
+          {
+            "peuple": "Elfe sylvain",
+            "ajustement": "+1 AGI ou PER, −1 FOR"
+          },
+          {
+            "peuple": "Gnome",
+            "ajustement": "+1 INT ou PER, −1 FOR"
+          },
+          {
+            "peuple": "Halfelin",
+            "ajustement": "+1 AGI ou VOL, −1 FOR"
+          },
+          {
+            "peuple": "Humain",
+            "ajustement": "+1 à une des deux plus faibles carac."
+          },
+          {
+            "peuple": "Nain",
+            "ajustement": "+1 CON ou VOL, −1 AGI"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Points de vigueur selon les familles",
+      "slug": "table-pv-niveau-1",
+      "page_start": 30,
+      "page_end": 30,
+      "summary": "PV au niveau 1 par famille.",
+      "body": "| Famille de profils | PV au niveau 1 |\n|---|---|\n| Aventuriers | 8 + CON |\n| Combattants | 10 + CON |\n| Mages | 6 + CON |\n| Mystiques | 8 + CON |\n",
+      "tags": [
+        "table",
+        "pv",
+        "creation"
+      ],
+      "data": {
+        "columns": [
+          "famille",
+          "pv_niveau_1"
+        ],
+        "rows": [
+          {
+            "famille": "Aventuriers",
+            "pv_niveau_1": "8 + CON"
+          },
+          {
+            "famille": "Combattants",
+            "pv_niveau_1": "10 + CON"
+          },
+          {
+            "famille": "Mages",
+            "pv_niveau_1": "6 + CON"
+          },
+          {
+            "famille": "Mystiques",
+            "pv_niveau_1": "8 + CON"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Idéaux héroïques et travers",
+      "slug": "table-ideaux-travers",
+      "page_start": 33,
+      "page_end": 33,
+      "summary": "Table d20 : idéal héroïque et travers.",
+      "body": "| d20 | Idéal héroïque | Travers |\n|---|---|---|\n| 1 | Abnégation | Alcoolique |\n| 2 | Clémence | Couard |\n| 3 | Compassion | Crédule |\n| 4 | Courage | Cupide |\n| 5 | Égalité | Colérique |\n| 6 | Éducation | Distrait |\n| 7 | Fraternité | Dragueur |\n| 8 | Frugalité | Fanfaron |\n| 9 | Générosité | Gourmand |\n| 10 | Honnêteté | Grossier |\n| 11 | Honneur | Impatient |\n| 12 | Humilité | Indécis |\n| 13 | Justice | Menteur |\n| 14 | Liberté | Orgueilleux |\n| 15 | Loyauté | Paranoïaque |\n| 16 | Pacifisme | Paresseux |\n| 17 | Protection | Phobie (au choix) |\n| 18 | Sens du sacrifice | Timide |\n| 19 | Solidarité | Violent |\n| 20 | Vérité | Voleur |\n",
+      "tags": [
+        "table",
+        "interpretation"
+      ],
+      "data": {
+        "die": "d20",
+        "columns": [
+          "d20",
+          "ideal",
+          "travers"
+        ],
+        "rows": [
+          {
+            "d20": 1,
+            "ideal": "Abnégation",
+            "travers": "Alcoolique"
+          },
+          {
+            "d20": 2,
+            "ideal": "Clémence",
+            "travers": "Couard"
+          },
+          {
+            "d20": 3,
+            "ideal": "Compassion",
+            "travers": "Crédule"
+          },
+          {
+            "d20": 4,
+            "ideal": "Courage",
+            "travers": "Cupide"
+          },
+          {
+            "d20": 5,
+            "ideal": "Égalité",
+            "travers": "Colérique"
+          },
+          {
+            "d20": 6,
+            "ideal": "Éducation",
+            "travers": "Distrait"
+          },
+          {
+            "d20": 7,
+            "ideal": "Fraternité",
+            "travers": "Dragueur"
+          },
+          {
+            "d20": 8,
+            "ideal": "Frugalité",
+            "travers": "Fanfaron"
+          },
+          {
+            "d20": 9,
+            "ideal": "Générosité",
+            "travers": "Gourmand"
+          },
+          {
+            "d20": 10,
+            "ideal": "Honnêteté",
+            "travers": "Grossier"
+          },
+          {
+            "d20": 11,
+            "ideal": "Honneur",
+            "travers": "Impatient"
+          },
+          {
+            "d20": 12,
+            "ideal": "Humilité",
+            "travers": "Indécis"
+          },
+          {
+            "d20": 13,
+            "ideal": "Justice",
+            "travers": "Menteur"
+          },
+          {
+            "d20": 14,
+            "ideal": "Liberté",
+            "travers": "Orgueilleux"
+          },
+          {
+            "d20": 15,
+            "ideal": "Loyauté",
+            "travers": "Paranoïaque"
+          },
+          {
+            "d20": 16,
+            "ideal": "Pacifisme",
+            "travers": "Paresseux"
+          },
+          {
+            "d20": 17,
+            "ideal": "Protection",
+            "travers": "Phobie (au choix)"
+          },
+          {
+            "d20": 18,
+            "ideal": "Sens du sacrifice",
+            "travers": "Timide"
+          },
+          {
+            "d20": 19,
+            "ideal": "Solidarité",
+            "travers": "Violent"
+          },
+          {
+            "d20": 20,
+            "ideal": "Vérité",
+            "travers": "Voleur"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Table des secrets intimes (1)",
+      "slug": "table-secrets-intimes-1",
+      "page_start": 34,
+      "page_end": 34,
+      "summary": "Première colonne de secrets (d20).",
+      "body": "| d20 | Secret intime |\n|---|---|\n| 1 | Je ne suis pas celui que je prétends être. |\n| 2 | Je recherche un membre de ma famille. |\n| 3 | Je suis victime d’une malédiction. |\n| 4 | Je suis recherché pour un crime (mais l’ai-je commis ?). |\n| 5 | J’ai perdu la mémoire d’une période de ma vie. |\n| 6 | J’ai une phobie que j’ai honte d’avouer. |\n| 7 | J’ai une addiction qui me cause du tort. |\n| 8 | Il y a une chose en particulier qui me fait sortir de mes gonds. |\n| 9 | Un membre de ma propre famille est devenu un ennemi mortel. |\n| 10 | Je mène une double vie. |\n| 11 | Je suis déjà mort une fois. |\n| 12 | J’ai d’énormes dettes. |\n| 13 | Ceci n’est pas mon corps (ou deux esprits cohabitent dans mon corps). |\n| 14 | J’ai brisé un serment sacré. |\n| 15 | Je possède un objet qui ne doit pas tomber entre de mauvaises mains. |\n| 16 | Je porte un deuil terrible. |\n| 17 | J’ai fui une amante ou un amant puissant (socialement). |\n| 18 | Un terrible cauchemar me hante chaque nuit (est-ce que je m’en souviens ?). |\n| 19 | Je n’ai pas réussi à empêcher un grand mal et je porte ce fardeau. |\n| 20 | Je fais partie d’une organisation secrète (ou je la fuis). |\n",
+      "tags": [
+        "table",
+        "interpretation"
+      ],
+      "data": {
+        "die": "d20",
+        "part": 1,
+        "columns": [
+          "d20",
+          "secret"
+        ],
+        "rows": [
+          {
+            "d20": 1,
+            "secret": "Je ne suis pas celui que je prétends être."
+          },
+          {
+            "d20": 2,
+            "secret": "Je recherche un membre de ma famille."
+          },
+          {
+            "d20": 3,
+            "secret": "Je suis victime d’une malédiction."
+          },
+          {
+            "d20": 4,
+            "secret": "Je suis recherché pour un crime (mais l’ai-je commis ?)."
+          },
+          {
+            "d20": 5,
+            "secret": "J’ai perdu la mémoire d’une période de ma vie."
+          },
+          {
+            "d20": 6,
+            "secret": "J’ai une phobie que j’ai honte d’avouer."
+          },
+          {
+            "d20": 7,
+            "secret": "J’ai une addiction qui me cause du tort."
+          },
+          {
+            "d20": 8,
+            "secret": "Il y a une chose en particulier qui me fait sortir de mes gonds."
+          },
+          {
+            "d20": 9,
+            "secret": "Un membre de ma propre famille est devenu un ennemi mortel."
+          },
+          {
+            "d20": 10,
+            "secret": "Je mène une double vie."
+          },
+          {
+            "d20": 11,
+            "secret": "Je suis déjà mort une fois."
+          },
+          {
+            "d20": 12,
+            "secret": "J’ai d’énormes dettes."
+          },
+          {
+            "d20": 13,
+            "secret": "Ceci n’est pas mon corps (ou deux esprits cohabitent dans mon corps)."
+          },
+          {
+            "d20": 14,
+            "secret": "J’ai brisé un serment sacré."
+          },
+          {
+            "d20": 15,
+            "secret": "Je possède un objet qui ne doit pas tomber entre de mauvaises mains."
+          },
+          {
+            "d20": 16,
+            "secret": "Je porte un deuil terrible."
+          },
+          {
+            "d20": 17,
+            "secret": "J’ai fui une amante ou un amant puissant (socialement)."
+          },
+          {
+            "d20": 18,
+            "secret": "Un terrible cauchemar me hante chaque nuit (est-ce que je m’en souviens ?)."
+          },
+          {
+            "d20": 19,
+            "secret": "Je n’ai pas réussi à empêcher un grand mal et je porte ce fardeau."
+          },
+          {
+            "d20": 20,
+            "secret": "Je fais partie d’une organisation secrète (ou je la fuis)."
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Table des secrets intimes (2)",
+      "slug": "table-secrets-intimes-2",
+      "page_start": 35,
+      "page_end": 35,
+      "summary": "Seconde colonne de secrets (d20).",
+      "body": "| d20 | Secret intime |\n|---|---|\n| 1 | Toute ma famille est décédée ou m’a renié, mais j’ignore pourquoi. |\n| 2 | J’ai été recruté pour surveiller/protéger/espionner un autre membre du groupe. |\n| 3 | On m’a prédit que je causerai une terrible catastrophe. |\n| 4 | Je suis porteur d’une marque de naissance (j’en ignore l’origine et la signification). |\n| 5 | Mon enfant/frère/sœur/amour a disparu sans explication. |\n| 6 | Je possède un objet qui est un héritage familial et j’y tiens comme à ma vie. |\n| 7 | J’ai passé un pacte secret avec un démon ou une entité supérieure. |\n| 8 | J’ai été trahi et cela a bouleversé ma vie. |\n| 9 | J’ai un handicap, mais je le surmonte à tout prix. |\n| 10 | Je suis célèbre pour une histoire que je préfère oublier… |\n| 11 | Je veux devenir célèbre pour gagner le cœur de quelqu’un. |\n| 12 | Je veux prouver à mon père/ma mère que je vaux mieux que ce qu’il croit. |\n| 13 | J’ai besoin de beaucoup d’argent pour une bonne cause. |\n| 14 | J’ai un objectif affiché, mais ce n’est pas celui que je cherche à atteindre. |\n| 15 | Je veux devenir puissant pour abattre un tyran/une créature. |\n| 16 | J’ai fait quelque chose d’horrible et je tente de me racheter. |\n| 17 | Je sais comment je vais mourir, je l’ai vu. |\n| 18 | Je n’ai aucun secret ou originalité, alors je m’en invente. |\n| 19 | Je suis le parfait compagnon, mais un jour tous devront ployer le genou devant moi. |\n| 20 | Je viens d’un autre monde et tout ce qui m’entoure me semble étrange. |\n",
+      "tags": [
+        "table",
+        "interpretation"
+      ],
+      "data": {
+        "die": "d20",
+        "part": 2,
+        "columns": [
+          "d20",
+          "secret"
+        ],
+        "rows": [
+          {
+            "d20": 1,
+            "secret": "Toute ma famille est décédée ou m’a renié, mais j’ignore pourquoi."
+          },
+          {
+            "d20": 2,
+            "secret": "J’ai été recruté pour surveiller/protéger/espionner un autre membre du groupe."
+          },
+          {
+            "d20": 3,
+            "secret": "On m’a prédit que je causerai une terrible catastrophe."
+          },
+          {
+            "d20": 4,
+            "secret": "Je suis porteur d’une marque de naissance (j’en ignore l’origine et la signification)."
+          },
+          {
+            "d20": 5,
+            "secret": "Mon enfant/frère/sœur/amour a disparu sans explication."
+          },
+          {
+            "d20": 6,
+            "secret": "Je possède un objet qui est un héritage familial et j’y tiens comme à ma vie."
+          },
+          {
+            "d20": 7,
+            "secret": "J’ai passé un pacte secret avec un démon ou une entité supérieure."
+          },
+          {
+            "d20": 8,
+            "secret": "J’ai été trahi et cela a bouleversé ma vie."
+          },
+          {
+            "d20": 9,
+            "secret": "J’ai un handicap, mais je le surmonte à tout prix."
+          },
+          {
+            "d20": 10,
+            "secret": "Je suis célèbre pour une histoire que je préfère oublier…"
+          },
+          {
+            "d20": 11,
+            "secret": "Je veux devenir célèbre pour gagner le cœur de quelqu’un."
+          },
+          {
+            "d20": 12,
+            "secret": "Je veux prouver à mon père/ma mère que je vaux mieux que ce qu’il croit."
+          },
+          {
+            "d20": 13,
+            "secret": "J’ai besoin de beaucoup d’argent pour une bonne cause."
+          },
+          {
+            "d20": 14,
+            "secret": "J’ai un objectif affiché, mais ce n’est pas celui que je cherche à atteindre."
+          },
+          {
+            "d20": 15,
+            "secret": "Je veux devenir puissant pour abattre un tyran/une créature."
+          },
+          {
+            "d20": 16,
+            "secret": "J’ai fait quelque chose d’horrible et je tente de me racheter."
+          },
+          {
+            "d20": 17,
+            "secret": "Je sais comment je vais mourir, je l’ai vu."
+          },
+          {
+            "d20": 18,
+            "secret": "Je n’ai aucun secret ou originalité, alors je m’en invente."
+          },
+          {
+            "d20": 19,
+            "secret": "Je suis le parfait compagnon, mais un jour tous devront ployer le genou devant moi."
+          },
+          {
+            "d20": 20,
+            "secret": "Je viens d’un autre monde et tout ce qui m’entoure me semble étrange."
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Listes des langues",
+      "slug": "table-langues",
+      "page_start": 36,
+      "page_end": 36,
+      "summary": "Langues du cadre et locuteurs typiques.",
+      "body": "| Langue | Locuteurs typiques |\n|---|---|\n| Commun | humains, halfelins |\n| Sylvestre | elfes, fées, dryades, sylvaniens |\n| Runique | gnomes, nains, de nombreux géants, créatures élémentaires de la terre |\n| Noir parlé | orcs et goblinoïdes, trolls, ogres, de nombreuses créatures maléfiques |\n| Draconique | dragons, kobolds, hommes-lézards |\n| Abyssal | démons, créatures élémentaires du feu |\n| Célestien | anges et créatures des plans supérieurs, créatures élémentaires de l’air |\n| Argotien* | voleurs |\n| Profond | créatures souterraines, dont les elfes des profondeurs |\n| Aquarien | créatures sous-marines, créatures élémentaires de l’eau |\n\n\\* L’argotien est l’argot des voleurs et une langue des signes ; il compte pour deux langues si le profil principal du PJ n’est pas voleur ou barde.\n",
+      "tags": [
+        "table",
+        "langues"
+      ],
+      "data": {
+        "columns": [
+          "langue",
+          "locuteurs"
+        ],
+        "rows": [
+          {
+            "langue": "Commun",
+            "locuteurs": "humains, halfelins"
+          },
+          {
+            "langue": "Sylvestre",
+            "locuteurs": "elfes, fées, dryades, sylvaniens"
+          },
+          {
+            "langue": "Runique",
+            "locuteurs": "gnomes, nains, de nombreux géants, créatures élémentaires de la terre"
+          },
+          {
+            "langue": "Noir parlé",
+            "locuteurs": "orcs et goblinoïdes, trolls, ogres, de nombreuses créatures maléfiques"
+          },
+          {
+            "langue": "Draconique",
+            "locuteurs": "dragons, kobolds, hommes-lézards"
+          },
+          {
+            "langue": "Abyssal",
+            "locuteurs": "démons, créatures élémentaires du feu"
+          },
+          {
+            "langue": "Célestien",
+            "locuteurs": "anges et créatures des plans supérieurs, créatures élémentaires de l’air"
+          },
+          {
+            "langue": "Argotien",
+            "locuteurs": "voleurs",
+            "counts_as_two_unless_profile": [
+              "voleur",
+              "barde"
+            ]
+          },
+          {
+            "langue": "Profond",
+            "locuteurs": "créatures souterraines, dont les elfes des profondeurs"
+          },
+          {
+            "langue": "Aquarien",
+            "locuteurs": "créatures sous-marines, créatures élémentaires de l’eau"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Âge et espérance de vie du personnage",
+      "slug": "table-age-esperance",
+      "page_start": 36,
+      "page_end": 36,
+      "summary": "Âge de départ et espérance de vie par peuple.",
+      "body": "| | Demi-elfe | Demi-orc | Elfe haut | Elfe sylvain | Gnome | Humain | Nain | Halfelin |\n|---|---|---|---|---|---|---|---|---|\n| Âge de départ | 20+ | 15+ | 80+ | 50+ | 40+ | 18+ | 40+ | 20+ |\n| Espérance de vie | 150 | 60 | 450 | 350 | 250 | 100 | 250 | 150 |\n",
+      "tags": [
+        "table",
+        "peuple"
+      ],
+      "data": {
+        "columns": [
+          "peuple",
+          "age_depart",
+          "esperance_de_vie"
+        ],
+        "rows": [
+          {
+            "peuple": "Demi-elfe",
+            "age_depart": "20+",
+            "esperance_de_vie": 150
+          },
+          {
+            "peuple": "Demi-orc",
+            "age_depart": "15+",
+            "esperance_de_vie": 60
+          },
+          {
+            "peuple": "Elfe haut",
+            "age_depart": "80+",
+            "esperance_de_vie": 450
+          },
+          {
+            "peuple": "Elfe sylvain",
+            "age_depart": "50+",
+            "esperance_de_vie": 350
+          },
+          {
+            "peuple": "Gnome",
+            "age_depart": "40+",
+            "esperance_de_vie": 250
+          },
+          {
+            "peuple": "Humain",
+            "age_depart": "18+",
+            "esperance_de_vie": 100
+          },
+          {
+            "peuple": "Nain",
+            "age_depart": "40+",
+            "esperance_de_vie": 250
+          },
+          {
+            "peuple": "Halfelin",
+            "age_depart": "20+",
+            "esperance_de_vie": 150
+          }
+        ],
+        "notes": [
+          "Âge de départ : ordre d’idée, surtout pour les non-humains ; on peut être plus jeune ou nettement plus vieux.",
+          "Espérance de vie : conditions optimales ; moyenne humaine souvent la moitié."
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Taille et poids du personnage",
+      "slug": "table-taille-poids",
+      "page_start": 36,
+      "page_end": 36,
+      "summary": "Mensurations moyennes par peuple.",
+      "body": "| Peuple | Taille moyenne | Poids moyen |\n|---|---|---|\n| Demi-elfe | 1,50 m à 1,90 m | 40 à 80 kg |\n| Demi-orc | 1,70 m à 2,10 m | 70 à 150 kg |\n| Elfe haut | 1,50 m à 1,80 m | 40 à 70 kg |\n| Elfe sylvain | 1,40 m à 1,70 m | 30 à 60 kg |\n| Gnome | 1 m à 1,20 m | 30 à 50 kg |\n| Halfelin | 80 cm à 1 m | 20 à 30 kg |\n| Humain | 1,50 m à 2 m | 40 à 120 kg |\n| Nain | 1,15 m à 1,35 m | 50 à 100 kg |\n",
+      "tags": [
+        "table",
+        "peuple"
+      ],
+      "data": {
+        "columns": [
+          "peuple",
+          "taille",
+          "poids"
+        ],
+        "rows": [
+          {
+            "peuple": "Demi-elfe",
+            "taille": "1,50 m à 1,90 m",
+            "poids": "40 à 80 kg"
+          },
+          {
+            "peuple": "Demi-orc",
+            "taille": "1,70 m à 2,10 m",
+            "poids": "70 à 150 kg"
+          },
+          {
+            "peuple": "Elfe haut",
+            "taille": "1,50 m à 1,80 m",
+            "poids": "40 à 70 kg"
+          },
+          {
+            "peuple": "Elfe sylvain",
+            "taille": "1,40 m à 1,70 m",
+            "poids": "30 à 60 kg"
+          },
+          {
+            "peuple": "Gnome",
+            "taille": "1 m à 1,20 m",
+            "poids": "30 à 50 kg"
+          },
+          {
+            "peuple": "Halfelin",
+            "taille": "80 cm à 1 m",
+            "poids": "20 à 30 kg"
+          },
+          {
+            "peuple": "Humain",
+            "taille": "1,50 m à 2 m",
+            "poids": "40 à 120 kg"
+          },
+          {
+            "peuple": "Nain",
+            "taille": "1,15 m à 1,35 m",
+            "poids": "50 à 100 kg"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Gain de PV par niveau (table)",
+      "slug": "table-gain-pv-par-niveau",
+      "page_start": 39,
+      "page_end": 39,
+      "summary": "PV gagnés à chaque niveau selon la famille.",
+      "body": "| Famille de profils | PV par niveau |\n|---|---|\n| Aventuriers | 4 + CON |\n| Combattants | 5 + CON |\n| Mages | 3 + CON |\n| Mystiques | 4 + CON |\n",
+      "tags": [
+        "table",
+        "pv",
+        "progression"
+      ],
+      "data": {
+        "columns": [
+          "famille",
+          "pv_par_niveau"
+        ],
+        "rows": [
+          {
+            "famille": "Aventuriers",
+            "pv_par_niveau": "4 + CON"
+          },
+          {
+            "famille": "Combattants",
+            "pv_par_niveau": "5 + CON"
+          },
+          {
+            "famille": "Mages",
+            "pv_par_niveau": "3 + CON"
+          },
+          {
+            "famille": "Mystiques",
+            "pv_par_niveau": "4 + CON"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Niveau requis par rang de capacité",
+      "slug": "table-niveau-requis-rang",
+      "page_start": 39,
+      "page_end": 39,
+      "summary": "Rang 1–8 et niveau minimal ; rangs 6–8 = prestige.",
+      "body": "| Rang | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |\n|---|---|---|---|---|---|---|---|---|\n| Niveau requis | 1 | 2* | 3 | 5 | 7 | 9 | 11 | 13 |\n\nLes capacités de rang 6 à 8 sont réservées aux voies de prestige.\n\n\\* Capacité supplémentaire de mage : exception au niveau requis pour le rang 2 au niveau 1 ; pas d’accès anticipé au rang 3.\n",
+      "tags": [
+        "table",
+        "capacite",
+        "progression"
+      ],
+      "data": {
+        "columns": [
+          "rang",
+          "niveau_requis"
+        ],
+        "rows": [
+          {
+            "rang": 1,
+            "niveau_requis": 1
+          },
+          {
+            "rang": 2,
+            "niveau_requis": 2,
+            "mage_exception_level_1": true
+          },
+          {
+            "rang": 3,
+            "niveau_requis": 3
+          },
+          {
+            "rang": 4,
+            "niveau_requis": 5
+          },
+          {
+            "rang": 5,
+            "niveau_requis": 7
+          },
+          {
+            "rang": 6,
+            "niveau_requis": 9,
+            "prestige_only": true
+          },
+          {
+            "rang": 7,
+            "niveau_requis": 11,
+            "prestige_only": true
+          },
+          {
+            "rang": 8,
+            "niveau_requis": 13,
+            "prestige_only": true
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Voies de prestige – niveau requis",
+      "slug": "table-prestige-niveau-requis",
+      "page_start": 42,
+      "page_end": 42,
+      "summary": "Rangs 4–8 des voies de prestige.",
+      "body": "| Rang | 4 | 5 | 6 | 7 | 8 |\n|---|---|---|---|---|---|\n| Niveau requis | 5 | 7 | 9 | 11 | 13 |\n",
+      "tags": [
+        "table",
+        "prestige"
+      ],
+      "data": {
+        "columns": [
+          "rang",
+          "niveau_requis"
+        ],
+        "rows": [
+          {
+            "rang": 4,
+            "niveau_requis": 5
+          },
+          {
+            "rang": 5,
+            "niveau_requis": 7
+          },
+          {
+            "rang": 6,
+            "niveau_requis": 9
+          },
+          {
+            "rang": 7,
+            "niveau_requis": 11
+          },
+          {
+            "rang": 8,
+            "niveau_requis": 13
+          }
+        ]
+      }
+    },
+    {
+      "kind": "table",
+      "name": "Niveau d’acquisition des dés évolutifs",
+      "slug": "table-des-evolutifs",
+      "page_start": 43,
+      "page_end": 43,
+      "summary": "Valeur du d4° selon le niveau.",
+      "body": "| Niveau | 1–5 | 6–8 | 9–11 | 12–14 | 15+ |\n|---|---|---|---|---|---|\n| Valeur du dé évolutif | d4 | d6 | d8 | d10 | d12 |\n",
+      "tags": [
+        "table",
+        "d4",
+        "progression"
+      ],
+      "data": {
+        "columns": [
+          "niveaux",
+          "de"
+        ],
+        "rows": [
+          {
+            "niveaux": "1-5",
+            "niveau_min": 1,
+            "niveau_max": 5,
+            "de": "d4"
+          },
+          {
+            "niveaux": "6-8",
+            "niveau_min": 6,
+            "niveau_max": 8,
+            "de": "d6"
+          },
+          {
+            "niveaux": "9-11",
+            "niveau_min": 9,
+            "niveau_max": 11,
+            "de": "d8"
+          },
+          {
+            "niveaux": "12-14",
+            "niveau_min": 12,
+            "niveau_max": 14,
+            "de": "d10"
+          },
+          {
+            "niveaux": "15+",
+            "niveau_min": 15,
+            "niveau_max": null,
+            "de": "d12"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Lhagva",
+      "slug": "lhagva",
+      "subtitle": "barbare niveau 1, humaine, fille de Nuala",
+      "page_start": 22,
+      "page_end": 37,
+      "summary": "Exemple de création : barbare humaine (Anaïs).",
+      "body": "# Lhagva, barbare niveau 1\n\nHumaine. Joueuse : Anaïs. Fille de Nuala. Combattante qui ne connaît pas la peur.\n\n| AGI +1 | CON +2 | FOR +3 | PER +1 | CHA −1 | INT +0 | VOL +1 |\n\nDR 4d10 · PC 2\n\n(S) DEF 16 · (V) PV 15 (fiche p. 37 ; exemple de création p. 30 : 12 PV) · (I) INIT 14\n\n(C) Attaque au contact +4 · (D) Attaque à distance +2 · (M) Attaque magique +2\n\nÉpée courbe +4 DM 1d8+3 · Javelot (portée 20 m) +2 DM 1d6\n\n- Voie du pourfendeur rang 1 (Réflexes éclair)\n- Voie de la rage rang 1 (Cri de guerre)\n- Voie de l’humain rang 1 (Diversité)\n\nÉquipement : armure de cuir, bouclier, cimeterre, dague, javelots (×2)\n",
+      "tags": [
+        "exemple",
+        "creation",
+        "barbare",
+        "humain"
+      ],
+      "data": {
+        "player": "Anaïs",
+        "profile": "barbare",
+        "people": "humain",
+        "level": 1,
+        "stats": {
+          "AGI": 1,
+          "CON": 2,
+          "FOR": 3,
+          "PER": 1,
+          "CHA": -1,
+          "INT": 0,
+          "VOL": 1
+        },
+        "series": "expert",
+        "dr": "4d10",
+        "pc": 2,
+        "defense": 16,
+        "hp_sheet": 15,
+        "hp_creation_example": 12,
+        "initiative": 14,
+        "attacks": [
+          {
+            "name": "contact",
+            "bonus": 4
+          },
+          {
+            "name": "distance",
+            "bonus": 2
+          },
+          {
+            "name": "magique",
+            "bonus": 2
+          },
+          {
+            "name": "Épée courbe",
+            "bonus": 4,
+            "damage": "1d8+3"
+          },
+          {
+            "name": "Javelot",
+            "bonus": 2,
+            "damage": "1d6",
+            "range": "20m"
+          }
+        ],
+        "voies": [
+          {
+            "name": "voie du pourfendeur",
+            "rank": 1,
+            "capacity": "Réflexes éclair"
+          },
+          {
+            "name": "voie de la rage",
+            "rank": 1,
+            "capacity": "Cri de guerre"
+          },
+          {
+            "name": "voie de l’humain",
+            "rank": 1,
+            "capacity": "Diversité"
+          }
+        ],
+        "equipment": [
+          "armure de cuir",
+          "bouclier",
+          "cimeterre",
+          "dague",
+          "javelots (x2)"
+        ]
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Ionas Melenwë",
+      "slug": "ionas-melenwe",
+      "subtitle": "ensorceleur niveau 1, elfe haut",
+      "page_start": 22,
+      "page_end": 37,
+      "summary": "Exemple de création : ensorceleur elfe haut (Salim), voie du mage.",
+      "body": "# Ionas, ensorceleur niveau 1\n\nElfe haut. Joueur : Salim.\n\n| AGI +1 | CON +1 | FOR −2 | PER +0 | CHA +4 | INT +0 | VOL +2 |\n\nDR 3d6 · PC 6 · PM 5\n\n(S) DEF 12 · (V) PV 7 · (I) INIT 11\n\n(C) Attaque au contact −1 · (D) Attaque à distance +2 · (M) Attaque magique +3\n\nBâton ferré −1 · DM 1d6−2\n\n- Voie de l’air rang 1 (Murmure dans le vent)\n- Voie de l’invocation rang 2 (Choc et Serviteur invisible)\n- Voie du mage rang 1 (Lumière intérieure + Occultisme) — p. 30 : Lumière des étoiles + Occultisme\n\nÉquipement : bâton ferré, vêtement luxueux, dague.\n",
+      "tags": [
+        "exemple",
+        "creation",
+        "ensorceleur",
+        "elfe-haut"
+      ],
+      "data": {
+        "player": "Salim",
+        "profile": "ensorceleur",
+        "people": "elfe haut",
+        "level": 1,
+        "stats": {
+          "AGI": 1,
+          "CON": 1,
+          "FOR": -2,
+          "PER": 0,
+          "CHA": 4,
+          "INT": 0,
+          "VOL": 2
+        },
+        "series": "expert",
+        "replaced_people_voie_with": "voie du mage",
+        "dr": "3d6",
+        "pc": 6,
+        "pm": 5,
+        "defense": 12,
+        "hp": 7,
+        "initiative": 11,
+        "attacks": [
+          {
+            "name": "contact",
+            "bonus": -1
+          },
+          {
+            "name": "distance",
+            "bonus": 2
+          },
+          {
+            "name": "magique",
+            "bonus": 3
+          },
+          {
+            "name": "Bâton ferré",
+            "bonus": -1,
+            "damage": "1d6-2"
+          },
+          {
+            "name": "Choc",
+            "damage": "1d4+CHA",
+            "notes": "1d4+4 DM, possibilité de renverser"
+          }
+        ],
+        "spells": [
+          "Murmure dans le vent",
+          "Choc",
+          "Serviteur invisible"
+        ],
+        "voies": [
+          {
+            "name": "voie de l’air",
+            "rank": 1,
+            "capacity": "Murmure dans le vent"
+          },
+          {
+            "name": "voie de l’invocation",
+            "rank": 2,
+            "capacities": [
+              "Choc",
+              "Serviteur invisible"
+            ]
+          },
+          {
+            "name": "voie du mage",
+            "rank": 1,
+            "capacities_p37": [
+              "Lumière intérieure",
+              "Occultisme"
+            ],
+            "capacities_p30": [
+              "Lumière des étoiles",
+              "Occultisme"
+            ]
+          }
+        ],
+        "equipment": [
+          "bâton ferré",
+          "vêtement luxueux",
+          "dague"
+        ]
+      }
+    },
+    {
+      "kind": "glossary_term",
+      "name": "d4°",
+      "slug": "d4-degre",
+      "page_start": 43,
+      "page_end": 43,
+      "summary": "Dé évolutif : s’améliore au niveau 6 puis tous les 3 niveaux.",
+      "body": "Le petit symbole « ° » accolé à « d4 » indique que le dé est évolutif avec l’expérience du personnage.",
+      "tags": [
+        "glossaire",
+        "progression"
+      ],
+      "data": {
+        "notation": "d4°",
+        "meaning": "dé évolutif"
+      },
+      "see_also": [
+        {
+          "name": "D4°, les dés évolutifs",
+          "kind": "rule",
+          "relation": "definition"
+        }
+      ]
+    },
+    {
+      "kind": "glossary_term",
+      "name": "prétiré",
+      "slug": "pretire",
+      "page_start": 20,
+      "page_end": 20,
+      "summary": "Personnage déjà prêt à jouer.",
+      "body": "Personnage déjà prêt à jouer (jargon rôliste). Des PJ prétirés sont fournis en fin d’ouvrage.",
+      "tags": [
+        "glossaire",
+        "creation"
+      ],
+      "data": {
+        "definition": "personnage déjà prêt à jouer"
+      }
+    }
+  ]
+}

@@ -115,6 +115,9 @@ public sealed class ImporterTests : IDisposable
 
         var hits = catalog.Search("Mécanismes");
         Assert.Contains(hits, h => h.Name == "Mécanismes");
+
+        var hyphenHits = catalog.Search("demi-elfe");
+        Assert.Contains(hyphenHits, h => h.Name == "Demi-elfe");
     }
 
     [Fact]

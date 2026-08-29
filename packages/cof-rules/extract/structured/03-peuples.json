@@ -1,0 +1,662 @@
+{
+  "batch_id": "03-peuples",
+  "page_start": 44,
+  "page_end": 60,
+  "notes": "Chapitre 3 — huit peuples jouables plus l'option Voie du mage.",
+  "sections": [
+    {
+      "title": "Peuples — caractéristiques et interprétation",
+      "kind": "chapter",
+      "page_start": 44,
+      "page_end": 44,
+      "summary": "Huit peuples communs. Conseils d'interprétation caricaturaux ; paragraphe Terres d'Osgild optionnel. Peuples non humains plus homogènes que les humains.",
+      "body": "Huit peuples différents sont détaillés. Chaque culture est présentée par un aperçu puis des conseils d'interprétation (volontairement un peu caricaturaux). Dans les Terres d'Osgild, les humains sont connus pour leur versatilité ; les peuples non humains forment des cultures plus homogènes.\n\n**Peuple et stéréotypes.** Par défaut, les peuples non humains bénéficient de bonus de compétence très typés. Si le MJ ou le joueur le souhaite, on peut remplacer les bonus de compétence de la voie de peuple par ceux de la voie de l'humain (lieu de jeunesse ou métier)."
+    }
+  ],
+  "elements": [
+    {
+      "kind": "people",
+      "name": "Demi-elfe",
+      "page_start": 45,
+      "page_end": 46,
+      "summary": "Héritage humain et elfe. Pas de voie dédiée : voie de l'humain ou voie d'elfe (haut ou sylvain).",
+      "tags": ["peuple", "sang-mele"],
+      "body": "Le demi-elfe a hérité des qualités de ses deux parents (humain et elfe). Traité avec condescendance parmi les elfes, perçu comme un elfe parmi les humains. Nature souvent poétique, voire mélancolique ; nécromancie moins taboue que chez les elfes ; bardes d'exception.\n\n**Caractéristiques :** +1 PER ou CHA, -1 FOR ou CON.",
+      "data": {
+        "stat_modifiers": "+1 PER ou CHA, -1 FOR ou CON",
+        "age_start": "20+",
+        "lifespan": "150 ans",
+        "size_range": "1,50 m à 1,90 m",
+        "weight_range": "40 à 80 kg",
+        "traits": ["grâce naturelle", "oreilles légèrement pointues", "pilosité faible"],
+        "typical_names": "Prénom elfique + nom de famille humain (l'inverse est rare).",
+        "voie_choices": ["Voie de l'humain", "Voie de l'elfe haut", "Voie de l'elfe sylvain"]
+      }
+    },
+    {
+      "kind": "people",
+      "name": "Demi-orc",
+      "page_start": 46,
+      "page_end": 48,
+      "summary": "Grande taille, force hors du commun, souvent méprisé.",
+      "tags": ["peuple", "sang-mele"],
+      "body": "Le demi-orc est de grande taille, d'une force physique hors du commun, généralement méprisé (surtout par nains et elfes).\n\n**Caractéristiques :** +1 FOR ou CON et -1 CHA ou INT.",
+      "data": {
+        "stat_modifiers": "+1 FOR ou CON, -1 CHA ou INT",
+        "age_start": "15+",
+        "lifespan": "60 ans",
+        "size_range": "1,70 m à 2,10 m",
+        "weight_range": "70 à 150 kg",
+        "traits": ["grand et athlétique", "peau verdâtre", "mâchoire large", "front bas", "petits yeux"],
+        "typical_names": "Prénoms humains, ou orcs courts et gutturaux (R, G, K).",
+        "voie_choices": ["Voie du demi-orc"]
+      }
+    },
+    {
+      "kind": "voie",
+      "name": "Voie du demi-orc",
+      "page_start": 48,
+      "page_end": 48,
+      "parent_kind": "people",
+      "parent_name": "Demi-orc",
+      "summary": "Voie de peuple du demi-orc, rangs 1–5.",
+      "body": "Voie de peuple du demi-orc.",
+      "data": { "voie_type": "people", "rank_min": 1, "rank_max": 5, "profile": null }
+    },
+    {
+      "kind": "capacity",
+      "name": "Impressionnant",
+      "page_start": 48,
+      "page_end": 48,
+      "parent_kind": "voie",
+      "parent_name": "Voie du demi-orc",
+      "body": "Le demi-orc gagne un bonus de +3 à tous les tests d'intimidation. De plus, dans le noir total, il voit comme dans la pénombre jusqu'à 30 m.",
+      "data": { "rank": 1, "action": null, "is_spell": false, "voie": "Voie du demi-orc" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Talent pour la violence",
+      "page_start": 48,
+      "page_end": 48,
+      "parent_kind": "voie",
+      "parent_name": "Voie du demi-orc",
+      "body": "Le joueur choisit une capacité de rang 1 de n'importe quelle voie de barbare ou de guerrier.",
+      "data": { "rank": 2, "action": null, "is_spell": false, "voie": "Voie du demi-orc" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Critique brutal",
+      "page_start": 48,
+      "page_end": 48,
+      "parent_kind": "voie",
+      "parent_name": "Voie du demi-orc",
+      "body": "Le demi-orc augmente de 1 point la zone de critique sur une attaque au contact (19-20 au d20) et ajoute +1d4° aux DM en cas de critique.",
+      "data": { "rank": 3, "action": null, "is_spell": false, "voie": "Voie du demi-orc" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Attaque sanglante",
+      "page_start": 48,
+      "page_end": 48,
+      "parent_kind": "voie",
+      "parent_name": "Voie du demi-orc",
+      "body": "Le demi-orc réalise une attaque de contact qui provoque une hémorragie. En plus des DM normaux, l'attaque produit un saignement qui inflige 1d4° DM à chaque round suivant jusqu'à ce que la cible soit soignée (tout effet de soins ou une action limitée). On ne peut pas cumuler plusieurs effets de saignement.",
+      "data": { "rank": 4, "action": "L", "is_spell": false, "voie": "Voie du demi-orc" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Colosse",
+      "page_start": 48,
+      "page_end": 48,
+      "parent_kind": "voie",
+      "parent_name": "Voie du demi-orc",
+      "body": "Le demi-orc augmente ses valeurs de FOR et de CON de +1.",
+      "data": { "rank": 5, "action": null, "is_spell": false, "voie": "Voie du demi-orc" }
+    },
+    {
+      "kind": "people",
+      "name": "Elfe haut",
+      "page_start": 48,
+      "page_end": 50,
+      "summary": "Être féérique longévif, arts de la magie et de la guerre.",
+      "tags": ["peuple", "elfe", "premiers-nes"],
+      "body": "L'elfe haut vit extrêmement longtemps ; civilisation et culture généralement supérieures. Proche de la nature, il maîtrise magie et guerre.\n\n**Caractéristiques :** +1 INT ou CHA, -1 FOR.",
+      "data": {
+        "stat_modifiers": "+1 INT ou CHA, -1 FOR",
+        "age_start": "80+",
+        "lifespan": "450 ans",
+        "size_range": "1,50 m à 1,80 m",
+        "weight_range": "40 à 70 kg",
+        "traits": ["élancé", "svelte", "gracieux", "oreilles pointues", "yeux en amandes"],
+        "voie_choices": ["Voie de l'elfe haut"]
+      }
+    },
+    {
+      "kind": "voie",
+      "name": "Voie de l'elfe haut",
+      "page_start": 50,
+      "page_end": 50,
+      "parent_kind": "people",
+      "parent_name": "Elfe haut",
+      "body": "Voie de peuple de l'elfe haut.",
+      "data": { "voie_type": "people", "rank_min": 1, "rank_max": 5 }
+    },
+    {
+      "kind": "capacity",
+      "name": "Lumière intérieure",
+      "page_start": 50,
+      "page_end": 50,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe haut",
+      "body": "Pour un elfe, l'obscurité de la nuit sous la lumière des étoiles est considérée comme de la pénombre. Bonus de +3 à tous les tests d'érudition (INT) et artistiques (CHA).",
+      "data": { "rank": 1, "is_spell": false, "voie": "Voie de l'elfe haut" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Force d'âme",
+      "page_start": 50,
+      "page_end": 50,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe haut",
+      "body": "Immunisé à la peur et au sommeil magique. Bonus égal à son rang aux tests opposés d'attaque magique pour résister à un sort.",
+      "data": { "rank": 2, "is_spell": false, "voie": "Voie de l'elfe haut" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Talent pour la magie",
+      "page_start": 50,
+      "page_end": 50,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe haut",
+      "body": "Choisit une capacité de rang 1 de n'importe quelle voie de magicien ou d'ensorceleur. Utilisable en armure sans pénalité (sauf capacité qui offre un bonus de DEF). À la place, capacité de rang 2 mais sans armure pour lancer le sort.",
+      "data": { "rank": 3, "is_spell": false, "voie": "Voie de l'elfe haut" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Immortel",
+      "page_start": 50,
+      "page_end": 50,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe haut",
+      "body": "N'a besoin que de la moitié du repos, de la nourriture ou de la boisson d'un humain. Immunisé aux poisons et aux maladies.",
+      "data": { "rank": 4, "is_spell": false, "voie": "Voie de l'elfe haut" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Supériorité elfique",
+      "page_start": 50,
+      "page_end": 50,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe haut",
+      "body": "Augmente sa VOL de +1 et son INT ou CHA de +1.",
+      "data": { "rank": 5, "is_spell": false, "voie": "Voie de l'elfe haut" }
+    },
+    {
+      "kind": "people",
+      "name": "Elfe sylvain",
+      "page_start": 50,
+      "page_end": 52,
+      "summary": "Elfes des forêts, camouflage et arc, plus méfiants que les elfes hauts.",
+      "tags": ["peuple", "elfe"],
+      "body": "Légèrement plus petits que les elfes hauts, ils vivent au plus profond des forêts. Moins arrogants, beaucoup plus méfiants. Maîtrisent camouflage et arc.\n\n**Caractéristiques :** +1 AGI ou PER, -1 FOR.",
+      "data": {
+        "stat_modifiers": "+1 AGI ou PER, -1 FOR",
+        "age_start": "50+",
+        "lifespan": "350 ans",
+        "size_range": "1,40 m à 1,70 m",
+        "weight_range": "30 à 60 kg",
+        "traits": ["menu", "svelte", "oreilles pointues", "cheveux sombres", "tatouages"],
+        "voie_choices": ["Voie de l'elfe sylvain"]
+      }
+    },
+    {
+      "kind": "voie",
+      "name": "Voie de l'elfe sylvain",
+      "page_start": 52,
+      "page_end": 52,
+      "parent_kind": "people",
+      "parent_name": "Elfe sylvain",
+      "body": "Voie de peuple de l'elfe sylvain.",
+      "data": { "voie_type": "people", "rank_min": 1, "rank_max": 5 }
+    },
+    {
+      "kind": "capacity",
+      "name": "Lumière des étoiles",
+      "page_start": 52,
+      "page_end": 52,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe sylvain",
+      "body": "Nuit sous les étoiles = pénombre. Bonus de +3 aux tests de survie en forêt (escalade, discrétion, chasse, etc.).",
+      "data": { "rank": 1, "is_spell": false, "voie": "Voie de l'elfe sylvain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Enfant de la forêt",
+      "page_start": 52,
+      "page_end": 52,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe sylvain",
+      "body": "Choisit une capacité de rang 1 de n'importe quelle voie de druide ou de rôdeur. Utilisable en armure jusqu'au cuir renforcé sans pénalité.",
+      "data": { "rank": 2, "is_spell": false, "voie": "Voie de l'elfe sylvain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Archer émérite",
+      "page_start": 52,
+      "page_end": 52,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe sylvain",
+      "body": "Zone de critique +1 à l'arc (19-20) et +1d4° aux DM en cas de critique. Sait utiliser les arcs courts, quel que soit son profil.",
+      "data": { "rank": 3, "is_spell": false, "voie": "Voie de l'elfe sylvain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Flèche sanglante",
+      "page_start": 52,
+      "page_end": 52,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe sylvain",
+      "body": "Attaque à distance provoquant un saignement 1d4° DM par round jusqu'à soins. Non cumulable.",
+      "data": { "rank": 4, "action": "L", "is_spell": false, "voie": "Voie de l'elfe sylvain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Supériorité elfique (sylvain)",
+      "page_start": 52,
+      "page_end": 52,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'elfe sylvain",
+      "body": "Augmente AGI et PER de +1.",
+      "data": { "rank": 5, "is_spell": false, "voie": "Voie de l'elfe sylvain" }
+    },
+    {
+      "kind": "people",
+      "name": "Gnome",
+      "page_start": 52,
+      "page_end": 54,
+      "summary": "Petite taille, curiosité pour la magie et les sciences.",
+      "tags": ["peuple"],
+      "body": "Créature de petite taille, gros nez, bonne nature, curiosité insatiable pour la magie et les sciences.\n\n**Caractéristiques :** +1 INT ou PER, -1 FOR.",
+      "data": {
+        "stat_modifiers": "+1 INT ou PER, -1 FOR",
+        "age_start": "40+",
+        "lifespan": "250 ans",
+        "size_range": "1 m à 1,20 m",
+        "weight_range": "30 à 50 kg",
+        "traits": ["petit et rondouillard", "gros nez", "oreilles un peu pointues ou grandes et rondes"],
+        "voie_choices": ["Voie du gnome"]
+      }
+    },
+    {
+      "kind": "voie",
+      "name": "Voie du gnome",
+      "page_start": 53,
+      "page_end": 54,
+      "parent_kind": "people",
+      "parent_name": "Gnome",
+      "body": "Voie de peuple du gnome.",
+      "data": { "voie_type": "people", "rank_min": 1, "rank_max": 5 }
+    },
+    {
+      "kind": "capacity",
+      "name": "Don étrange",
+      "page_start": 53,
+      "page_end": 53,
+      "parent_kind": "voie",
+      "parent_name": "Voie du gnome",
+      "body": "Bonus de +3 aux tests scientifiques (INT) et choisit une capacité de rang 1 d'ensorceleur. En armure, ce sort au plus une fois par jour (PM normaux). Vision pénombre 10 m dans le noir total.",
+      "data": { "rank": 1, "is_spell": false, "voie": "Voie du gnome" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Petit pote",
+      "page_start": 54,
+      "page_end": 54,
+      "parent_kind": "voie",
+      "parent_name": "Voie du gnome",
+      "body": "+3 à tous les tests d'interaction sociale sauf intimider. Gagne 1 point de chance.",
+      "data": { "rank": 2, "is_spell": false, "voie": "Voie du gnome" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Insignifiant",
+      "page_start": 54,
+      "page_end": 54,
+      "parent_kind": "voie",
+      "parent_name": "Voie du gnome",
+      "body": "+2 DEF contre les créatures de taille grande ou supérieure (+3 au rang 5).",
+      "data": { "rank": 3, "is_spell": false, "voie": "Voie du gnome" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Merveille technologique",
+      "page_start": 54,
+      "page_end": 54,
+      "parent_kind": "voie",
+      "parent_name": "Voie du gnome",
+      "body": "Sait utiliser les arbalètes (et armes à poudre si le MJ l'autorise), quel que soit son profil. Ajoute son AGI aux DM de ces armes.",
+      "data": { "rank": 4, "is_spell": false, "voie": "Voie du gnome" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Bonne nature",
+      "page_start": 54,
+      "page_end": 54,
+      "parent_kind": "voie",
+      "parent_name": "Voie du gnome",
+      "body": "Augmente CON et CHA de +1.",
+      "data": { "rank": 5, "is_spell": false, "voie": "Voie du gnome" }
+    },
+    {
+      "kind": "people",
+      "name": "Halfelin",
+      "page_start": 54,
+      "page_end": 56,
+      "summary": "Plus petit peuple jouable, vifs et souvent incompris.",
+      "tags": ["peuple"],
+      "body": "Toujours bons vivants, souvent vifs, curieux, parfois farceurs.\n\n**Caractéristiques :** +1 AGI ou VOL, -1 FOR.",
+      "data": {
+        "stat_modifiers": "+1 AGI ou VOL, -1 FOR",
+        "age_start": "20+",
+        "lifespan": "150 ans",
+        "size_range": "80 cm à 1 m",
+        "weight_range": "20 à 30 kg",
+        "traits": ["petit et vif", "pieds poilus", "regard espiègle"],
+        "voie_choices": ["Voie du halfelin"]
+      }
+    },
+    {
+      "kind": "voie",
+      "name": "Voie du halfelin",
+      "page_start": 55,
+      "page_end": 56,
+      "parent_kind": "people",
+      "parent_name": "Halfelin",
+      "body": "Voie de peuple du halfelin.",
+      "data": { "voie_type": "people", "rank_min": 1, "rank_max": 5 }
+    },
+    {
+      "kind": "capacity",
+      "name": "Petite taille",
+      "page_start": 55,
+      "page_end": 55,
+      "parent_kind": "voie",
+      "parent_name": "Voie du halfelin",
+      "body": "+1 DEF et +3 discrétion et tests pour subtiliser. Ne peut pas utiliser à une main une arme dont les DM dépassent 1d6. Deux mains pour 1d8 à 1d10. Interdit au-delà de 1d10. Pas d'arc long ni d'arbalète lourde.",
+      "data": { "rank": 1, "is_spell": false, "voie": "Voie du halfelin" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Résistance légendaire",
+      "page_start": 55,
+      "page_end": 55,
+      "parent_kind": "voie",
+      "parent_name": "Voie du halfelin",
+      "body": "Bonus égal à son rang aux tests opposés d'attaque magique pour résister à un sort.",
+      "data": { "rank": 2, "is_spell": false, "voie": "Voie du halfelin" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Bon pour le moral",
+      "page_start": 55,
+      "page_end": 56,
+      "parent_kind": "voie",
+      "parent_name": "Voie du halfelin",
+      "body": "À chaque repas de qualité (jusqu'à 4 fois par jour, espacés d'au moins 3 h), récupère 1d4° PV.",
+      "data": { "rank": 3, "is_spell": false, "voie": "Voie du halfelin" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Petit veinard",
+      "page_start": 56,
+      "page_end": 56,
+      "parent_kind": "voie",
+      "parent_name": "Voie du halfelin",
+      "body": "+1 PC. Peut esquiver une attaque de son choix par combat (avant de connaître les DM, pas un critique).",
+      "data": { "rank": 4, "is_spell": false, "voie": "Voie du halfelin" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Vif et bien nourri",
+      "page_start": 56,
+      "page_end": 56,
+      "parent_kind": "voie",
+      "parent_name": "Voie du halfelin",
+      "body": "Augmente AGI et CON de +1.",
+      "data": { "rank": 5, "is_spell": false, "voie": "Voie du halfelin" }
+    },
+    {
+      "kind": "people",
+      "name": "Humain",
+      "page_start": 56,
+      "page_end": 58,
+      "summary": "Peuple le plus répandu, adaptable, +1 à une de ses deux plus faibles caracs.",
+      "tags": ["peuple"],
+      "body": "Capacité d'adaptation et instinct de colonisation. Peuple le plus représenté dans les zones civilisées.\n\n**Caractéristiques :** +1 à la valeur d'une de ses deux plus faibles caractéristiques au choix.",
+      "data": {
+        "stat_modifiers": "+1 à une des deux plus faibles caractéristiques",
+        "age_start": "18+",
+        "lifespan": "100 ans",
+        "size_range": "1,50 m à 2 m",
+        "weight_range": "40 à 120 kg",
+        "traits": ["grande diversité"],
+        "voie_choices": ["Voie de l'humain"],
+        "origin_table": [
+          "1 Montagnard (escalade et résistance au froid)",
+          "2 Citadin (commerce et résistance aux maladies)",
+          "3 Campagnard (météorologie et équitation)",
+          "4 Riverain (natation et navigation)",
+          "5 Sauvage (chasser et pister)",
+          "6 Nomade (orientation et résistance à la chaleur ou au froid)"
+        ]
+      }
+    },
+    {
+      "kind": "voie",
+      "name": "Voie de l'humain",
+      "page_start": 57,
+      "page_end": 58,
+      "parent_kind": "people",
+      "parent_name": "Humain",
+      "body": "Voie de peuple de l'humain. Rang 1 : +3 à deux domaines d'origine géographique ou sociale (table d6) et +1 PC.",
+      "data": { "voie_type": "people", "rank_min": 1, "rank_max": 5 }
+    },
+    {
+      "kind": "capacity",
+      "name": "Diversité",
+      "page_start": 57,
+      "page_end": 57,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'humain",
+      "body": "Bonus de +3 aux tests de deux domaines associés à son origine géographique ou sociale. Gagne 1 PC supplémentaire.",
+      "data": { "rank": 1, "is_spell": false, "voie": "Voie de l'humain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Instinct de survie",
+      "page_start": 57,
+      "page_end": 57,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'humain",
+      "body": "Une fois par combat, lorsqu'une attaque devrait amener l'humain à 0 PV, les DM sont divisés par 2 (minimum 1). Ensuite +2 DEF pour le reste du combat.",
+      "data": { "rank": 2, "is_spell": false, "voie": "Voie de l'humain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Touche-à-tout",
+      "page_start": 57,
+      "page_end": 57,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'humain",
+      "body": "Capacité de rang 1 ou 2 de n'importe quel profil. Si rang 2 ou bonus de DEF, respecter les limitations d'armure.",
+      "data": { "rank": 3, "is_spell": false, "voie": "Voie de l'humain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Loup parmi les loups",
+      "page_start": 57,
+      "page_end": 57,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'humain",
+      "body": "Une fois par round, +1d4° aux DM contre un adversaire humanoïde de taille moyenne (DM initiaux uniquement).",
+      "data": { "rank": 4, "is_spell": false, "voie": "Voie de l'humain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Polyvalence",
+      "page_start": 57,
+      "page_end": 57,
+      "parent_kind": "voie",
+      "parent_name": "Voie de l'humain",
+      "body": "Augmente sa caractéristique la plus faible de +1 et sa Volonté de +1.",
+      "data": { "rank": 5, "is_spell": false, "voie": "Voie de l'humain" }
+    },
+    {
+      "kind": "people",
+      "name": "Nain",
+      "page_start": 58,
+      "page_end": 60,
+      "summary": "Petit, robuste, mines et artisanat, société sévère mais chaleureuse.",
+      "tags": ["peuple", "premiers-nes"],
+      "body": "Petit mais robuste. Aime les profondeurs de la terre. Travail et entraînement militaire sont des obligations dans la société naine.\n\n**Caractéristiques :** +1 CON ou VOL, -1 AGI.",
+      "data": {
+        "stat_modifiers": "+1 CON ou VOL, -1 AGI",
+        "age_start": "40+",
+        "lifespan": "250 ans",
+        "size_range": "1,15 m à 1,35 m",
+        "weight_range": "50 à 100 kg",
+        "traits": ["robuste et trapu", "pilosité très développée"],
+        "voie_choices": ["Voie du nain"]
+      }
+    },
+    {
+      "kind": "voie",
+      "name": "Voie du nain",
+      "page_start": 59,
+      "page_end": 60,
+      "parent_kind": "people",
+      "parent_name": "Nain",
+      "body": "Voie de peuple du nain.",
+      "data": { "voie_type": "people", "rank_min": 1, "rank_max": 5 }
+    },
+    {
+      "kind": "capacity",
+      "name": "Habitant des tunnels",
+      "page_start": 59,
+      "page_end": 59,
+      "parent_kind": "voie",
+      "parent_name": "Voie du nain",
+      "body": "Vision pénombre 30 m dans le noir total. +3 aux tests pierre/architecture/mines et passages secrets/pièges dans les murs et parois rocheuses.",
+      "data": { "rank": 1, "is_spell": false, "voie": "Voie du nain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Haches et marteaux",
+      "page_start": 59,
+      "page_end": 59,
+      "parent_kind": "voie",
+      "parent_name": "Voie du nain",
+      "body": "+1 en attaque et aux DM avec hache ou marteau de guerre. Maîtrise ces armes quel que soit le profil.",
+      "data": { "rank": 2, "is_spell": false, "voie": "Voie du nain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Résistance à la magie",
+      "page_start": 59,
+      "page_end": 59,
+      "parent_kind": "voie",
+      "parent_name": "Voie du nain",
+      "body": "Une fois par jour, ignorer les effets d'un sort qui le prend pour cible (pas un sort de zone). Les créatures de NC ≥ 2× niveau du nain ignorent cette capacité.",
+      "data": { "rank": 3, "is_spell": false, "voie": "Voie du nain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Fils du roc",
+      "page_start": 59,
+      "page_end": 59,
+      "parent_kind": "voie",
+      "parent_name": "Voie du nain",
+      "body": "Réduit tous les DM subis de 2 points (minimum 1 DM par attaque). Passe à 3 au niveau 10. Cumulable avec d'autres RD (peau d'acier, etc.).",
+      "data": { "rank": 4, "is_spell": false, "voie": "Voie du nain" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Ténacité",
+      "page_start": 60,
+      "page_end": 60,
+      "parent_kind": "voie",
+      "parent_name": "Voie du nain",
+      "body": "Augmente CON et VOL de +1.",
+      "data": { "rank": 5, "is_spell": false, "voie": "Voie du nain" }
+    },
+    {
+      "kind": "rule",
+      "name": "Option Voie du mage",
+      "page_start": 60,
+      "page_end": 60,
+      "summary": "Un profil de la famille des mages peut remplacer sa voie de peuple par la Voie du mage.",
+      "tags": ["peuple", "mage"],
+      "body": "Les mages ne sont pas un peuple. Un personnage de la famille des mages (ensorceleur, forgesort, magicien, sorcier) peut remplacer sa voie de peuple par la voie du mage. Il ne conserve que la capacité de rang 1 de sa voie de peuple. Choix avant le rang 2, définitif. Le premier rang de la voie du mage est gratuit comme une voie de peuple.",
+      "data": { "topic": "character_creation" }
+    },
+    {
+      "kind": "voie",
+      "name": "Voie du mage",
+      "page_start": 60,
+      "page_end": 60,
+      "summary": "Remplace la voie de peuple pour un profil mage.",
+      "body": "Remplace la voie de peuple. Premier rang gratuit.",
+      "data": { "voie_type": "people", "family": "mages", "rank_min": 1, "rank_max": 5 }
+    },
+    {
+      "kind": "capacity",
+      "name": "Capacité de peuple + occultisme",
+      "page_start": 60,
+      "page_end": 60,
+      "parent_kind": "voie",
+      "parent_name": "Voie du mage",
+      "body": "Conserve la capacité de peuple de rang 1. Ajoute rang + 2 aux tests de connaissance et d'érudition en rapport avec la magie.",
+      "data": { "rank": 1, "is_spell": false, "voie": "Voie du mage" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Maîtrise de la magie",
+      "page_start": 60,
+      "page_end": 60,
+      "parent_kind": "voie",
+      "parent_name": "Voie du mage",
+      "body": "Détecte la magie (y compris objets) dans un rayon de 10 m. Test d'INT difficulté [10 + rang du sort] pour la fonction. Peut dissiper un sort non permanent d'un rang maximal égal à ceux qu'il peut lancer (test opposé d'attaque magique).",
+      "data": { "rank": 2, "action": "L", "is_spell": true, "voie": "Voie du mage" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Tour de magie",
+      "page_start": 60,
+      "page_end": 60,
+      "parent_kind": "voie",
+      "parent_name": "Voie du mage",
+      "body": "Un tour de magie (portée 10 m) par round en action gratuite sans PM. Aucune action nécessitant une carac > 0, aucun DM direct. +1 DEF et +2 PM (plus 1 PM de la capacité, soit 3 PM au total en apprenant ce sort).",
+      "data": { "rank": 3, "action": "G", "is_spell": true, "voie": "Voie du mage" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Esprit supérieur",
+      "page_start": 60,
+      "page_end": 60,
+      "parent_kind": "voie",
+      "parent_name": "Voie du mage",
+      "body": "INT et VOL +1. Dé bonus aux tests d'INT.",
+      "data": { "rank": 4, "is_spell": false, "voie": "Voie du mage" }
+    },
+    {
+      "kind": "capacity",
+      "name": "Tempête de mana",
+      "page_start": 60,
+      "page_end": 60,
+      "parent_kind": "voie",
+      "parent_name": "Voie du mage",
+      "body": "En lançant un sort, peut augmenter les DM de +1d4° (+1 PM cible unique ou +3 PM zone).",
+      "data": { "rank": 5, "is_spell": false, "voie": "Voie du mage" }
+    }
+  ]
+}

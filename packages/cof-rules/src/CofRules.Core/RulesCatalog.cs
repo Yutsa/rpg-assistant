@@ -132,8 +132,10 @@ public sealed class RulesCatalog
 
     private static string ToFtsQuery(string query)
     {
-        var tokens = query.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(t => t.Replace("\"", "").Replace("*", ""))
+        var tokens = query
+            .Replace("\"", "")
+            .Replace("*", "")
+            .Split([' ', '-', '\'', '’', '/', ',', ';'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Where(t => t.Length > 0)
             .Select(t => t + "*");
         return string.Join(" AND ", tokens);
