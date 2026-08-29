@@ -30,6 +30,16 @@
         ":config-profile",
         ":cli-assist"
       ]
+    },
+    "cof-rules": {
+      "type": "stdio",
+      "command": "bash",
+      "args": [
+        "${workspaceFolder}/packages/cof-rules/scripts/run-mcp.sh"
+      ],
+      "env": {
+        "COF_RULES_DB": "${workspaceFolder}/data/cof_rules.db"
+      }
     }
   }
 }
