@@ -26,9 +26,12 @@ Ne pas réintroduire l’ancien pipeline Python / Angular / Clojure d’ingestio
 
 ## Faire jouer un scénario (économe en tokens)
 
+Suivre le skill **`.cursor/skills/cof-gm/SKILL.md`** (rôle MJ, secrets, recadrage doux, encadré `<rule_application_secret>`).
+
 1. Ouvrir **seulement** `docs/gm-kits/<scenario>/INDEX.txt`.
 2. Charger **un** fichier du kit selon le besoin (pitch, déroulé, fiches, règles, fins).
 3. Pour un détail absent du kit : **un** appel MCP (`cof_search` / `cof_get_creature` / `cof_get_element`), pas le livre entier.
+4. Jets / PNJ mécaniques : dés réels + encadré secret ; hors balise, seule l’interprétation fictionnelle.
 
 Kit actuel : `docs/gm-kits/croissez-et-multipliez/` (scénario *Croissez et multipliez*).
 

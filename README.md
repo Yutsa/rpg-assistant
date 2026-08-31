@@ -61,3 +61,6 @@ docs/gm-kits/       # kits MJ texte (INDEX + fiches courtes) pour sessions épar
 Pour faire jouer un scénario sans relire le PDF : `docs/gm-kits/<scenario>/INDEX.txt`, puis un seul fichier selon le besoin. Compléter avec `cof_*` (1 fiche) si un détail LB manque.
 
 Exemple : `docs/gm-kits/croissez-et-multipliez/`.
+
+- **Jouer** une session : skill `.cursor/skills/cof-gm/SKILL.md` (MJ, secrets, règles MCP, `<rule_application_secret>`).
+- **Créer** un kit depuis un PDF : skill `.cursor/skills/cof-gm-kit/SKILL.md`.

@@ -5,9 +5,11 @@ Livre de base (LB) via MCP `cof-rules` / CLI `dotnet run --project src/CofRules.
 
 USAGE TOKEN-ÉCONOME
 --------------------
+Conduite de partie : skill `.cursor/skills/cof-gm/SKILL.md`.
 1. Lire CET index (~1 page).
 2. Ouvrir UN seul fichier selon le besoin (pas tout le dossier).
 3. Si détail LB manquant : `cof_search` / `cof_get_creature` / `cof_get_element` (1 fiche).
+4. Jets / PNJ mécaniques : encadré `<rule_application_secret>` ; hors balise = fiction seulement.
 Ne pas relire le PDF scénario ni le LB 300 p. en session.
 
 FICHIERS

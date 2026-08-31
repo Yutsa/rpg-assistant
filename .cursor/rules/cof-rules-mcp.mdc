@@ -16,6 +16,10 @@ Pour toute question sur les règles, profils, peuples, voies, créatures ou page
 
 ## Sessions MJ / scénarios
 
+Pour **jouer** (agent MJ) : skill `.cursor/skills/cof-gm/SKILL.md`.
+
 Si un kit existe sous `docs/gm-kits/<scenario>/` : lire `INDEX.txt` puis **un seul** fichier besoin. N’appeler `cof_*` que pour combler un trou (1 fiche). Ne pas relire le PDF scénario ni importer tout le catalogue en contexte.
+
+Jets et PNJ mécaniques : encadré `<rule_application_secret>` (règle, dés, calcul) ; le texte joueur n’en garde que l’interprétation.
 
 Pour **créer** un kit depuis un PDF de campagne : skill `.cursor/skills/cof-gm-kit/SKILL.md`.
