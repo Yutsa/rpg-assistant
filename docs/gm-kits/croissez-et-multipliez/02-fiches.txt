@@ -1,0 +1,56 @@
+02 — FICHES COMBAT (compact)
+============================
+Sources : scénario + LB via catalogue (ids MCP). Format : NC | DEF | PV | Init | attaque | capacités clés.
+
+BANDIT DE BASE (LB p.263) — cochers / option Acte I
+NC 1/2 | DEF 12 | PV 9 | Init 10
+Épée +2 (1d8+1) ; Arc +2 (1d6, 30 m)
+Embuscade : PER 16 ou surprise round 1
+AGI +1* CON +1 FOR +1 PER 0 CHA 0 INT 0 VOL −1
+
+ORC DE BASE (LB/scénario p.293)
+NC 1/2 | DEF 13 | PV 12 | Init 10
+Hache/masse +3 (1d8+2)
+Sensible lumière : dé malus attaque au soleil
+FOR +2* CON +2
+
+SERGENT ORC (p.293)
+NC 3 | DEF 18 | PV 40 | Init 10
+Épée 2M +7 (2d6+6)
+Imparable : 15–20 d20 → +2d4 DM + réussite auto (dés bonus non multipliés en crit)
+
+PANTHÈRE (LB p.271 — neiges / félins moyens)
+NC 2 | DEF 16 | PV 15 | Init 15
+Morsure/griffes +5 (1d6+2)
+Embuscade : PER 19 ou surprise ; si touche surprise +1d4 DM + renversement si FOR cible < FOR panthère ; +5 discrétion
+Dévorer : 15–20 → attaque gratuite
+AGI +4* PER +2*
+
+OGRE DE BASE (LB p.291) — géants des collines si idole emportée
+NC 3 | DEF 17 | PV 40 | Init 10 | taille grande
+Hachoir +7 (2d6+6)
+Choisir 1 : Tape dur (15–20 auto + CON 16 ou étourdi 1 rd) OU Imparable L (dé bonus ; 15–20 +1d6 DM auto)
+Scénario : ≥2 géants ; stop si serment remonter idole + sacrifice gardien
+
+CHEF OGRE (LB p.292) — corser
+NC 6 | DEF 20 | PV 70 | Init 10
+Hachoir 2 att. +12 (2d6+6) + Tape dur/Imparable + Teigneuse + Enragé
+
+ROGÙN (scénario only — NC 2)
+DEF 15 | PV 25 | Init 13
+Dague +4 (1d4)
+Attaque magique 20 m +6 (3d6 ténèbres) — fonctionne même près de l’idole
+CHA +1* (mensonges +3 avec dé bonus au village)
+AGI +2 CON −1 FOR 0 PER +1 INT 0 VOL +1
+
+MÂNES DES GÉANTS (scénario)
+Pas de fiche DM. Terreur VOL 15. Armes/magie sans effet. Objectif : repousser.
+
+GARDIEN (scénario)
+Non hostile. Magie morte. Com. mentale. Meurt si idole quitte le sommet.
+
+RENCONTRES SCÉNARIO
+Acte I orcs : 2/PJ + 1 sergent ; fuite à 50 % effectifs
+Option bandits : 2×PJ
+Acte III : 1 panthère possible
+Acte V (mauvais choix) : ≥2 ogres (profil géants)

@@ -53,4 +53,11 @@ src/CofRules.Core   # SQLite, import JSON, recherche
 src/CofRules.Cli    # import / stats / search
 src/CofRules.Mcp    # serveur MCP stdio
 extract/structured  # lots JSON du livre de base
+docs/gm-kits/       # kits MJ texte (INDEX + fiches courtes) pour sessions épargnant les tokens
 ```
+
+## Kits MJ
+
+Pour faire jouer un scénario sans relire le PDF : `docs/gm-kits/<scenario>/INDEX.txt`, puis un seul fichier selon le besoin. Compléter avec `cof_*` (1 fiche) si un détail LB manque.
+
+Exemple : `docs/gm-kits/croissez-et-multipliez/`.

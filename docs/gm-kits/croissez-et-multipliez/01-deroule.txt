@@ -1,0 +1,38 @@
+01 — DÉROULÉ (BEATS)
+====================
+Jets d’enquête : scénario recommande de RÉCOMPENSER la perspicacité plutôt que bloquer sur un dé (DD indicatifs).
+
+ACTE 0 — BRIEF
+Marduk : livraison gages d’alliance + état des lieux des tribus.
+Si demandé : pas ses hommes (panique si propagande = mensonge).
+→ Convoi : ≥1 chariot/PJ ; cochers = profil Bandit de base (02) s’ils aident.
+
+ACTE I — LIVRAISON
+Zone sauvage LB : DD 15 / 2d4° DM (03). Optionner incidents :
+- Arbre tombé (pas embuscade) : PER 10 ; FOR 20 coop ou CON 10 débiter
+- Prédateurs / bœufs : AGI 10
+- Pluie / glissement : AGI 20 ou vider/recharger chariots
+Dés bonus : voies nomade / montagnes / peuple / miséreux
+Option bandits : 2×PJ (02 Bandit)
+CLIMAX : orcs 2/PJ + 1 sergent ; embuscade (03). Fuite orcs à 50 % pertes. Corser : bœufs emballés.
+
+ACTE II — VILLAGE
+Constat : forces insuffisantes. Fête / funérailles cochers morts.
+Rogùn → légende aigle. Tests indices (00).
+Pression sociale : tribu galvanisée ; PJ « coincés » diplomatiquement.
+Préparatifs : matos montagne = dé bonus survie ; 5 j. marche (barbares) ; « tour personnel » émotionnel ; bénédiction bizarre.
+Accuser trop tôt sans preuves = fin aventure (ou suivre 3 barbares : dé bonus hors combat montagne).
+
+ACTE III — ASCENSION
+Haute montagne scénario : progression DD 20 / 3d4 DM.
+Obstacles : crevasse 2d4 m ; −10 °C (03 Froid) ; panthère (02) ; fatigue / avalanche menaçante.
+J4+ : bas-reliefs géants (00 indices). INT 10 provenance ; INT 20 lire (+dé bonus montagne/mage/mystique).
+Nuit finale : mânes — pas de DM physiques ; VOL 15 terreur ; armes/magie inutiles ; but = repousser.
+Rebrousser : re-souffrir montagne MAIS vision gardien possible → arguments vs Rogùn.
+
+ACTE IV — SOMMET
+Magie inopérante. Idole ≠ aigle. Gardien (VOL 10 choc visage).
+Doute → VOL 15 ou vision forcée (raid enfants-géants / isolement idole).
+Toucher idole : VOL 10. Gardien prévient : partir = nourrir ténèbres + sa mort.
+
+ACTE V — RETOUR → voir 04-fins.txt
