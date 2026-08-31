@@ -1,0 +1,15 @@
+---
+description: MCP COF2 — consulter le catalogue via les outils cof_*
+globs:
+alwaysApply: true
+---
+
+# COF Rules MCP
+
+Pour toute question sur les règles, profils, peuples, voies, créatures ou pages du livre de base Chroniques Oubliées Fantasy 2 :
+
+1. Utiliser le serveur MCP **`cof-rules`** (pas de SQL ad hoc, pas d’autre pipeline).
+2. Recherche souple : `cof_search` avec un nom (`nain`, `arquebusier`) ou une référence de page (`livre de base page 345`, `p. 48`).
+3. Page explicite : `cof_get_page(page=345, book="livre de base")`.
+4. Fiche : `cof_get_element` / `cof_get_profile` / `cof_get_people` / `cof_get_voie` / `cof_get_creature`.
+5. Catalogue : `cof_stats`, `cof_list_books`, `cof_list_outline`.

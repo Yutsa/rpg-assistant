@@ -1,0 +1,752 @@
+[
+  {
+    "level": 1,
+    "page": 2,
+    "title": "Crédits"
+  },
+  {
+    "level": 2,
+    "page": 3,
+    "title": "Avant‑propos"
+  },
+  {
+    "level": 2,
+    "page": 6,
+    "title": "Introduction"
+  },
+  {
+    "level": 2,
+    "page": 6,
+    "title": "Introduction"
+  },
+  {
+    "level": 3,
+    "page": 6,
+    "title": "Qu’est‑ce que le jeu de rôle"
+  },
+  {
+    "level": 3,
+    "page": 10,
+    "title": "Les ingrédients du jeu"
+  },
+  {
+    "level": 3,
+    "page": 13,
+    "title": "Fantasy"
+  },
+  {
+    "level": 3,
+    "page": 14,
+    "title": "Les Terres d’Osgild"
+  },
+  {
+    "level": 3,
+    "page": 17,
+    "title": "Au sommaire"
+  },
+  {
+    "level": 1,
+    "page": 19,
+    "title": "Partie I"
+  },
+  {
+    "level": 2,
+    "page": 19,
+    "title": "Le personnage"
+  },
+  {
+    "level": 3,
+    "page": 20,
+    "title": "Chapitre 1"
+  },
+  {
+    "level": 3,
+    "page": 20,
+    "title": "Création du personnage"
+  },
+  {
+    "level": 4,
+    "page": 20,
+    "title": "En quelques mots"
+  },
+  {
+    "level": 4,
+    "page": 22,
+    "title": "1 · Rôle"
+  },
+  {
+    "level": 4,
+    "page": 23,
+    "title": "2 · Profil"
+  },
+  {
+    "level": 4,
+    "page": 25,
+    "title": "3 · Peuples"
+  },
+  {
+    "level": 4,
+    "page": 26,
+    "title": "4 · Caractéristiques"
+  },
+  {
+    "level": 4,
+    "page": 29,
+    "title": "5 · Voies et capacités"
+  },
+  {
+    "level": 4,
+    "page": 30,
+    "title": "6 · Points de vigueur (PV)"
+  },
+  {
+    "level": 4,
+    "page": 30,
+    "title": "7 · Dé de récupération (DR)"
+  },
+  {
+    "level": 4,
+    "page": 30,
+    "title": "8 · Points de chance (PC)"
+  },
+  {
+    "level": 4,
+    "page": 31,
+    "title": "9 · Points de mana (PM)"
+  },
+  {
+    "level": 4,
+    "page": 31,
+    "title": "10 · Initiative"
+  },
+  {
+    "level": 4,
+    "page": 31,
+    "title": "11 · Équipement"
+  },
+  {
+    "level": 4,
+    "page": 31,
+    "title": "12 · Défense"
+  },
+  {
+    "level": 4,
+    "page": 32,
+    "title": "13 · Valeurs d’attaque"
+  },
+  {
+    "level": 4,
+    "page": 32,
+    "title": "14 · Dommages (DM)"
+  },
+  {
+    "level": 4,
+    "page": 33,
+    "title": "15 · Touche finale"
+  },
+  {
+    "level": 3,
+    "page": 38,
+    "title": "Chapitre 2"
+  },
+  {
+    "level": 3,
+    "page": 38,
+    "title": "Progression & niveaux"
+  },
+  {
+    "level": 4,
+    "page": 38,
+    "title": "L'évolution des héros"
+  },
+  {
+    "level": 4,
+    "page": 39,
+    "title": "Points de vigueur"
+  },
+  {
+    "level": 4,
+    "page": 39,
+    "title": "Valeurs d’attaque"
+  },
+  {
+    "level": 4,
+    "page": 39,
+    "title": "Capacités et voies"
+  },
+  {
+    "level": 4,
+    "page": 42,
+    "title": "Points de mana"
+  },
+  {
+    "level": 4,
+    "page": 43,
+    "title": "D4°, les dés évolutifs"
+  },
+  {
+    "level": 4,
+    "page": 43,
+    "title": "Changement d’orientation"
+  },
+  {
+    "level": 3,
+    "page": 44,
+    "title": "Chapitre 3"
+  },
+  {
+    "level": 3,
+    "page": 44,
+    "title": "Peuples"
+  },
+  {
+    "level": 4,
+    "page": 44,
+    "title": "Caractéristiques et interprétation"
+  },
+  {
+    "level": 4,
+    "page": 45,
+    "title": "Demi‑elfe"
+  },
+  {
+    "level": 4,
+    "page": 46,
+    "title": "Demi‑orc"
+  },
+  {
+    "level": 4,
+    "page": 48,
+    "title": "Elfe haut"
+  },
+  {
+    "level": 4,
+    "page": 50,
+    "title": "Elfe sylvain"
+  },
+  {
+    "level": 4,
+    "page": 52,
+    "title": "Gnome"
+  },
+  {
+    "level": 4,
+    "page": 54,
+    "title": "Halfelins"
+  },
+  {
+    "level": 4,
+    "page": 56,
+    "title": "Humain"
+  },
+  {
+    "level": 4,
+    "page": 58,
+    "title": "Nain"
+  },
+  {
+    "level": 4,
+    "page": 60,
+    "title": "Mage"
+  },
+  {
+    "level": 3,
+    "page": 61,
+    "title": "Chapitre 4"
+  },
+  {
+    "level": 3,
+    "page": 61,
+    "title": "Famille des aventuriers"
+  },
+  {
+    "level": 4,
+    "page": 61,
+    "title": "Introduction"
+  },
+  {
+    "level": 3,
+    "page": 78,
+    "title": "Chapitre 5 "
+  },
+  {
+    "level": 3,
+    "page": 78,
+    "title": "Familles des combattants"
+  },
+  {
+    "level": 4,
+    "page": 78,
+    "title": "Introduction"
+  },
+  {
+    "level": 3,
+    "page": 91,
+    "title": "Chapitre 6 "
+  },
+  {
+    "level": 3,
+    "page": 91,
+    "title": "Famille des mages"
+  },
+  {
+    "level": 4,
+    "page": 91,
+    "title": "Introduction"
+  },
+  {
+    "level": 3,
+    "page": 112,
+    "title": "Chapitre 7"
+  },
+  {
+    "level": 3,
+    "page": 112,
+    "title": "Famille des mystiques"
+  },
+  {
+    "level": 4,
+    "page": 112,
+    "title": "Introduction"
+  },
+  {
+    "level": 3,
+    "page": 128,
+    "title": "Chapitre 8 "
+  },
+  {
+    "level": 3,
+    "page": 128,
+    "title": "Voies de prestige"
+  },
+  {
+    "level": 3,
+    "page": 176,
+    "title": "Chapitre 9"
+  },
+  {
+    "level": 3,
+    "page": 176,
+    "title": "Profils hybrides"
+  },
+  {
+    "level": 4,
+    "page": 176,
+    "title": "Explications"
+  },
+  {
+    "level": 4,
+    "page": 179,
+    "title": "Créer un profil hybride au niveau 1"
+  },
+  {
+    "level": 3,
+    "page": 181,
+    "title": "Chapitre 10"
+  },
+  {
+    "level": 3,
+    "page": 181,
+    "title": "Équipement"
+  },
+  {
+    "level": 4,
+    "page": 181,
+    "title": "Matériel d’aventurier"
+  },
+  {
+    "level": 4,
+    "page": 181,
+    "title": "Armes"
+  },
+  {
+    "level": 4,
+    "page": 188,
+    "title": "Armure"
+  },
+  {
+    "level": 4,
+    "page": 190,
+    "title": "Autres biens"
+  },
+  {
+    "level": 4,
+    "page": 193,
+    "title": "Équipement de qualité"
+  },
+  {
+    "level": 4,
+    "page": 193,
+    "title": "Équipement exotique"
+  },
+  {
+    "level": 1,
+    "page": 197,
+    "title": "Partie II"
+  },
+  {
+    "level": 2,
+    "page": 197,
+    "title": "Les règles"
+  },
+  {
+    "level": 3,
+    "page": 198,
+    "title": "Chapitre 1"
+  },
+  {
+    "level": 3,
+    "page": 198,
+    "title": "Les règles de base"
+  },
+  {
+    "level": 4,
+    "page": 199,
+    "title": "Mécanique de Base : le test"
+  },
+  {
+    "level": 4,
+    "page": 202,
+    "title": "Les tests de caractéristique"
+  },
+  {
+    "level": 4,
+    "page": 205,
+    "title": "Points de chance"
+  },
+  {
+    "level": 3,
+    "page": 208,
+    "title": "Chapitre 2"
+  },
+  {
+    "level": 3,
+    "page": 208,
+    "title": "Le combat"
+  },
+  {
+    "level": 4,
+    "page": 208,
+    "title": "Préambule : la surprise"
+  },
+  {
+    "level": 4,
+    "page": 209,
+    "title": "Unité de temps : le round"
+  },
+  {
+    "level": 4,
+    "page": 210,
+    "title": "Initiative"
+  },
+  {
+    "level": 4,
+    "page": 210,
+    "title": "Les actions"
+  },
+  {
+    "level": 4,
+    "page": 211,
+    "title": "L’action de mouvement"
+  },
+  {
+    "level": 4,
+    "page": 212,
+    "title": "Test d’attaque"
+  },
+  {
+    "level": 4,
+    "page": 215,
+    "title": "Options tactiques"
+  },
+  {
+    "level": 4,
+    "page": 218,
+    "title": "Les dommages"
+  },
+  {
+    "level": 4,
+    "page": 220,
+    "title": "Les points de vigueur"
+  },
+  {
+    "level": 4,
+    "page": 222,
+    "title": "Fuite"
+  },
+  {
+    "level": 4,
+    "page": 222,
+    "title": "Poursuite"
+  },
+  {
+    "level": 3,
+    "page": 227,
+    "title": "Chapitre 3"
+  },
+  {
+    "level": 3,
+    "page": 227,
+    "title": "Magie et sorts"
+  },
+  {
+    "level": 4,
+    "page": 227,
+    "title": "Lancer un sort"
+  },
+  {
+    "level": 4,
+    "page": 229,
+    "title": "Récupérer les points de mana"
+  },
+  {
+    "level": 1,
+    "page": 231,
+    "title": "Partie III"
+  },
+  {
+    "level": 2,
+    "page": 231,
+    "title": "Mener des parties de jeu de rôle"
+  },
+  {
+    "level": 3,
+    "page": 232,
+    "title": "Chapitre 1"
+  },
+  {
+    "level": 3,
+    "page": 232,
+    "title": "Les règles de l’aventure"
+  },
+  {
+    "level": 4,
+    "page": 232,
+    "title": "Voyager"
+  },
+  {
+    "level": 4,
+    "page": 233,
+    "title": "Dangers du voyage"
+  },
+  {
+    "level": 4,
+    "page": 236,
+    "title": "Autres dangers et obstacles"
+  },
+  {
+    "level": 4,
+    "page": 240,
+    "title": "Enquête et recherche d’indices"
+  },
+  {
+    "level": 3,
+    "page": 242,
+    "title": "Chapitre 2"
+  },
+  {
+    "level": 3,
+    "page": 242,
+    "title": "Objets magiques"
+  },
+  {
+    "level": 4,
+    "page": 242,
+    "title": "Niveau de magie"
+  },
+  {
+    "level": 4,
+    "page": 242,
+    "title": "Valeur des objets magiques"
+  },
+  {
+    "level": 4,
+    "page": 243,
+    "title": "Fabriquer des objets magiques"
+  },
+  {
+    "level": 4,
+    "page": 244,
+    "title": "Nombre et puissance des objets"
+  },
+  {
+    "level": 4,
+    "page": 245,
+    "title": "Cumul des bonus"
+  },
+  {
+    "level": 4,
+    "page": 245,
+    "title": "Limiter les objets magiques"
+  },
+  {
+    "level": 4,
+    "page": 246,
+    "title": "Identifier un objet magique"
+  },
+  {
+    "level": 4,
+    "page": 246,
+    "title": "Origine d’un objet magique"
+  },
+  {
+    "level": 4,
+    "page": 247,
+    "title": "Catégories d’objets"
+  },
+  {
+    "level": 3,
+    "page": 259,
+    "title": "Chapitre 3"
+  },
+  {
+    "level": 3,
+    "page": 259,
+    "title": "Adversité"
+  },
+  {
+    "level": 4,
+    "page": 259,
+    "title": "Mode d’emploi"
+  },
+  {
+    "level": 4,
+    "page": 262,
+    "title": "Profils de créatures : Humanoïdes"
+  },
+  {
+    "level": 4,
+    "page": 266,
+    "title": "Profils de créatures : Animaux"
+  },
+  {
+    "level": 3,
+    "page": 304,
+    "title": "Chapitre 4"
+  },
+  {
+    "level": 3,
+    "page": 304,
+    "title": "Devenir MJ"
+  },
+  {
+    "level": 4,
+    "page": 304,
+    "title": "Avant la première partie"
+  },
+  {
+    "level": 4,
+    "page": 307,
+    "title": "Démarrer la partie"
+  },
+  {
+    "level": 4,
+    "page": 309,
+    "title": "Séquence de jeu"
+  },
+  {
+    "level": 4,
+    "page": 312,
+    "title": "En combat"
+  },
+  {
+    "level": 4,
+    "page": 315,
+    "title": "Fin de partie"
+  },
+  {
+    "level": 4,
+    "page": 316,
+    "title": "Style de jeu"
+  },
+  {
+    "level": 3,
+    "page": 319,
+    "title": "Chapitre 5 - Scénario"
+  },
+  {
+    "level": 3,
+    "page": 319,
+    "title": "La Tour errante"
+  },
+  {
+    "level": 4,
+    "page": 319,
+    "title": "Introduction pour le MJ"
+  },
+  {
+    "level": 4,
+    "page": 320,
+    "title": "Introduction des PJ"
+  },
+  {
+    "level": 4,
+    "page": 320,
+    "title": "Scène 1 : Coup de foudre"
+  },
+  {
+    "level": 4,
+    "page": 321,
+    "title": "Scène 2 : Un grand mystère"
+  },
+  {
+    "level": 4,
+    "page": 323,
+    "title": "Scène 3 : L’appel de la tour"
+  },
+  {
+    "level": 4,
+    "page": 325,
+    "title": "Scène 4 : Pietro"
+  },
+  {
+    "level": 4,
+    "page": 326,
+    "title": "Scène 5 : La tour maudite"
+  },
+  {
+    "level": 4,
+    "page": 329,
+    "title": "Scène 6 : Retour vers le futur"
+  },
+  {
+    "level": 3,
+    "page": 331,
+    "title": "Chapitre 6 - Scénario"
+  },
+  {
+    "level": 3,
+    "page": 331,
+    "title": "Requiem pour Clairval"
+  },
+  {
+    "level": 4,
+    "page": 331,
+    "title": "Introduction pour le MJ"
+  },
+  {
+    "level": 4,
+    "page": 332,
+    "title": "Introduction des PJ"
+  },
+  {
+    "level": 4,
+    "page": 332,
+    "title": "Scène 1 :  Félindra et les zombies"
+  },
+  {
+    "level": 4,
+    "page": 334,
+    "title": "Scène 2 :  Course dans les ténèbres"
+  },
+  {
+    "level": 4,
+    "page": 336,
+    "title": "Scène 4 :  Grand final"
+  },
+  {
+    "level": 1,
+    "page": 348,
+    "title": "Personnages prétirés"
+  }
+]

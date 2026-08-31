@@ -1,0 +1,1892 @@
+{
+  "batch_id": "11-mj-scenarios",
+  "page_start": 304,
+  "page_end": 358,
+  "notes": "Chapitre 4 Devenir MJ ; ch. 5 La Tour errante (scènes 1–6) ; ch. 6 Requiem pour Clairval (scènes 1–4 : le sommaire omet la scène 3 « Au pied du mur », p.336, extraite ici) ; index des sorts p.343–347 ; 14 prétirés p.348–354 ; feuille vierge p.355–356 ; 4e de couverture p.357–358. Filigrane acheteur et en-têtes de page retirés. Césures recollées. Pages 318 et 330 : intercalaires vides.",
+  "sections": [
+    {
+      "title": "Chapitre 4 — Devenir MJ",
+      "kind": "chapter",
+      "page_start": 304,
+      "page_end": 317,
+      "summary": "Guide chronologique pour mener une première partie : préparation, démarrage, séquence, combat, fin, styles de jeu, conseils de Papy Donjon.",
+      "body": "Pour jouer à Chroniques Oubliées Fantasy, il faut un meneur de jeu. C'est celui ou celle qui va mener la partie et permettre à l'aventure d'exister.\n\nLe travail du MJ n'est pas le plus facile, mais il se révèle particulièrement intéressant. Vous seul connaissez les ressorts de l'histoire et c'est grâce à vous que tout le monde va passer un bon moment. C'est un rôle excitant et gratifiant pour celui qui l'assume. Alors pourquoi pas vous ? Ce guide du MJ a pour vocation de vous aider à assurer dès votre première partie de COF. Toutefois, nous supposons ici que, pour assumer ce nouveau rôle, vous avez déjà joué, ou au moins vu jouer, une partie de jeu de rôle (voir l'introduction, page 6). Si ce n'est pas le cas, nous vous invitons à commencer par essayer d'être joueur et d'incarner un PJ ; ou, si vous n'en avez pas la possibilité ou l'envie, de regarder une partie filmée comme on en trouve de nombreuses en lignes, par exemple sur la chaîne YouTube de Black Book Éditions.\n\nCe guide aborde les choses de façon chronologique : préparation et ce qu'il faut savoir avant la première partie ; démarrer une partie ; déroulement, avec un zoom sur le combat ; conclusion de l'aventure ; styles de jeu ; conseils de Papy Donjon."
+    },
+    {
+      "title": "Avant la première partie",
+      "kind": "section",
+      "page_start": 304,
+      "page_end": 307,
+      "summary": "Règles, univers, scénario, joueurs, durée, lieu, Session 0, consentement, dés, optimisation.",
+      "body": "Maîtriser le système et la création de personnages. Univers secondaire pour une initiation (zoom local ; Terres d'Osgild dans l'Atlas d'Osgild). Lire le scénario plusieurs fois. Groupe typique : 4 PJ ; débuter à 3–4 joueurs. Durée conseillée ≤ 3 h (premier essai : 1 h–1 h 30 hors création). Pièce isolée, table, écran. Session 0 (prétirés p.348 ou création guidée ; une famille de profils par PJ dans un quatuor). Session 0 bis : thèmes à éviter. Deux sets de dés minimum. Se concerter sur l'optimisation vs le style de jeu."
+    },
+    {
+      "title": "Démarrer la partie",
+      "kind": "section",
+      "page_start": 307,
+      "page_end": 309,
+      "summary": "Les trois coups, description des PJ, « Que faites-vous ? », décrire pour agir, imprévu, impartialité, implication, séparation.",
+      "body": "Ton théâtral pour l'intro. Description visuelle des PJ (pas le profil sur le front). Question rituelle « Que faites-vous ? ». Décrire assez pour que les joueurs imaginent des actions. Imprévu : réalisme, pas de rails. Impartialité et cohérence des difficultés. Si séparation : 5 min max par sous-groupe ; l'union fait la force."
+    },
+    {
+      "title": "Séquence de jeu",
+      "kind": "section",
+      "page_start": 309,
+      "page_end": 312,
+      "summary": "Dialogue MJ/joueurs, temps élastique, milieu incertain, variantes de « Que faites-vous ? », ordre de marche, test passif, typer les PNJ.",
+      "body": "Dialogue MJ / joueurs. Temps élastique (durée de capacité = temps en jeu). Milieu incertain : interroger d'abord les actions brèves, puis tests simples, puis les plus interactifs. Variantes de « Que faites-vous ? ». Ordre de marche. Test passif (opposition = 10). Typer les PNJ (voix, vocabulaire, mimique)."
+    },
+    {
+      "title": "En combat",
+      "kind": "section",
+      "page_start": 312,
+      "page_end": 315,
+      "summary": "Initiative, plan et figurines, équilibre, le MJ s'adapte, choix des cibles, groupes de 2/3/5 joueurs.",
+      "body": "Initiative, round de 6 secondes, presser les indécis. Plans A3 / figurines 25 mm. Le MJ s'adapte (jamais devant les joueurs). Cibles selon le roleplay, pas l'agro. Tableau des valeurs max d'attaque/DEF. Ajustements pour 3, 5 ou 2 joueurs."
+    },
+    {
+      "title": "Fin de partie",
+      "kind": "section",
+      "page_start": 315,
+      "page_end": 315,
+      "summary": "Débriefing ; jouer et rejouer un scénario.",
+      "body": "Débriefing : pistes ratées, ne pas spoiler d'autres groupes. Un scénario se joue une fois par groupe de joueurs ; le MJ peut le refaire avec d'autres tables."
+    },
+    {
+      "title": "Style de jeu",
+      "kind": "section",
+      "page_start": 316,
+      "page_end": 317,
+      "summary": "Types d'aventures, relations, hasard, conflits de style, le joueur qui réinvente le scénario, le « je », Papy Donjon.",
+      "body": "Pas une seule bonne façon : combat/exploration vs interprétation vs intrigue ; coopération vs compétition ; dés cachés vs dés ouverts. Observer puis ajuster. Conflit de style : compromis, parfois se séparer. Le joueur n'invente pas les conséquences (COF). Le « je » vs la 3e personne. Conseil de Papy Donjon : s'amuser, règles = guide."
+    },
+    {
+      "title": "Chapitre 5 — La Tour errante",
+      "kind": "scenario",
+      "page_start": 319,
+      "page_end": 329,
+      "summary": "Scénario d'initiation (4 à 6 PJ niveau 1). Auberge du Vieux Pont, tour maudite de Sigméus le Noir, six scènes.",
+      "body": "Scénario d'initiation (investigation/action) pour 4 à 6 PJ de niveau 1. Les PJ arrivent à l'auberge du Vieux Pont dont tous les occupants ont disparu. En suivant les traces ou l'appel d'une sirène envoutante, ils trouvent la tour maudite de Sigméus le Noir. Après avoir affronté les victimes possédées, ils peuvent détruire le dispositif ; un rebondissement temporel clôt l'aventure.\n\nPrequelle possible de Requiem pour Clairval. Cadre : baronnie de Clairval, bois de Myrviel.\n\n**Scènes :** 1 Coup de foudre ; 2 Un grand mystère ; 3 L'appel de la tour ; 4 Pietro ; 5 La tour maudite ; 6 Retour vers le futur.\n\nTexte intégral des scènes : élément scenario « La Tour errante »."
+    },
+    {
+      "title": "Chapitre 6 — Requiem pour Clairval",
+      "kind": "scenario",
+      "page_start": 331,
+      "page_end": 342,
+      "summary": "Scénario (4 à 6 PJ niveau 2). Course contre la montre : Félindra confie le crâne de Zamorda. Quatre scènes (le sommaire omet la scène 3).",
+      "body": "Scénario (course contre la montre / action) pour 4 à 6 PJ de niveau 2, en 325 PM. Maëla a succombé au crâne de Zamorda. Félindra subtilise l'artefact, le confie aux PJ pour le baron Roderick, et retient les zombies. Le grand final au château oppose les PJ à Maëla puis à l'incarnation du crâne. Les Héros de Clairval périssent ; le cycle de Clairval se referme.\n\n**Scènes :** 1 Félindra et les zombies ; 2 Course dans les ténèbres ; 3 Au pied du mur (omise du sommaire, p.336) ; 4 Grand final.\n\nTexte intégral des scènes : élément scenario « Requiem pour Clairval »."
+    },
+    {
+      "title": "Index des sorts par rang",
+      "kind": "appendix",
+      "page_start": 343,
+      "page_end": 347,
+      "summary": "Liste des sorts de magie profane, barde et prestige mystique, rangs 1 à 8, avec page et voie.",
+      "body": "Cette liste a pour but d'aider à créer des PNJ magiciens ou à retrouver rapidement un sort. Elle comprend tous les sorts de magie profane (famille des mages) plus les sorts de barde et certains sorts issus des voies de prestige de mystique qui peuvent convenir à des magiciens à haut niveau. Voir l'élément table « Index des sorts par rang »."
+    },
+    {
+      "title": "Personnages prétirés",
+      "kind": "appendix",
+      "page_start": 348,
+      "page_end": 354,
+      "summary": "Quatorze personnages de niveau 1 prêts à jouer (un par profil de base représenté ici).",
+      "body": "Quatorze fiches de niveau 1 : Eugénie Falkkenblitz (gnome arquebusier), Korléon Chanterune (nain barde), Wilibert Sûreté (gnome voleur), Kamshaka (demi-orc rôdeur), Lhagva fille de Nuala (humaine barbare), Mahardil al Issoum (humain chevalier), Isildenn d'Alistaïr (elfe haut guerrier), Ionas Melenwë (elfe haut ensorceleur), Helga Martellame (naine forgesort), Keyrel de Xélys (demi-elfe magicien), Tybur Prestepied (halfelin sorcier), Skodja Brandebois (demi-orc druidesse), Yellen Ëllee (elfe sylvaine moine), Elluwëe Chanrëa (elfe haute prêtresse)."
+    },
+    {
+      "title": "Feuille de personnage (vierge)",
+      "kind": "appendix",
+      "page_start": 355,
+      "page_end": 356,
+      "summary": "Recto-verso de la feuille de personnage COF : caractéristiques, attaques, voies, PV, PC, PM, DR, notes.",
+      "body": "Feuille de personnage à usage personnel (©2024 Black Book Éditions).\n\n**Recto.** Nom du personnage, joueur, famille, profil, idéal héroïque, travers, niveau. Caractéristiques AGI, CON, FOR, PER, CHA, INT, VOL (valeur et cases de niveau). Initiative, DEF, points de vigueur (max), points de chance, points de mana, dés de récupération (type de dé ; restauration PV = (d+1/2 niv.) PV ; +10 à un test). Attaques contact / distance / magique (1d20 +). Armes : spécial/portée, attaque, DM. Équipement. Voie du peuple rangs 1–5. Notes.\n\n**Verso.** Voies 1 à 5 (dont prestige), rangs 1–5 par voie. Description du personnage."
+    },
+    {
+      "title": "Quatrième de couverture",
+      "kind": "front_matter",
+      "page_start": 357,
+      "page_end": 358,
+      "summary": "Plat verso : appel de l'aventure, contenu de l'ouvrage, matériel nécessaire. Code BBECBHS06.",
+      "body": "**Que l'appel de l'aventure résonne !**\n\nHéros de tout âge, habitants des terres lointaines ! Des ruines abandonnées jusqu'aux métropoles florissantes, des cryptes les plus profondes aux tours les plus hautes, des quartiers nobles aux rues malfamées, il est temps d'écrire votre épopée !\n\nDans Chroniques Oubliées Fantasy, glissez-vous dans la peau d'un druide farouche, d'une guerrière audacieuse, d'un magicien flamboyant ou encore d'une barde malicieuse. Partez sur les routes des Terres d'Osgild, explorez des lieux mystérieux et combattez les sbires d'un sorcier assoiffé de pouvoir !\n\nCe jeu de rôle médiéval-fantastique utilise une mécanique de jeu simple et éprouvée, basée sur un dé à 20 faces, une poignée de caractéristiques, et les emblématiques voies de personnage.\n\nChroniques Oubliées Fantasy s'adresse à tous les niveaux de pratique du jeu de rôle, des débutants aux rôlistes chevronnés.\n\nCet ouvrage contient :\n- les règles de création de personnage ;\n- des conseils pour aider les meneurs de jeu novice à maîtriser leur première partie ;\n- des règles complémentaires pour le meneur de jeu ;\n- un bestiaire présentant plusieurs créatures que les joueurs pourront rencontrer lors de leurs aventures ;\n- deux scénarios pour commencer à jouer.\n\nPour jouer à Chroniques Oubliées Fantasy, vous avez uniquement besoin de ce livre, d'un set de dés de jeu de rôle, de feuilles de papier, de crayons et d'une gomme.\n\nBBECBHS06\n\nPage 357 : mention « Livre des règles — Laurent Bernasconi » (plat)."
+    }
+  ],
+  "elements": [
+    {
+      "kind": "rule",
+      "name": "Avant la première partie",
+      "page_start": 304,
+      "page_end": 307,
+      "body": "## Les règles\nLe système de jeu est la partie qu'il vous faut le mieux maîtriser. En cours de jeu, vous allez annoncer quels jets de dés sont à faire, quelle caractéristique doit être utilisée par un joueur à tel moment du jeu, etc. Et vous utiliserez ces mêmes points de règles pour faire agir vos PNJ.\n\nDe plus, vous devez bien connaître les règles de création de personnages pour pouvoir aider les joueurs à créer leur personnage. D'autant plus que certaines règles s'appliquent aussi aux PNJ que vous devrez interpréter lorsque les PJ les rencontreront.\n\n## L'univers\nPour une première partie d'initiation, l'univers n'a pas vraiment d'importance, vous n'avez pas besoin de contexte en dehors du lieu où se déroule l'action, généralement un simple village et ses alentours. Il n'est pas nécessaire de connaître le reste du monde pour s'amuser. Gérez votre première partie (ou même plusieurs) comme une parenthèse hors du temps, un zoom sur une localité précise. De nombreux films fonctionnent comme cela : on entre directement dans l'action et on ne passe pas dix minutes à vous présenter les nations environnantes et le nom des rois, sauf si cela a de l'importance dans l'intrigue à venir.\n\nPar la suite, à mesure que vous jouerez, vous pourrez introduire des éléments du contexte général. À ce moment, vous devrez avoir une idée générale des éléments qui permettent de donner vie au monde où évoluent les personnages : le type de civilisation, les grandes nations et leur histoire, les créatures qui le peuplent…\n\nCette partie dépend de l'univers de jeu que vous avez choisi. L'univers par défaut de Chroniques Oubliées Fantasy se nomme les Terres d'Osgild et est développé dans un second ouvrage, *L'Atlas d'Osgild*. Vous ne devez pas connaître tout cela par cœur mais avoir une idée de l'endroit où trouver la réponse rapidement en cas de doute.\n\n## Le scénario\nPour faire vivre une aventure de jeu de rôle, le MJ s'appuie sur ce qu'on appelle un scénario. Le scénario donne aux PJ un point de départ, un but, et détaille les étapes probables qui permettent d'y arriver. Il décrit les lieux à explorer, les épreuves qu'il faudra surmonter, les différents PNJ et créatures qu'on pourra affronter ou gagner à sa cause. C'est pourquoi il est capital de bien le lire, plusieurs fois si nécessaire, afin d'en connaître le contenu.\n\nPour vous guider, le scénario indique les actions les plus probables des PJ, et ce qui en découle, mais il ne peut jamais tout prévoir, car ce sont les joueurs qui vont en décider (et les joueurs se révèlent souvent surprenants). Chaque partie et chaque cheminement est unique (voir aussi « Jouer et rejouer »). En lisant le scénario, demandez-vous ce que vous tenteriez de faire si vous étiez un héros confronté à une telle situation.\n\n## Les joueurs\nPour jouer, il faut un groupe de joueurs. Il peut s'agir de votre bande d'amis, de membres de votre famille, ou encore de personnes que vous rencontrerez dans un club de JdR. Il vaut mieux qu'ils apprécient les films ou les romans de fantasy, car ils vont être les héros d'une histoire de ce type.\n\nLa plupart des aventures sont écrites par défaut pour un groupe de quatre PJ et donc de quatre joueurs. Moins il y a de joueurs, plus c'est facile pour le MJ, qui a moins de monde à gérer, et plus les joueurs pourront détailler leurs actions ; en revanche, un groupe un peu plus nombreux est plus rassurant du côté des joueurs, surtout lorsqu'on est débutant et/ou timide, car on n'a pas les feux de la rampe braqué sur soi.\n\nPour débuter en tant que MJ, il est plus agréable de se limiter à trois ou quatre joueurs. Même pour un MJ expérimenté, gérer plus de cinq joueurs sans que certains trouvent le temps long constitue un vrai défi.\n\nLe nombre de joueurs autour de la table peut être un sujet de discussion avant de débuter une campagne (une suite de plusieurs aventures reliées les unes aux autres) afin de vérifier que cela convient à tout le monde (voir aussi « Session 0 bis - Consentement »).\n\n## Durée d'une partie\nIl faut parfois plusieurs parties pour terminer une aventure. Une partie de jeu de rôle peut durer quatre-vingt-dix minutes pour les plus courtes et aller jusqu'à trois ou quatre heures pour un format « standard », certaines tables endurcies n'hésitant pas à jouer de six à huit heures d'affilée, voire plus.\n\nToutefois nous vous conseillons de ne pas dépasser trois heures dans un premier temps. Il ne faut pas sous-estimer la fatigue et la concentration nécessaires à une partie de jeu de rôle, en particulier pour le meneur de jeu.\n\nPour un tout premier essai, utiliser une aventure légère d'une heure ou une heure et demie de jeu, hors temps de création de personnage et de debriefing de fin de partie.\n\n## Où jouer ?\nUne pièce isolée est l'idéal ! S'il y a du bruit ou des gens autour, les joueurs auront du mal à s'évader dans le récit, et eux-mêmes risquent de perturber l'entourage durant le jeu ! Mieux vaut jouer sur une table afin que chacun ait devant lui sa fiche de personnage, ses dés, des notes (d'où l'un des noms anglais donné au jeu de rôle : tabletop role playing game, ou jeu de rôle sur table). Le MJ occupe un bout de table et cache son scénario et ses jets de dés derrière un écran. Un ou deux classeurs feront l'affaire si vous ne disposez pas de l'écran officiel de Chroniques Oubliées Fantasy.\n\nIdéalement, les joueurs autour de la table devraient éviter les distractions et les activités annexes et mettre les téléphones de côté.\n\n## Session 0 — Créer les personnages\nLa première tâche est de faire créer les personnages par les joueurs. Si vous souhaitez raccourcir cette partie, surtout si c'est pour une partie d'initiation, n'hésitez pas à proposer aux joueurs de choisir un personnage parmi les prétirés proposés à la fin de cet ouvrage (page 348). Cela vous permettra de commencer à jouer immédiatement.\n\nPour les autres, demandez-leur quel personnage ils aiment dans les films, les romans ou les jeux médiévaux, et indiquez-leur le peuple et le profil de COF qui s'en rapprochent le plus… Au fonceur, conseillez le guerrier, au tacticien prudent le magicien, à l'amuseur le barde, au sage autoritaire le prêtre, au petit malin le rôdeur ou le voleur, etc.\n\nSoyez déjà le meneur de jeu, prévoyez de guider les joueurs dans cette étape, qu'ils n'aient pas à lire les règles. En les connaissant bien, vous pourrez les lire et les commenter en même temps, sauter les passages optionnels et déjà plonger votre auditoire dans l'ambiance (« …et en tant que prêtre, donc guérisseur, tu seras choyé autant par les petites gens que les seigneurs… »).\n\nIdéalement, dans un groupe de quatre joueurs, chaque personnage devrait appartenir à une famille de profils différente. Ce n'est pas une obligation, mais c'est l'assurance d'obtenir un groupe équilibré, taillé pour l'aventure avec des rôles suffisamment variés pour que chaque joueur puisse avoir son moment de gloire sans empiéter sur la fonction d'un compagnon. N'hésitez pas à en faire part aux joueurs pour les aider dans la constitution du groupe.\n\n## Session 0 bis — Consentement\nC'est aussi à ce moment-là que le MJ doit aborder un point délicat avec ses joueurs : les thèmes qu'il doit éviter au cours du jeu. Certains joueurs peuvent se sentir mal à l'aise avec certains thèmes ou la façon de les traiter (violence graphique, etc.). En dresser la liste en amont permettra par la suite à chacun d'éviter ses thèmes afin que tous passent un bon moment autour de la table.\n\nCertains groupes qui se connaissent bien n'ont aucune difficulté avec cela et d'autres savent se réguler de façon intuitive en jeu, mais ce n'est pas aussi évident pour tous : vous devez prendre conscience que certains joueurs n'oseront pas forcément signaler leur désagrément au beau milieu d'une session de jeu. Attention, ce moment en amont de la première partie ne doit pas être source d'inconfort supplémentaire, faites preuve de finesse et d'empathie.\n\nBien entendu, si vous jouez avec de jeunes enfants, vous devrez vous adapter à leur âge et éviter les thèmes traumatisants. Ce ne seront d'ailleurs pas toujours ceux que vous croyez : tuer des gobelins peut ne pas leur poser de problèmes, mais être perdu dans le noir pourrait leur faire très peur… Soyez attentifs aux signes avant-coureurs.\n\n## Il faut des dés !\nProcurez-vous au moins deux sets de dés spéciaux (voir le chapitre introductif, « Les dés »), ou empruntez-en à un rôliste (négociez le prêt de 5 ou 6 sets) : il en faut au moins un pour le MJ et un pour le groupe de joueurs, mais idéalement, il faudrait que chaque joueur ait le sien. On en trouve dans les boutiques de jeux spécialisées et sur le site www.black-book-editions.fr.\n\n## Optimisation et style de jeu\nDès la création des personnages, il est préférable que joueurs et MJ se concertent sur le style de jeu qu'ils veulent adopter. En effet, la façon de créer un groupe de personnages n'est pas neutre, elle aura une influence sur votre façon de joueur.\n\nSi tout ou partie des joueurs pensent leur personnage exclusivement pour le combat, cela induira de passer en force plutôt que de tenter des manœuvres plus subtiles comme l'infiltration, parce que ces personnages seront incapables de faire preuve de discrétion ou de capacités utiles à éviter un affrontement. Cela induira donc automatiquement un jeu plus orienté vers le combat : est-ce que cela correspond à votre style de jeu ?\n\nDe même un personnage très optimisé pour le combat dans un groupe qui ne l'est pas du tout ne craindra rien dans une rencontre dimensionnée pour le groupe. En revanche, si le MJ veut lui proposer un défi, alors les autres personnages risquent de souffrir énormément.",
+      "summary": "Préparation : règles, univers, scénario, joueurs, durée, lieu, Session 0, consentement, dés, optimisation.",
+      "tags": [
+        "mj",
+        "preparation",
+        "session-0"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Démarrer la partie",
+      "page_start": 307,
+      "page_end": 309,
+      "body": "Les trois coups. Chacun est devant sa feuille de personnage… et ça discute. Pour faire entrer les gens dans le jeu, il faut un petit effet… N'hésitez pas à prendre un ton un peu théâtral pour décrire la scène d'intro. Beaucoup d'aventures commencent par l'exposition d'une situation, écrite à l'avance et qu'il ne vous reste qu'à lire. « Depuis deux jours, vous escortez une caravane marchande en direction du village de Clairval… »\n\nS'il s'agit de la première rencontre des PJ, demandez aux joueurs de décrire brièvement leur personnage. Pour les aider, conseillez en particulier à chaque joueur d'utiliser les éléments figurant sur sa fiche de PJ : peuple, équipement, mimique… À moins que vous ne partiez du principe que les PJ se connaissent depuis longtemps, précisez-leur de ne pas en révéler plus que ce qui saute aux yeux.\n\nIl est différent de dire « Je suis un vieux monsieur en robe de bure qui s'appuie sur un long bâton noueux » que de dire « je suis un magicien ». Après tout, ce n'est pas marqué sur votre front, vous pourriez aussi bien être un druide ou un voleur rusé ! Un peu de mystère ne nuit pas, bien au contraire.\n\nCette description n'a pas besoin d'être longue, n'hésitez pas à poser une ou deux questions pour aider un joueur timide ou sur la réserve. « Quel âge a ton personnage ? Quels vêtements porte-t-elle ? Qu'est-ce qu'elle a dans les mains au moment où on parle ? »\n\nAprès avoir mis en place le contexte de l'aventure tel qu'il est indiqué dans le scénario, posez la question rituelle de toute partie de jeu de rôle : « Que faites-vous ? »\n\n## Bien décrire pour imaginer les actions possibles\nPour inventer leurs actions face à une situation, les joueurs doivent pouvoir se représenter la scène, y compris ce que le MJ n'a pas décrit en détail, afin de profiter de tout ce qui peut leur être utile. Puiser dans votre vécu des détails cohérents avec le lieu et l'aventure.\n\nSi les personnages « sont dans une forêt » où des ennemis se cachent, c'est que la forêt est dense, vous pouvez en rajouter : « Une forêt touffue, encombrée de troncs abattus par d'anciennes tempêtes et de racines torturées, de grandes fougères qui gênent la vue, de branches basses qui giflent les distraits… ».\n\nCe qui permet d'avoir une interaction entre le joueur et le MJ :\n« Je ramasse ou je casse une branche lourde pour me faire un gourdin.\n— Très bien, tu vois une belle branche, mais elle paraît trop grande. Fais-moi un test de Force pour essayer de la casser… »\n\nChaque fois que c'est possible, comparez le décor à une image très connue d'un film, ou d'un paysage ou d'un lieu connu. Des montagnes à l'infini, comme dans *Le Seigneur des Anneaux*… Un manoir décrépi comme dans *Dracula*.\n\n## L'imprévu\nC'est inévitable, un jour ou l'autre, les joueurs vont vouloir faire quelque chose qui n'est pas prévu dans l'aventure. Dans ce cas-là, ne paniquez pas ! Faites toujours ce qui vous paraît le plus réaliste ou logique.\n\nDans un premier temps, essayez de ne pas empêcher systématiquement les joueurs de faire ce qu'ils veulent. Cela dit, il ne faut pas non plus que les joueurs passent leur temps à évoluer en dehors de l'aventure. S'il le faut, rappelez-leur qu'ils ont une mission à accomplir et que personne ne va l'effectuer à leur place !\n\nEt ne vous laissez pas embobiner par une déclaration péremptoire du type : « Je grimpe en haut d'un arbre, de là-haut je verrai forcément ce qu'on cherche ! »\n\nLe PJ peut tenter de grimper, mais pas tout en haut si le tronc est trop fin, et si le feuillage est dense ou si l'arbre n'est pas le plus haut de la région, il ne verra pas grand-chose…\n\nPréparez la partie, mais n'en faites pas trop non plus, le risque serait de vouloir absolument maintenir les joueurs sur des rails. Faites-vous confiance, respirez un bon coup et rappelez-vous que le MJ doit tout le temps improviser. Finalement, assumez vos décisions, le MJ ne se trompe pas, il décide.\n\n## Être impartial et cohérent\nLorsqu'une situation qui n'est pas prévue par le scénario se présente à vous, vous devez toujours essayer d'être impartial et de ne pas favoriser les actions d'un joueur par rapport à un autre.\n\nVous devrez souvent penser contre vous-même si vous voulez y parvenir. Il est assez naturel d'avoir envie d'abaisser la difficulté d'une action si vous trouvez qu'elle est intéressante ou pertinente. Mais faites attention, si vos critères pour fixer une difficulté ne sont pas objectifs (en envisageant les chances de réussite en fonction du contexte), certains joueurs remarqueront assez vite les incohérences et ils pourraient penser que vous fixez la difficulté à la tête du client, même si en réalité vous n'avez aucune intention de partialité.\n\nIl en va de même d'une partie à l'autre, essayez d'être cohérent. Il en va de votre crédibilité, mais aussi de celle du monde où les PJ évoluent.\n\n## Impliquer les joueurs\nVous devez bien faire comprendre à vos joueurs que c'est à eux de décider de ce que font leurs personnages, et pas à vous. Plus ils seront impliqués dans l'aventure, plus ils passeront un bon moment et seront fiers de ce qu'ils ont accompli.\n\nPour impliquer vos joueurs, voici un petit truc essentiel : chaque fois que vous avez fini de lire la description d'une situation, posez-leur toujours la même question : « Que faites-vous ? »\n\nLaissez-les ensuite décider de la suite des événements et réagissez en fonction de ce qu'ils vous diront…\n\n## Si les joueurs se séparent\nPour vos premières parties, vous pouvez leur demander d'être gentils avec vous et de rester groupés…\n\nPar la suite, s'ils se séparent, par exemple en explorant un lieu ou pour enquêter en ville, jouez cinq minutes maximum avec un sous-groupe et demandez aux autres de s'éloigner, si c'est possible, pour ne pas entendre le récit d'une scène que leurs personnages ne voient pas. Alternez entre les sous-groupes. Une fois réunis, à eux de se raconter ce qu'ils ont pu voir et trouver.\n\nEn somme, n'oubliez pas que le jeu de rôle est un jeu de coopération et rappelez-le aux joueurs s'ils se séparent trop souvent. N'hésitez pas à leur montrer que l'union fait la force, les rencontres sont prévues pour tout un groupe, un PJ esseulé risque de mal finir. Si un joueur en particulier veut toujours partir en solitaire, ne lui accordez pas plus de temps qu'aux autres joueurs. Ce que nous voulons dire par là, c'est qu'un joueur sur quatre ne doit pas accaparer plus d'un quart de votre temps.",
+      "summary": "Mise en scène d'intro, description des PJ, question rituelle, imprévu, impartialité, séparation.",
+      "tags": [
+        "mj",
+        "debut-de-partie"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Séquence de jeu",
+      "page_start": 309,
+      "page_end": 312,
+      "body": "Le jeu se construit par un dialogue entre le MJ (qui décrit la scène, les actes et paroles des éventuels PNJ, puis pose la question rituelle « Que faites-vous ? ») et les joueurs. Les conséquences des actions des joueurs suscitent une nouvelle description par le MJ, et ainsi de suite. Seuls le rythme et l'ordre de parole changent selon les circonstances.\n\n## Au calme\nSi les PJ agissent de concert au calme, laissez-les discuter un petit instant et annoncer leur décision :\n« On pourrait s'équiper un peu mieux, non ?\n— Oui mais je préfère retourner vite au temple, il peut y avoir des curieux qui vont jeter un coup d'œil.\n— Ça marche. MJ, on retourne au temple ».\n\nSi toutefois les palabres entre joueurs s'éternisent, coupez court par un péremptoire « Bon ! Que faites-vous ? » Ou un pernicieux « Un quart d'heure est passé… »\n\nSi rien n'est censé se passer de spécial, un long délai peut être résumé en une phrase : « Le trajet se déroule sans problème ». (Voir « Écoulement du temps ».)\n\n## Écoulement du temps\nL'écoulement du temps durant une partie de jeu de rôle peut s'avérer complexe pour le MJ débutant. Le principe le plus important à comprendre est le suivant : l'écoulement du temps pour les joueurs (autour de la table, dans notre réalité) n'est pas le même que pour les personnages (dans le jeu).\n\nPar exemple, si le MJ déclare en quelques secondes aux joueurs « Vous passez une bonne nuit » ou « Vous avez voyagé toute la journée », il a très bien pu s'écouler huit à dix heures pour les personnages (c'est le meneur qui décide de la durée exacte). À l'inverse, jouer un round de combat peut prendre cinq minutes autour de la table, alors que ce round correspond à six secondes d'action pour les personnages. En jeu de rôle, le temps est élastique.\n\nLorsqu'une règle ou une capacité indique une durée, il s'agit toujours de la durée en jeu du point de vue des héros, peu importe le temps que cela prend autour de la table. Par exemple, lorsqu'on indique trente minutes pour prendre une récupération rapide et pouvoir à nouveau utiliser une capacité indiquée une fois par combat, il s'agit de la durée du point de vue des PJ. C'est-à-dire que, pendant ce temps-là, le reste du monde continue de tourner : si les PJ se reposent trente minutes, leurs ennemis ont le temps de fuir très loin ou au contraire d'aller chercher des renforts !\n\nEn revanche, lorsqu'on indique une durée de jeu de deux heures pour un scénario, il s'agit cette fois du temps dont MJ et joueurs auront besoin pour le jouer.\n\n## En milieu incertain\nAu cours d'une scène, les PJ vont souvent agir individuellement selon leur talent : « Je fais le feu », « Je cherche des indices sur le sol ou sur les arbres », « Je monte la garde, mais dans un arbre où je peux me dissimuler », « Je cherche quelque chose à manger ».\n\nInterrogez chacun dans l'ordre autour de la table. Selon leurs actions, répondez comme suit.\n\nEn premier aux plus brefs à renseigner : « Toi, tu allumes le feu, ça va te prendre quelques minutes ».\n\nPuis à ceux qui doivent faire un test aux conséquences simples : « Toi tu cherches des baies, des champignons ou des graines comestibles, mais la nuit tombe. Fais un test de Perception difficulté 15. Réussi ? Très bien, tu en trouves, mais ça va te prendre un bon quart d'heure ».\n\nEt en dernier à ceux pour qui votre réponse va entraîner d'autres questions et réponses :\n« Tu cherches des indices ? Fais aussi un test de Perception. Réussi ? Bien, tu remarques de petites empreintes de pieds griffus qui s'enfoncent dans le bois.\n— Est-ce que je peux estimer combien ils sont ?\n— Refais-moi un test de PER, difficulté 20 cette fois !\n— Ah, raté !\n— Hum, ils sont… plusieurs ».\n\n## Les variantes du « Que faites-vous ? »\nPosez cycliquement ces questions aux PJ. Les joueurs ne doivent pas savoir à l'avance si vous faites juste avancer le scénario, s'il y a un danger qui menace ou un indice à repérer…\n\n- Que faites-vous ?\n- Qui fait quoi ?\n- Donnez-moi l'ordre de marche.\n- Vous êtes en file indienne ou côte à côte ?\n- Faites un test de Perception !\n- Vous faites ça ? (Laissez un silence en observant les joueurs, puis poursuivez.) Bon, il ne se passe rien.\n- Vos personnages disent cela à voix haute ? (Si les joueurs échangent des propos confidentiels, plans d'action, moqueries… également dits par les personnages alors qu'ils sont dans un lieu où ils peuvent être entendus, la salle commune d'une auberge, un tunnel qui résonne, etc.)\n- Vous avancez vite et sans précaution, ou avec attention mais lentement ?\n- Qu'avez-vous en main ? (Armes, torches, accessoires peuvent être utiles, mais aussi gêner en cas de chute, faire gagner ou perdre du temps en cas de mauvaise rencontre.)\n\n## Ordre de marche\nSi le chemin est étroit (sentier dans un bois dense, passage entre des rochers, tunnel) demandez l'ordre de marche : qui est devant, qui le suit, jusqu'à celui ou celle qui ferme la marche. En cas de piège ou d'embuscade, ceux qui sont en tête seront les premiers concernés. Mais s'ils sont attentifs, ce sont eux qui feront les tests de Perception (pour remarquer le piège, pressentir l'embuscade). En cas d'attaque à revers, c'est le dernier qui est concerné… Et un PJ au centre du groupe ne peut utiliser une arme de tir direct que si ceux qui se trouvent devant lui se sont décalés.\n\n## Typer les PNJ\nPour donner vie à vos PNJ et pour aider les joueurs à les voir, les mémoriser et sentir leur attitude, essayez de jouer un peu leur personnalité, en plus de les décrire :\n\n- par une petite modification de votre voix (rude, douce, d'enfant, chevrotante de vieille dame, accent italien ou asiatique, lente, hésitante, sifflante, affectée, etc.) ;\n- par le vocabulaire (« Bienvenue, mesdames, messieurs, donnez-vous la peine », ou « Qu'est-ce qu'y veut le grand brutal, là ? ») ;\n- par une mimique, une grimace, un regard au ciel, un air niais ou soupçonneux, etc.\n\nSans pour autant aller jusqu'au théâtre, vous pouvez sensiblement améliorer une rencontre grâce à ces éléments qui font partie de ce que les rôlistes appellent le roleplay.",
+      "summary": "Dialogue MJ/joueurs, temps élastique, milieu incertain, ordre de marche, typer les PNJ.",
+      "tags": [
+        "mj",
+        "sequence",
+        "narration"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Le test passif",
+      "page_start": 311,
+      "page_end": 312,
+      "body": "Pour les MJ qui ne souhaitent pas lancer les dés ou qui veulent maîtriser les informations données aux joueurs, il est possible de remplacer le test opposé (voir le chapitre « Système de jeu », en première partie) par un test passif.\n\n**Ne pas lancer les dés.** Pour certains MJ, lancer les dés et calculer les résultats constitue une distraction dont ils préfèrent se passer pour pouvoir se concentrer sur la narration des événements. L'idée est donc de lisser les résultats des jets de dé des PNJ en leur attribuant une valeur fixe, la valeur médiane (10) ; ainsi, seuls les joueurs lancent les dés.\n\n**Maîtriser les informations données aux joueurs.** Dans certaines situations, il peut être intéressant pour le MJ d'effectuer lui-même les tests des PJ à la place des joueurs. C'est en particulier le cas des tests de discrétion ou de perception. Il ne s'agit pas pour le MJ de « tricher » mais de maîtriser l'information donnée aux joueurs sans que ceux-ci ne soient influencés par le résultat chiffré du test. Ainsi, le MJ réalisant le test, le joueur ne peut pas savoir s'il réussit ou échoue ; il est alors contraint de prendre pour argent comptant la description que lui fait le MJ, et donc de se situer au même niveau de connaissance que son personnage. Dans cette situation, pour que le MJ n'ait pas à jeter également les dés pour la partie adverse, il va faire appel à un test passif.\n\nPour un test passif, le MJ demande aux joueurs, ou effectue lui-même, un test de caractéristique et considère que la partie adverse a obtenu un résultat de 10 sur le dé, auquel il applique les modificateurs adaptés. Il compare alors les résultats comme dans un test opposé classique pour déterminer la partie qui l'emporte.\n\n**Exemple.** Laghva monte la garde devant le feu de camp tandis que ses compagnons dorment. Anaïs a précisé qu'elle est vigilante et effectue régulièrement une ronde. Comme un gobelin ayant une PER +4 s'est faufilé dans un buisson situé à proximité pour observer le groupe, Valentine décide d'effectuer un test passif de perception pour Laghva, et obtient un total de 12. Puisqu'il s'agit d'un test passif, Valentine ne jette pas les dés pour le gobelin, dont le résultat est automatiquement de 14 (10 + 4). Laghva échoue donc à son test, mais Anaïs ne le sait pas. Valentine lui raconte que, tandis que Laghva fait le tour du camp à la limite du cercle de lumière généré par le feu, elle entend le hululement d'une chouette à plusieurs reprises, avant d'apercevoir la silhouette de l'animal qui prend son envol. Mais rien d'autre n'attire son attention et elle retourne s'asseoir pour bénéficier de la chaleur des flammes. Anaïs acquiesce. Elle se demande si Valentine cache quelque chose, mais comme Laghva, elle ne peut que s'interroger sur ce qui se cache (ou pas) dans les ténèbres…",
+      "summary": "Test opposé où l'opposition est fixée à 10 + modificateurs ; option de lancer à la place des joueurs.",
+      "tags": [
+        "mj",
+        "test",
+        "passif"
+      ],
+      "data": {
+        "opposition_die": 10
+      }
+    },
+    {
+      "kind": "rule",
+      "name": "En combat",
+      "page_start": 312,
+      "page_end": 315,
+      "body": "En combat, c'est la règle de l'initiative et, éventuellement, la position des PJ sur le plan des lieux qui déterminent l'ordre de parole et d'action. S'il y a embuscade ou effet de surprise réussi, ce sont les agresseurs qui agissent en premier.\n\nChacun, à sa phase d'initiative, décide de ce qu'il fait (y compris vous, MJ, pour les PNJ qui sont présents, avec ou contre les PJ) : s'abriter, fuir, attaquer tel adversaire à sa portée, soigner un blessé, parlementer ou vociférer, etc. Appliquez les conséquences en suivant les règles de combat (et la fiche du PNJ, qui peut être un couard et fuir à la première blessure). Puis on passe au personnage suivant.\n\nIl faut presser un peu les joueurs : un round de combat représente six secondes, il n'y a pas le temps de réfléchir. Chacun doit décrire précisément ses gestes au MJ, et il ne faut pas que les joueurs patientent trop entre deux tours de jeu ! Si un joueur hésite trop, indiquez-lui simplement que son tour est passé ! La prochaine fois, il prendra une décision plus rapidement, quitte à faire une erreur. Mais ces erreurs-là sont de la matière pour passer des moments épiques ou drôles qui resteront dans vos mémoires.\n\n## Plan et figurines\nPrévoyez des feuilles (A3 si possible) ou un tableau blanc effaçable à sec pour dessiner les lieux à explorer (salle d'un château, souterrain, baraques à l'entrée d'une mine, etc.).\n\nOn ne dessine pas tout mais, en cas de risque de danger ou de combat, il est important de voir qui est où, qui peut combattre, qui peut accéder à une porte, monter sur un meuble, qui déclenche un piège. Pour identifier plus facilement les PJ et les PNJ sur le plan, certains MJ et joueurs aiment utiliser des pions cartonnés ou des figurines 25 mm destinées au JdR.\n\nÀ un autre niveau, il est bien aussi de préparer une carte générale des environs de l'action (type carte routière) pour que les joueurs se repèrent.\n\n## Équilibrer les combats\nLe niveau d'une rencontre n'est pas une science exacte, le caractère aléatoire des dés peut faire mentir les probabilités. Aussi, un MJ attentif devra toujours être prêt à s'adapter pendant le jeu, si la malchance s'acharne sur les joueurs.\n\nSi votre monstre enchaîne trois réussites critiques de suite, c'est à vous de décider si cela est acceptable et d'en faire une situation désespérée bien qu'amusante (par exemple, les PJ sont capturés et pourront échafauder un plan pour s'enfuir) ou si, à ce moment-là du scénario, vous préférez rester dans les clous et déclarer d'un air neutre que la créature vient de rater son attaque.\n\n## Le MJ triche\nUne chose que les joueurs débutants ont parfois du mal à comprendre, c'est que le MJ ne joue pas contre les joueurs. N'hésitez pas à le leur rappeler s'ils ont un doute.\n\nLe MJ ne triche pas, il s'adapte ! Ainsi, s'il décide de changer le résultat d'un dé à l'insu des joueurs, il doit le faire dans le seul but de permettre la poursuite de l'aventure, par exemple si un combat mineur tourne mal pour les PJ ou si un indice capital risque de leur échapper.\n\nToutefois, en tant que MJ, ne le faites jamais devant les joueurs ! Cela gâcherait la tension dramatique. Tout cela doit rester invisible, discret, à l'abri de votre écran (il est là pour ça) : les joueurs doivent toujours avoir l'illusion qu'ils sont seuls maîtres de leur destin.\n\n## Choisir les cibles\nLors d'un combat, le MJ décide quelles sont les cibles qui sont attaquées par les créatures qu'il contrôle. Cela peut parfois poser des problèmes aux MJ débutants. Le JdR n'est pas un jeu vidéo, les habitués du genre devraient laisser de côté les notions d'agro et de tank issues du MMORPG. Même si certaines capacités de guerrier permettent de concentrer l'opposition sur l'utilisateur de cette capacité, c'est aux joueurs de se débrouiller pour mettre en place leurs propres tactiques, le MJ quant à lui doit réfléchir en se mettant à la place de l'opposition.\n\nPour déterminer la tactique d'engagement de ses troupes, il doit avant tout se baser sur des considérations d'interprétation. Le combat doit tout autant être un moment de roleplay que d'autres séquences de jeu et s'appuyer sur cet élément pour se développer dans une direction logique.\n\nQuelques questions et idées :\n\n- **Bagarre de taverne ou bataille rangée ?** Dans le premier cas, chacun tape sur celui qu'il a devant lui, souvent au hasard. Dans le second, l'opposition s'organise selon un plan tactique.\n- **Bande de barbares ou unité militaire organisée ?** Les premiers vont foncer sur ceux qui ont l'air les plus forts, tandis que les seconds disposent de gradés qui organisent une tactique efficace.\n- **Quel type d'adversaire affronte-t-on ?** Des prédateurs naturels attaquent le plus faible en l'isolant et en se concentrant dessus. Des orcs noirs s'attaquent au personnage le plus costaud, question de principe. Des elfes des profondeurs s'acharnent sur la même cible pour l'éliminer au plus vite, etc.\n- Dans certains cas, le niveau des PNJ et des créatures influe sur les qualités tactiques de l'opposition. Au niveau 10, un PNJ a déjà survécu à bien des batailles et devrait réagir de manière beaucoup plus tactique et vicieuse qu'au niveau 1.\n\nÀ l'exception de quelques capacités de guerrier qui génèrent des limitations tactiques du déplacement des adversaires, les règles autorisent aux protagonistes de se déplacer aisément, n'hésitez pas à en jouer dans la limite de ce qui vous semble réaliste.\n\n## Trouver l'équilibre\nAvec le temps vous constaterez que rendre une rencontre dangereuse sans qu'elle soit par trop mortelle est un art délicat. La puissance de chaque groupe peut grandement varier, d'une part en fonction des choix des joueurs (PJ très optimisés pour le combat ou au contraire axés sur l'aventure ou l'interprétation) et de leur équipement (plus ou moins d'objets magiques).\n\nAfin de vous aider à doser la difficulté, le tableau « Valeurs maximales selon le niveau » indique une valeur maximale pour les valeurs d'attaque et de DEF de vos PJ selon leur niveau.\n\nCes valeurs correspondent aux points forts de chaque PJ : par exemple, l'attaque au contact et la Défense pour un guerrier ou la valeur d'attaque magique pour un mage. Elles correspondent à des PJ de puissance standard, pas particulièrement optimisés et adaptés aux adversaires proposés. La DEF des profils qui ne combattent pas au contact peut sans problème se situer de 5 à 10 points plus bas.\n\nSi vos PJ dépassent les valeurs indiquées, ils sont sans doute très optimisés. Dans ce cas, il est temps de faire très attention aux trésors auxquels ils ont accès et il va sans doute falloir corser l'adversité. Inversement, si vos PJ sont tous très en dessous, alors il vous faudra penser à leur donner un peu plus d'équipement magique ou simplement revoir la difficulté des rencontres à la baisse.\n\nEn somme, gardez toujours en tête que certaines combinaisons peuvent rendre vos PJ plus puissants qu'ils n'en ont l'air (et inversement), mais aussi que la chance est un facteur déterminant lors d'une rencontre. Un bon MJ devra toujours être capable d'adapter un scénario à son groupe en amont, puis de s'adapter aux aléas en cours de jeu.",
+      "summary": "Initiative, rythme du round, plans, équilibre, adaptation discrète, choix des cibles.",
+      "tags": [
+        "mj",
+        "combat"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Groupe de trois ou cinq joueurs",
+      "page_start": 314,
+      "page_end": 315,
+      "body": "Par défaut, toutes les aventures de COF sont écrites pour un groupe de quatre personnages. Avoir un groupe plus ou moins nombreux (trois ou cinq personnages) implique que sa puissance globale est plus ou moins importante et nécessitera des ajustements de l'opposition rencontrée lors des combats. Dès l'étape de la création de personnage, il est possible d'adapter la puissance du groupe par les caractéristiques. Cela vous facilitera la tâche ensuite en cours de jeu.\n\nAinsi, si vous avez un groupe de trois personnages seulement, vous pouvez permettre à chaque joueur d'ajouter +1 à la valeur de deux caractéristiques différentes de son choix, sans dépasser +4. Pour un groupe de cinq joueurs, retranchez 1 point à la valeur d'une caractéristique, sans passer sous -2.\n\nNotez que cette méthode est intéressante si le nombre de joueurs dans votre groupe ne varie pas. Dans tous les cas, tous les personnages d'un même groupe doivent être créés avec la même méthode et la même puissance.\n\nAttention, cette mesure n'est pas suffisante pour équilibrer les combats, il s'agit seulement d'un pas dans la bonne direction, d'autres modifications quant à la difficulté des rencontres seront proposées aux MJ dans le cadre de la gestion des rencontres.",
+      "summary": "Ajustement des caractéristiques à la création pour 3 ou 5 PJ.",
+      "tags": [
+        "mj",
+        "equilibrage",
+        "groupe"
+      ],
+      "data": {
+        "default_party_size": 4,
+        "three_players": "+1 à deux caractéristiques différentes, sans dépasser +4",
+        "five_players": "-1 à une caractéristique, sans passer sous -2"
+      }
+    },
+    {
+      "kind": "rule",
+      "name": "Groupe de deux joueurs",
+      "page_start": 315,
+      "page_end": 315,
+      "body": "Avec un groupe de seulement deux joueurs, l'équilibrage est très délicat. Dans ce cas, afin de permettre aux PJ de faire face à la diversité des rencontres proposées, nous vous conseillons plusieurs modifications.\n\n- Chaque PJ gagne +2 sur une caractéristique et +1 sur une autre (sans dépasser +4 avant les modificateurs de peuple).\n- Utilisez des profils hybrides de façon à couvrir des voies issues de quatre familles différentes (deux familles de profil par PJ).\n- Donnez à chaque PJ un niveau supplémentaire (ils débutent au niveau 2).\n- Donnez-leur un niveau supplémentaire lorsqu'ils atteignent le niveau 10.",
+      "summary": "Ajustements cumulatifs pour un duo : caracs, hybrides, niveau +1 puis encore +1 au 10.",
+      "tags": [
+        "mj",
+        "equilibrage",
+        "groupe"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Fin de partie",
+      "page_start": 315,
+      "page_end": 315,
+      "body": "## Débriefing\nRepassez-vous le film, dévoilez les ressorts de l'intrigue. Les joueurs sont curieux de savoir s'ils ont raté une piste, s'il n'y avait vraiment rien à découvrir à tel endroit où ils ont raté un test, ce qui se serait passé si… Et demandez au groupe de ne pas dévoiler l'histoire à des amis susceptibles de jouer votre scénario prochainement !\n\n## Jouer et rejouer\nPour les joueurs, un scénario se découvre comme une enquête ou une mission à vivre. Un groupe de joueurs ne peut jouer qu'une fois un scénario.\n\nAinsi, si ce groupe fait une nouvelle partie de jeu de rôle, ce sera avec un nouveau scénario, comme s'enchaînent les épisodes d'un feuilleton.\n\nEn revanche, si vous, MJ, avez apprécié un scénario, vous pouvez le faire jouer à autant de groupes que vous le souhaitez. Seule condition, ces futurs joueurs ne doivent pas avoir eu connaissance de l'histoire par d'autres.",
+      "summary": "Débriefing ; un scénario une fois par groupe de joueurs, rejouable avec d'autres groupes.",
+      "tags": [
+        "mj",
+        "fin-de-partie"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Style de jeu",
+      "page_start": 316,
+      "page_end": 317,
+      "body": "Il n'existe pas une unique façon de bien faire du jeu de rôle : il y a presque autant de façons de jouer que de tables de jeu.\n\n**Type d'aventures :** pour certains joueurs (ou MJ), les combats ou l'exploration priment sur les autres composantes de l'aventure. Pour d'autres, il s'agit de l'interprétation du personnage et les interactions avec les autres PJ ou PNJ. D'autres enfin placent au centre du jeu une bonne histoire ou la résolution d'une intrigue.\n\n**Relations entre les joueurs :** certains joueurs aiment lorsque l'harmonie règne dans un groupe et que les décisions sont collégiales. D'autres aiment le chacun pour soi, voire l'esprit de compétition, des aspirations parfois difficiles à concilier au sein d'un même groupe. En général, le MJ récompense la coopération plutôt que le chacun pour soi afin de privilégier une certaine cohésion et une bonne ambiance autour de la table. Toutefois, ce n'est pas une règle absolue, si vos joueurs estiment que la façon la plus drôle de jouer, c'est de se tirer dans les pattes, pourquoi pas. Vérifiez seulement que cela convient à tous ceux qui sont autour de la table.\n\n**Gestion du hasard :** côté MJ, certains estiment que les dés ne servent qu'à faire du bruit derrière l'écran. Ils donnent aux joueurs l'illusion que leur destin tient à un jet de dé, alors qu'en réalité, le MJ garde le contrôle du résultat final, dans l'intérêt de l'histoire. À l'inverse, d'autres MJ lancent les dés devant les joueurs durant les combats, ce qui signifie que si la chance tourne du mauvais côté, les PJ doivent être prêts à subir une défaite mortelle. Cette technique incite généralement les joueurs à faire preuve de davantage de prudence… ou à optimiser leurs personnages pour le combat. Toutefois, rien n'oblige à systématiser une méthode, il est aussi possible de lancer les dés la plupart du temps derrière l'écran, parce que vous ne voulez pas qu'une rencontre sans importance mette une aventure par terre, et, à l'inverse, sur un climax, choisir de lancer les dés devant les joueurs pour souligner que le moment est grave et que tout peut arriver… ce qui anticipe de délicieux moments de tension dramatique.\n\n## Un style sur mesure\nLa liste précédente n'a pas vocation à être exhaustive. Il ne s'agit que d'exemples destinés à vous faire prendre conscience de votre influence sur le déroulement du jeu.\n\nNous vous conseillons de ne pas trop vous soucier de tout cela lors des premières parties. Puis, progressivement, essayez d'observer quelles sont les formes de jeu qui motivent le plus les différents joueurs à votre table afin de proposer à chacun d'eux des phases de jeu qui lui conviennent.\n\n## Conflit de style\nSi vous constatez que les goûts de chacun, les vôtres y compris, sont trop différents et semblent inconciliables, alors il est temps d'en parler et de tenter de formaliser les attentes de chacun dans le but de parvenir à un compromis. Ce faisant, rappelez-vous que si un ou des joueurs n'ont pas les mêmes attentes que vous, ils ne sont ni de meilleurs ni de plus mauvais joueurs. Dans le pire des cas, si ce compromis ne satisfait pas certains d'entre vous, il vous faudra assumer le fait que vous ne pouvez pas jouer à ce jeu ensemble de façon satisfaisante. Parfois, il vaut mieux avoir l'honnêteté de se séparer d'un joueur plutôt que de gâcher le plaisir de tout un groupe.\n\n## Le joueur qui réinvente le scénario\nPour une première partie, évitez de jouer avec un scénariste de BD ou de films, ou un écrivain, qui risque de s'emparer de l'histoire : si vous avez décrit une porte fermée, un joueur vous annonce normalement qu'il l'ouvre pour savoir ce qu'il y a derrière. Un scénariste peut s'emballer et en décider lui-même : « J'ouvre la porte… Derrière, je sens un souffle chaud et humide, une odeur de soufre, et… ». Stop ! Le joueur n'invente que ce que dit et tente de faire son personnage. Les conséquences, c'est le MJ qui s'en occupe !\n\nC'est du moins le parti pris de COF. D'autres JdR fonctionnent différemment, mais ceci est une autre histoire…\n\n## Le « je »\nLe joueur vivant l'action par le biais de son personnage décrira le plus souvent ses actions à la première personne : « Je fais ceci, je tente cela, je dis ceci… ». Mais il peut aussi rester en retrait, en utilisant la troisième personne : « Lhagva allume un feu, puis fait le guet… ». Le MJ, qui peut jouer divers PNJ en même temps, précise toujours qui il joue. « La boulangère vous interpelle : \"Ah étranger, goûtez donc mon pain !\" »\n\nAutre exemple : « Le type de gauche semble indécis, mais celui de droite casse une bouteille sur le bar et fonce vers vous… »",
+      "summary": "Types d'aventures, relations, hasard, compromis, autorité narrative du MJ, le « je ».",
+      "tags": [
+        "mj",
+        "style"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Le conseil de Papy Donjon",
+      "page_start": 317,
+      "page_end": 317,
+      "body": "Ne vous angoissez pas outre mesure : le JdR, c'est facile. C'est à la portée de tout le monde ou presque. Lorsque j'ai commencé avec des copains du collège, ils étaient parfois plus intéressés par le fait de savoir ce qu'il y aurait au goûter que ce qu'il y avait dans l'aventure. Et malgré tout, on s'est bien marré. Parfois, on faisait n'importe quoi, mais ce n'était pas grave : ce qui est important, c'est qu'on s'amusait.\n\nPour le reste, on a appris sur le tas. À l'époque, il n'y avait pas de tutoriels, pas de vidéos, et pas de point de comparaison possible. Donc ne vous prenez pas la tête ! Et n'hésitez pas à vous appuyer sur les ressources que vous pouvez trouver sur Internet.\n\nCela dit, pour ce qui est des vidéos, attention. Certaines sont réalisées par des rôlistes et/ou des youtubeurs expérimentés, voire par des comédiens professionnels, dans un but de divertissement du spectateur. Ne vous attendez pas à obtenir nécessairement le même résultat autour de ta table sinon vous risquez d'être déçu. C'est comme si, en vous mettant au ski, vous vous attendiez à avoir immédiatement le niveau des athlètes des JO d'hiver !\n\nL'important à retenir, c'est que c'est un jeu et qu'on est là pour s'amuser. Un jeu où personne ne gagne tout seul et tout le monde « gagne » lorsque l'histoire racontée vous a fait passer un bon moment. Si votre intention de MJ, c'est de faire en sorte que tout le monde passe un bon moment, ça ne peut que bien se passer.\n\nS'il y a des règles oubliées, ou mal comprises, ce n'est pas bien grave. Les règles, en JdR, ce n'est pas le plus important. Beaucoup moins que dans de nombreux autres types de jeu. Les règles sont comme le code de la piraterie : une sorte de guide. Et le MJ est avant tout une sorte d'animateur, qui devrait avant tout suivre son « bon sens » et veiller à ce que tout le monde s'amuse.",
+      "summary": "Le JdR est un jeu : s'amuser prime sur les règles ; méfiance vis-à-vis des lives professionnels.",
+      "tags": [
+        "mj",
+        "conseil"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Attaque groupée",
+      "page_start": 333,
+      "page_end": 333,
+      "body": "Lorsque plusieurs créatures similaires attaquent un PJ, le MJ fait un seul test d'attaque auquel il ajoute un bonus qui dépend du nombre de créatures :\n\n- 2 créatures : +5\n- 3 créatures : +10\n- 4 créatures : succès automatique\n\nLes DM sont infligés normalement (le nombre de créatures augmente les chances de toucher, pas les dégâts).",
+      "summary": "Un seul jet d'attaque pour plusieurs créatures similaires, bonus selon le nombre.",
+      "tags": [
+        "mj",
+        "combat",
+        "attaque-groupee"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "Requiem pour Clairval",
+      "data": {
+        "bonus": {
+          "2": "+5",
+          "3": "+10",
+          "4": "succès automatique"
+        },
+        "damage": "inchangés"
+      }
+    },
+    {
+      "kind": "rule",
+      "name": "Test et échelle de difficultés",
+      "page_start": 323,
+      "page_end": 323,
+      "body": "Comme indiqué dans le chapitre « Les règles de base », il peut être intéressant, pour certains tests, de mettre en place une échelle de difficultés plutôt qu'une difficulté unique. Cette échelle permet en effet d'interpréter plus finement le résultat du test, ce qui est particulièrement utile pour des tests de PER, notamment le pistage dans la situation de l'exploration des environs de l'auberge du Vieux Pont.",
+      "summary": "Échelle de difficultés (plusieurs seuils) plutôt qu'une difficulté unique, surtout pour la PER.",
+      "tags": [
+        "mj",
+        "test"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "La Tour errante"
+    },
+    {
+      "kind": "table",
+      "name": "Valeurs maximales selon le niveau",
+      "page_start": 315,
+      "page_end": 315,
+      "body": "Tableau d'aide à l'équilibrage : valeurs maximales d'attaque et de DEF des PJ (points forts) selon le niveau. PJ de puissance standard, non particulièrement optimisés. La DEF des profils qui ne combattent pas au contact peut se situer de 5 à 10 points plus bas.\n\n| Niveau | Attaque | Défense |\n|--------|---------|---------|\n| 1 | +5 | 19 |\n| 2 | +6 | 20 |\n| 3 | +8 | 21 |\n| 4 | +9 | 22 |\n| 5 | +10 | 22 |\n| 6 | +12 | 23 |\n| 7 | +13 | 23 |\n| 8 | +14 | 24 |\n| 9 | +16 | 24 |\n| 10 | +17 | 25 |\n| 11 | +17 | 25 |\n| 12 | +18 | 26 |\n| 13 | +18 | 26 |\n| 14 | +18 | 27 |\n| 15 | +19 | 27 |\n| 16 | +19 | 28 |\n| 17 | +19 | 28 |\n| 18 | +20 | 29 |\n| 19 | +20 | 29 |\n| 20 | +20 | 30 |",
+      "summary": "Plafonds d'attaque et de DEF par niveau pour doser l'adversité.",
+      "tags": [
+        "mj",
+        "equilibrage",
+        "table"
+      ],
+      "data": {
+        "rows": [
+          {
+            "niveau": 1,
+            "attaque": "+5",
+            "defense": 19
+          },
+          {
+            "niveau": 2,
+            "attaque": "+6",
+            "defense": 20
+          },
+          {
+            "niveau": 3,
+            "attaque": "+8",
+            "defense": 21
+          },
+          {
+            "niveau": 4,
+            "attaque": "+9",
+            "defense": 22
+          },
+          {
+            "niveau": 5,
+            "attaque": "+10",
+            "defense": 22
+          },
+          {
+            "niveau": 6,
+            "attaque": "+12",
+            "defense": 23
+          },
+          {
+            "niveau": 7,
+            "attaque": "+13",
+            "defense": 23
+          },
+          {
+            "niveau": 8,
+            "attaque": "+14",
+            "defense": 24
+          },
+          {
+            "niveau": 9,
+            "attaque": "+16",
+            "defense": 24
+          },
+          {
+            "niveau": 10,
+            "attaque": "+17",
+            "defense": 25
+          },
+          {
+            "niveau": 11,
+            "attaque": "+17",
+            "defense": 25
+          },
+          {
+            "niveau": 12,
+            "attaque": "+18",
+            "defense": 26
+          },
+          {
+            "niveau": 13,
+            "attaque": "+18",
+            "defense": 26
+          },
+          {
+            "niveau": 14,
+            "attaque": "+18",
+            "defense": 27
+          },
+          {
+            "niveau": 15,
+            "attaque": "+19",
+            "defense": 27
+          },
+          {
+            "niveau": 16,
+            "attaque": "+19",
+            "defense": 28
+          },
+          {
+            "niveau": 17,
+            "attaque": "+19",
+            "defense": 28
+          },
+          {
+            "niveau": 18,
+            "attaque": "+20",
+            "defense": 29
+          },
+          {
+            "niveau": 19,
+            "attaque": "+20",
+            "defense": 29
+          },
+          {
+            "niveau": 20,
+            "attaque": "+20",
+            "defense": 30
+          }
+        ]
+      }
+    },
+    {
+      "kind": "scenario",
+      "name": "La Tour errante",
+      "page_start": 319,
+      "page_end": 329,
+      "body": "## Fiche technique\n- Type : Investigation/action\n- PJ : 4 à 6 PJ de niveau 1\n- Joueurs : Tous niveaux\n- MJ : Tous niveaux\n- Action · Ambiance · Interaction · Investigation : trois crans chacun\n\n## En quelques mots\nLes PJ arrivent à une auberge dont tous les occupants ont disparu. En suivant les traces ou en étant à leur tour appelés par sa sirène envoutante, ils trouvent la tour maudite qui a causé les disparitions. Après avoir affronté les victimes possédées, ils peuvent détruire le dispositif maudit qui provoque ces événements.\n\n## Introduction pour le MJ\n**Secret de MJ :** les renseignements ci-dessous sont réservés au MJ, les joueurs ne doivent pas en être informés.\n\nL'élément central de cette aventure est une étrange tour errante. Dans les villages des alentours, beaucoup pensent qu'il s'agit de l'ancienne résidence d'un puissant sorcier d'antan. Tous les enfants de la région ont un jour ou l'autre tenté de l'atteindre. En effet, lorsqu'on l'aperçoit au loin qui dépasse de la canopée, rien ne sert d'essayer de s'en approcher, car elle semble toujours s'éloigner, à la façon d'un arc-en-ciel, jusqu'au moment où elle disparaît… Celui qui prend la peine de se retourner peut alors constater qu'il l'aperçoit à présent loin derrière lui !\n\nSi vous avez un PJ natif des environs, il connaît cette histoire ; et si vous avez un barde, vous pouvez lui accorder un test d'INT (rumeurs et légendes) difficulté 15 pour en avoir entendu parler. La suite n'est connue de personne…\n\nEn réalité, cette construction faisait partie d'un dispositif constitué de plusieurs tours ensorcelées conçu par un puissant nécromant (Sigméus le Noir) à l'époque de sa domination sur la région et visait à asservir les populations. Plusieurs siècles après la défaite du mage et la destruction des autres flèches maudites, cette tour défectueuse continue à apparaître aléatoirement dans la forêt, voyageant dans l'espace et le temps sans jamais être accessible. Hélas, aujourd'hui, quelque part au loin, une puissante magicienne vient d'utiliser un autre artéfact lié au nécromant (voir Requiem pour Clairval) et ce faisant, elle a réactivé la vieille tour maudite par accident, sans même s'en rendre compte. Ce sont les conséquences de cette activation accidentelle que les PJ vont devoir gérer durant cette aventure.\n\n## Cadre de jeu\nPar défaut, ce scénario a pour cadre les Terres d'Osgild. Toutefois, cette aventure peut être placée dans n'importe quel cadre de jeu. Dans ce cas, il appartient au MJ de renommer ou non les lieux.\n\nCette aventure se déroule plus précisément dans la baronnie de Clairval (principauté d'Arly) et Clairval est la destination des PJ. Des orcs s'agitent à la frontière nord de son fief et le baron Roderick engage des aventuriers pour défendre la forêt de Myrviel. Dans ce contexte, cette aventure met en scène la fameuse tour errante des alentours de Clairval (voir l'*Atlas d'Osgild*).\n\nDe plus, l'aventure peut former une préquelle à Requiem pour Clairval (page 331). Si vous faites ce choix, la tour est réactivée par Maëla à son insu lorsqu'elle succombe au crâne de Zamorda et invoque une terrible vague de pouvoir pour créer son armée de morts-vivants.\n\n## Introduction des PJ\nPréparez la partie comme conseillé au chapitre « Devenir MJ » (page 304). Une fois prêt, lisez :\n\n« Vous vous êtes tous rencontrés en chemin et vous devisez joyeusement alors que les rayons du soleil déclinent, annonçant la fin de la journée. Par chance, vous n'êtes plus très loin de l'étape de la nuit, l'auberge du Vieux Pont, qui marquera votre entrée dans le bois de Myrviel. »\n\nDemandez à chaque joueur de présenter succinctement son personnage : nom et apparence physique suffisent. Ensuite démarrez la première scène.\n\n## Scène 1 : Coup de foudre\n**Indication MJ.** Scène de combat, l'unité de temps devient le round. Plonger les joueurs directement dans l'action.\n\nLire : « Le crépuscule approche à grand pas alors que vous franchissez le vieux pont dont l'auberge tire son nom. Lorsqu'elle apparaît devant vous, la porte principale est grande ouverte et un silence de mort plane sur les lieux… Mais à peine avez-vous le temps de réaliser que cela n'a rien de normal qu'une fantastique explosion vous soulève de terre dans un éclair incandescent et le bruit terrifiant du tonnerre. Vous n'avez jamais été foudroyé de votre vie, mais vous ne doutez pas que c'est exactement ce qu'il vient de vous arriver. »\n\nChaque PJ : test de CON difficulté 10. Réussite : 4 PV. Échec : 6 PV et étourdi (pas d'action) pendant un round. Tous sont renversés au sol et assourdis, leurs oreilles sifflent.\n\nAu round suivant (ceux qui ne sont pas étourdis ont juste le temps de se relever, les autres sont encore au sol), deux chiens chargent.\n\nLire : « Vous ne comprenez pas, il n'y a aucun nuage dans le ciel, mais c'est bien la foudre qui vient de vous frapper. La terre noircie fume encore à l'endroit de l'impact, lorsque deux molosses noirs déboulent par la porte ouverte de l'auberge. Énormes, les yeux révulsés, complètement blancs, les babines retroussées dégoulinantes de bave, ils foncent sur vous sans même aboyer… »\n\nÀ leur initiative, les chiens utilisent une action de mouvement pour approcher et leur action d'attaque pour mordre. Le son émis par la tour a rendu les deux chiens complètement enragés, rien ne peut les empêcher d'attaquer et ils combattent jusqu'à la mort. Un PJ proche de la nature (druide ou rôdeur) peut confirmer que le comportement n'est pas normal.\n\nFiche : Chiens fous (2), NC 1/2.\n\nUne fois le combat terminé, tous ceux qui ont raté leur test de CON sont encore à moitié sourds : il faut leur parler fort et ils ne perçoivent pas les sons les plus discrets. Cela risque de durer au moins jusqu'au lendemain. Contrairement à ce que les joueurs pourraient croire, ceci n'est pas une punition, mais plutôt un avantage pour la suite… ne leur dites pas.\n\n## Scène 2 : Un grand mystère\n**Indication MJ.** Exploration et recherche d'indices. Laisser le temps de chercher.\n\nLire ou paraphraser : « Vous êtes essoufflés et choqués par la violence des événements, cette fin de journée qui promettait un repos bien mérité vire au cauchemars… Un silence de mort s'est abattu sur les lieux, la porte de l'auberge est restée grande ouverte. Que faites-vous ? »\n\nIls peuvent se reposer, fouiller l'auberge, explorer l'extérieur ou reprendre la route, dans l'ordre de leur choix, ou improviser. Quelle que soit la première action, la nuit tombe. Rappeler qu'ils sont épuisés.\n\n### Se reposer rapidement\nRécupération rapide : pause de 30 min (dépenser 1 DR). Personne dans l'auberge, plus de danger immédiat. Se séparer est sans conséquence cette fois ; expliquer que, comme dans les films d'horreur, se séparer est souvent une mauvaise idée.\n\n### Fouiller l'auberge\nPlus âme qui vive, mais l'auberge était occupée il y a quelques heures. RdC : salle commune, cuisine, réserve, écurie attenante. Étage : 6 chambres.\n\n- **Écurie :** vide, porte grande ouverte, traces récentes de crottin. Les chevaux se sont enfuis.\n- **Salle commune :** chopes encore remplies de bière. Deux assiettes sales tombées, contenu disparu (les chiens, les PJ n'ont aucun moyen de le savoir). INT difficulté 10 : estimer une demi-douzaine de clients attablés.\n- **Cuisine :** flambée encore chaude, pot-au-feu à moitié brûlé. INT difficulté 15 : abandon il y a environ 3 heures.\n- **Étage :** la plupart des portes non fermées à clé, inoccupées. Quatre portes fermées à clé. Trois clés accrochées à un tableau de bois près de l'entrée de la cuisine. La dernière au-dessus de la cheminée : celle de l'aubergiste.\n\n**Les chambres.** Affaires de voyage dans deux des trois chambres ; vêtements de l'aubergiste et de sa femme dans la dernière, au fond du couloir. La troisième chambre : coffret de métal et livre sur la table de nuit. Vêtements suggérant un peuple de petite taille, nain ou gnome.\n\n- **Coffret :** piégé, explose 1d6 DM à celui qui l'ouvre. Si le personnage déclare chercher les pièges : PER (détecter les pièges) difficulté 15. Réussite : AGI (désamorcer les pièges) difficulté 10 (échec : le piège se déclenche).\n- Contenu : un traité technique sur les armes à poudre. Revendable 100 pa auprès d'un artificier ; si le coffret a explosé, 25 pa.\n\n**Pour le MJ :** chambre du gnome Perdibus, artificier. Les PJ le retrouveront à la fin.\n\nFouille d'une chambre pour biens de valeur : 10 min. Première : bourse 12 pa. Seconde : PER (chercher) difficulté 15 pour 5 pièces d'or (50 pa) cousues dans l'ourlet d'une veste de cuir. Caisse de l'auberge : 18 pièces d'argent. Chambre de l'aubergiste et du gnome : aucun bien de valeur. Le trésor de l'aubergiste est caché à l'extérieur, les PJ n'ont aucune chance de le trouver.\n\n### Explorer l'extérieur\nAucun indice évident. PER (pister) difficulté 15. La nuit tombe : dé malus si le PJ ne voit pas dans le noir.\n\n- 15 : serviette de table à une trentaine de mètres, nord-est (direction des occupants et de la tour ; de nuit les PJ se perdront).\n- 20 : traces de pas de plusieurs personnes dans cette direction, perdues assez vite dans la forêt.\n- 25 (seul un rôdeur avec la Voie du traqueur) : une dizaine de personnes ; peut suivre la trace jusqu'à la tour → passer à l'appel de la tour.\n\n### Rester à l'auberge\nLieu flippant, mais lits. Suggérer un tour de garde aux débutants. Repos 8 h : récupération complète (résultat maximum sur un DR). Cette fois, le sommeil est interrompu par l'appel de la tour (scène 3).\n\n### Partir plus loin\nRappeler que la nuit est tombée et qu'ils sont épuisés. Environ une demi-heure plus loin : masure au bord du chemin, porte ouverte. Cabane d'un chasseur local, vide ; difficile de savoir depuis combien de temps, sans doute moins d'une journée.\n\nS'ils ne s'arrêtent pas pour la nuit : tous perdent un dé de récupération. S'ils continuent, l'appel de la tour résonnera peu après ; sinon attendre qu'ils s'endorment.\n\n## Scène 3 : L'appel de la tour\n**Indication MJ.** Scène d'action, mettre de la pression. S'ils réfléchissent trop longtemps, les compagnons envoûtés commencent à s'éloigner.\n\nLa tour lance son appel vers minuit. Trois possibilités : auberge, masure du chasseur, ou en route. Ou traces suivies : l'appel résonne en approchant, peut-être en apercevant la lueur intermittente au sommet (scène 5).\n\nLa description varie selon que le PJ dort ou est éveillé (tour de garde).\n\nLire : « Le bruit du vent dans les arbres se transforme en quelque chose d'étrange, d'abord imperceptiblement puis de façon de plus en plus marquée. Un son lancinant, entre un hululement et une sorte de vibration indéfinissable qui monte et qui descend de façon hypnotique. Lorsque son rythme accélère, vous constatez avec effroi que les battements de votre cœur se synchronisent avec lui ! »\n\nChaque PJ : test de VOL difficulté 15. Séquelles auditives du coup de foudre : dé bonus (indice sur la protection). Demi-orc : +5 (les orcs étaient alliés du nécromant ; le système ne devait pas les affecter).\n\nÉchec — lire : « Cette chose produit un effet envoutant sur ton esprit et t'appelle à elle. Tu ressens le besoin irrépressible de te diriger vers la source du son. Tu marches dans sa direction, tel un somnambule. »\n\nLes PJ affectés perdent tout libre arbitre. Contournent un barrage, se débattent si on les restreint. Un PJ pourrait aller jusqu'à attaquer un ami.\n\n- Plaquer au sol : test d'attaque au contact (mains nues) puis test opposé de FOR. Chaque PJ supplémentaire : +5 (un seul lance le d20). Le prisonnier tente de se libérer encore une bonne minute : encore deux tests opposés de FOR.\n- Solution la plus simple : boucher les oreilles. Approcher par derrière, plaquer deux mains de part et d'autre de la tête : FOR opposé. Succès : nouveau test de VOL difficulté 10. Encore raté : proposer un point de chance ; sinon plus rien n'y fait sauf réduire le PJ à 0 PV pour l'assommer (DM temporaires, page 219).\n- Un barde qui joue de la musique pour couvrir le son : nouvelle chance pour chaque envouté, difficulté 10.\n\nUn PJ succombé ne peut pas se boucher les oreilles lui-même. Cire d'une bougie de l'auberge facile à récupérer. Une fois l'appel initial lancé, cela n'a plus d'intérêt particulier (les PJ ne le savent pas).\n\n### Suivre l'appel\nAprès l'appel initial, le son continue moins fortement. Ceux qui ont résisté ou été libérés ont encore très envie d'y aller, mais peuvent résister. Ils savent pourquoi les occupants ont disparu. Si une partie reste sous influence : somnambules, les autres peuvent suivre.\n\n### Fuir !\nLes joueurs sont absolument libres. Mais si ils évitent systématiquement les dangers, ils resteront des quidams, jamais des héros. S'ils partent : aventure terminée, pas de passage de niveau cette fois. Le mystère restera entier et deviendra une légende. L'auberge déclarée maudite et abandonnée. Les disparus perdus dans les limbes du temps. La tour continuera à réapparaître ici et là, hier et demain…\n\n## Scène 4 : Pietro\n**Indication MJ.** Interaction. Interpréter un PNJ jeune, terrorisé, qui a du mal à s'exprimer.\n\nLes PJ croisent un petit garçon caché dans les buissons.\n\n- Oreilles non bouchées : sanglots dans un buisson. Demi-sourds : PER (ouïe) difficulté 10.\n- Sanglots ratés (oreilles bouchées) : PER (vigilance) difficulté 15, dé malus si pas de vision dans le noir. Succès : repère le garçonnet.\n- Sinon, lorsque le dernier PJ passe, Pietro se jette dans ses jambes.\n\nPietro s'accroche en pleurant. D'abord CHA difficulté 10 pour le calmer, puis communiquer.\n\nPietro : fils de l'aubergiste, presque huit ans. Malentendant, ne parle presque pas ; diction souvent incompréhensible. Approximativement capable de lire sur les lèvres. Considéré simplet, ce qui n'est pas le cas.\n\nAvec un peu de patience :\n- « Moi Pietro », en se désignant.\n- « Sourd, je pas entendre ».\n- « Maman partie, papa parti, tout parti », direction que les PJ suivaient.\n- « Mal, méchant, mal ! », même direction.\n\nIl a vu les adultes se lever et partir dans la forêt, n'a pas compris. A tenté de retenir sa mère, bousculé. L'a suivie jusqu'à la tour, trop peur, a rebroussé chemin, s'est perdu, est tombé sur les PJ.\n\nIl s'accroche à leurs basques, terrorisé à l'idée de retourner à la tour. À l'arrivée, il restera caché à la lisière.\n\n## Scène 5 : La tour maudite\n### La clairière\n**Indication MJ.** Combat ou l'éviter.\n\nLire : « Vous arrivez bientôt à la lisière d'une vaste clairière. Une énorme tour noire occupe son centre. Son sommet émet le son que vous suivez depuis le début, ainsi qu'une lueur stroboscopique qui éclaire les lieux de façon sporadique. Sous cet éclairage intermittent, vous apercevez une grande ouverture au pied de la tour, une porte de métal est ouverte. Cinq personnes sont dispersées devant l'entrée, debout, la tête légèrement renversée en arrière, dans une posture assez peu naturelle. »\n\nPER difficulté 10 : yeux révulsés, totalement blancs, comme les chiens.\n\nSi Pietro est là, il désigne un homme en tablier de cuir : « Papa » (l'aubergiste).\n\nSi les PJ tentent d'entrer, les cinq humains possédés attaquent (griffes et morsures). Options :\n\n- **Combattre normalement** : tuer des innocents. Demander si c'est bien ce qu'ils veulent. Si oui, Pietro se jette sur le PJ qui tente d'occire son père : dé malus.\n- **Assommer** : DM temporaires. Arme non adaptée (épée, arc, etc.) : dé malus en attaque. Armes adaptées : gourdin, bâton, branche (1d4 DM), mains nues (1d3 DM).\n- **Passer en force puis barricader.** Chaque PJ : FOR ou AGI difficulté 15. Réussite : une attaque ; échec : deux. Voir Forcenés.\n- **Furtivité.** Contourner hors de vue : AGI (discrétion) difficulté 10. Armure : malus égal à la DEF de l'armure. Échec : les forcenés attaquent.\n\nTrop tard pour leur boucher les oreilles.\n\nFiche : Forcenés (5), NC 1/2. Force décuplée : réduisent de 2 les DM temporaires.\n\n### Explosion\nEn franchissant la porte : violente explosion, sol qui tremble, pierres qui tombent. Forcenés non vaincus : perdent l'équilibre, étourdis 1 round. Occasion de refermer et barricader.\n\n**Pour le MJ :** le gnome artificier de l'étage du dessus vient de faire exploser une bombe pour se débarrasser du gardien de pierre.\n\n### Rez-de-chaussée\n**Indication MJ.** Ambiance, malaise, urgence.\n\nForcenés non vaincus poursuivent à l'intérieur sauf barricade rapide. Une barre permet de refermer.\n\nLire : « Quatre blocs de pierre rectangulaires massifs sont disposés au centre de la pièce. Ils sont légèrement phosphorescents et éclairent la pièce d'une lueur malsaine. Quatre individus, deux hommes et deux femmes, sont couchés dessus. Leur teint est cireux et le rictus qu'ils arborent ne laisse aucune place au doute : ils souffrent. Tous ont les yeux révulsés. Un escalier mène vers l'étage. »\n\nVictimes ordinaires. Une femme porte un tablier de cuisinière : mère de Pietro, patronne. Derniers disparus de l'auberge. Collés aux pierres, impossible de les libérer sans les arracher morceau par morceau (ce qui les tuerait).\n\nLa tour draine leur énergie ; d'ici une heure, morts, corps réduits en cendres. Puis la tour appellera ceux du dehors. Si enchaînement avec Requiem : cette énergie renforce le crâne de Zamorda.\n\n### Premier étage\n**Indication MJ.** Enquête : destin de Perdibus, moyen expéditif contre le dispositif sommital.\n\nPorte de pierre, s'ouvre en poussant.\n\nLire : « Immédiatement une odeur de poudre vous agresse les narines. La salle est ravagée. Quelques flammes dansent encore sur les restes du mobilier de bois qui a été soufflé. L'explosion a même ouvert une brèche dans la tour. Ce faisant elle a aussi révélé un passage dans le mur, un escalier qui monte vers le haut. Une statue de guerrier en pierre git au centre de la salle brisée en deux par l'explosion. »\n\nStatue : qualité exceptionnelle, véritable épée en métal tachée de sang. En la regardant, elle desserre le poing et l'arme tombe de son bras brisé, puis ne bouge plus. Épée à deux mains de très belle facture.\n\nCadavre du gnome : mort, entailles sévères au thorax, crâne recouvert de sang, projeté contre le mur. Oreilles bouchées par de la cire. Sacoche de cuir en bandoulière, quelque chose dans le poing serré. Main ouverte : briquet à amadou. Sacoche : grosse sphère de métal dont dépasse une mèche. Rien d'autre ; mobilier brisé, livres et parchemins brûlés.\n\n### Sommet de la tour\n**Indication MJ.** Rythme : le son monte, décision rapide ou succomber à nouveau.\n\nLire : « Avant même d'entrer dans la pièce, vous distinguez des éclairs de lumière qui crépitent en produisant des sons secs, chacun d'eux provoque alors une note étrange et ces notes se mêlent pour constituer cette longue mélopée plaintive qui envoute ceux qui l'écoute. En arrivant au sommet des escaliers, vous comprenez enfin.\n\nLe dernier étage est couvert, mais dispose de trois fenêtres ouvertes sur la nuit. Un cristal translucide est installé au milieu de trois énormes diapasons de métal de près de deux mètres de haut. Les lueurs sont provoquées par de petits arcs électriques qui émanent du cristal et percutent les diapasons, formant les notes que vous entendez. Toutefois, l'un des diapasons semble être sorti de son logement et il est tombé sur le cristal. »\n\nPER difficulté 10 : fêlure du cristal à la suite de cet impact.\n\nS'ils attendent trop : le cœur s'emballe et se synchronise. Influence plus puissante. S'ils persistent : VOL difficulté 10 pour ne pas céder (rappeler le point de chance). Se boucher les oreilles est inutile : le son transperce tout entier.\n\nDès qu'ils interagissent avec le cristal (déplacer les diapasons : FOR difficulté 15 ; frapper le cristal ; balancer la bombe de Perdibus), le cristal explose.\n\nSi la scène s'enlise : approcher une arme de métal provoque un éclair (paratonnerre). Le PJ subit 1d6 DM, puis le cristal explose.\n\nOù que soient les PJ : éclair de lumière blanche. Passer à la scène suivante.\n\n## Scène 6 : Retour vers le futur\n**Indication MJ.** Ambiance, rebondissement final, doute volontaire. La magie doit rester un peu mystérieuse.\n\nLire : « Vous avez déjà vécu cette douloureuse et incandescente sensation aujourd'hui. Bis repetita… Vous êtes frappé par un puissant éclair qui vous aveugle et déchire vos tympans. Vous gisez au sol, le souffle coupé et vous peinez à vous assoir. C'est alors que vous comprenez que quelque chose cloche.\n\nFace à vous, la porte de l'auberge du Vieux Pont s'ouvre à la volée. Une dizaine de personnes sortent du rectangle de lumière et encerclent avec sollicitude votre petit groupe éparpillé autour de l'impact encore fumant. Vous reconnaissez la dame au tablier que vous avez vue sur un bloc de pierre, elle tient le petit Pietro par la main. Le gamin vous fixe avec un regard pénétrant. Vous reconnaissez tous les autres.\n\nC'est alors qu'une nouvelle explosion fait trembler le sol, un jet de feu illumine la façade de l'auberge et souffle tout un pan de l'étage. Des débris de verre et de bois s'abattent sur vous et les gens crient en se protégeant la tête. »\n\nJouer la fin de façon classique ou terminer en narration. Version narrative :\n\n« Rapidement une chaîne humaine se forme pour éteindre l'incendie naissant. Encore secoués, vous faites de votre mieux pour aider. On vous presse de questions que vous n'entendez pas bien, encore sonnés. Vous avez vu tous ces gens-là devant la tour ou sur les blocs de pierre. Mais eux ne semblent pas vous reconnaître.\n\nLa patronne demande qu'on vous laisse tranquille et on vous trouve une chambre pas trop ravagée par l'explosion. Le lendemain, vos problèmes auditifs se résorbent et vous apprenez qu'un gnome du nom de Perdibus est mort dans l'explosion de sa chambre. Officiellement vous avez été victime d'une autre explosion de son cru… Avez-vous rêvé tout ce que vous avez vécu ? Vous n'êtes certain de rien. Mais décidément, ce Pietro vous regarde bizarrement. »\n\nObjets récupérés ou perdus durant l'aventure : disparus. Pas de preuve tangible, seulement des souvenirs communs.\n\nSi les PJ communiquent avec Pietro, il pose son index en travers de ses lèvres. Être malentendant est déjà assez compliqué, il n'a pas envie de passer pour un fou.\n\nSi vous le souhaitez, les PJ peuvent passer au niveau 2.\n\nL'histoire peut s'arrêter là, mais Requiem pour Clairval attend vos héros.\n",
+      "summary": "Initiation niveau 1 : auberge déserte, appel de la tour de Sigméus, retour temporel ambigu.",
+      "tags": [
+        "scenario",
+        "initiation",
+        "clairval",
+        "niveau-1"
+      ],
+      "data": {
+        "type": "Investigation/action",
+        "pj": "4 à 6 PJ de niveau 1",
+        "joueurs": "Tous niveaux",
+        "mj": "Tous niveaux",
+        "action": 3,
+        "ambiance": 3,
+        "interaction": 3,
+        "investigation": 3,
+        "scenes": [
+          {
+            "n": 1,
+            "title": "Coup de foudre",
+            "page": 320
+          },
+          {
+            "n": 2,
+            "title": "Un grand mystère",
+            "page": 321
+          },
+          {
+            "n": 3,
+            "title": "L'appel de la tour",
+            "page": 323
+          },
+          {
+            "n": 4,
+            "title": "Pietro",
+            "page": 325
+          },
+          {
+            "n": 5,
+            "title": "La tour maudite",
+            "page": 326
+          },
+          {
+            "n": 6,
+            "title": "Retour vers le futur",
+            "page": 329
+          }
+        ]
+      },
+      "see_also": [
+        {
+          "kind": "scenario",
+          "name": "Requiem pour Clairval",
+          "relation": "suite possible"
+        },
+        {
+          "kind": "npc",
+          "name": "Pietro",
+          "relation": "pnj scene 4"
+        },
+        {
+          "kind": "npc",
+          "name": "Perdibus",
+          "relation": "gnome artificier"
+        },
+        {
+          "kind": "creature",
+          "name": "Chiens fous",
+          "relation": "opposition scene 1"
+        },
+        {
+          "kind": "creature",
+          "name": "Forcenés",
+          "relation": "opposition scene 5"
+        }
+      ]
+    },
+    {
+      "kind": "creature",
+      "name": "Chiens fous",
+      "page_start": 321,
+      "page_end": 321,
+      "body": "Deux molosses noirs enragés par le son de la tour. Yeux révulsés, complètement blancs, babines retroussées dégoulinantes de bave. Combattent jusqu'à la mort. Action de mouvement pour approcher, action d'attaque pour mordre.",
+      "summary": "NC 1/2. Deux chiens enragés à l'auberge du Vieux Pont.",
+      "tags": [
+        "creature",
+        "tour-errante"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "La Tour errante",
+      "data": {
+        "nc": "1/2",
+        "count": 2,
+        "creature_type": "créature vivante",
+        "size": "taille moyenne",
+        "stats": {
+          "AGI": 1,
+          "CON": 1,
+          "FOR": 1,
+          "PER": 2,
+          "CHA": -2,
+          "INT": -4,
+          "VOL": 0
+        },
+        "starred_stats": [
+          "CON"
+        ],
+        "defense": 13,
+        "hp": 7,
+        "initiative": 12,
+        "attacks": [
+          {
+            "name": "Morsure",
+            "bonus": "+3",
+            "damage": "1d6+1"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "creature",
+      "name": "Forcenés",
+      "page_start": 326,
+      "page_end": 327,
+      "body": "Cinq occupants de l'auberge possédés, yeux révulsés blancs. Griffent et mordent comme des forcenés. À cause de leur force décuplée par l'appel de la tour, ils réduisent de 2 les DM temporaires qu'ils subissent.",
+      "summary": "NC 1/2. Cinq humains possédés devant la tour.",
+      "tags": [
+        "creature",
+        "tour-errante"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "La Tour errante",
+      "data": {
+        "nc": "1/2",
+        "count": 5,
+        "size": "taille moyenne",
+        "stats": {
+          "AGI": 0,
+          "CON": 2,
+          "FOR": 2,
+          "PER": 0,
+          "CHA": -2,
+          "INT": -3,
+          "VOL": 6
+        },
+        "starred_stats": [
+          "CON",
+          "FOR"
+        ],
+        "defense": 11,
+        "hp": 9,
+        "initiative": 10,
+        "attacks": [
+          {
+            "name": "Coups et morsures",
+            "bonus": "+3",
+            "damage": "1d3+2"
+          }
+        ],
+        "abilities": [
+          {
+            "name": "Résistance aux DM temporaires",
+            "action": null,
+            "text": "Réduisent de 2 les DM temporaires subis."
+          }
+        ]
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Sigméus le Noir",
+      "page_start": 319,
+      "page_end": 332,
+      "body": "Puissant nécromant qui a dominé la région. Concepteur du dispositif de tours ensorcelées destinées à asservir les populations. Plusieurs siècles après sa défaite et la destruction des autres flèches maudites, une tour défectueuse continue d'apparaître. Spectre vengeur : en 284 PM les Héros de Clairval l'ont empêché de retrouver sa puissance (Boîte d'initiation). En 325 PM, 41 ans plus tard, Roderick constate que le spectre a repris forme au fond de sa crypte ; Karoom le renvoie dans les limbes. Lié au crâne de Zamorda qui le rappelle à travers les limbes.",
+      "summary": "Nécromant historique, spectre, concepteur des tours maudites.",
+      "tags": [
+        "npc",
+        "necromancien"
+      ],
+      "see_also": [
+        {
+          "kind": "scenario",
+          "name": "La Tour errante",
+          "relation": "concepteur de la tour"
+        },
+        {
+          "kind": "magic_item",
+          "name": "Crâne de Zamorda",
+          "relation": "artefact lié"
+        }
+      ]
+    },
+    {
+      "kind": "npc",
+      "name": "Pietro",
+      "page_start": 325,
+      "page_end": 329,
+      "body": "Fils de l'aubergiste du Vieux Pont, presque huit ans. Malentendant, ne parle presque pas ; diction souvent incompréhensible. Approximativement capable de lire sur les lèvres. Considéré simplet, ce qui n'est pas le cas. Témoin du départ des adultes vers la tour ; a suivi sa mère puis a eu trop peur. Se jette dans les jambes des PJ s'ils ne le remarquent pas. Reste caché à la lisière à l'arrivée à la tour. Désigne son père parmi les forcenés. Dans la scène 6, tient la main de sa mère et fixe les PJ d'un regard pénétrant ; s'ils communiquent, il pose un index sur ses lèvres.",
+      "summary": "Enfant malentendant de l'aubergiste, guide involontaire vers la tour.",
+      "tags": [
+        "npc",
+        "tour-errante"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "La Tour errante",
+      "data": {
+        "age": "presque 8 ans"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Perdibus",
+      "page_start": 322,
+      "page_end": 329,
+      "body": "Gnome artificier, client de l'auberge du Vieux Pont. Chambre avec coffret piégé et traité sur les armes à poudre. Au premier étage de la tour : fait exploser une bombe pour se débarrasser du gardien de pierre (statue). Cadavre : entailles au thorax, crâne ensanglanté, projeté contre le mur, oreilles bouchées de cire, sacoche avec bombe (sphère de métal à mèche), briquet à amadou dans le poing. Dans la scène 6, meurt officiellement dans l'explosion de sa chambre à l'auberge.",
+      "summary": "Gnome artificier ; sa bombe ouvre la voie au sommet de la tour.",
+      "tags": [
+        "npc",
+        "gnome",
+        "artificier"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "La Tour errante",
+      "data": {
+        "people": "gnome",
+        "occupation": "artificier"
+      }
+    },
+    {
+      "kind": "scenario",
+      "name": "Requiem pour Clairval",
+      "page_start": 331,
+      "page_end": 342,
+      "body": "## Fiche technique\n- Type : Course contre la montre / Action\n- PJ : 4 à 6 PJ de niveau 2\n- Joueurs : Tous niveaux\n- MJ : Tous niveaux\n- Action · Ambiance · Interaction · Investigation : trois crans chacun\n\n## En quelques mots\nLa magicienne Maëla a succombé au crâne maudit de Zamorda et est devenue reine des ténèbres. Mais son ancienne amie, Félindra, est parvenue à subtiliser le crâne. Traquée par les hordes de Maëla, blessée, elle rencontre de jeunes héros. Elle leur confie l'artefact maudit pour qu'ils l'apportent au baron Roderick, tandis qu'elle essaie de retenir les zombies qui déferlent sur le pays…\n\n## Introduction pour le MJ\nNous sommes en 325 PM (post Monastir). Il y a 41 ans (soit en 284 PM), les Héros de Clairval ont libéré les enfants du village éponyme, empêchant Sigméus le Noir, le spectre vengeur d'un puissant nécromant, de retrouver sa puissance d'antan (voir Chroniques Oubliées Fantasy – Boîte d'initiation). Cet incident a priori complètement clos, les Héros de Clairval continuèrent à jouer un rôle déterminant dans les événements majeurs affectant la principauté d'Arly (COF - Vengeance), puis toutes les Terres d'Osgild (COF - Anathazerïn). Hommage à ces héros de la première édition du jeu, Requiem pour Clairval met en scène leur destin tragique, symbole du changement d'édition et du passage à une autre époque narrative.\n\n**Les Héros de Clairval :** Maëla la magicienne elfe, Krush le guerrier semi-orc, Karoom le prêtre nain, Félindra la rôdeuse et son loup Shade, et Roderick le voleur, devenu baron de Clairval.\n\n### Le crâne de Zamorda\nIl y a cinq mois, Roderick à présent très vieux et malade (il a 71 ans) constate que le spectre de Sigméus a repris forme au fond de sa crypte. Karoom se charge de le renvoyer dans les limbes une fois de plus, mais inquiet, il fait mander Maëla et lui suggère d'enquêter.\n\nLa magicienne découvre que Sigméus est lié à un puissant artéfact qui le rappelle encore et encore à travers les limbes. Maëla, Krush et Karoom se mettent en quête du crâne maudit de Zamorda.\n\nAprès bien des péripéties, la piste conduit dans la cathédrale inversée de Krinekov, dans les monts Vierges. Hélas, tandis que Krush et Karoom succombent en affrontant le terrible dragon Pestifilax et ses séides, Maëla cède au pouvoir du crâne.\n\nDevenue reine des ténèbres et après avoir ramené à la non-vie ses deux compagnons, Maëla commence à établir un royaume maléfique dans les monts Vierges. Elle soumet les tribus barbares comme les orcs à son pouvoir ténébreux et se prépare à déferler sur les nations civilisées.\n\n### Félindra forever\nUn grain de sable : l'inflexible volonté et la ruse inégalée de Félindra. La plus discrète des Héros de Clairval, une nuit, avec l'aide de Shade, s'empare du crâne et s'enfuit.\n\nSans l'artefact, Maëla est affaiblie et ne pourra pas lancer son assaut avant longtemps. Le crâne de Zamorda est peu ou prou ce que l'Anneau unique est à Sauron dans *Le Seigneur des anneaux*. Félindra se dirige vers Clairval pour demander conseil à Roderick, devenu un érudit respecté.\n\nMaëla invoque les forces des ténèbres à travers la relique pour stopper Félindra. Les PJ se retrouvent en plein milieu de cet affrontement.\n\n## Introduction des PJ\nJouable isolément, en campagne (suite de La Tour errante / « La tour maudite »), ou point de départ d'une campagne.\n\nAu début, les PJ sont ensemble au beau milieu de la forêt de Clairval. Le MJ décide pourquoi ; s'appuyer sur chaque joueur. Peut-être viennent-ils de se rencontrer, tous vers Clairval où le baron recrute pour défendre Fort Boueux attaqué par des orcs. S'ils ont joué La tour maudite, ils ont repris la route.\n\nLorsque le scénario commence, ils sont assis autour d'un feu de camp, un soir d'été, dans une petite clairière d'une dizaine de mètres de rayon, perdue au milieu de la forêt de Clairval.\n\n## Scène 1 : Félindra et les zombies\nEncore une demi-journée de marche. Nuit à la belle étoile, lapin à la broche.\n\nSoudain des nuages ténébreux masquent la lune (le texte source dit « masquent la brume »), le tonnerre gronde, un vent tempétueux. Toute la nature s'est tue, vitesse non naturelle.\n\nChaque PJ : test de PER (vigilance). Vision dans le noir : dé bonus.\n\n- Moins de 10 : surpris, tourne le dos aux arrivants, ne peut pas agir au premier round.\n- 11 à 19 : pas surpris, silhouettes humaines non armées. Peut attendre (agir après les créatures) ou réagir immédiatement. Faire choisir l'action avant de révéler ce que savent ceux qui ont atteint 20.\n- 20 et + : pas surpris, pas claudiquant, peau décharnée et pourrissante, vêtements en loques. Morts depuis longtemps.\n\nZombies à la lisière, 10 m du feu. Init. 8, déplacement 10 m suffisant pour atteindre le feu et attaquer.\n\nOutil MJ : attaque groupée (voir règle homonyme).\n\nFiche : Zombie humain, NC 1. Résistance : diviser par deux les DM d'armes sauf armes tranchantes (épées, haches). Note de conception : ces zombies courent (attirés par le crâne) mais n'ont que 12 PV.\n\nPremière vague : huit zombies, tous du même côté, selon position sur le plan.\n\n### L'arrivée de Félindra\nDès qu'un PJ est en difficulté, un énorme loup gris sort des ténèbres, happe le zombie qui allait réduire le PJ à 0 PV (le PJ ne subit pas les DM). Une femme sort du bois en claudiquant, s'adosse à un arbre, décoche des flèches en pleine tête. Au moins un zombie abattu par round. Avec son aide, les zombies devraient rapidement être exterminés.\n\n### Post apocalypse et explications\nLa rôdeuse s'écroule, sort des plantes de sa besace.\n\n« Ces cochonneries ne sont pas sensées courir aussi vite, je me suis fait avoir comme une bleue ! »\n\n« Hé les jeunes, venez par ici que je vous fasse profiter de ma médecine… Désolé, tout ça est ma faute, mais je n'ai pas vraiment fait exprès. Shade, va ! Monte la garde ! »\n\nLe loup s'éclipse. Elle fabrique un emplâtre pour sa jambe, propose le même traitement (effet non immédiat, scène suivante). Si les PJ proposent des soins, elle leur conseille de commencer par eux-mêmes.\n\nElle explique le destin des Héros de Clairval (introduction MJ), très synthétique vu l'urgence.\n\n## Scène 2 : Course dans les ténèbres\nÀ peine les emplâtres terminés, le loup revient en grondant. Craquements à l'opposé. Nouvelles silhouettes, énorme créature qui renverse un arbuste : ourhible (ours + tête et serres d'oiseau) dont la moitié de la tête a été arrachée, pelage putréfié suintant.\n\nFélindra : « Fiente de drac ! » Elle interpelle le PJ au plus haut CHA : « Toi prend-ça ! » et tend un sac. « Apporte ce sac au baron Roderick, à Clairval. Dis-lui que c'est de la part de Félindra. Ne touche pas à ce qui est là-dedans, sous aucun prétexte ! Ce que ce sac contient est plus important que ta vie. Rappelle-toi, n'ouvre pas le sac ! »\n\nSi hésitation : « Fuyez pauvres fous ! Je ne vais pas pouvoir les retenir longtemps ! Fuyez et ne vous retournez pas. Si vous échouez, des milliers de gens vont mourir ! » Puis une flèche sur l'ourhible.\n\n### Poursuite\nD'abord pas poursuivis, puis test de PER : le plus haut résultat détecte des bruits de course. Semer : AGI difficulté 10, malus égal à la DEF de l'armure.\n\n- 1er échec : zombies se rapprochent.\n- 2e échec : un zombie rattrape, une attaque (test normal).\n- 3e échec : encerclé, DM automatiques 1d6+3 avant de briser le cercle.\n- Échec critique : cheville foulée, dé malus aux prochains tests d'AGI de cette scène.\n- Réussite critique : aide un compagnon, lui permet de relancer un échec à ce tour.\n\n**Mal en point ?** Emplâtre de Félindra : récupération de 2d6 PV. Le MJ décide si l'effet a lieu avant ou après la rivière.\n\n### Et au milieu une rivière\nAu troisième test, bord de rivière. Si 3 tests ratés : zombies sur les talons. Sinon 1 round d'avance par succès du moins doué (groupe solidaire) : 1 / 2 / 3 tests réussis pour tous → 1 / 2 / 3 rounds.\n\nFlots tumultueux. PER (survie) dont la difficulté dépend des rounds : 1 round diff. 20 ; 2 rounds diff. 15 ; 3 rounds diff. 10. Peuples voyant dans le noir (elfe, nain, semi-orc) : +5. Succès : canot de Félindra dissimulé, prévu pour deux (Félindra et son loup).\n\nZombies sur les talons : sauter à l'eau ou canot immédiatement. Sinon : endroit plus calme, corde, retirer une armure (un round), etc. Chaque round de préparation : +2 aux tests de natation.\n\n### À la nage\nDeux tests de CON (Natation) difficulté 10, malus égal à la DEF de l'armure. Chaque échec : 1d4 DM et recommencer jusqu'à deux réussites. PJ en pleine forme qui se baladent : trois réussites au lieu de deux.\n\n0 PV : inconscient, emporté. Un autre peut sauver : deux tests de FOR (natation) difficulté (10 + FOR de la victime). Chaque échec : 1d4 DM pour le sauveteur.\n\nPJ abandonné : se réveille au petit matin, loin en aval, 1 PV (dé malus à toutes actions), plus de zombie, sac et la plupart des armes égarés, un peu perdu. Rejoint Clairval en fin de journée, après la bataille, manque la dernière scène. Perd définitivement 1 point de chance.\n\n### En canot\n- Deux PJ : un test de FOR difficulté 10 pour accoster. Échec : emportés en aval, groupe séparé, temps perdu.\n- Échec critique : canot se retourne ; nager avec +2 tant qu'ils s'accrochent.\n- Trois PJ : tangue. Chaque PJ AGI difficulté (10 + somme des FOR à bord). Un seul échec : frayeur mais sauvé. Deux échecs : le plus faible résultat tombe à l'eau (égalité : dé). Trois échecs : tout le monde à l'eau.\n- Quatre PJ ou plus : coule au premier remous → tests de natation.\n\n### Sauvés ?\nQuelques zombies emportés, d'autres remontent la rive. INT (géographie) difficulté 10 : souvenir d'un pont plus haut. 20 ou plus : avance d'une demi-heure environ.\n\nPJ emportés : PER (pister) difficulté 15 pour retrouver. Échec : peine perdue. Dans tous les cas, demi-heure perdue. D'autres peuvent prendre une récupération rapide (page 221) au lieu de chercher.\n\n## Scène 3 : Au pied du mur\n*(Absente du sommaire, présente dans le texte p. 336.)*\n\nLisière de la forêt de Clairval, village et château. Épuisés. Lumière violette à travers le sac. Chaque PJ entend une voix féminine et douce : « Arrête-toi ici mon ami, prends le temps de te reposer. Tu es fatigué, tu es si fatigué ! »\n\nTest de Volonté difficulté 10. Réussite : impression d'avancer dans la mélasse. Échec : effondrés, sommeil.\n\n- Tous réussissent : voix insistante « Dors, dors, je le veux… ». Nouveau test de Volonté, mêmes effets, progression au ralenti.\n- Tous ratent : fondu au noir. Rêve lu à un joueur au choix : ourhible purulent, frappe, renverse, bec, langue râpeuse… c'est Shade qui lèche. Le PJ aperçoit le sac en lévitation, lueur violette. Sauter pour l'empêcher de s'éclipser : AGI difficulté 10 ; échec : le loup attrape le sac dans sa gueule.\n- Au moins un résiste : « Ce combat n'est pas le tien, ouvre le sac et tu en seras délivré ! » Nouveau VOL difficulté 15 ; proposer un point de chance. Si échec : essaie d'ouvrir le sac sauf interposition (FOR opposés). S'il l'emporte (ou seul), Shade surgit, saute dessus, fait lâcher prise ; le PJ retrouve ses esprits.\n\nEnsuite l'objet cesse d'émettre. Les éveillés réveillent les autres (gifles). Éventuellement le loup reste.\n\n### Temps compté\n- Cherché des emportés (ou récupération) ET tous endormis (réveillés par Shade) : zombies déjà à la lisière, aucune avance.\n- Un seul de ces événements : une unité de temps (~ un quart d'heure).\n- Pas de temps perdu : deux unités (~ une demi-heure).\n\nSéparés : peuvent intervenir en même temps au château et au village, presque doubler le temps.\n\n### Au village\nPas l'habitude d'ouvrir la nuit. Crier assez fort : un villageois au-dessus de la palissade.\n\n- Urgence : première réaction, les envoyer au château. Une unité de temps perdue.\n- Convaincre d'évacuer vers le château : faire venir la bourgmestre madame Carillon, CHA (persuasion) difficulté 15, une unité ; une autre unité pour évacuer.\n- Se réfugier au village avec l'objet : hordes aux palissades, pyramide, massacre.\n- Se réfugier au château : zombies se concentrent où la relique est emportée.\n\n### Au château\nPont-levis levé, douves d'eau noire à remous suspects (le signaler). Un garde : « Oh là, ça va pas de crier comme ça ? » Le capitaine arrive.\n\nVoir Roderick : le baron est très malade, ne reçoit pas, encore moins la nuit. Attendre le matin.\n\nCHA (persuasion) difficulté 15 au porte-parole, ajustable selon les arguments (les insultes ne sont jamais de bons arguments). Échec : une unité perdue, nouvelles explications et nouveau test.\n\nDès que les zombies franchissent la lisière, le capitaine se rend à l'évidence. Pont-levis d'une lenteur désespérante, marée de zombies. Tendu.\n\nGagner du temps : sauter sur le pont-levis avant qu'il touche le sol, AGI (saut) difficulté 20, 15 au round suivant, etc. Dès que tous sont à bord, il remonte.\n\nS'ils ont convaincu vite : zombies sortent du bois quand les PJ commencent à franchir le pont complètement abaissé, mais il remonte trop lentement pour l'ambiance.\n\n1 à 6 zombies s'accrochent au rebord, dévalent dans la cour. De nombreux autres tombent dans les douves.\n\n### Pâquerette\nCombat vite réglé avec des gardes. Terrible cri choral. Le capitaine, essoufflé mais pas inquiet : « Ah, ils ont réussi à nous énerver Pâquerette. » Chemin de ronde.\n\nL'armée des morts stoppée par les douves. Trois énormes têtes reptiliennes au bout de longs cous. Deux déchirent un zombie, la troisième écrabouille un zombie cramponné contre la muraille sous un PJ. L'énorme tête fixe le PJ ; le capitaine le tire en arrière juste avant que la gueule tente de le happer.\n\n« Mieux vaut ne pas trop rester là : quand Pâquerette est fâchée, elle a du mal à distinguer les amis des ennemis. »\n\n## Scène 4 : Grand final\nL'intendant, gnome nommé Gizmo, mène les PJ à la chambre du baron.\n\nLire : Vous êtes enfin dans la chambre du dernier Héros de Clairval, le baron Roderick Finelame. Le vieillard a dû être bel homme autrefois, mais il n'est plus que l'ombre de lui-même. Ses yeux sont vitreux mais vous avez entendu dire que bien qu'il soit aveugle depuis longtemps, il distingue parfaitement son environnement. Il respire avec difficulté…\n\n« Racontez-moi ce que vous savez ! »\n\nIl écoute, résume si besoin. Il connaît déjà le destin de Krush et Karoom (« yeux et oreilles » partout).\n\n« Ce sac contient le crâne maudit de Zamorda, la relique qui a rongé l'âme du nécromant Sigméus, ici même, au château de Clairval. Il a déjà provoqué tant de malheurs, il y a quarante ans. Lorsqu'il est revenu hanter ces murs une fois de plus, il y a six mois, j'ai envoyé Maëla à la recherche du pouvoir ténébreux qui le rappelait encore et encore parmi les vivants. C'est ma faute, si… »\n\n« …si Maëla a succombé à son aura maudite. C'est ma faute si mes amis Krush et Karoom sont morts. Je ne pourrai jamais me le pardonner. »\n\n### Le plan de Roderick\n« Je sais que vous êtes épuisés, mais je vais encore avoir besoin de votre aide. J'ai un plan.\n\nDès que j'aurai ouvert ce sac, Maëla verra où nous sommes à travers les yeux de la relique. Je parie qu'elle va se téléporter ici pour récupérer le crâne. Les magiciens savent faire ce genre de chose, lorsqu'ils connaissent les lieux. Elle s'attendra sans doute à un piège ou à une roublardise de ma part, alors nous devons lui donner le change.\n\nD'abord, une fausse embuscade. Vous l'attaquez par surprise. Essayez d'être crédible, mais ça m'étonnerait que vous lui fassiez bien mal. Maëla est une si puissante magicienne. » Immense admiration dans sa voix.\n\n« Dès que vous êtes blessés, vous vous couchez, vous faites les morts. Soyez convaincant, mais essayez de ne pas périr pour de vrai, on a encore besoin de vous !\n\nUne fois qu'elle pense avoir gagné la partie et éliminé ses adversaires, je tente de rappeler Maëla à la raison. Sa volonté est forte, je ne peux pas croire qu'elle a totalement succombé au pouvoir du crâne maudit. Je me dois d'essayer. Si je n'y parviens pas… »\n\nIl soupire. « Si je n'y parviens pas alors nous n'aurons pas le choix. J'aurai profité de notre conversation pour l'attirer près de moi et je lui passe des menottes aux poignets. J'ai un talent pour ce genre de chose. » Menottes noires apparaissent et disparaissent entre ses doigts.\n\n« Ces menottes sont particulières, elles sont en sombracier. Certains appellent ce métal le fléau des mages. Maëla ne pourra plus lancer de sorts, vous pourrez alors la vaincre. Voilà. » Grande tristesse.\n\nRoderick tient à son plan (le MJ aussi). Modifications possibles si elles n'empêchent pas la scène suivante. Les PJ préparent l'embuscade (sous le lit, déguisés, etc.).\n\nGizmo apporte à chacun une potion de récupération majeure (3d8+3 PV). Autoriser à n'en boire qu'une partie (3 doses à 1d8+1 PV).\n\n### Un plan sans accroc\nRoderick sort le crâne, le pose sur la table de chevet. Incrusté d'or, aura maléfique quasi palpable.\n\nPER difficulté 16 : se sentir observés. Roderick fait signe de se taire. Maëla vient d'utiliser un sort de clairvoyance. L'air ondule : magicienne, beauté ténébreuse en cuirasse noire, dragonnet mort-vivant aux os luisants.\n\nPremier round par initiative ; Maëla agit en dernier. Effets d'Armure de pierre et Accélération.\n\n- Tour 1 : évite les sorts de destruction massive (ne veut pas blesser Roderick). Arc de feu contre tout adversaire au contact.\n- Round suivant : Projectile de mana (touche auto, 1d10+3 DM) ; le dragonnet attaque un autre PJ, éclair de foudre 2d6 DM, AGI difficulté 10 pour moitié.\n\nChaque PJ à terre (feinte) : test de CHA pour l'interprétation. Tous à terre : Maëla lève la main vers le plus faible CHA, Roderick intervient.\n\nFiche : Maëla NC 9.\n\n### Dialogue amoureux\nOption : un joueur joue Roderick qui attire Maëla pour les menottes.\n\n« Maëla, par pitié, arrête ! Je ne te reconnais plus ! Qui es-tu devenue ?\n— Roderick, toi non plus je ne te reconnais plus. Regarde-toi, tu n'es plus que l'ombre de toi-même. Tu es en train de mourir et je ne peux le permettre.\n— Tu n'as rien à permettre Maëla, c'est ainsi. Je suis humain, ça ne peut pas se terminer autrement.\n— Tout est possible, j'en ai le pouvoir à présent. Je peux te rendre immortel, je peux te sauver !\n— Je t'en supplie Maëla ! La femme que je connais est encore là au fond de ton cœur. Ne laisse pas ce crâne maudit t'obscurcir l'esprit. Résiste ! Reprends le contrôle !\n— Roderick… »\n\nElle s'approche pour lui prendre les mains.\n\n« Je me suis menti à moi-même si longtemps. Je ne voulais pas voir. Une elfe, un humain, c'était impossible. Mais la relique m'a offert le pouvoir de changer tout cela. Je ne peux pas y renoncer Roderick, car c'est ce que j'ai voulu du plus profond de mon cœur. Parce que maintenant, je sais enfin que je suis prête à tout pour te sauver. Je t'aime Roderick… »\n\nVoix adoucie puis terrible : « Et nous allons régner ensemble sur le monde ! »\n\nRoderick pleure, serre ses épaules. « Je… je t'ai toujours aimée, Maëla ! Depuis le premier jour, le premier regard. Mais c'est non ! Pas dans ces conditions-là ! »\n\nMaëla tombe à genoux, menottes noires aux poignets. Elle hurle. « Noooooonnnn ! »\n\nFermement agrippée, elle renverse la tête : flot de ténèbres jaillit de sa gorge. Chassée par le sombracier, l'encre se précipite sur le crâne en lévitation et forme une silhouette d'ébène liquide.\n\n### Apocalypse now\nQue font les PJ ?\n\nEn se relevant (action de mouvement), leurs armes luisent d'une lueur dorée (magiques). PER difficulté 15 : Gizmo dans l'encadrement, il vient de lancer un sort à cet effet.\n\nUn round pour que l'esprit maudit prenne forme. Haute silhouette de robes noires surmontée du crâne. Ne parle pas, cherche à tuer Roderick puis les PJ.\n\nChoix : détruire l'incarnation ou éliminer Maëla (plus facile : Roderick la maintient, menottes annulent protections magiques, -10 DEF, annule Armure de pierre).\n\nLe dragonnet volette avec confusion. À la mort de Maëla, il tombe en morceaux.\n\n- Rounds 1 et 2 : l'incarnation tend un bras vers Roderick, éclair violet. Round 1 : Roderick hurle mais tient. Round 2 : calciné de l'intérieur, s'écroule dans les bras de Maëla. Mort.\n- Round 3 : Maëla hurle telle un banshee elfe. L'incarnation vise un PJ.\n- Round 4 : Maëla se redresse, passe les menottes autour du « cou » de la silhouette. Sombracier chauffé à blanc. Maëla inflige 3d6 DM au spectre et en subit autant (10 DM/round sans lancer les dés). Zamorda affaibli : Éclairs 1d10 DM pour le reste du combat.\n- Round 5+ : elle serre jusqu'à destruction du spectre ou sa propre mort (3d6 chacun par round).\n\nGérer les PV pour une scène épique. Idéalement victoire sur le fil, plusieurs PJ à l'agonie, dernière attaque d'un PJ (pas de Maëla) qui clôt la scène.\n\nFiche : Incarnation de Zamorda, NC 6.\n\n### Requiem\nDès que Maëla ou l'incarnation est à 0 PV :\n\nL'ectoplasme se déchire, tourbillonne, entraîne le crâne. Maëla laisse échapper un cri strident. Laisser les PJ réagir (abri sous le lit).\n\nExplosion : 3d6 DM dans toute la pièce (AGI difficulté 10 pour moitié). À l'abri : moitié, ou aucun si test d'AGI réussi.\n\nGizmo peut faire boire une potion. Chambre ravagée, humeur noire. Corps noirci de Maëla affalé sur le lit, dernier souffle, saisit la main de Roderick. Visage apaisé. Regard sans vie de Roderick posé sur l'elfe.\n\nLes Héros de Clairval ont péri (Félindra s'est sacrifiée pour retarder l'armée). Légende d'un loup inconsolable qui hurle à la nuit tombée aux alentours de la clairière des Héros. Tous les zombies s'écroulent. Les villageois devront charrier des centaines de cadavres putréfiés (orcs et barbares des monts Vierges à l'ouest de la forêt de Myrviel).\n\nUne page se tourne, le premier tome des Chroniques oubliées se referme, le cycle de Clairval est terminé. Un nouveau cycle s'ouvre, celui de vos héros…\n",
+      "summary": "Niveau 2 : course jusqu'à Clairval avec le crâne de Zamorda ; mort des Héros de Clairval.",
+      "tags": [
+        "scenario",
+        "clairval",
+        "niveau-2"
+      ],
+      "data": {
+        "type": "Course contre la montre/Action",
+        "pj": "4 à 6 PJ de niveau 2",
+        "joueurs": "Tous niveaux",
+        "mj": "Tous niveaux",
+        "action": 3,
+        "ambiance": 3,
+        "interaction": 3,
+        "investigation": 3,
+        "year_pm": 325,
+        "scenes": [
+          {
+            "n": 1,
+            "title": "Félindra et les zombies",
+            "page": 332
+          },
+          {
+            "n": 2,
+            "title": "Course dans les ténèbres",
+            "page": 334
+          },
+          {
+            "n": 3,
+            "title": "Au pied du mur",
+            "page": 336,
+            "note": "omise du sommaire"
+          },
+          {
+            "n": 4,
+            "title": "Grand final",
+            "page": 338
+          }
+        ]
+      },
+      "see_also": [
+        {
+          "kind": "scenario",
+          "name": "La Tour errante",
+          "relation": "prequelle possible"
+        },
+        {
+          "kind": "npc",
+          "name": "Maëla",
+          "relation": "antagoniste"
+        },
+        {
+          "kind": "npc",
+          "name": "Roderick Finelame",
+          "relation": "baron de Clairval"
+        },
+        {
+          "kind": "npc",
+          "name": "Félindra",
+          "relation": "donne le sac"
+        },
+        {
+          "kind": "magic_item",
+          "name": "Crâne de Zamorda",
+          "relation": "artefact central"
+        }
+      ]
+    },
+    {
+      "kind": "creature",
+      "name": "Zombie humain",
+      "page_start": 333,
+      "page_end": 333,
+      "body": "Créature non-vivante attirée par l'énergie ténébreuse du crâne de Zamorda : contrairement aux zombies habituels, ceux-ci se déplacent vite. Huit dans la première vague. Résistance : diviser par deux tous les DM infligés par des armes sauf s'il s'agit d'armes tranchantes (épées, haches).",
+      "summary": "NC 1. Zombies rapides de la forêt de Clairval.",
+      "tags": [
+        "creature",
+        "mort-vivant"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "Requiem pour Clairval",
+      "data": {
+        "nc": 1,
+        "creature_type": "créature non-vivante",
+        "stats": {
+          "AGI": -1,
+          "CON": 1,
+          "FOR": 2,
+          "PER": -2,
+          "CHA": -4,
+          "INT": -4,
+          "VOL": 6
+        },
+        "defense": 10,
+        "hp": 12,
+        "initiative": 8,
+        "attacks": [
+          {
+            "name": "Mains nues",
+            "bonus": "+4",
+            "damage": "1d4+3"
+          }
+        ],
+        "abilities": [
+          {
+            "name": "Résistance aux DM",
+            "action": null,
+            "text": "Divisez par deux tous les DM infligés au zombie par des armes sauf s'il s'agit d'armes tranchantes comme les épées ou les haches."
+          }
+        ]
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Maëla",
+      "page_start": 331,
+      "page_end": 342,
+      "body": "Magicienne elfe, Héros de Clairval. Succombe au crâne de Zamorda dans la cathédrale inversée de Krinekov ; devient reine des ténèbres, ramène Krush et Karoom à la non-vie, soumet orcs et barbares des monts Vierges. Félindra lui dérobe le crâne.\n\n**Combat (chambre de Roderick).** NC 9. Créature humanoïde. DEF 20, PV 70 (RD 5), Init 11. Bâton magique +12, DM 1d6+2d6 énergie noire. Attaque magique +16. Sort d'arrivée : Armure de pierre et Accélération. Agit en dernier au premier round. Ne veut pas blesser Roderick.\n\n- Arc de feu (A) : jusqu'à 3 cibles au contact, test d'attaque magique contre DEF, 1d10+4 DM de feu.\n- Projectile magique (A) : touche automatiquement, 1d10+3 DM.\n- Accélération : action de mouvement supplémentaire par round, ou la sacrifier pour +3 DEF.\n- Armure de pierre : retranche 5 à tous les DM jusqu'à ce que le sort ait annulé 45 DM.\n- Dragonnet : éclair de foudre 2d6 DM, AGI difficulté 10 pour moitié.\n\nMenottes en sombracier : -10 DEF, annule Armure de pierre, plus de sorts. Meurt apaisée, main dans celle de Roderick, après l'explosion du crâne.",
+      "summary": "Magicienne elfe NC 9, reine des ténèbres, amour tragique de Roderick.",
+      "tags": [
+        "npc",
+        "elfe",
+        "magicienne",
+        "heros-de-clairval"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "Requiem pour Clairval",
+      "data": {
+        "nc": 9,
+        "people": "elfe",
+        "profile": "magicienne",
+        "creature_type": "créature humanoïde",
+        "stats": {
+          "AGI": 2,
+          "CON": 1,
+          "FOR": 4,
+          "PER": 1,
+          "CHA": 4,
+          "INT": 4,
+          "VOL": 4
+        },
+        "defense": 20,
+        "hp": 70,
+        "rd": 5,
+        "initiative": 11,
+        "attaque_magique": 16,
+        "attacks": [
+          {
+            "name": "Bâton magique",
+            "bonus": "+12",
+            "damage": "1d6+2d6",
+            "notes": "énergie noire"
+          }
+        ],
+        "abilities": [
+          {
+            "name": "Arc de feu",
+            "action": "A",
+            "text": "Jusqu'à 3 cibles au contact, test d'attaque magique contre DEF, 1d10+4 DM de feu."
+          },
+          {
+            "name": "Projectile magique",
+            "action": "A",
+            "text": "Touche automatiquement, 1d10+3 DM."
+          },
+          {
+            "name": "Accélération",
+            "action": null,
+            "text": "Action de mouvement supplémentaire par round ; peut la sacrifier pour +3 DEF."
+          },
+          {
+            "name": "Armure de pierre",
+            "action": null,
+            "text": "Retranche 5 à tous les DM jusqu'à 45 DM absorbés."
+          },
+          {
+            "name": "Dragonnet",
+            "action": null,
+            "text": "Éclair de foudre 2d6 DM, test d'AGI difficulté 10 pour moitié."
+          }
+        ]
+      }
+    },
+    {
+      "kind": "creature",
+      "name": "Incarnation de Zamorda",
+      "page_start": 341,
+      "page_end": 342,
+      "body": "Formée par les ténèbres chassées du corps de Maëla vers le crâne. Haute silhouette de robes noires surmontée du crâne. Créature non-vivante, NC 6. Ne parle pas. PV 60 à 100 selon la tension dramatique. Immunisée aux DM non magiques.\n\nÉclair : 3d6 DM (AGI difficulté 15 pour moitié) ; après l'étranglement par Maëla, 1d10 DM. Aura glaciale : un PJ qui inflige des DM au contact doit réussir CON difficulté 10 ou subir 1d4 DM.",
+      "summary": "NC 6. Spectre du crâne, boss du grand final.",
+      "tags": [
+        "creature",
+        "non-vivant",
+        "spectre"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "Requiem pour Clairval",
+      "data": {
+        "nc": 6,
+        "creature_type": "créature non-vivante",
+        "stats": {
+          "AGI": 3,
+          "CON": 6,
+          "FOR": 2,
+          "PER": 0,
+          "CHA": 0,
+          "INT": 0,
+          "VOL": 6
+        },
+        "defense": 17,
+        "hp": "60 à 100",
+        "initiative": 10,
+        "abilities": [
+          {
+            "name": "Éclair",
+            "action": null,
+            "text": "3d6 DM (AGI difficulté 15 pour moitié) ; 1d10 DM une fois affaibli."
+          },
+          {
+            "name": "Aura glaciale",
+            "action": null,
+            "text": "Attaque au contact : CON difficulté 10 ou 1d4 DM."
+          },
+          {
+            "name": "Résistance aux dégâts",
+            "action": null,
+            "text": "Immunisée aux DM non magiques."
+          }
+        ]
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Félindra",
+      "page_start": 331,
+      "page_end": 342,
+      "body": "Rôdeuse, Héros de Clairval, la plus discrète du groupe. Fidèle loup Shade. Subtilise le crâne de Zamorda à Maëla. Blessée (jambe), claudique. Décoche des flèches en pleine tête (au moins un zombie par round). Emplâtre : 2d6 PV (effet différé). Confie le sac au PJ au plus haut CHA, se sacrifie pour retenir zombies et ourhible mort-vivant. Périra en retardant l'armée.",
+      "summary": "Rôdeuse des Héros de Clairval, donne le crâne aux PJ.",
+      "tags": [
+        "npc",
+        "rodeuse",
+        "heros-de-clairval"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "Requiem pour Clairval"
+    },
+    {
+      "kind": "npc",
+      "name": "Shade",
+      "page_start": 331,
+      "page_end": 342,
+      "body": "Énorme loup gris, compagnon de Félindra. Happe le zombie qui allait mettre un PJ à 0 PV. Monte la garde. Réveille les PJ endormis par le crâne (lèche le visage). Peut attraper le sac en lévitation. Légende finale : loup inconsolable qui hurle à la nuit tombée près de la clairière des Héros.",
+      "summary": "Loup de Félindra.",
+      "tags": [
+        "npc",
+        "loup",
+        "heros-de-clairval"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "Requiem pour Clairval"
+    },
+    {
+      "kind": "npc",
+      "name": "Roderick Finelame",
+      "page_start": 320,
+      "page_end": 342,
+      "body": "Ancien voleur, Héros de Clairval, devenu baron de Clairval. 71 ans, très vieux, malade, aveugle depuis longtemps mais distingue parfaitement son environnement. Érudit respecté. A envoyé Maëla quêter le pouvoir qui rappelait Sigméus. Plan : fausse embuscade, rappel à la raison, menottes en sombracier. A toujours aimé Maëla. Calciné par l'incarnation de Zamorda au round 2 du combat spectral, meurt dans ses bras.",
+      "summary": "Baron de Clairval, dernier Héros vivant au début du scénario.",
+      "tags": [
+        "npc",
+        "baron",
+        "voleur",
+        "heros-de-clairval"
+      ],
+      "data": {
+        "age": 71,
+        "profile": "voleur",
+        "title": "baron de Clairval"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Krush",
+      "page_start": 331,
+      "page_end": 339,
+      "body": "Guerrier semi-orc, Héros de Clairval. Succombe avec Karoom face au dragon Pestifilax et ses séides dans la cathédrale inversée de Krinekov. Maëla le ramène à la non-vie. Roderick connaît déjà sa mort.",
+      "summary": "Guerrier semi-orc des Héros de Clairval, mort à Krinekov.",
+      "tags": [
+        "npc",
+        "demi-orc",
+        "guerrier",
+        "heros-de-clairval"
+      ],
+      "data": {
+        "people": "semi-orc",
+        "profile": "guerrier"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Karoom",
+      "page_start": 331,
+      "page_end": 339,
+      "body": "Prêtre nain, Héros de Clairval. Renvoie le spectre de Sigméus dans les limbes (cinq mois avant le scénario) puis fait mander Maëla. Meurt avec Krush face à Pestifilax. Ramené à la non-vie par Maëla.",
+      "summary": "Prêtre nain des Héros de Clairval.",
+      "tags": [
+        "npc",
+        "nain",
+        "pretre",
+        "heros-de-clairval"
+      ],
+      "data": {
+        "people": "nain",
+        "profile": "prêtre"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Gizmo",
+      "page_start": 338,
+      "page_end": 342,
+      "body": "Gnome, intendant du château de Clairval. Mène les PJ à Roderick. Apporte une potion de récupération majeure à chacun (3d8+3 PV, ou 3 doses de 1d8+1). Lance un sort qui rend les armes des PJ magiques (lueur dorée) au début du combat contre l'incarnation. Peut faire boire une potion après l'explosion.",
+      "summary": "Intendant gnome du château.",
+      "tags": [
+        "npc",
+        "gnome"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "Requiem pour Clairval",
+      "data": {
+        "people": "gnome",
+        "occupation": "intendant"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Madame Carillon",
+      "page_start": 337,
+      "page_end": 337,
+      "body": "Bourgmestre du village de Clairval. Les PJ doivent la faire venir pour convaincre d'évacuer le village vers le château (CHA persuasion difficulté 15).",
+      "summary": "Bourgmestre de Clairval.",
+      "tags": [
+        "npc",
+        "clairval"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "Requiem pour Clairval",
+      "data": {
+        "occupation": "bourgmestre"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Pâquerette",
+      "page_start": 338,
+      "page_end": 338,
+      "body": "Gardienne des douves du château de Clairval. Trois énormes têtes reptiliennes perchées au bout de longs cous. Dévore les zombies tombés dans l'eau noire. Quand elle est fâchée, distingue mal amis et ennemis : une tête peut tenter de happer un PJ sur le chemin de ronde. Pas de fiche de combat dans le texte.",
+      "summary": "Hydre (?) des douves, alliée instable du château.",
+      "tags": [
+        "npc",
+        "creature"
+      ],
+      "parent_kind": "scenario",
+      "parent_name": "Requiem pour Clairval"
+    },
+    {
+      "kind": "npc",
+      "name": "Pestifilax",
+      "page_start": 332,
+      "page_end": 332,
+      "body": "Terrible dragon de la cathédrale inversée de Krinekov (monts Vierges). Krush et Karoom succombent en l'affrontant, lui et ses séides. Pas de fiche dans ce chapitre.",
+      "summary": "Dragon mentionné dans l'introduction MJ.",
+      "tags": [
+        "npc",
+        "dragon"
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Crâne de Zamorda",
+      "page_start": 331,
+      "page_end": 342,
+      "body": "Artéfact maudit qui a rongé l'âme du nécromant Sigméus et le rappelle à travers les limbes. Peu ou prou l'équivalent de l'Anneau unique pour Sauron. Maëla y succombe. Félindra le dérobe dans un sac : « n'ouvre pas le sac ». Émet une lumière violette, voix féminine qui pousse au sommeil et à ouvrir le sac. Maëla voit à travers ses « yeux » (clairvoyance). Après les menottes, les ténèbres quittent Maëla et forment l'incarnation. Détruit dans l'explosion finale (3d6 DM dans la pièce) ; tous les zombies s'écroulent.",
+      "summary": "Relique nécromantique centrale des deux scénarios.",
+      "tags": [
+        "magic_item",
+        "artefact",
+        "maudit"
+      ],
+      "data": {
+        "category": "artefact",
+        "rarity_or_level": "puissant / maudit"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Menottes en sombracier",
+      "page_start": 339,
+      "page_end": 341,
+      "body": "Métal appelé aussi « le fléau des mages ». Roderick les fait apparaître et disparaître. Empêchent Maëla de lancer des sorts. Annulent ses protections magiques (-10 DEF, annule Armure de pierre). Au contact de l'ectoplasme, émettent des étincelles et chauffent à blanc ; Maëla s'en sert pour étrangler l'incarnation.",
+      "summary": "Entraves anti-mages du baron Roderick.",
+      "tags": [
+        "magic_item",
+        "sombracier"
+      ],
+      "data": {
+        "category": "entraves",
+        "rarity_or_level": "sombracier"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Eugénie Falkkenblitz, dite « La Foudre »",
+      "page_start": 348,
+      "page_end": 348,
+      "body": "Gnome, arquebusier niveau 1.\n\nAGI +3, CON +1, FOR -1, PER +0, CHA +0, INT +2, VOL +1.\nDR 3d8, PC 3, PM 2.\nDEF 17, PV 9, Init 11 (16).\nAttaque au contact +0, à distance +4, magique +2.\n\n- Pétoire (20 m) +4 · DM d10\n- Épée courte +0 · DM 1d6-1\n\nVoies : Voie de l'artilleur rang 1 (Mécanismes) ; Voie du pistolero rang 1 (Plus vite que son ombre) ; Voie du gnome rang 1 (Don étrange — Murmures dans le vent).\n\nÉquipement : armure de cuir clouté. Sac à dos, dague, épée courte, pétoire, un briquet à silex, une couverture, une gamelle et une bourse de 7 pa, une outre, une torche.",
+      "summary": "Gnome, arquebusier niveau 1",
+      "subtitle": "Gnome, arquebusier niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "gnome",
+        "profile": "arquebusier",
+        "level": 1,
+        "stats": {
+          "AGI": 3,
+          "CON": 1,
+          "FOR": -1,
+          "PER": 0,
+          "CHA": 0,
+          "INT": 2,
+          "VOL": 1
+        },
+        "dr": "3d8",
+        "pc": 3,
+        "pm": 2,
+        "defense": 17,
+        "hp": 9,
+        "initiative": "11 (16)",
+        "attaque_contact": 0,
+        "attaque_distance": 4,
+        "attaque_magique": 2,
+        "attacks": [
+          {
+            "name": "Pétoire",
+            "bonus": "+4",
+            "damage": "d10",
+            "notes": "20 m"
+          },
+          {
+            "name": "Épée courte",
+            "bonus": "+0",
+            "damage": "1d6-1"
+          }
+        ],
+        "voies": [
+          "Voie de l'artilleur rang 1 (Mécanismes)",
+          "Voie du pistolero rang 1 (Plus vite que son ombre)",
+          "Voie du gnome rang 1 (Don étrange — Murmures dans le vent)"
+        ],
+        "equipment": "armure de cuir clouté, sac à dos, dague, épée courte, pétoire, briquet à silex, couverture, gamelle, bourse 7 pa, outre, torche"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Korléon Chanterune",
+      "page_start": 348,
+      "page_end": 348,
+      "body": "Nain, barde niveau 1.\n\nAGI +0, CON +1, FOR +2, PER +0, CHA +2, INT +0, VOL +2.\nDR 3d8, PC 5, PM 3.\nDEF 12, PV 9, Init 10.\nAttaque au contact +3, à distance +1, magique +3.\n\n- Épée longue +3 · DM 1d8+2\n- Dague (5 m) +1 · DM d4\n\nVoies : Voie du musicien rang 1 (Chant des héros) ; Voie du vagabond rang 1 (Rumeurs et légendes) ; Voie du nain rang 1 (Habitant des tunnels).\n\nÉquipement : armure de cuir. Sac à dos, dague, épée longue, un briquet à silex, une couverture, une gamelle et une bourse de 7 pa, une outre, une torche, violon.",
+      "summary": "Nain, barde niveau 1",
+      "subtitle": "Nain, barde niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "nain",
+        "profile": "barde",
+        "level": 1,
+        "stats": {
+          "AGI": 0,
+          "CON": 1,
+          "FOR": 2,
+          "PER": 0,
+          "CHA": 2,
+          "INT": 0,
+          "VOL": 2
+        },
+        "dr": "3d8",
+        "pc": 5,
+        "pm": 3,
+        "defense": 12,
+        "hp": 9,
+        "initiative": 10,
+        "attaque_contact": 3,
+        "attaque_distance": 1,
+        "attaque_magique": 3,
+        "attacks": [
+          {
+            "name": "Épée longue",
+            "bonus": "+3",
+            "damage": "1d8+2"
+          },
+          {
+            "name": "Dague",
+            "bonus": "+1",
+            "damage": "d4",
+            "notes": "5 m"
+          }
+        ],
+        "voies": [
+          "Voie du musicien rang 1 (Chant des héros)",
+          "Voie du vagabond rang 1 (Rumeurs et légendes)",
+          "Voie du nain rang 1 (Habitant des tunnels)"
+        ],
+        "equipment": "armure de cuir, sac à dos, dague, épée longue, briquet à silex, couverture, gamelle, bourse 7 pa, outre, torche, violon"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Wilibert Sûreté",
+      "page_start": 349,
+      "page_end": 349,
+      "body": "Gnome, voleur niveau 1.\n\nAGI +2, CON +1, FOR +0, PER +2, CHA +2, INT +0, VOL +0.\nDR 3d8, PC 5, PM 1.\nDEF 14, PV 9, Init 12.\nAttaque au contact +1, à distance +3, magique +1.\n\n- Épée courte +1 · DM 1d6\n- Couteaux de lancer (10 m) +3 · DM 1d4+1\n\nVoies : Voie de l'assassin rang 1 (Discrétion) ; Voie du roublard rang 1 (Doigts agiles) ; Voie du gnome rang 1 (Don étrange — Mirage).\n\nÉquipement : armure de cuir. Sac à dos, couteaux de lancer, épée courte, un briquet à silex, une couverture, une gamelle et une bourse de 7 pa, une outre, une torche.",
+      "summary": "Gnome, voleur niveau 1",
+      "subtitle": "Gnome, voleur niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "gnome",
+        "profile": "voleur",
+        "level": 1,
+        "stats": {
+          "AGI": 2,
+          "CON": 1,
+          "FOR": 0,
+          "PER": 2,
+          "CHA": 2,
+          "INT": 0,
+          "VOL": 0
+        },
+        "dr": "3d8",
+        "pc": 5,
+        "pm": 1,
+        "defense": 14,
+        "hp": 9,
+        "initiative": 12,
+        "attaque_contact": 1,
+        "attaque_distance": 3,
+        "attaque_magique": 1,
+        "attacks": [
+          {
+            "name": "Épée courte",
+            "bonus": "+1",
+            "damage": "1d6"
+          },
+          {
+            "name": "Couteaux de lancer",
+            "bonus": "+3",
+            "damage": "1d4+1",
+            "notes": "10 m"
+          }
+        ],
+        "voies": [
+          "Voie de l'assassin rang 1 (Discrétion)",
+          "Voie du roublard rang 1 (Doigts agiles)",
+          "Voie du gnome rang 1 (Don étrange — Mirage)"
+        ],
+        "equipment": "armure de cuir, sac à dos, couteaux de lancer, épée courte, briquet à silex, couverture, gamelle, bourse 7 pa, outre, torche"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Kamshaka",
+      "page_start": 349,
+      "page_end": 349,
+      "body": "Demi-orc, rôdeur niveau 1.\n\nAGI +3, CON +1, FOR +2, PER +2, CHA -1, INT -1, VOL +0.\nDR 4d8, PC 1.\nDEF 16, PV 9, Init 13.\nAttaque au contact +3, à distance +4, magique +1.\n\n- Arc long +4 · DM 1d8+2\n- Épée courte +3 · DM 1d6+2\n- Dague de lancer (5 m) +4 · DM 1d4\n\nVoies : Voie de la survie rang 1 (Survie) ; Voie de l'archer rang 1 (Archer émérite) ; Voie du demi-orc rang 1 (Impressionnant).\n\nÉquipement : arc long, épée courte, dague, armure de cuir renforcé. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Demi-orc, rôdeur niveau 1",
+      "subtitle": "Demi-orc, rôdeur niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "demi-orc",
+        "profile": "rôdeur",
+        "level": 1,
+        "stats": {
+          "AGI": 3,
+          "CON": 1,
+          "FOR": 2,
+          "PER": 2,
+          "CHA": -1,
+          "INT": -1,
+          "VOL": 0
+        },
+        "dr": "4d8",
+        "pc": 1,
+        "defense": 16,
+        "hp": 9,
+        "initiative": 13,
+        "attaque_contact": 3,
+        "attaque_distance": 4,
+        "attaque_magique": 1,
+        "attacks": [
+          {
+            "name": "Arc long",
+            "bonus": "+4",
+            "damage": "1d8+2"
+          },
+          {
+            "name": "Épée courte",
+            "bonus": "+3",
+            "damage": "1d6+2"
+          },
+          {
+            "name": "Dague de lancer",
+            "bonus": "+4",
+            "damage": "1d4",
+            "notes": "5 m"
+          }
+        ],
+        "voies": [
+          "Voie de la survie rang 1 (Survie)",
+          "Voie de l'archer rang 1 (Archer émérite)",
+          "Voie du demi-orc rang 1 (Impressionnant)"
+        ],
+        "equipment": "arc long, épée courte, dague, armure de cuir renforcé, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Lhagva fille de Nuala",
+      "page_start": 350,
+      "page_end": 350,
+      "body": "Humaine, barbare niveau 1.\n\nAGI +1, CON +2, FOR +3, PER +1, CHA -1, INT +0, VOL +1.\nDR 4d10, PC 2.\nDEF 16, PV 15, Init 14.\nAttaque au contact +4, à distance +2, magique +2.\n\n- Épée courbe +4 · DM 1d8+3\n- Javelot (portée 20 m) +2 · DM 1d6\n\nVoies : Voie du pourfendeur rang 1 (Réflexes éclair) ; Voie de la rage rang 1 (Cri de guerre) ; Voie de l'humain rang 1 (Diversité).\n\nÉquipement : cimeterre, bouclier, 2 javelots, dague, armure de cuir. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Humaine, barbare niveau 1",
+      "subtitle": "Humaine, barbare niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "humain",
+        "profile": "barbare",
+        "level": 1,
+        "stats": {
+          "AGI": 1,
+          "CON": 2,
+          "FOR": 3,
+          "PER": 1,
+          "CHA": -1,
+          "INT": 0,
+          "VOL": 1
+        },
+        "dr": "4d10",
+        "pc": 2,
+        "defense": 16,
+        "hp": 15,
+        "initiative": 14,
+        "attaque_contact": 4,
+        "attaque_distance": 2,
+        "attaque_magique": 2,
+        "attacks": [
+          {
+            "name": "Épée courbe",
+            "bonus": "+4",
+            "damage": "1d8+3"
+          },
+          {
+            "name": "Javelot",
+            "bonus": "+2",
+            "damage": "1d6",
+            "notes": "20 m"
+          }
+        ],
+        "voies": [
+          "Voie du pourfendeur rang 1 (Réflexes éclair)",
+          "Voie de la rage rang 1 (Cri de guerre)",
+          "Voie de l'humain rang 1 (Diversité)"
+        ],
+        "equipment": "cimeterre, bouclier, 2 javelots, dague, armure de cuir, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Mahardil al Issoum",
+      "page_start": 350,
+      "page_end": 350,
+      "body": "Humain, chevalier niveau 1.\n\nAGI +1, CON +2, FOR +2, PER +0, CHA +2, INT +0, VOL +1.\nDR 4d10, PC 4.\nDEF 18, PV 12, Init 10.\nAttaque au contact +3, à distance +2, magique +2.\n\n- Épée longue +3 · DM 1d8+2\n- Lance de cavalerie +3 · DM 2d6+2\n\nVoies : Voie du cavalier rang 1 (Fidèle monture) ; Voie du preux rang 1 (Ignorer la douleur) ; Voie de l'humain rang 1 (Diversité — Nomade du désert).\n\nÉquipement : fidèle monture, épée longue, grand bouclier, lance de cavalerie, dague, cotte de mailles. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Humain, chevalier niveau 1",
+      "subtitle": "Humain, chevalier niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "humain",
+        "profile": "chevalier",
+        "level": 1,
+        "stats": {
+          "AGI": 1,
+          "CON": 2,
+          "FOR": 2,
+          "PER": 0,
+          "CHA": 2,
+          "INT": 0,
+          "VOL": 1
+        },
+        "dr": "4d10",
+        "pc": 4,
+        "defense": 18,
+        "hp": 12,
+        "initiative": 10,
+        "attaque_contact": 3,
+        "attaque_distance": 2,
+        "attaque_magique": 2,
+        "attacks": [
+          {
+            "name": "Épée longue",
+            "bonus": "+3",
+            "damage": "1d8+2"
+          },
+          {
+            "name": "Lance de cavalerie",
+            "bonus": "+3",
+            "damage": "2d6+2"
+          }
+        ],
+        "voies": [
+          "Voie du cavalier rang 1 (Fidèle monture)",
+          "Voie du preux rang 1 (Ignorer la douleur)",
+          "Voie de l'humain rang 1 (Diversité — Nomade du désert)"
+        ],
+        "equipment": "fidèle monture, épée longue, grand bouclier, lance de cavalerie, dague, cotte de mailles, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Isildenn d'Alistaïr",
+      "page_start": 351,
+      "page_end": 351,
+      "body": "Elfe haut, guerrier niveau 1.\n\nAGI +1, CON +2, FOR +2, PER +0, CHA +1, INT +0, VOL +0.\nDR 4d10, PC 3.\nDEF 16, PV 15, Init 10.\nAttaque au contact +3, à distance +2, magique +1.\n\n- Vivelame (critique 19-20) +4 · DM 1d10+2\n\nVoies : Voie du maître d'armes rang 1 (armes de prédilection — épées) ; Voie de la résistance rang 1 (Robustesse) ; Voie de l'elfe haut rang 1 (Lumière intérieure).\n\nÉquipement : vivelame (arme à deux mains), dague, cotte de mailles. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Elfe haut, guerrier niveau 1",
+      "subtitle": "Elfe haut, guerrier niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "elfe haut",
+        "profile": "guerrier",
+        "level": 1,
+        "stats": {
+          "AGI": 1,
+          "CON": 2,
+          "FOR": 2,
+          "PER": 0,
+          "CHA": 1,
+          "INT": 0,
+          "VOL": 0
+        },
+        "dr": "4d10",
+        "pc": 3,
+        "defense": 16,
+        "hp": 15,
+        "initiative": 10,
+        "attaque_contact": 3,
+        "attaque_distance": 2,
+        "attaque_magique": 1,
+        "attacks": [
+          {
+            "name": "Vivelame",
+            "bonus": "+4",
+            "damage": "1d10+2",
+            "notes": "critique 19-20, arme à deux mains"
+          }
+        ],
+        "voies": [
+          "Voie du maître d'armes rang 1 (armes de prédilection — épées)",
+          "Voie de la résistance rang 1 (Robustesse)",
+          "Voie de l'elfe haut rang 1 (Lumière intérieure)"
+        ],
+        "equipment": "vivelame, dague, cotte de mailles, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Ionas Melenwë",
+      "page_start": 351,
+      "page_end": 351,
+      "body": "Elfe haut, ensorceleur niveau 1.\n\nAGI +1, CON +1, FOR -2, PER +0, CHA +4, INT +0, VOL +2.\nDR 3d6, PC 6, PM 5.\nDEF 12, PV 7, Init 11.\nAttaque au contact -1, à distance +2, magique +3.\n\n- Bâton ferré -1 · DM 1d6-2\n\nVoies : Voie de l'air rang 1 (Murmure dans le vent) ; Voie de l'invocation rang 2 (Choc et Serviteur invisible) ; Voie du mage rang 1 (Lumière intérieure + Occultisme).\n\nÉquipement : bâton ferré, dague, vêtement luxueux. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Elfe haut, ensorceleur niveau 1",
+      "subtitle": "Elfe haut, ensorceleur niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "elfe haut",
+        "profile": "ensorceleur",
+        "level": 1,
+        "stats": {
+          "AGI": 1,
+          "CON": 1,
+          "FOR": -2,
+          "PER": 0,
+          "CHA": 4,
+          "INT": 0,
+          "VOL": 2
+        },
+        "dr": "3d6",
+        "pc": 6,
+        "pm": 5,
+        "defense": 12,
+        "hp": 7,
+        "initiative": 11,
+        "attaque_contact": -1,
+        "attaque_distance": 2,
+        "attaque_magique": 3,
+        "attacks": [
+          {
+            "name": "Bâton ferré",
+            "bonus": "-1",
+            "damage": "1d6-2"
+          }
+        ],
+        "voies": [
+          "Voie de l'air rang 1 (Murmure dans le vent)",
+          "Voie de l'invocation rang 2 (Choc et Serviteur invisible)",
+          "Voie du mage rang 1 (Lumière intérieure + Occultisme)"
+        ],
+        "equipment": "bâton ferré, dague, vêtement luxueux, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Helga Martellame",
+      "page_start": 352,
+      "page_end": 352,
+      "body": "Naine, forgesort niveau 1.\n\nAGI +0, CON +2, FOR +2, PER +0, CHA -1, INT +2, VOL +2.\nDR 4d6, PC 1, PM 4.\nDEF 14 (Cuir +2, Runes +2), PV 8, Init 10.\nAttaque au contact +3, à distance +2, magique +3.\n\n- Marteau +3 · DM 1d6+2 (+2 si enflammé)\n\nVoies : Voie du métal rang 2 (Morsure de la forge, Métal brûlant) ; Voie des runes rang 1 (Runes de défense) ; Voie du nain rang 1 (Habitant des tunnels).\n\nÉquipement : marteau, dague, armure de cuir. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Naine, forgesort niveau 1",
+      "subtitle": "Naine, forgesort niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "nain",
+        "profile": "forgesort",
+        "level": 1,
+        "stats": {
+          "AGI": 0,
+          "CON": 2,
+          "FOR": 2,
+          "PER": 0,
+          "CHA": -1,
+          "INT": 2,
+          "VOL": 2
+        },
+        "dr": "4d6",
+        "pc": 1,
+        "pm": 4,
+        "defense": 14,
+        "defense_notes": "Cuir +2, Runes +2",
+        "hp": 8,
+        "initiative": 10,
+        "attaque_contact": 3,
+        "attaque_distance": 2,
+        "attaque_magique": 3,
+        "attacks": [
+          {
+            "name": "Marteau",
+            "bonus": "+3",
+            "damage": "1d6+2",
+            "notes": "+2 si enflammé"
+          }
+        ],
+        "voies": [
+          "Voie du métal rang 2 (Morsure de la forge, Métal brûlant)",
+          "Voie des runes rang 1 (Runes de défense)",
+          "Voie du nain rang 1 (Habitant des tunnels)"
+        ],
+        "equipment": "marteau, dague, armure de cuir, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Keyrel de Xélys",
+      "page_start": 352,
+      "page_end": 352,
+      "body": "Demi-elfe, magicien niveau 1.\n\nAGI +1, CON +1, FOR -1, PER -1, CHA +1, INT +3, VOL +2.\nDR 3d6, PC 3, PM 5.\nDEF 11, PV 7, Init 9.\nAttaque au contact +0, à distance +2, magique +3.\n\n- Dague +0 · DM 1d4-1\n\nVoies : Voie de la magie destructrice rang 2 (Arc de feu, Saper les forces) ; Voie de la magie protectrice rang 1 (Armure de mana) ; Voie du mage rang 1 (Occultisme + Diversité [Citadin]).\n\nÉquipement : dague, grimoire de magie. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Demi-elfe, magicien niveau 1",
+      "subtitle": "Demi-elfe, magicien niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "demi-elfe",
+        "profile": "magicien",
+        "level": 1,
+        "stats": {
+          "AGI": 1,
+          "CON": 1,
+          "FOR": -1,
+          "PER": -1,
+          "CHA": 1,
+          "INT": 3,
+          "VOL": 2
+        },
+        "dr": "3d6",
+        "pc": 3,
+        "pm": 5,
+        "defense": 11,
+        "hp": 7,
+        "initiative": 9,
+        "attaque_contact": 0,
+        "attaque_distance": 2,
+        "attaque_magique": 3,
+        "attacks": [
+          {
+            "name": "Dague",
+            "bonus": "+0",
+            "damage": "1d4-1"
+          }
+        ],
+        "voies": [
+          "Voie de la magie destructrice rang 2 (Arc de feu, Saper les forces)",
+          "Voie de la magie protectrice rang 1 (Armure de mana)",
+          "Voie du mage rang 1 (Occultisme + Diversité [Citadin])"
+        ],
+        "equipment": "dague, grimoire de magie, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Tybur Prestepied",
+      "page_start": 353,
+      "page_end": 353,
+      "body": "Halfelin, sorcier niveau 1.\n\nAGI +1, CON +1, FOR -1, PER +0, CHA -1, INT +2, VOL +4.\nDR 3d6, PC 1, PM 6.\nDEF 15 (+1 AGI, +1 halfelin, +3 armure d'os), PV 7, Init 10.\nAttaque au contact +0, à distance +2, magique +5.\n\n- Dague +0 · DM 1d4-1\n\nVoies : Voie de l'outre-tombe rang 2 (Un pied dans la tombe, Armure d'os) ; Voie de la sombre magie rang 1 (Ténèbres) ; Voie du mage rang 1 (Occultisme + Petite taille).\n\nÉquipement : dague, nécessaire d'écriture, parchemins anciens. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Halfelin, sorcier niveau 1",
+      "subtitle": "Halfelin, sorcier niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "halfelin",
+        "profile": "sorcier",
+        "level": 1,
+        "stats": {
+          "AGI": 1,
+          "CON": 1,
+          "FOR": -1,
+          "PER": 0,
+          "CHA": -1,
+          "INT": 2,
+          "VOL": 4
+        },
+        "dr": "3d6",
+        "pc": 1,
+        "pm": 6,
+        "defense": 15,
+        "defense_notes": "+1 AGI, +1 halfelin, +3 armure d'os",
+        "hp": 7,
+        "initiative": 10,
+        "attaque_contact": 0,
+        "attaque_distance": 2,
+        "attaque_magique": 5,
+        "attacks": [
+          {
+            "name": "Dague",
+            "bonus": "+0",
+            "damage": "1d4-1"
+          }
+        ],
+        "voies": [
+          "Voie de l'outre-tombe rang 2 (Un pied dans la tombe, Armure d'os)",
+          "Voie de la sombre magie rang 1 (Ténèbres)",
+          "Voie du mage rang 1 (Occultisme + Petite taille)"
+        ],
+        "equipment": "dague, nécessaire d'écriture, parchemins anciens, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Skodja Brandebois",
+      "page_start": 353,
+      "page_end": 353,
+      "body": "Demi-orc, druidesse niveau 1.\n\nAGI +2, CON +1, FOR +2, PER +2, CHA -1, INT -1, VOL +2.\nDR 4d8, PC 1, PM 3.\nDEF 15, PV 9, Init 15.\nAttaque au contact +3, à distance +3, magique +3.\n\n- Épieu +3 · DM 1d10+3\n- Arc court (20 m) +3 · DM 1d6\n\nVoies : Voie du fauve rang 1 (Vitesse du félin) ; Voie du protecteur rang 1 (Baies magiques) ; Voie du demi-orc rang 1 (Impressionnant).\n\nÉquipement : épieu, arc court, armure de cuir. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Demi-orc, druidesse niveau 1",
+      "subtitle": "Demi-orc, druidesse niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "demi-orc",
+        "profile": "druide",
+        "level": 1,
+        "stats": {
+          "AGI": 2,
+          "CON": 1,
+          "FOR": 2,
+          "PER": 2,
+          "CHA": -1,
+          "INT": -1,
+          "VOL": 2
+        },
+        "dr": "4d8",
+        "pc": 1,
+        "pm": 3,
+        "defense": 15,
+        "hp": 9,
+        "initiative": 15,
+        "attaque_contact": 3,
+        "attaque_distance": 3,
+        "attaque_magique": 3,
+        "attacks": [
+          {
+            "name": "Épieu",
+            "bonus": "+3",
+            "damage": "1d10+3"
+          },
+          {
+            "name": "Arc court",
+            "bonus": "+3",
+            "damage": "1d6",
+            "notes": "20 m"
+          }
+        ],
+        "voies": [
+          "Voie du fauve rang 1 (Vitesse du félin)",
+          "Voie du protecteur rang 1 (Baies magiques)",
+          "Voie du demi-orc rang 1 (Impressionnant)"
+        ],
+        "equipment": "épieu, arc court, armure de cuir, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Yellen Ëllee",
+      "page_start": 354,
+      "page_end": 354,
+      "body": "Elfe sylvaine, moine niveau 1.\n\nAGI +3, CON +1, FOR +0, PER +2, CHA +0, INT -1, VOL +2.\nDR 3d6, PC 2.\nDEF 13, PV 9, Init 15.\nAttaque au contact +1, à distance +4, magique +3.\n\n- Poignards +4 · DM 1d6\n\nVoies : Voie du poignard (voie du poing) rang 1 (Poignards de fer) ; Voie du vent rang 1 (Pas du vent) ; Voie de l'elfe sylvain rang 1 (Lumière des étoiles).\n\nÉquipement : 2 poignards courbes. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Elfe sylvaine, moine niveau 1",
+      "subtitle": "Elfe sylvaine, moine niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "elfe sylvain",
+        "profile": "moine",
+        "level": 1,
+        "stats": {
+          "AGI": 3,
+          "CON": 1,
+          "FOR": 0,
+          "PER": 2,
+          "CHA": 0,
+          "INT": -1,
+          "VOL": 2
+        },
+        "dr": "3d6",
+        "pc": 2,
+        "defense": 13,
+        "hp": 9,
+        "initiative": 15,
+        "attaque_contact": 1,
+        "attaque_distance": 4,
+        "attaque_magique": 3,
+        "attacks": [
+          {
+            "name": "Poignards",
+            "bonus": "+4",
+            "damage": "1d6"
+          }
+        ],
+        "voies": [
+          "Voie du poignard (voie du poing) rang 1 (Poignards de fer)",
+          "Voie du vent rang 1 (Pas du vent)",
+          "Voie de l'elfe sylvain rang 1 (Lumière des étoiles)"
+        ],
+        "equipment": "2 poignards courbes, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "npc",
+      "name": "Elluwëe Chanrëa",
+      "page_start": 354,
+      "page_end": 354,
+      "body": "Elfe haute, prêtresse niveau 1.\n\nAGI +0, CON +1, FOR +0, PER +0, CHA +3, INT +0, VOL +2.\nDR 3d8, PC 5, PM 3.\nDEF 12, PV 9, Init 10.\nAttaque au contact +1, à distance +1, magique +3.\n\n- Bâton +1 · DM 1d6\n\nVoies : Voie des soins rang 1 (Récupération mineure) ; Voie de la spiritualité rang 1 (Vêtements sacrés) ; Voie de l'elfe haut rang 1 (Lumière intérieure).\n\nÉquipement : bâton ferré. Sac à dos, une couverture, une torche, un briquet à silex, une outre, une gamelle et une bourse de 7 pa.",
+      "summary": "Elfe haute, prêtresse niveau 1",
+      "subtitle": "Elfe haute, prêtresse niveau 1",
+      "tags": [
+        "pretire",
+        "niveau-1"
+      ],
+      "data": {
+        "people": "elfe haut",
+        "profile": "prêtre",
+        "level": 1,
+        "stats": {
+          "AGI": 0,
+          "CON": 1,
+          "FOR": 0,
+          "PER": 0,
+          "CHA": 3,
+          "INT": 0,
+          "VOL": 2
+        },
+        "dr": "3d8",
+        "pc": 5,
+        "pm": 3,
+        "defense": 12,
+        "hp": 9,
+        "initiative": 10,
+        "attaque_contact": 1,
+        "attaque_distance": 1,
+        "attaque_magique": 3,
+        "attacks": [
+          {
+            "name": "Bâton",
+            "bonus": "+1",
+            "damage": "1d6"
+          }
+        ],
+        "voies": [
+          "Voie des soins rang 1 (Récupération mineure)",
+          "Voie de la spiritualité rang 1 (Vêtements sacrés)",
+          "Voie de l'elfe haut rang 1 (Lumière intérieure)"
+        ],
+        "equipment": "bâton ferré, sac à dos, couverture, torche, briquet à silex, outre, gamelle, bourse 7 pa"
+      }
+    },
+    {
+      "kind": "setting",
+      "name": "Clairval",
+      "page_start": 320,
+      "page_end": 342,
+      "body": "Village et château de la baronnie de Clairval, principauté d'Arly (Terres d'Osgild). Destination des PJ dans les deux scénarios. Le baron Roderick Finelame y réside. Palissade villageoise, bourgmestre madame Carillon. Château : pont-levis, douves (Pâquerette), crypte où le spectre de Sigméus a repris forme. Recrutement d'aventuriers pour Fort Boueux et la forêt de Myrviel.",
+      "summary": "Village et château du baron Roderick, principauté d'Arly.",
+      "tags": [
+        "setting",
+        "arly",
+        "osgild"
+      ]
+    },
+    {
+      "kind": "setting",
+      "name": "Auberge du Vieux Pont",
+      "page_start": 320,
+      "page_end": 329,
+      "body": "Étape à l'entrée du bois de Myrviel, nommée d'après le vieux pont. Salle commune, cuisine, réserve, écurie, 6 chambres. Point de départ de La Tour errante : occupants disparus, chiens enragés, foudre. Les PJ y reviennent (ou croient y revenir) à la scène 6.",
+      "summary": "Auberge d'étape, théâtre de La Tour errante.",
+      "tags": [
+        "setting",
+        "tour-errante"
+      ]
+    },
+    {
+      "kind": "setting",
+      "name": "Tour errante",
+      "page_start": 319,
+      "page_end": 328,
+      "body": "Tour ensorcelée de Sigméus le Noir, dernière flèche d'un dispositif d'asservissement. Apparaît aléatoirement dans la forêt, s'éloigne comme un arc-en-ciel. Réactivée accidentellement par Maëla. Clairière, porte de métal, blocs drainants au rdC, gardien de pierre au 1er étage, cristal et diapasons au sommet. Voyage dans l'espace et le temps.",
+      "summary": "Tour maudite mobile des alentours de Clairval.",
+      "tags": [
+        "setting",
+        "tour-errante"
+      ]
+    },
+    {
+      "kind": "setting",
+      "name": "Forêt de Myrviel",
+      "page_start": 320,
+      "page_end": 342,
+      "body": "Forêt / bois de Myrviel, baronnie de Clairval. Les PJ y entrent via l'auberge du Vieux Pont. Orcs à la frontière nord. À l'ouest : monts Vierges. La forêt de Clairval (scénario Requiem) en est le cadre immédiat.",
+      "summary": "Forêt défendue par le baron Roderick.",
+      "tags": [
+        "setting",
+        "clairval"
+      ]
+    },
+    {
+      "kind": "setting",
+      "name": "Monts Vierges",
+      "page_start": 332,
+      "page_end": 342,
+      "body": "Massif à l'ouest de la forêt de Myrviel. Cathédrale inversée de Krinekov. Maëla y établit un royaume maléfique, soumet orcs et barbares. Cadavres de zombies issus de ces populations.",
+      "summary": "Montagnes de Krinekov et du royaume ténébreux de Maëla.",
+      "tags": [
+        "setting",
+        "osgild"
+      ]
+    },
+    {
+      "kind": "setting",
+      "name": "Cathédrale inversée de Krinekov",
+      "page_start": 332,
+      "page_end": 332,
+      "body": "Lieu des monts Vierges où Maëla, Krush et Karoom trouvent le crâne de Zamorda. Krush et Karoom y meurent face au dragon Pestifilax et ses séides ; Maëla y succombe au crâne.",
+      "summary": "Site de la chute des Héros de Clairval.",
+      "tags": [
+        "setting"
+      ]
+    },
+    {
+      "kind": "setting",
+      "name": "Fort Boueux",
+      "page_start": 332,
+      "page_end": 332,
+      "body": "Zone attaquée par des orcs ; le baron Roderick y recrute des aventuriers. Mentionné comme motif de voyage des PJ vers Clairval.",
+      "summary": "Avant-poste sous attaque orc.",
+      "tags": [
+        "setting",
+        "clairval"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Index des sorts par rang",
+      "page_start": 343,
+      "page_end": 347,
+      "body": "Liste d'aide pour créer des PNJ magiciens ou retrouver un sort. Magie profane (famille des mages), sorts de barde, et certains sorts de voies de prestige de mystique utilisables par des magiciens à haut niveau.\n\n## Rang 1 (17 sorts)\n- Arc de feu (A)* — p.103 — Voie de la magie destructrice (Magicien)\n- Armure de mana (M)* — p.105 — Voie de la magie protectrice (Magicien)\n- Asphyxie (A)* — p.104 — Voie de la magie élémentaire (Magicien)\n- Chant des héros (L)* — p.67 — Voie du musicien (Barde)\n- Choc (A)* — p.96 — Voie de l'invocation (Ensorceleur)\n- Divination (L)* — p.93 — Voie de la divination (Ensorceleur)\n- Injonction (A)* — p.94 — Voie de la divination (Envouteur)\n- Lumière (L)* — p.106 — Voie de la magie universelle (Magicien)\n- Malédiction (M) ou (L)* — p.108 — Voie du démon (Sorcier)\n- Mirage (L)* — p.95 — Voie des illusions (Ensorceleur)\n- Morsure de la forge (M)* — p.99 — Voie du métal (Forgesort)\n- Murmures dans le vent (G)* — p.93 — Voie de l'air (Ensorceleur)\n- Peau d'écorce (M)* — p.117 — Voie des végétaux (Druide)\n- Projectile de mana (A)* — p.103 — Voie de la magie des arcanes (Magicien)\n- Saignements (A)* — p.110 — Voie du sang (Sorcier)\n- Ténèbres (L)* — p.111 — Voie de la sombre magie (Sorcier)\n- Un pied dans la tombe (A)* — p.109 — Voie l'outre-tombe (Sorcier)\n\n## Rang 2 (19 sorts)\n- Beauté de la succube (L)* — p.108 — Voie du démon (Sorcier)\n- Chant de réconfort (L)* — p.67 — Voie du musicien (Barde)\n- Chute ralentie (G)* — p.105 — Voie de la magie protectrice (Magicien)\n- Détection de l'invisible (L)* — p.93 — Voie de la divination (Ensorceleur)\n- Familier (A)* — p.106 — Voie de la magie universelle (Magicien)\n- Image décalée (M)* — p.95 — Voie des illusions (Ensorceleur)\n- Lévitation (M)* — p.103 — Voie de la magie des arcanes (Magicien)\n- Maîtrise de la magie (L)* — p.60 — Voie du mage (peuple)\n- Maîtrise des éléments (M)* — p.104 — Voie de la magie élémentaire (Magicien)\n- Masque mortuaire (M)* — p.109 — Voie de la mort (Sorcier)\n- Métal brûlant (M)* — p.99 — Voie du métal (Forgesort)\n- Ouverture - fermeture (M)* — p.98 — Voie des artefacts (Forgesort)\n- Reptation (M)* — p.111 — Voie de la sombre magie (Sorcier)\n- Rune de puissance (L)* — p.101 — Voie des runes (Forgesort)\n- Sang mordant (M)* — p.110 — Voie du sang (Sorcier)\n- Saper les forces (A)* — p.103 — Voie de la magie destructrice (Magicien)\n- Serviteur invisible (L)* — p.96 — Voie de l'invocation (Ensorceleur)\n- Sommeil (L)* — p.94 — Voie de la divination (Envouteur)\n- Sous tension (M)* — p.93 — Voie de l'air (Ensorceleur)\n\n## Rang 3 (17 sorts)\n- Animation des morts (L)* — p.109 — Voie l'outre-tombe (Sorcier)\n- Arme de mana (A)* — p.96 — Voie de l'invocation (Ensorceleur)\n- Arme élémentaire (A) ou (L)* — p.104 — Voie de la magie élémentaire (Magicien)\n- Attaque sonore (A)* — p.67 — Voie du musicien (Barde)\n- Baiser du vampire (A)* — p.109 — Voie de la mort (Sorcier)\n- Clairvoyance (A)* — p.94 — Voie de l'envoûteur (Ensorceleur)\n- Confusion (A)* — p.94 — Voie de la divination (Envouteur)\n- Déphasage (A)* — p.105 — Voie de la magie protectrice (Magicien)\n- Flèche de feu (A)* — p.104 — Voie de la magie destructrice (Magicien)\n- Forme gazeuse (A)* — p.103 — Voie de la magie des arcanes (Magicien)\n- Invisibilité (A)* ou (L)* — p.106 — Voie de la magie universelle (Magicien)\n- Magnétisme (A)* — p.99 — Voie du métal (Forgesort)\n- Rune de protection (A)* — p.101 — Voie des runes (Forgesort)\n- Sort illusoire (A)* — p.95 — Voie des illusions (Ensorceleur)\n- Strangulation (A)* — p.111 — Voie de la sombre magie (Sorcier)\n- Télékinésie (A)* — p.93 — Voie de l'air (Ensorceleur)\n- Tour de magie (G)* — p.60 — Voie du mage (voie de peuple)\n\n## Rang 4 (38 sorts)\n- Accélération (A)* — p.103 — Voie de la magie des arcanes (Magicien)\n- Amitié (L)* — p.94 — Voie de la divination (Envouteur)\n- Amitié animale (A)* — p.172 — Voie de prestige du maître de la nature (Mystique)\n- Arc-en-ciel (A)* — p.155 — Voie de prestige du chaos (Mage)\n- Aspect du démon (A)* — p.108 — Voie du démon (Sorcier)\n- Bourrasque (A)* — p.168 — Voie de prestige élémentaire de l'air (Mystique)\n- Brouillard (A)* — p.169 — Voie de prestige élémentaire de l'eau (Mystique)\n- Cécité (A)* — p.165 — Voie de prestige de la vision (Mage)\n- Cercle de protection (A)* — p.105 — Voie de la magie protectrice (Magicien)\n- Chant fascinant (A)* — p.162 — Voie de prestige de la magie des mots (Mage)\n- Compréhension des langues (A)* — p.69 — Voie du vagabond (Barde)\n- Coup au but (G) ou (M)* — p.161 — Voie de prestige du mage de guerre (Mage)\n- Ensevelissement (L)* — p.110 — Voie l'outre-tombe (Sorcier)\n- Esprit impénétrable (A)* — p.161 — Voie de prestige de la magie de l'esprit (Mage)\n- Explosion de feu (A)* — p.104 — Voie de la magie destructrice (Magicien)\n- Forme de voyage (A)* — p.170 — Voie de prestige du changeforme (Mystique)\n- Foudre (A)* — p.93 — Voie de l'air (Ensorceleur)\n- Frappe des arcanes (A)* — p.98 — Voie des artefacts (Forgesort)\n- Fuite en avant (A)* — p.164 — Voie de prestige de la magie du temps (Mage)\n- Imitation (A)* — p.95 — Voie des illusions (Ensorceleur)\n- Manteau d'ombre (L)* — p.111 — Voie de la sombre magie (Sorcier)\n- Marteau de la foi (A)* — p.123 — Voie de la guerre sainte (Prêtre)\n- Masque du prédateur (A)* — p.114 — Voie des animaux (Druide)\n- Métal hurlant (A)* — p.99 — Voie du métal (Forgesort)\n- Monture fantôme (L)* — p.158 — Voie de prestige de l'invocation (Mage)\n- Mur de feu (A)* — p.167 — Voie de prestige élémentaire du feu (Mystique)\n- Mur de pierre (A)* — p.167 — Voie de prestige élémentaire de la terre (Mystique)\n- Peur (A) ou (L)* — p.109 — Voie de la mort (Sorcier)\n- Porte dimensionnelle (A)* — p.96 — Voie de l'invocation (Ensorceleur)\n- Premiers soins (A)* — p.171 — Voie de prestige du guérisseur (Mystique)\n- Résistance au mal (M)* — p.174 — Voie de prestige du templier (Mystique)\n- Respiration aquatique (A)* — p.105 — Voie de la magie élémentaire (Magicien)\n- Rituel de sang (A)* — p.111 — Voie du sang (Sorcier)\n- Rune d'énergie (A)* — p.101 — Voie des runes (Forgesort)\n- Statuette (A)* — p.100 — Voie du golem (Forgesort)\n- Verglas (A)* — p.158 — Voie de prestige du gel (Mage)\n- Vol (A)* — p.106 — Voie de la magie universelle (Magicien)\n- Zone de silence (A)* — p.67 — Voie du musicien (Barde)\n\n## Rang 5 (29 sorts)\n- Appel de la foudre (A)* — p.104 — Voie de la magie destructrice (Magicien)\n- Armée des morts (L)* — p.110 — Voie l'outre-tombe (Sorcier)\n- Armure de pierre (A)* — p.105 — Voie de la magie élémentaire (Magicien)\n- Briser les cœurs (A)* — p.109 — Voie de la mort (Sorcier)\n- Chevaucher les nuées (A)* — p.168 — Voie de prestige élémentaire de l'air (Mystique)\n- Danse irrésistible (A)* — p.67 — Voie du musicien (Barde)\n- Déguisement (A)* — p.69 — Voie du vagabond (Barde)\n- Désintégration (A)* — p.103 — Voie de la magie des arcanes (Magicien)\n- Domination (A)* — p.94 — Voie de la divination (Envouteur)\n- Exécution mentale (A)* — p.95 — Voie des illusions (Ensorceleur)\n- Explosion différée (A)* — p.161 — Voie de prestige du mage de guerre (Mage)\n- Forme éthérée (L)* — p.93 — Voie de l'air (Ensorceleur)\n- Interruption du temps (A)* — p.105 — Voie de la magie protectrice (Magicien)\n- Invocation d'un démon (L)* — p.108 — Voie du démon (Sorcier)\n- Lenteur (A)* — p.164 — Voie de prestige de la magie du temps (Mage)\n- Lien de sang (A)* — p.111 — Voie du sang (Sorcier)\n- Lire les pensées (A)* — p.161 — Voie de prestige de la magie de l'esprit (Mage)\n- Litomorphose (A)* — p.168 — Voie de prestige élémentaire de la terre (Mystique)\n- Manoir d'outre-monde (L)* — p.159 — Voie de prestige de l'invocation (Mage)\n- Mur acide (A)* — p.169 — Voie de prestige élémentaire de l'eau (Mystique)\n- Mur arc-en-ciel (A)* — p.155 — Voie de prestige du chaos (Mage)\n- Mur de mana (A)* — p.96 — Voie de l'invocation (Ensorceleur)\n- Œil magique (A)* — p.165 — Voie de prestige de la vision (Mage)\n- Poids des mots (L)* — p.163 — Voie de prestige de la magie des mots (Mage)\n- Quête (L)* — p.174 — Voie de prestige du templier (Mystique)\n- Rune de garde* — p.101 — Voie des runes (Forgesort)\n- Suggestion (A)* — p.68 — Voie de la séduction (Barde)\n- Téléportation (L)* — p.106 — Voie de la magie universelle (Magicien)\n- Tornade de feu (A)* — p.167 — Voie élémentaire du feu (Mystique)\n\n## Rang 6 (13 sorts)\n- Armure d'eau (A)* — p.169 — Voie de prestige élémentaire de l'eau (Mystique)\n- Aura du chef de guerre (A)* — p.161 — Voie de prestige du mage de guerre (Mage)\n- Cri de la banshee (A)* — p.163 — Voie de prestige de la magie des mots (Mage)\n- Décalage (A)* — p.164 — Voie de prestige de la magie du temps (Mage)\n- Invocation d'élémentaire (L)* — p.157 — Voie de prestige de l'élémentaliste (Mage)\n- Motif hypnotique (A)* — p.165 — Voie de prestige de la vision (Mage)\n- Mur de vent (A)* — p.169 — Voie de prestige élémentaire de l'air (Mystique)\n- Navire fantôme (L)* — p.159 — Voie de prestige de l'invocation (Mage)\n- Paralysie (L)* — p.154 — Voie de prestige de l'archimage (Mage)\n- Pétrification (A)* — p.168 — Voie de prestige élémentaire de la terre (Mystique)\n- Pont arc-en-ciel (A)* — p.155 — Voie de prestige du chaos (Mage)\n- Prison mentale (A)* — p.162 — Voie de prestige de la magie de l'esprit (Mage)\n- Souffle glacial (A)* — p.158 — Voie de prestige du gel (Mage)\n\n## Rang 7 (12 sorts)\n- Attaque mentale (A)* — p.162 — Voie de prestige de la magie de l'esprit (Mage)\n- Barrière magique (L)* — p.154 — Voie de prestige de l'archimage (Mage)\n- Chasseur ailé (L)* — p.160 — Voie de prestige de l'invocation (Mage)\n- Cyclone (A)* — p.169 — Voie de prestige élémentaire de l'air (Mystique)\n- Écartement des eaux (A)* — p.169 — Voie de prestige élémentaire de l'eau (Mystique)\n- Enkystement lointain (A)* — p.164 — Voie de prestige de la magie du temps (Mage)\n- Explosion multicolore (A)* — p.155 — Voie de prestige du chaos (Mage)\n- Immolation (A)* — p.167 — Voie de prestige élémentaire du feu (Mystique)\n- Mot de mana (L)* — p.163 — Voie de prestige de la magie des mots (Mage)\n- Présence glaciale (A)* — p.158 — Voie de prestige du gel (Mage)\n- Séisme (A)* — p.168 — Voie de prestige élémentaire de la terre (Mystique)\n- Vision de la vérité (A)* — p.165 — Voie de prestige de la vision (Mage)\n\n## Rang 8 (14 sorts)\n- Arrêt du temps (L)* — p.164 — Voie de prestige de la magie du temps (Mage)\n- Contrôle mental (A)* — p.162 — Voie de prestige de la magie de l'esprit (Mage)\n- Cryogénisation (A)* — p.158 — Voie de prestige du gel (Mage)\n- Forme élémentaire d'air (A)* — p.169 — Voie de prestige élémentaire de l'air (Mystique)\n- Forme élémentaire d'eau (A)* — p.170 — Voie de prestige élémentaire de l'eau (Mystique)\n- Forme élémentaire de feu (A)* — p.167 — Voie de prestige élémentaire du feu (Mystique)\n- Forme élémentaire de terre (A)* — p.168 — Voie de prestige élémentaire de la terre (Mystique)\n- Invisibilité supérieure (A)* — p.165 — Voie de prestige de la vision (Mage)\n- Métamorphose d'autrui (A)* — p.155 — Voie de prestige de l'archimage (Mage)\n- Métamorphose élémentaire (A)* — p.157 — Voie de prestige de l'élémentaliste (Mage)\n- Portail magique (L)* — p.160 — Voie de prestige de l'invocation (Mage)\n- Souhait (L)* — p.163 — Voie de prestige de la magie des mots (Mage)\n- Sphère multicolore (A)* — p.156 — Voie de prestige du chaos (Mage)\n- Vague de feu (L)* — p.161 — Voie de prestige du mage de guerre (Mage)\n",
+      "summary": "159 sorts indexés par rang 1–8, page et voie source.",
+      "tags": [
+        "table",
+        "sorts",
+        "index"
+      ],
+      "data": {
+        "counts": {
+          "1": 17,
+          "2": 19,
+          "3": 17,
+          "4": 38,
+          "5": 29,
+          "6": 13,
+          "7": 12,
+          "8": 14
+        },
+        "total": 159
+      }
+    }
+  ]
+}
