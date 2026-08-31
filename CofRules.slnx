@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CofRules.Cli/CofRules.Cli.csproj" />
+    <Project Path="src/CofRules.Core/CofRules.Core.csproj" />
+    <Project Path="src/CofRules.Mcp/CofRules.Mcp.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CofRules.Tests/CofRules.Tests.csproj" />
+  </Folder>
+</Solution>

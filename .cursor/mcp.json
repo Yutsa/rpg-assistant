@@ -1,42 +1,9 @@
 {
   "mcpServers": {
-    "rpg-assistant": {
-      "type": "stdio",
-      "command": "uv",
-      "args": [
-        "--directory",
-        "${workspaceFolder}",
-        "run",
-        "rpg-assistant-mcp"
-      ],
-      "env": {
-        "DATABASE_URL": "sqlite:///./data/rpg_assistant.db"
-      }
-    },
-    "angular-cli": {
-      "type": "stdio",
-      "command": "/home/edouard/.nvm/versions/node/v22.22.3/bin/npx",
-      "args": ["-y", "@angular/cli", "mcp"],
-      "env": {
-        "PATH": "/home/edouard/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/bin"
-      }
-    },
-    "clojure-mcp": {
-      "type": "stdio",
-      "command": "clojure",
-      "args": [
-        "-Tmcp",
-        "start",
-        ":config-profile",
-        ":cli-assist"
-      ]
-    },
     "cof-rules": {
       "type": "stdio",
       "command": "bash",
-      "args": [
-        "${workspaceFolder}/packages/cof-rules/scripts/run-mcp.sh"
-      ],
+      "args": ["${workspaceFolder}/scripts/run-mcp.sh"],
       "env": {
         "COF_RULES_DB": "${workspaceFolder}/data/cof_rules.db"
       }
