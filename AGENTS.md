@@ -43,7 +43,7 @@ Skill **`.cursor/skills/cof-pj/SKILL.md`**. Défaut : **1 agent PJ** pour tous l
 
 ### Chronique (contexte trop gros)
 
-Skill **`.cursor/skills/cof-chronicle/SKILL.md`**. Déclenchement **manuel** (compacter / archiver la session). Produit `docs/chronicles/<slug>/INDEX.txt` (résumé très court + pointeurs) et des chapitres. Reprise : INDEX + `etat.txt`, un fichier détail si trou. Pas le transcript. Agents PJ : ne pas ouvrir ce dossier.
+Skill **`.cursor/skills/cof-chronicle/SKILL.md`**. Déclenchement **manuel** (compacter / archiver la session). Produit `docs/chronicles/<slug>/INDEX.txt` (résumé très court + pointeurs) et des chapitres. Reprise : INDEX + `etat.txt` (cast en scène). Un fichier détail si trou. Pas le transcript. Agents PJ : ne pas ouvrir ce dossier.
 
 ### Créer un nouveau kit depuis un PDF
 

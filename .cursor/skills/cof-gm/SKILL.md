@@ -44,7 +44,7 @@ Interdit en session : relire le PDF campagne ; `cof_list_*` large ; vision de to
 
 Au lancement d’une **table mixte** : créer ou vider `docs/table/<slug>-public.txt` (modèle `docs/table/_modele-public.txt`). C’est le seul fichier scène que les agents PJ ont le droit de lire.
 
-Si une **chronique** existe (`docs/chronicles/<slug>/INDEX.txt`) : lire **INDEX + etat.txt** (reprise). Un chapitre / `mj.txt` seulement pour un trou. Compacter le fil trop long : skill `.cursor/skills/cof-chronicle/SKILL.md` **sur demande**, pas tout seul en plein beat.
+Si une **chronique** existe (`docs/chronicles/<slug>/INDEX.txt`) : lire **INDEX + etat.txt** (reprise, y compris le **cast** : attitude / relation / ce qu’ils veulent *tel que la table le voit*). Un chapitre / `mj.txt` seulement pour un trou. Compacter le fil trop long : skill `.cursor/skills/cof-chronicle/SKILL.md` **sur demande**, pas tout seul en plein beat.
 
 ## Secrets de campagne
 

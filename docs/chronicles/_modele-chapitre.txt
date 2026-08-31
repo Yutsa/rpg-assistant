@@ -15,8 +15,8 @@ CONSÉQUENCES
 ------------
 -
 
-PNJ / LIEUX
------------
+PNJ / LIEUX (apparus ; le cast vivant est dans etat.txt)
+-------------------------------------------------------
 -
 
 SUSPENS
