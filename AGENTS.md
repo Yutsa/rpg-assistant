@@ -8,6 +8,7 @@ Ce dépôt expose **uniquement** un serveur MCP pour les références Chroniques
 - SQLite + FTS5 (`data/cof_rules.db`)
 - Extraots source : `extract/structured/*.json` (livre de base)
 - Kits MJ : `docs/gm-kits/<scenario>/` (fichiers `.txt` courts + `INDEX.txt`)
+- Table mixte : fiche `docs/pc-sheets/`, mémoire PJ `docs/pc-memory/`, fil public `docs/table/<slug>-public.txt`
 
 ## Commandes
 
@@ -34,6 +35,10 @@ Suivre le skill **`.cursor/skills/cof-gm/SKILL.md`** (rôle MJ, secrets, recadra
 4. Jets / PNJ mécaniques : dés réels + encadré secret ; hors balise, seule l’interprétation fictionnelle.
 
 Kit actuel : `docs/gm-kits/croissez-et-multipliez/` (scénario *Croissez et multipliez*).
+
+### Compagnons IA (table solo)
+
+Skill **`.cursor/skills/cof-pj/SKILL.md`**. Défaut : **1 agent PJ** pour tous les compagnons (retrait, combat + spécialités). Fil MJ séparé. Le MJ écrit `docs/table/<slug>-public.txt` (1–3 beats, fiction seulement) ; chaque PJ tient `docs/pc-memory/<nom>.txt`. Pas de kit MJ, pas de bestiaire MCP, pas de transcript. Split 1 subagent / PJ seulement si voix mélangées / secrets inter-PJ / campagne longue (`resume` du même fil).
 
 ### Créer un nouveau kit depuis un PDF
 

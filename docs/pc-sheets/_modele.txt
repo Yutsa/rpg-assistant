@@ -1,0 +1,40 @@
+NOM
+---
+Nom : 
+Peuple : 
+Profil : 
+Niveau : 
+Voies (rang) : 
+
+CARACS
+------
+FOR  DEX  CON  INT  PER  CHA
++    +    +    +    +    +
+
+COMBAT
+------
+PV max / PV : 
+DEF : 
+Init : 
+Armes (ATQ / DM) : 
+DEF / armure : 
+
+CAPACITÉS UTILES EN SESSION
+---------------------------
+(nom — 1 ligne : effet + ressource)
+- 
+
+ÉQUIPEMENT
+----------
+- 
+
+PERSONNALITÉ (court)
+--------------------
+Voix : 
+Ce que je fais bien : 
+Limite / peur : 
+Rapport au PJ humain : second rôle, suit sauf danger immédiat.
+
+NOTES FICTION (ce que le PJ sait)
+---------------------------------
+(brief public uniquement)

@@ -1,0 +1,23 @@
+TABLE PUBLIC — <slug>
+=====================
+Usage : skill MJ `.cursor/skills/cof-gm/SKILL.md` (écrit) ;
+agents PJ `.cursor/skills/cof-pj/SKILL.md` (lisent).
+Garder 1–3 beats. Remplacer, ne pas append. Aucun secret MJ / DD / PV ennemi.
+
+SCÈNE
+-----
+Lieu :
+Beat :
+
+CE QUE TOUT LE MONDE PERÇOIT
+----------------------------
+(narration MJ déjà dite à la table)
+
+ACTES DÉCLARÉS
+--------------
+PJ humain :
+Compagnons :
+
+EN ATTENTE
+----------
+(main à qui : humain / compagnon nommé / MJ résout)
