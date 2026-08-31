@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+extract/pages/
+extract/seed/
+extract/structured-backup/
+*.user
+*.suo

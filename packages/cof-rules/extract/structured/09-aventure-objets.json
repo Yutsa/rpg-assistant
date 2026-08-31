@@ -1,0 +1,2910 @@
+{
+  "batch_id": "09-aventure-objets",
+  "page_start": 231,
+  "page_end": 258,
+  "notes": "Partie III ch.1–2. Pages 234 et 237 : planches illustrées sans texte de règles. Prix d'objet n'est renseigné que lorsqu'il est calculé dans le texte (épée +1 = 200 po). Niveau de magie des potions et parchemins = 0. Tables de catégories p.247–257. Filigrane acheteur et en-têtes courants exclus.",
+  "sections": [
+    {
+      "title": "Partie III — Mener des parties de jeu de rôle",
+      "kind": "front_matter",
+      "page_start": 231,
+      "page_end": 231,
+      "body": "Partie III du livre de base : mener des parties de jeu de rôle.",
+      "summary": "Page de titre de la Partie III."
+    },
+    {
+      "title": "Chapitre 1 — Les règles de l'aventure",
+      "kind": "chapter",
+      "page_start": 232,
+      "page_end": 241,
+      "body": "Règles pour gérer les différents aspects d'une aventure : le voyage, les dangers (pièges, poisons, obstacles, environnement) et les enquêtes.\n\nLes pages 234 et 237 sont des planches illustrées sans texte de règles.",
+      "summary": "Voyager, dangers du voyage, autres dangers et obstacles, enquête."
+    },
+    {
+      "title": "Voyager",
+      "kind": "section",
+      "page_start": 232,
+      "page_end": 233,
+      "body": "Dans un jeu médiéval-fantastique, les héros vont souvent par monts et par vaux. En cours de route, ils peuvent affronter de terribles dangers et surmonter des obstacles.\n\n**Période de déplacement.** Une période de déplacement correspond à 4 h de marche. Une journée de voyage normale compte deux périodes de déplacement.\n\nUn personnage qui marche sur un chemin plat en portant un sac de voyage bien rempli et tout son équipement couvre une distance de **[12 + CON − pénalité d'armure] kilomètres** par période de déplacement.\n\nSi l'armure est dans le sac, sa pénalité est réduite de moitié.\n\n### Terrains difficiles\n\n- Si le personnage se déplace en dehors d'un chemin, il doit chercher sa route et **divise la distance parcourue à chaque période de déplacement par deux**.\n- Si le terrain est difficile (forêt dense, montagnes, marécage, etc.), il **divise également la distance parcourue par deux**.\n\nLes deux paramètres sont cumulatifs : hors piste et terrain difficile, la distance par période est **divisée par 4**. De plus, les montures doivent alors être menées par la bride (il faut marcher).\n\n**Rôdeur et druide.** Les capacités Grand pas (Rôdeur, rang 3 de la voie de la survie) et Terrains difficiles (Druide, rang 2 de la voie de la nature) annulent les effets du terrain difficile.\n\n### Animaux de bât et montures\n\nUne mule ou un âne peut porter tout le barda du personnage (armure comprise). Dans ce cas, la distance parcourue par déplacement augmente de 2 km et ne subit pas la pénalité d'armure :\n\n**Distance parcourue par période de déplacement = (14 + CON) km**\n\nUn personnage à cheval se déplace de **18 km** par période (et **15 km** pour un poney).\n\n### Marche forcée\n\nLes personnages peuvent avancer à marche forcée (plus de deux périodes de déplacement par jour). Ils s'exposent alors à la fatigue.\n\n- **À pied.** À la fin de chaque période de marche supplémentaire, le personnage perd 1 dé de récupération. S'il n'en a plus, il est affaibli jusqu'à ce qu'il termine une récupération complète. S'il est déjà affaibli, il s'écroule sur place et ne peut plus avancer.\n- **Monture.** Le cavalier peut faire un test de CON (Équitation) difficulté 10 pour éviter de perdre 1 DR et un test de CHA (Équitation) de même difficulté pour réussir à faire avancer la monture. La difficulté des deux tests augmente de 10 points pour chaque période supplémentaire.",
+      "summary": "Période de 4 h, distance [12+CON−pénalité d'armure] km, terrains difficiles, montures, marche forcée."
+    },
+    {
+      "title": "Dangers du voyage",
+      "kind": "section",
+      "page_start": 233,
+      "page_end": 236,
+      "body": "Les voyages ne sont pas de tout repos : mauvaises rencontres, obstacles, abri pour la nuit. Les mauvaises rencontres ne sont pas systématiques ; le MJ fera souvent des ellipses. Lorsque le voyage possède un enjeu, on utilise la règle suivante.\n\nChaque jour de voyage, le MJ fait faire un **test de progression** (événements et vitesse). Durant les périodes de repos, il peut demander un **test de récupération**.\n\n### Déterminer la dangerosité de la région\n\nLa dangerosité fixe la difficulté des tests et les DM éventuels en cas d'échec. Les DM sont indexés sur le niveau des PJ et suivent la règle des dés évolutifs.\n\n| Type de région | Difficulté des tests | DM subis |\n|---|---|---|\n| Zone civilisée | 10 | 1 |\n| Zone naturelle ou frontalière | 10 | 1d4° |\n| Zone sauvage ou reculée | 15 | 2d4° |\n| Zone dangereuse (très haute montagne, marais) | 20 | 3d4° |\n| Zone de guerre | 20 | 3d4° |\n| Zone mortelle ou maudite | 25 | 4d4° |\n\n**Hiver.** L'hiver n'est pas propice au voyage. Si le MJ le souhaite :\n\n| Mois | Difficulté des tests | DM subis |\n|---|---|---|\n| Novembre | +5 | — |\n| Décembre | +5 | +1d4° |\n| Janvier | +5 | +1d4° |\n| Février | +5 | — |\n\n### Test de progression\n\nChaque jour, chaque PJ fait un test de **PER (Survie)** de la difficulté correspondant à la zone.\n\n- Voyage de nuit : un PJ qui ne voit pas dans le noir subit un dé malus.\n- Chemin connu : bonus cumulatif de +2 par passage (le trajet de retour est plus facile).\n- Guide compétent : 1 ou 2 succès automatiques selon qu'il connaît parfaitement le secteur ou non.\n\nLe MJ fait la somme des succès et des échecs du groupe ; succès et échecs s'annulent. Un succès avec marge d'au moins 10 ou une réussite critique = 2 succès. Un échec avec marge de 10 ou un échec critique = 2 échecs.\n\n| Résultat | Événement |\n|---|---|\n| 3 échecs | Progression stoppée et événement majeur |\n| 2 échecs | Progression ralentie et événement majeur |\n| 1 échec | Événement mineur |\n| 0 succès | Bivouac inconfortable |\n| 1 succès | Progression ordinaire |\n| 2 succès | Bivouac confortable |\n| 3 succès | Progression rapide et bivouac confortable |\n\n- **Progression stoppée.** Cul-de-sac, obstacle infranchissable ou perdu : aucune distance gagnée.\n- **Progression ralentie.** Une seule période de déplacement pour la journée.\n- **Progression rapide.** Une période de déplacement supplémentaire sans fatigue.\n- **Événement majeur (résolution rapide).** PJ ayant réussi : DM du tableau de dangerosité (aucun DM en réussite critique). PJ ayant échoué : DM doublés (triplés en échec critique). Description : accident, rencontre ou épuisement. Le MJ peut mettre en scène l'incident.\n- **Événement mineur (résolution rapide).** Chaque PJ qui a raté son test subit les DM du tableau (le double en échec critique).\n- **Bivouac inconfortable.** Dé malus au test de récupération.\n- **Bivouac confortable.** Dé bonus au test de récupération.\n\n### Test de récupération\n\nLorsque les conditions ne sont pas optimales, chaque PJ doit faire un test de **CON** dont la difficulté est déterminée par la zone pour bénéficier d'une récupération complète. Dé bonus ou malus selon le bivouac.\n\nEn cas d'échec critique ou d'échec d'au moins 10 points, le PJ perd 1 DR ou, s'il n'en a plus, il est affaibli pour la journée du lendemain.\n\nSi les PJ ont accès à une auberge et que la nuit se passe sans encombre, aucun test n'est nécessaire.",
+      "summary": "Dangerosité de région, test PER (Survie) quotidien, événements, bivouac, test CON de récupération."
+    },
+    {
+      "title": "Autres dangers et obstacles",
+      "kind": "section",
+      "page_start": 236,
+      "page_end": 240,
+      "body": "Règles pour le saut, la chute, le feu, la chaleur et le froid, les poisons, les pièges, et le fait de forcer un obstacle.\n\n### Saut en longueur\n\nTest d'**AGI** dont la difficulté dépend de l'élan et de la distance :\n\n- saut **avec élan** : difficulté = **3 × la distance en mètres** ;\n- saut **sans élan** : difficulté = **6 × la distance en mètres**, l'élan devant être au moins le double du saut.\n\n### Chute\n\nSauf capacité spéciale, la chute inflige automatiquement des DM.\n\n- DM de chute : **1d4° par tranche de 3 m**, maximum **10d4°** (30 m).\n- Un test d'**AGI difficulté 10** permet d'ignorer les trois premiers mètres de chute.\n\n### Feu\n\nPrendre feu ou traverser un incendie inflige **1d6 DM par round**. Dans un incendie, test de **CON difficulté [5 + 2 par round]** chaque round pour ne pas suffoquer et perdre connaissance.\n\n### Chaleur et froid\n\n**Chaleur.** Au-delà de 40 °C, test de CON difficulté 10 par tranche de 6 h. Échec : 1d4° DM. Le malus d'armure peut s'appliquer. La difficulté augmente de 1 par degré supplémentaire (difficulté = température − 30).\n\n**Froid.** Jusqu'à 0 °C, des vêtements corrects suffisent. En dessous, sans vêtements adaptés, test de CON de difficulté égale à la température négative par tranche de 6 h (ex. difficulté 15 pour −15) ou 1d4° DM. Vêtements chauds : bonus de +5 à +10 au test de CON.\n\n### Poisons\n\nNaturels ou créés. Ingérés, inoculés par morsure, ou en enduisant une arme.\n\n**Enduire une arme.** Test d'**INT difficulté 10**. Échec : dose gaspillée. Échec critique : le personnage s'empoisonne lui-même. Seule la **première attaque réussie** avec l'arme enduite applique les effets.\n\n**Récupérer du poison** sur une créature morte : les composants actifs se dégradent en **1d6 minutes**. Une glande à venin ou une plante toxique peuvent, à la discrétion du MJ, devenir des composants de fabrication.\n\n**Effet.** Test de CON difficulté 10 (modifiable selon la virulence). Échec : effets du poison. Certains poisons affectent même en cas de réussite (ex. moitié des DM).\n\nLa vente de poison est généralement illégale et leur coût prohibitif.\n\n### Pièges\n\nSystème mécanique (parfois magique) destiné à capturer, ralentir ou tuer.\n\nTest de **PER** pour détecter. Réussite : menace découverte à temps. Échec : le PJ tombe dans le piège.\n\n- Recherche active : **+5** au test, déplacement **divisé par deux**.\n- Une fois détecté : contourner (test d'AGI) ou désamorcer (test d'INT). Échec : le piège s'active généralement.\n- Déclenchement : effets immédiats (souvent DM, parfois un état). Parfois test d'AGI pour **DM/2**.\n\n### Forcer un obstacle\n\n- Enfoncer une porte ou tordre des barreaux : test de **FOR** de difficulté égale à la **solidité**.\n- Briser en infligeant des DM : la structure a autant de **PV que sa solidité** ; retrancher la **RD** à tous les DM. Armes perforantes (flèches, rapière, dague, etc.) : pas de DM aux structures. Armes tranchantes : pas de DM aux structures maçonnées. Murs : seuls engins de siège ou explosifs ont une chance de les endommager sérieusement.",
+      "summary": "Saut, chute, feu, chaleur/froid, poisons, pièges, forcer un obstacle."
+    },
+    {
+      "title": "Enquête et recherche d'indices",
+      "kind": "section",
+      "page_start": 240,
+      "page_end": 241,
+      "body": "Pour réussir une scène d'enquête, les joueurs doivent trouver des indices cachés. Sans les bons indices, la sagacité des joueurs peut s'avérer inutile.\n\n### Indices évidents\n\nLes indices les plus importants devraient être presque immanquables, en particulier pour des joueurs débutants. Il suffit que les PJ se trouvent au bon endroit. **Pas de test** du moment que le joueur indique que son personnage fait une recherche. Exemple : sur une scène de crime, le personnage trouve automatiquement l'arme jetée derrière le lit s'il fouille la pièce.\n\n### Indices et tests\n\nLorsque les indices sont cachés, un test s'impose. Trois types, chacun sur une caractéristique mentale. Le MJ fixe la difficulté selon l'évidence (table des difficultés). Chercher dans une zone d'environ 5 m de côté ou interroger une personne prend **2d6 min**. Si plusieurs personnages font la même recherche, un seul lancer de 2d6 ; le meilleur résultat au test trouve le premier.\n\n- **Trouver une preuve (PER).** Preuve matérielle : cheveu, tache sur un tissu, empreinte, etc.\n- **Faire une déduction (INT).** Raisonnement logique : objet déplacé ou manquant, sens caché, faits contradictoires.\n- **Obtenir un aveu (CHA).** Renseignement livré par un interlocuteur, consciemment ou non.\n\n### Indices et échelle des difficultés\n\nL'échelle des difficultés (page 204) permet de graduer les découvertes selon le résultat, pour éviter qu'un mauvais jet bloque l'intrigue. Même avec un mauvais résultat, un indice minimal peut être accessible, avec plus d'information selon la marge. Cela nécessite que le MJ ait préparé le scénario.\n\nIl n'est pas nécessaire que les PJ découvrent un indice s'ils ont un mauvais résultat : ils peuvent trouver une fausse piste.",
+      "summary": "Indices évidents sans test ; PER/INT/CHA pour preuves, déductions, aveux ; échelle des difficultés p.204."
+    },
+    {
+      "title": "Chapitre 2 — Objets magiques",
+      "kind": "chapter",
+      "page_start": 242,
+      "page_end": 258,
+      "body": "Les univers de fantasy permettent d'acquérir des objets magiques qui augmentent considérablement la puissance des personnages. Trop faciles à trouver, ils ont moins de valeur et la puissance des PJ peut échapper au contrôle du MJ. A priori, plus le niveau de magie du cadre est faible (low fantasy), moins les objets magiques devraient y être fréquents, même s'ils peuvent y tenir une place centrale.",
+      "summary": "Niveau de magie, valeur, fabrication, nombre/puissance, cumul, limitation, identification, origine, catégories."
+    },
+    {
+      "title": "Niveau de magie",
+      "kind": "section",
+      "page_start": 242,
+      "page_end": 242,
+      "body": "Chaque objet enchanté est défini par son **niveau de magie**. Cette valeur détermine son prix et sa puissance. La description de chaque catégorie d'objet indique comment le niveau de magie est déterminé. Le plus souvent, il est égal au **bonus accordé** (test, DM, DEF) ou au **rang de la capacité** qu'il reproduit.\n\nAinsi, une épée magique +1 accorde un bonus de +1 aux tests d'attaque et aux DM, et son niveau de magie est égal à 1.",
+      "summary": "Niveau de magie = bonus ou rang de capacité, selon la catégorie."
+    },
+    {
+      "title": "High et low fantasy",
+      "kind": "sidebar",
+      "page_start": 242,
+      "page_end": 242,
+      "body": "Par défaut, COF propose un cadre de fantasy classique où la magie existe dans des proportions « raisonnables ». Pour un cadre plus flamboyant (high fantasy) ou plus proche du Moyen Âge (low fantasy), voir le second ouvrage de la gamme : *Atlas d'Osgild & règles optionnelles*.",
+      "summary": "Renvoi vers Atlas d'Osgild pour high/low fantasy."
+    },
+    {
+      "title": "Valeur des objets magiques",
+      "kind": "section",
+      "page_start": 242,
+      "page_end": 243,
+      "body": "La valeur n'est utile que si les objets peuvent être vendus et achetés ; le MJ détermine si c'est le cas. High fantasy : généralement le cas. Cadre par défaut : exceptionnel (échoppes sans pignon sur rue, clientèle triée). Low fantasy : hors sujet.\n\nLe prix de **revente** est toujours au maximum de **50 %** de la valeur réelle (sécurité). Les PJ paient toujours le **prix fort** chez un marchand.\n\n- Valeur d'un objet magique = **[(niveau de magie) × (niveau de magie)] × 200 po**.\n- Valeur d'une potion ou d'un parchemin = **[(rang du sort) × (rang du sort)] × 50 pa**.\n- Valeur d'une baguette de sorts = celle d'un parchemin **multipliée par le nombre de charges**.\n\nLa valeur monétaire maximale des objets disponibles à la vente dépend habituellement de la taille d'une agglomération (voir « Équipement exotique »).",
+      "summary": "Formules de valeur ; revente 50 % max ; rareté du commerce selon le cadre."
+    },
+    {
+      "title": "Fabriquer des objets magiques",
+      "kind": "section",
+      "page_start": 243,
+      "page_end": 244,
+      "body": "C'est au MJ de décider s'il autorise la fabrication. Il peut exiger la **voie de prestige de l'enchanteur** (page 157).\n\nSinon, tout lanceur de sorts de niveau suffisant (s'inspirer des niveaux requis pour les rangs de l'enchanteur : niveau 5 pour le rang 1, etc.). Dans ce cas : **doubler le temps**, composants extraordinaires obtenus en aventure, et éventuellement un sort en rapport avec la propriété.\n\n- Coût de fabrication = **moitié de la valeur**.\n- Temps = **1 jour par pièce d'or dépensée**.\n\nExemples :\n\n- parchemin de sort de rang 3 : valeur 3 × 3 × 5 = **45 po** ; coût 22 po (arrondi inférieur) ; **22 jours** ;\n- épée +1 : valeur 1 × 1 × 200 = **200 po** ; fabrication **100 po** et **100 jours** ;\n- objet de niveau de magie 5 : valeur 5 × 5 × 200 = **5 000 po** ; coût **2 500 po** et **2 500 jours** (presque 7 années).\n\nÀ la fin : test d'**INT difficulté (10 + 2 × niveau de magie)**. Échec : +10 % de temps et d'argent, nouveau test, et ainsi de suite. Échec ou réussite critique : quelque chose d'extraordinaire peut transformer les propriétés, à l'appréciation du MJ.",
+      "summary": "Enchanteur ou lanceur de sorts ; coût = moitié de la valeur ; 1 jour/po ; test INT."
+    },
+    {
+      "title": "Nombre et puissance des objets",
+      "kind": "section",
+      "page_start": 244,
+      "page_end": 245,
+      "body": "Le niveau de magie (par objet et au total) dépend du cadre : high, classique ou low. Après quelques aventures, cela devrait se stabiliser autour de :\n\n- **high fantasy** : jusqu'à 3 objets majeurs et 4 ou 5 objets mineurs ;\n- **classique** : autour de 2 objets majeurs et 2 ou 3 objets mineurs ;\n- **low fantasy** : 1 objet majeur ou mineur.\n\nAcquisition progressive **à partir du niveau 3**, pas dès le départ.\n\nLa somme des niveaux de magie des objets portés ne devrait jamais dépasser : le **niveau du PJ** (classique), le **double** (high), un **quart** (low).\n\n**Consommables (C).** Potions et parchemins : usage unique. Niveau de magie comptabilisé = **0**. Ils ne comptent pas dans le nombre d'objets magiques.\n\nPour un objet **majeur**, voir le tableau de puissance selon le niveau du PJ. Pour un objet **mineur**, utiliser le même tableau en **divisant le niveau du PJ par 2**.\n\nExemple : cadre classique, niveau 7 : objet majeur = épée +2 ; objet mineur = arme ou armure +1.",
+      "summary": "Plafonds selon le cadre ; majeurs/mineurs ; consommables hors compte."
+    },
+    {
+      "title": "Note d'intention — le nombre d'objets magiques",
+      "kind": "sidebar",
+      "page_start": 245,
+      "page_end": 245,
+      "body": "Par rapport à la précédente version, le tableau de somme des niveaux de magie transportés a disparu : la formule n'était pas fiable (une épée +4 pour un magicien ne « compte » pas de la même façon), les règles de non-cumul rendent le seuil moins utile, et un tableau trop précis pousse à cesser d'arbitrer. Aucun tableau de trésor magique aléatoire n'est fourni : le MJ regarde ce qu'ont les PJ.",
+      "summary": "Pourquoi le plafond tabulaire a été retiré ; responsabilité du MJ."
+    },
+    {
+      "title": "Cumul des bonus",
+      "kind": "section",
+      "page_start": 245,
+      "page_end": 245,
+      "body": "Il n'est pas possible de cumuler plus d'un bonus d'objet magique sur un jet de dé ou un paramètre donné : un seul bonus provenant d'un objet magique peut être ajouté en DEF, sur un test d'attaque, un test de caractéristique ou sur un jet de DM.\n\nUn bonus d'objet magique **peut** se cumuler au bonus magique fourni par un **sort** (Armure de mage, Peau d'écorce, Coup au but…).\n\nExemple : flèche +1 et arc +2 → bonus total limité à +2 (l'arc) ; l'attaque devient magique (armes magiques, page 251). Guerrier avec armure +1 et bouclier +2 : seul le bonus de DEF du bouclier ; le bonus de l'armure réduit sa pénalité d'encombrement de 1.\n\nLes **bonus indirects** peuvent se cumuler : ceinture de force (FOR +1) + épée magique +2.\n\n**High fantasy.** On peut autoriser le cumul de deux objets (armure + bouclier, arc + flèche).",
+      "summary": "Un seul bonus d'objet par paramètre ; cumul possible avec un sort ; bonus indirects cumulables."
+    },
+    {
+      "title": "Limiter les objets magiques",
+      "kind": "section",
+      "page_start": 245,
+      "page_end": 246,
+      "body": "Outils du MJ : pas de vente libre, modifier les trésors.\n\n**Méthode des doublons.** Un PJ ne peut pas se servir de deux cottes de mailles à la fois. On ne peut sans doute pas porter une couronne de CHA par-dessus un bandeau d'INT. Interactions entre champs d'énergie : deux anneaux ne fonctionnent pas sur la même main (limite naturelle à deux anneaux) ; pas de gantelet magique par-dessus un anneau. Cape par-dessus manteau ou robe magique : à décider.\n\n**Brûlepeste** (option). Les objets drainent l'énergie de leur porteur. Fixer la somme totale des niveaux autorisés (généralement un peu moins du niveau du PJ) : pour chaque niveau de magie supplémentaire, malus de −1 à tous les tests. Fièvre, sensation que le corps brûle.\n\nDernière option : parfois mettre une **fourmi de fer (oxydeur)** sur le chemin des PJ.",
+      "summary": "Doublons d'emplacement ; option brûlepeste ; fourmi de fer."
+    },
+    {
+      "title": "Identifier un objet magique",
+      "kind": "section",
+      "page_start": 246,
+      "page_end": 246,
+      "body": "Les PJ n'ont aucune idée des effets d'un objet trouvé. Ne jamais dire « vous trouvez une potion de soins », mais décrire (fiole, liquide rouge, odeur de menthe…). Une étiquette peut être vraie ou trompeuse. Une épée superbe n'est pas forcément magique, sauf effet évident (flammes bleues).\n\n- **Lanceur de sort.** Peut déterminer fonction et bonus d'un objet dont le niveau de magie est ≤ au plus haut rang de sort qu'il peut lancer. Analyse = une récupération rapide. Sinon, sage (moyennant finance).\n- **Voie du vagabond** (Rumeurs et légendes) : test d'INT (Rumeurs et légendes) difficulté **(25 − 2 × niveau de magie)**. Plus l'objet est puissant, plus le barde a de chances d'en avoir entendu parler.\n- **Voie du maître d'armes** : estimer approximativement la puissance d'une arme en la manipulant quelques rounds. Test d'INT contre **[10 + 2 × niveau de magie]**.\n- **Voie des élixirs** : identifier une potion en la manipulant, test d'INT contre **[5 + 5 × rang du sort]**.",
+      "summary": "Description sans nom ; identification selon le profil (sorts, vagabond, maître d'armes, élixirs)."
+    },
+    {
+      "title": "Origine d'un objet magique",
+      "kind": "section",
+      "page_start": 246,
+      "page_end": 247,
+      "body": "Après les étapes techniques, un tableau en trois jets de d10 construit la légende dans les Terres d'Osgild : provenance, époque, peuple.\n\nNon adapté aux consommables (potions et parchemins).",
+      "summary": "Table d10 provenance / époque / peuple (Terres d'Osgild)."
+    },
+    {
+      "title": "Catégories d'objets",
+      "kind": "section",
+      "page_start": 247,
+      "page_end": 258,
+      "body": "Les paragraphes suivants présentent les catégories d'objets magiques, leur niveau de magie et l'identification. Tables de génération aléatoire fournies pour l'inspiration ; le MJ n'est pas obligé de les utiliser.",
+      "summary": "Potions, parchemins, baguettes, armes, sceptres, défense, pouvoir, grimoires, puissance, compétence, prestigieux."
+    },
+    {
+      "title": "Potions",
+      "kind": "section",
+      "page_start": 247,
+      "page_end": 249,
+      "body": "Objets à **utilisation unique** qui reproduisent les effets magiques des capacités de lanceur de sort. Utilisables par n'importe quel personnage.\n\nBoire une potion = **action de mouvement** (éventuellement action limitée au contact, malus de −5 en DEF).\n\n**Effets secondaires.** Attendre qu'une potion cesse de faire effet avant d'en boire une autre. Option : étendre aux potions de soins (plus d'une potion par combat).\n\nSi un personnage boit une potion alors qu'une autre est encore active : test de **CON difficulté 10** (15 à la troisième, 20 à la quatrième, etc.). Échec : lancer 2d6 sur la table des effets secondaires.\n\nLes **élixirs du Forgesort** ne sont pas des potions ; leur faible durée de conservation ne les astreint pas à cette règle.\n\n**Identifier.** Un forgesort avec la voie des élixirs : test d'INT difficulté **[5 + 5 × rang du sort]**, bonus de compétence 2 + rang atteint dans la voie, **10 min**. Échec critique (test secret possible) : information fausse.\n\n**Niveau de magie d'une potion = 0.**\n\nTables aléatoires : d6 pour le type (soins / commune / rare), puis table du type.",
+      "summary": "Usage unique, action de mouvement, effets secondaires, identification, niveau 0."
+    },
+    {
+      "title": "Parchemins",
+      "kind": "section",
+      "page_start": 249,
+      "page_end": 250,
+      "body": "Utiliser un parchemin = **action limitée**. Magie profane et mystique utilisent des symboles distincts : illisible pour un lanceur d'une autre famille.\n\nSans test si le sort est issu du **profil** du PJ et d'un **rang qu'il maîtrise** (au moins un sort de même rang ou supérieur), même s'il ne connaît pas ce sort précis.\n\n- Rang plus élevé : test d'**attaque magique** difficulté **[5 × rang du sort]**. Ex. : maîtrise rang 1 → difficulté 20 pour un parchemin de rang 4.\n- Autre profil mais **même famille** (moine/druide et sort de prêtre) : difficulté **+5**. Ex. : druide ou moine, parchemin de prêtre rang 3 → difficulté 20.\n\nÉchec : sort non lancé. Échec d'au moins 10 points : sort effacé, parchemin inutilisable.\n\n**Niveau de magie d'un parchemin = 0.**\n\nGénération aléatoire : d20 pour la voie, d6 pour le rang (mineur ou moyen). Relancer si la capacité n'est pas un sort (pas d'astérisque).",
+      "summary": "Action limitée ; test si rang trop élevé ou autre profil ; niveau 0."
+    },
+    {
+      "title": "Baguette magique",
+      "kind": "section",
+      "page_start": 250,
+      "page_end": 250,
+      "body": "Une baguette contient un sort lancé une fois par **charge**. Charges de départ : **2d20**. Seuls les lanceurs de sort peuvent les utiliser (bardes, druides et prêtres inclus) ; niveau au moins égal au rang du sort. Mot de commande requis (parfois inscrit, ou entendu du précédent propriétaire, ou sort d'analyse de la magie — Maîtrise de la magie, voie du mage).\n\nActiver = généralement **action d'attaque**.\n\n**Niveau de magie.** Moitié du rang du sort (arrondi à l'inférieur) si moins de 30 charges ; égal au rang si 30 charges et plus.\n\nGénération : mêmes tables que les parchemins.",
+      "summary": "Charges 2d20 ; lanceurs de sort ; niveau = rang/2 ou rang selon charges."
+    },
+    {
+      "title": "Armes magiques",
+      "kind": "section",
+      "page_start": 251,
+      "page_end": 252,
+      "body": "Bonus en **attaque et aux dommages**. Ex. : épée +2 = +2 aux tests d'attaque au contact et aux DM. Il existe aussi pour les moines des **maniques** qui donnent leur bonus aux attaques à mains nues.\n\nPropriétés (qualificatif) :\n\n- **Affûtée** : +1 aux chances de critique et +1d4° DM aux critiques.\n- **Fléau des [catégorie de créatures]** : +1d4° DM contre une catégorie.\n- **[Élément/substance]** : +1d4° DM de cet élément ou substance.\n- **Parade** : bonus de DEF.\n\nOn peut **doubler** une propriété. Ex. : épée +2 de feu intense = +2d4° DM de feu.\n\n**Projectiles magiques** (flèches, carreaux, billes) : consommables, perdent l'enchantement ou se brisent après usage. Avec une arme magique, pas de cumul des bonus : le plus haut s'applique ; à la place, **+10 m de portée par point du bonus le plus faible**. Ex. : flèche +4 sur arc +2 = +4 en attaque et DM, portée +20 m.\n\n**Niveau de magie** = bonus de l'arme, plus les propriétés (Affûtée +1, [Élément] +2, Fléau +1, Parade = bonus de DEF). Propriété doublée : niveau de la propriété doublé. Ex. : épée +2 de feu intense = niveau 6 (2 + 2 × 2).\n\nGénération : d6 type, d20 arme, d6 pour une propriété si résultat < niveau de magie.",
+      "summary": "Bonus attaque/DM ; propriétés ; projectiles ; niveau = bonus + propriétés."
+    },
+    {
+      "title": "Sceptre de magie",
+      "kind": "section",
+      "page_start": 252,
+      "page_end": 252,
+      "body": "Objets équivalents aux armes pour les magiciens : bonus en **attaque magique** et aux **DM des sorts**. Formes variées : grand bâton, anneau de puissance, etc. Peut être utilisé comme arme si la forme le permet (un bâton oui, une couronne non).\n\nExemple : sceptre de feu orné d'un charbon ardent, +2 en attaque magique et aux DM pour tous les sorts de feu.\n\nDans la table aléatoire des types d'armes : sur 6, sceptre de magie (DM comme un bâton : 1d6).",
+      "summary": "Bonus d'attaque magique et de DM des sorts ; forme variable."
+    },
+    {
+      "title": "Objets magiques de défense",
+      "kind": "section",
+      "page_start": 252,
+      "page_end": 254,
+      "body": "Armures et boucliers, mais aussi robe de mage, cape de protection, bracelet ou anneau, etc.\n\nAjoute le bonus de magie à la **DEF**. Un PJ ne bénéficie que d'**un seul bonus de DEF magique** (le plus haut).\n\nUne **armure** retranche aussi son bonus à toutes les pénalités qu'elle inflige (tests d'AGI en particulier), sans changer l'AGI maximum autorisée.\n\nExemple : cotte de mailles +2 → DEF +7 (+5 + 2), pénalité AGI −3 seulement (5 − 2). Un anneau +2 augmente la DEF de 2 ; ne se cumule pas à une armure magique, mais se cumule au sort Armure de mage.\n\n**Boucliers magiques.** Les bonus de DEF du bouclier et de l'armure ne se cumulent pas. Si le MJ l'autorise, convertir celui des deux bonus non utilisé en **RD** retranchée aux DM des **coups critiques**. Ex. : armure +3 et bouclier +2 → DEF +3, et −2 aux DM des critiques.\n\n**Niveau de magie** = bonus, modifié par les propriétés (chaque propriété vaut 1 niveau sauf précision contraire).\n\nPropriétés : Action libre, Défense (RD 2, +1 niv.) / Défense supérieure (RD 4, +2 niv.), Mobile (−4 au malus d'armure), Natation (+5 et armure flottante), Ombre (+5 discrétion), Protection (DM/2 des critiques et attaques sournoises), Résistance à la magie (+5 DEF ou tests vs magie), Résistance [substance] X.\n\nGénération : d20 type d'armure ; d6 pour une propriété si résultat < niveau de magie, puis d12.",
+      "summary": "Un bonus DEF magique ; armure réduit les pénalités ; bouclier optionnellement en RD vs critiques."
+    },
+    {
+      "title": "Objets de pouvoir",
+      "kind": "section",
+      "page_start": 254,
+      "page_end": 255,
+      "body": "Pouvoirs magiques souvent calqués sur des capacités de lanceur de sort. Généralement **une fois par jour**. Parfois permanent (ex. sac sans fond, sort de rang 3 de la voie des artefacts de forgesort). La forme est en rapport avec les capacités (boule de cristal pour la divination).\n\n**Utilisation.** Action **gratuite** (une seule fois par tour) ou action d'**attaque** s'il s'agit d'une capacité d'attaque (sorts compris).\n\n**Niveau de magie** = rang du sort dupliqué, ou total des rangs s'il y en a plusieurs. Pouvoirs inédits : le MJ estime en comparant à des capacités connues.\n\nExemple : **bottes de vitesse** reproduisant Réflexes félins (Voleur, rang 2 de la voie du déplacement) : déplacement supplémentaire de 20 m une fois par combat, **2 niveaux de magie**.\n\nGénération : d8 rang du pouvoir, d20 profil source, puis le MJ choisit une capacité.",
+      "summary": "1/jour ou permanent ; niveau = rang(s) ; action gratuite ou d'attaque."
+    },
+    {
+      "title": "Grimoires de pouvoir",
+      "kind": "section",
+      "page_start": 255,
+      "page_end": 256,
+      "body": "Ne pas confondre avec le simple grimoire de sorts des magiciens. Magie qui permet d'utiliser un ou plusieurs sorts inconnus. Fonctionnement semblable à un objet de pouvoir, mais seulement pour les sorts et les PJ capables de les utiliser.\n\nDeux catégories : **magie profane** (famille des mages) et **magie divine** (famille des mystiques). Les **bardes** (profil principal) peuvent utiliser les deux. Le PJ doit avoir atteint le niveau permettant le rang du sort inscrit.\n\n**Utilisation.** Action limitée (L), coûte **1 PM** quel que soit le niveau (ouvrir le livre et lire à haute voix). Un sort : **une fois par jour**. Plusieurs sorts possibles ; un même sort peut être inscrit plusieurs fois.\n\n**Niveau de magie** = somme des rangs des sorts inscrits **divisé par 3** (arrondi au plus proche).\n\nExemples : grimoire de projectile de mana inscrit trois fois = niveau 1 ((1+1+1)/3). **Grimoire des illusions perdues** : tous les sorts de la voie des illusions, niveau (1+2+3+4+5)/3 = **5**.",
+      "summary": "Profane ou divine ; L + 1 PM ; 1/jour par inscription ; niveau = somme des rangs / 3."
+    },
+    {
+      "title": "Objets de puissance",
+      "kind": "section",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Augmentent une **caractéristique**. Forme liée à la caractéristique : ceinture de force (FOR), bandeau d'intelligence (INT) ou de volonté (VOL), gantelets d'agilité (AGI), masque de perception (PER), robe de charisme (CHA), amulette de constitution (CON).\n\n**Objets mineurs de puissance.** Bonus sur une caractéristique secondaire : DR, PC, PM ou PV.\n\n**Niveau de magie** = bonus de caractéristique × **3**. Ne pas dépasser +2 en classique, +3 en high fantasy. Ex. : cape de charisme +2 → niveau **+6**.\n\nMineurs : DR 1/point, PC 1/point, PM 1/tranche de 3 PM, PV 1/tranche de 5 PV.\n\nGénération : d12 (AGI, CON, FOR, PER, CHA, INT, VOL, DR, PC, PM, PV, relancer).",
+      "summary": "Bonus de caractéristique ×3 en niveau ; formes canoniques ; mineurs DR/PC/PM/PV."
+    },
+    {
+      "title": "Objets de compétence",
+      "kind": "section",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Bonus de **+5** sur un type de test unique.\n\nExemples : cape et bottes elfiques (+5 en discrétion) ; amulette de danger (+5 aux tests pour détecter un danger ou une embuscade).\n\n**Niveau de magie = 1.**",
+      "summary": " +5 à un type de test ; niveau 1."
+    },
+    {
+      "title": "Objets prestigieux",
+      "kind": "section",
+      "page_start": 257,
+      "page_end": 258,
+      "body": "Objet qui possède **sa propre voie**, 5 rangs ou moins, ne nécessitant aucun point de capacité.\n\nSauf le rang 1, des conditions débloquent les pouvoirs : niveau de magie compatible avec le personnage ; haut fait, exploit ou connaissance ; éventuellement profil, voie ou capacité requis.\n\nSuit souvent un personnage toute sa carrière. Certaines propriétés inventées n'existent pas dans les règles : le MJ arbitre le niveau de magie par comparaison.",
+      "summary": "Voie propre à l'objet ; conditions hors rang 1 ; légende du personnage."
+    },
+    {
+      "title": "Objet personnalisé",
+      "kind": "section",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "Plutôt que de créer tous les pouvoirs a priori, donner un objet faiblement enchanté puis le laisser devenir prestigieux. Acte fondateur : le joueur tisse un lien affectif et **nomme** l'objet après un événement mémorable. Ce nom et cet événement orientent les pouvoirs futurs.",
+      "summary": "Lien affectif et nommage comme fondation d'un objet prestigieux."
+    },
+    {
+      "title": "La lame des échos",
+      "kind": "sidebar",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "Exemple d'objet prestigieux. Celui qui brandit la lame des échos peut entendre de légers tintements, échos des coups de marteau de sa naissance. Seul un **barde** peut la faire vibrer à l'unisson du chant de son âme.\n\n**Voie de la lame des échos** (5 rangs) : Lame exceptionnelle, Amplification, Focalisation, Lame vibrante, Vibration mortelle.",
+      "summary": "Exemple complet d'objet prestigieux lié au barde."
+    }
+  ],
+  "elements": [
+    {
+      "kind": "rule",
+      "name": "Période de déplacement",
+      "page_start": 232,
+      "page_end": 232,
+      "body": "Une période de déplacement correspond à 4 h de marche. Une journée de voyage normale compte deux périodes de déplacement.\n\nDistance sur chemin plat avec sac et équipement : **[12 + CON − pénalité d'armure] km** par période. Si l'armure est dans le sac, sa pénalité est réduite de moitié.",
+      "summary": "4 h ; 2 périodes/jour ; [12+CON−pénalité] km.",
+      "tags": [
+        "regle",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Terrains difficiles",
+      "page_start": 232,
+      "page_end": 233,
+      "body": "Hors d'un chemin : distance par période **divisée par 2**. Terrain difficile (forêt dense, montagnes, marécage, etc.) : encore **divisée par 2**. Les deux sont cumulatifs (**÷4**). Montures menées par la bride.\n\nGrand pas (Rôdeur, rang 3, voie de la survie) et Terrains difficiles (Druide, rang 2, voie de la nature) **annulent** les effets du terrain difficile.",
+      "summary": "Hors piste /2, terrain difficile /2, cumul /4.",
+      "tags": [
+        "regle",
+        "voyage"
+      ],
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "Grand pas",
+          "relation": "annule"
+        },
+        {
+          "kind": "capacity",
+          "name": "Terrains difficiles",
+          "relation": "annule"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Animaux de bât et montures",
+      "page_start": 233,
+      "page_end": 233,
+      "body": "Mule ou âne portant tout le barda (armure comprise) : **(14 + CON) km** par période, sans pénalité d'armure (+2 km par rapport à 12+CON).\n\nÀ cheval : **18 km** par période. Poney : **15 km**.",
+      "summary": "Mule/âne (14+CON) km ; cheval 18 km ; poney 15 km.",
+      "tags": [
+        "regle",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Marche forcée",
+      "page_start": 233,
+      "page_end": 233,
+      "body": "Plus de deux périodes de déplacement par jour.\n\n- À pied : à la fin de chaque période supplémentaire, **−1 DR**. Plus de DR : affaibli jusqu'à une récupération complète. Déjà affaibli : s'écroule, ne peut plus avancer.\n- Monture : test CON (Équitation) diff. 10 pour éviter de perdre 1 DR, et test CHA (Équitation) diff. 10 pour faire avancer la monture. Difficulté **+10 par période supplémentaire**.",
+      "summary": "Périodes extra : −1 DR à pied ; tests d'Équitation en monture.",
+      "tags": [
+        "regle",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Dangerosité d'une région",
+      "page_start": 233,
+      "page_end": 235,
+      "body": "Fixe la difficulté des tests de voyage et les DM en cas d'échec. DM indexés sur le niveau des PJ (dés évolutifs).\n\nCivilisée 10 / 1 DM ; naturelle ou frontalière 10 / 1d4° ; sauvage ou reculée 15 / 2d4° ; dangereuse ou guerre 20 / 3d4° ; mortelle ou maudite 25 / 4d4°.\n\nHiver (option) : Novembre/Février +5 à la difficulté ; Décembre/Janvier +5 et +1d4° aux DM.",
+      "summary": "Table de difficulté et de DM selon le type de zone ; option hiver.",
+      "tags": [
+        "regle",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Test de progression",
+      "page_start": 235,
+      "page_end": 236,
+      "body": "Chaque jour, chaque PJ : test de **PER (Survie)** à la difficulté de la zone.\n\nModificateurs : nuit (dé malus si pas de vision dans le noir) ; chemin connu (+2 cumulatif par passage) ; guide (1 ou 2 succès automatiques).\n\nSuccès et échecs du groupe s'annulent. Marge ≥ 10 ou critique = 2 succès ou 2 échecs.\n\nRésultats de −3 à +3 succès : progression stoppée + événement majeur ; ralentie + événement majeur ; événement mineur ; bivouac inconfortable ; progression ordinaire ; bivouac confortable ; progression rapide + bivouac confortable.",
+      "summary": "PER (Survie) quotidien ; bilan de groupe ; événements et bivouac.",
+      "tags": [
+        "regle",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Test de récupération",
+      "page_start": 236,
+      "page_end": 236,
+      "body": "Conditions non optimales : test de **CON** à la difficulté de la zone pour une récupération complète. Dé bonus (bivouac confortable) ou malus (inconfortable).\n\nÉchec critique ou échec d'au moins 10 : **−1 DR**, ou affaibli le lendemain si plus de DR.\n\nAuberge sans encombre : pas de test.",
+      "summary": "CON selon la zone ; DR ou affaibli si gros échec.",
+      "tags": [
+        "regle",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Saut en longueur",
+      "page_start": 236,
+      "page_end": 236,
+      "body": "Test d'**AGI**.\n\n- Avec élan : difficulté = **3 × distance en mètres**.\n- Sans élan : difficulté = **6 × distance en mètres** ; l'élan doit être au moins le double du saut.",
+      "summary": "AGI ; ×3 avec élan, ×6 sans élan.",
+      "tags": [
+        "regle",
+        "obstacle"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Chute",
+      "page_start": 236,
+      "page_end": 238,
+      "body": "**1d4° DM par tranche de 3 m**, maximum **10d4°** (30 m).\n\nTest d'**AGI difficulté 10** : ignore les trois premiers mètres.",
+      "summary": "1d4° / 3 m, max 10d4° ; AGI 10 ignore 3 m.",
+      "tags": [
+        "regle",
+        "obstacle"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Feu",
+      "page_start": 238,
+      "page_end": 238,
+      "body": "Prendre feu ou incendie : **1d6 DM par round**. Incendie : chaque round, test de **CON difficulté [5 + 2 par round]** pour ne pas suffoquer et perdre connaissance.",
+      "summary": "1d6 DM/round ; suffocation CON 5+2/round.",
+      "tags": [
+        "regle",
+        "environnement"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Chaleur",
+      "page_start": 238,
+      "page_end": 238,
+      "body": "Au-delà de **40 °C** : test de CON difficulté 10 par tranche de **6 h**. Échec : **1d4° DM**. Malus d'armure possible. Difficulté = **température − 30** ( +1 par degré au-delà de 40).",
+      "summary": "CON par 6 h au-delà de 40 °C ; 1d4° DM.",
+      "tags": [
+        "regle",
+        "environnement"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Froid",
+      "page_start": 238,
+      "page_end": 238,
+      "body": "Jusqu'à 0 °C : vêtements corrects suffisent. En dessous, sans vêtements adaptés : test de CON de difficulté égale à la **température négative** par tranche de 6 h (ex. 15 pour −15 °C) ou **1d4° DM**. Vêtements chauds : **+5 à +10** au test.",
+      "summary": "CON = |°C| sous 0 °C / 6 h ; vêtements chauds +5 à +10.",
+      "tags": [
+        "regle",
+        "environnement"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Poisons",
+      "page_start": 238,
+      "page_end": 239,
+      "body": "Naturels ou alchimiques ; ingestion, morsure, arme enduite.\n\n**Enduire une arme.** INT difficulté 10. Échec : dose perdue. Échec critique : auto-empoisonnement. Seule la **première attaque réussie** applique le poison.\n\n**Récupération sur cadavre.** Composants actifs dégradés en **1d6 minutes**.\n\n**Effet.** CON difficulté 10 (modifiable). Échec : effets. Certains poisons font effet même en réussite (ex. moitié des DM).\n\nVente généralement illégale, coût prohibitif.",
+      "summary": "INT 10 pour enduire ; CON 10 pour résister ; types dans la table Poisons.",
+      "tags": [
+        "regle",
+        "poison"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Poison affaiblissant long",
+      "page_start": 238,
+      "page_end": 238,
+      "body": "Échec CON : victime affaiblie. Réussite : —. Durée **1d6 h**. Délai **1d6 rounds**.",
+      "tags": [
+        "regle",
+        "poison"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Poisons"
+    },
+    {
+      "kind": "rule",
+      "name": "Poison affaiblissant rapide",
+      "page_start": 238,
+      "page_end": 238,
+      "body": "Échec CON : victime affaiblie. Réussite : —. Durée **1d6 min**. Délai **immédiat**.",
+      "tags": [
+        "regle",
+        "poison"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Poisons"
+    },
+    {
+      "kind": "rule",
+      "name": "Poison lent",
+      "page_start": 238,
+      "page_end": 238,
+      "body": "Échec CON : **1d4° DM**. Réussite : —. Délai immédiat. **Un test par jour jusqu'à réussite**.",
+      "tags": [
+        "regle",
+        "poison"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Poisons"
+    },
+    {
+      "kind": "rule",
+      "name": "Poison rapide",
+      "page_start": 238,
+      "page_end": 238,
+      "body": "Échec CON : **2d4° DM**. Réussite : **1d4° DM**. Délai immédiat.",
+      "tags": [
+        "regle",
+        "poison"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Poisons"
+    },
+    {
+      "kind": "rule",
+      "name": "Poison mortel",
+      "page_start": 238,
+      "page_end": 238,
+      "body": "Échec CON : **mort** (PJ : 0 PV). Réussite : **2d4° DM**. Délai **1d6 min**. Généralement **ingéré**.",
+      "tags": [
+        "regle",
+        "poison"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Poisons"
+    },
+    {
+      "kind": "rule",
+      "name": "Pièges",
+      "page_start": 239,
+      "page_end": 239,
+      "body": "Système mécanique (parfois magique) pour capturer, ralentir ou tuer.\n\n- Détection : test de **PER**. Recherche active : **+5**, déplacement /2.\n- Contourner : **AGI**. Désamorcer : **INT**. Échec : le piège s'active généralement.\n- Effets souvent des DM, parfois un état ; parfois AGI pour DM/2.",
+      "summary": "PER pour détecter ; AGI/INT pour contourner ou désamorcer.",
+      "tags": [
+        "regle",
+        "piege"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Aiguille empoisonnée",
+      "page_start": 239,
+      "page_end": 239,
+      "body": "Dans une serrure : se déclenche quand la cible force l'ouverture ou la crochète ; fine aiguille dans la main.\n\nDétecter **20**, désamorcer **10**, effet **selon poison**.",
+      "tags": [
+        "regle",
+        "piege"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Pièges"
+    },
+    {
+      "kind": "rule",
+      "name": "Balancier",
+      "page_start": 239,
+      "page_end": 239,
+      "body": "Objet dangereux qui balaie une zone (hache géante, tronc muni de pieux, etc.).\n\nDétecter **15**, désamorcer **10**, **3d6 DM** (DM/2 sur test AGI diff. 15).",
+      "tags": [
+        "regle",
+        "piege"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Pièges"
+    },
+    {
+      "kind": "rule",
+      "name": "Bloc de pierre",
+      "page_start": 239,
+      "page_end": 239,
+      "body": "Piège létal pour tombeaux : énorme bloc écrase l'intrus.\n\nDétecter **15**, désamorcer **15**, **10d4° DM** (DM/2 sur test AGI diff. 15).",
+      "tags": [
+        "regle",
+        "piege"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Pièges"
+    },
+    {
+      "kind": "rule",
+      "name": "Chausse-trappe",
+      "page_start": 239,
+      "page_end": 240,
+      "body": "Étoiles métalliques plantées vers le haut, au sol, camouflées ou non. Zone **3 × 3 m**. Sac d'étoiles **3 pa** ; **10 min** pour camoufler.\n\nDétecter **5 ou 15**, désamorcer **5**, **1 DM + invalide** (l'invalidité cesse lorsque la victime est soignée).",
+      "tags": [
+        "regle",
+        "piege"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Pièges"
+    },
+    {
+      "kind": "rule",
+      "name": "Fosse à pieux",
+      "page_start": 239,
+      "page_end": 240,
+      "body": "Trou profond (**3 m**) hérissé de pieux, milieu naturel / gros gibier. S'échapper : test d'**AGI difficulté 15**.\n\nDétecter **15**, désamorcer **5**, **2d6 DM** (DM/2 sur test AGI diff. 15).",
+      "summary": "Table : Fosse à pieux. Description p.240 : « Fosse à pieu ».",
+      "tags": [
+        "regle",
+        "piege"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Pièges"
+    },
+    {
+      "kind": "rule",
+      "name": "Lasso ou filet",
+      "page_start": 239,
+      "page_end": 240,
+      "body": "Lasso : enserrer un pied, victime tête en bas. Filet : une ou plusieurs créatures. Délivrer : couper la corde, test d'**AGI difficulté 15** (un essai par round).\n\nDétecter **15**, désamorcer **10**, **immobilisé + renversé**.",
+      "tags": [
+        "regle",
+        "piege"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Pièges"
+    },
+    {
+      "kind": "rule",
+      "name": "Piège à loups",
+      "page_start": 239,
+      "page_end": 240,
+      "body": "Grosse mâchoire de métal au sol. Libération : forcer la réouverture, test de **FOR difficulté 15**.\n\nDétecter **15**, désamorcer **5**, **1 DM + immobilisé**.",
+      "tags": [
+        "regle",
+        "piege"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Pièges"
+    },
+    {
+      "kind": "rule",
+      "name": "Trappe et lames",
+      "page_start": 239,
+      "page_end": 240,
+      "body": "Variante plus dangereuse de la fosse, dans les donjons (**6 m**). S'échapper : test d'**AGI difficulté 20**.\n\nDétecter **20**, désamorcer **15**, **5d4° DM** (DM/2 sur test AGI diff. 15).",
+      "tags": [
+        "regle",
+        "piege"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Pièges"
+    },
+    {
+      "kind": "rule",
+      "name": "Forcer un obstacle",
+      "page_start": 240,
+      "page_end": 240,
+      "body": "Porte, barreaux, coffre…\n\n- Enfoncer / tordre : test de **FOR** = **solidité**.\n- Briser par des DM : PV = solidité, retrancher la **RD**. Perforantes : pas de DM aux structures. Tranchantes : pas de DM aux murs maçonnés. Murs : engins de siège ou explosifs.",
+      "summary": "FOR vs solidité ; PV = solidité et RD si on inflige des DM.",
+      "tags": [
+        "regle",
+        "obstacle"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Indices évidents",
+      "page_start": 241,
+      "page_end": 241,
+      "body": "Les indices les plus importants devraient être presque immanquables (surtout joueurs débutants). Pas de test si le PJ est au bon endroit et que le joueur déclare une recherche. Ex. : arme derrière le lit si on fouille la pièce.",
+      "tags": [
+        "regle",
+        "enquete"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Indices et tests",
+      "page_start": 241,
+      "page_end": 241,
+      "body": "Indices cachés : test. Zone ~5 m de côté ou interrogatoire : **2d6 min** (un seul lancer si plusieurs chercheurs ; le meilleur trouve le premier).\n\n- **Trouver une preuve (PER)** : preuve matérielle.\n- **Faire une déduction (INT)** : quelque chose cloche.\n- **Obtenir un aveu (CHA)** : renseignement d'un interlocuteur.",
+      "summary": "PER / INT / CHA ; 2d6 min.",
+      "tags": [
+        "regle",
+        "enquete"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Indices et échelle des difficultés",
+      "page_start": 241,
+      "page_end": 241,
+      "body": "L'échelle des difficultés (page 204) gradue les découvertes selon le résultat du test, pour ne pas bloquer l'intrigue sur un mauvais jet. Un mauvais résultat peut donner un indice minimal, plus d'information si la réussite est nette — ou une **fausse piste**. Nécessite une préparation du MJ.",
+      "tags": [
+        "regle",
+        "enquete"
+      ],
+      "see_also": [
+        {
+          "kind": "rule",
+          "name": "Échelle des difficultés",
+          "relation": "see_also"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Niveau de magie",
+      "page_start": 242,
+      "page_end": 242,
+      "body": "Chaque objet enchanté a un niveau de magie, qui détermine prix et puissance. Selon la catégorie : souvent égal au **bonus** (test, DM, DEF) ou au **rang de la capacité** reproduite. Ex. : épée magique +1 → niveau 1.",
+      "tags": [
+        "regle",
+        "objet-magique"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Valeur des objets magiques",
+      "page_start": 242,
+      "page_end": 243,
+      "body": "Utile seulement si achat/vente (MJ). Revente max **50 %**. PJ paient le prix fort.\n\n- Objet : **(niveau de magie)² × 200 po**.\n- Potion ou parchemin : **(rang du sort)² × 50 pa**.\n- Baguette : valeur d'un parchemin **× nombre de charges**.",
+      "summary": "n²×200 po ; potions/parchemins rang²×50 pa ; baguette × charges.",
+      "tags": [
+        "regle",
+        "objet-magique"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Fabriquer des objets magiques",
+      "page_start": 243,
+      "page_end": 244,
+      "body": "MJ décide. Voie de prestige de l'enchanteur (p. 157) ou lanceur de sorts de niveau suffisant (niv. 5 pour rang 1, etc. ; alors temps doublé et composants d'aventure).\n\nCoût = **moitié de la valeur**. Temps = **1 jour / po dépensée**. Test INT **(10 + 2 × niveau)** ; échec : +10 % temps et argent et nouveau test. Critique : le MJ peut transformer les propriétés.",
+      "tags": [
+        "regle",
+        "objet-magique"
+      ],
+      "see_also": [
+        {
+          "kind": "voie",
+          "name": "Voie de l'enchanteur",
+          "relation": "see_also"
+        }
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Nombre et puissance des objets",
+      "page_start": 244,
+      "page_end": 245,
+      "body": "Après quelques aventures, à partir du **niveau 3** :\n- high : jusqu'à 3 majeurs et 4–5 mineurs ;\n- classique : ~2 majeurs et 2–3 mineurs ;\n- low : 1 majeur ou mineur.\n\nSomme des niveaux portés ≤ niveau du PJ (classique), ×2 (high), ÷4 (low).\n\nObjet majeur : table de puissance selon le niveau. Objet mineur : même table avec niveau du PJ **÷ 2**.",
+      "tags": [
+        "regle",
+        "objet-magique"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Consommables",
+      "page_start": 244,
+      "page_end": 244,
+      "body": "Potions et parchemins : usage unique (fiole vide, parchemin effacé). Niveau de magie comptabilisé = **0** ; ils ne comptent pas dans le nombre d'objets magiques. Ne pas en abuser.",
+      "tags": [
+        "regle",
+        "objet-magique",
+        "consommable"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Cumul des bonus",
+      "page_start": 245,
+      "page_end": 245,
+      "body": "Un seul bonus d'objet magique par jet ou paramètre (DEF, attaque, caractéristique, DM). Cumul possible avec le bonus d'un **sort**. Bonus **indirects** cumulables (FOR d'une ceinture + épée +2).\n\nHigh fantasy : on peut autoriser deux objets (armure + bouclier, arc + flèche).",
+      "tags": [
+        "regle",
+        "objet-magique"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Limiter les objets magiques",
+      "page_start": 245,
+      "page_end": 246,
+      "body": "Pas de vente libre, modifier les trésors. **Méthode des doublons** : pas deux armures, pas couronne de CHA sur bandeau d'INT, pas deux anneaux sur la même main (limite à deux anneaux), pas gantelet sur anneau. Cape / manteau / robe : à l'arbitrage du MJ.",
+      "tags": [
+        "regle",
+        "objet-magique"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Brûlepeste",
+      "page_start": 246,
+      "page_end": 246,
+      "body": "Option : les objets drainent le porteur. Plafond de somme des niveaux (souvent un peu moins que le niveau du PJ). Chaque niveau au-delà : **−1 à tous les tests**. Fièvre, sensation de brûler.",
+      "tags": [
+        "regle",
+        "objet-magique",
+        "option"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Identifier un objet magique",
+      "page_start": 246,
+      "page_end": 246,
+      "body": "Décrire sans nommer l'effet.\n\n- Lanceur de sort : niveau de magie ≤ plus haut rang de sort ; une récupération rapide.\n- Voie du vagabond (Rumeurs et légendes) : INT diff. **25 − 2 × niveau**.\n- Voie du maître d'armes (arme) : INT **[10 + 2 × niveau]**, quelques rounds.\n- Voie des élixirs (potion) : INT **[5 + 5 × rang du sort]**.",
+      "tags": [
+        "regle",
+        "objet-magique"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Effets secondaires des potions",
+      "page_start": 247,
+      "page_end": 248,
+      "body": "Ne pas boire une potion tant qu'une autre fait effet. Option : pas plus d'une potion de soins par combat.\n\nPotion alors qu'une autre est active : CON diff. **10** (15 / 20 / …). Échec : 2d6 sur la table. Les élixirs du Forgesort ne sont pas des potions pour cette règle.",
+      "tags": [
+        "regle",
+        "potion"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Identifier une potion",
+      "page_start": 248,
+      "page_end": 248,
+      "body": "Forgesort, voie des élixirs : INT diff. **[5 + 5 × rang du sort]**, bonus 2 + rang dans la voie, **10 min**. Échec critique : info fausse (test secret possible).",
+      "tags": [
+        "regle",
+        "potion"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Identifier un objet magique"
+    },
+    {
+      "kind": "rule",
+      "name": "Utiliser un parchemin",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Action **limitée**. Illisible hors famille de magie.\n\nSans test si sort du profil et rang maîtrisé. Rang trop élevé : attaque magique **[5 × rang]**. Même famille, autre profil : **+5**. Échec ≥ 10 : parchemin effacé.",
+      "tags": [
+        "regle",
+        "parchemin"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Baguette magique",
+      "page_start": 250,
+      "page_end": 250,
+      "body": "Un sort par charge ; **2d20** charges au départ. Lanceurs de sort seulement (bardes, druides, prêtres inclus) ; niveau ≥ rang du sort. Mot de commande. Action d'attaque en général.\n\nNiveau de magie : **rang/2** (inférieur) si < 30 charges ; **rang** si ≥ 30 charges.",
+      "tags": [
+        "regle",
+        "baguette"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Armes magiques",
+      "page_start": 251,
+      "page_end": 252,
+      "body": "Bonus en attaque et aux DM. Maniques : bonus aux attaques à mains nues. Propriétés : Affûtée, Fléau des [créatures], [Élément/substance], Parade (doublables).\n\nNiveau = bonus + niveaux des propriétés.",
+      "tags": [
+        "regle",
+        "arme"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Projectiles magiques",
+      "page_start": 251,
+      "page_end": 251,
+      "body": "Flèches, carreaux, billes : consommables. Avec une arme magique, seul le **plus haut bonus** s'applique ; **+10 m de portée par point du bonus le plus faible**.",
+      "tags": [
+        "regle",
+        "arme",
+        "consommable"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Armes magiques"
+    },
+    {
+      "kind": "rule",
+      "name": "Affûtée",
+      "page_start": 251,
+      "page_end": 251,
+      "body": "Propriété d'arme : +1 aux chances de critique et **+1d4° DM** aux attaques critiques. Niveau de magie de la propriété : **+1**.",
+      "tags": [
+        "regle",
+        "arme",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Armes magiques"
+    },
+    {
+      "kind": "rule",
+      "name": "Fléau des [créatures]",
+      "page_start": 251,
+      "page_end": 251,
+      "body": "L'arme inflige **+1d4° DM** contre une catégorie (animaux, démons, goblinoïdes, lanceurs de sorts, morts-vivants, lycanthropes, élémentaires, etc.). Niveau de magie : **+1**.",
+      "tags": [
+        "regle",
+        "arme",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Armes magiques"
+    },
+    {
+      "kind": "rule",
+      "name": "[Élément/substance]",
+      "page_start": 251,
+      "page_end": 251,
+      "body": "L'arme inflige **+1d4° DM** d'un élément ou d'une substance (feu, froid, acide, électricité, poison, etc.). Niveau de magie : **+2**. Doublée (ex. feu intense) : niveau de la propriété doublé.",
+      "tags": [
+        "regle",
+        "arme",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Armes magiques"
+    },
+    {
+      "kind": "rule",
+      "name": "Parade",
+      "page_start": 251,
+      "page_end": 251,
+      "body": "L'arme offre un bonus de DEF. Niveau de magie de la propriété = **bonus de DEF**.",
+      "tags": [
+        "regle",
+        "arme",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Armes magiques"
+    },
+    {
+      "kind": "rule",
+      "name": "Sceptre de magie",
+      "page_start": 252,
+      "page_end": 252,
+      "body": "Bonus en **attaque magique** et aux **DM des sorts**. Forme variable (bâton, anneau de puissance, couronne…). Utilisable comme arme si la forme le permet. DM comme un bâton (1d6) dans la table aléatoire.",
+      "tags": [
+        "regle",
+        "sceptre"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Objets magiques de défense",
+      "page_start": 252,
+      "page_end": 254,
+      "body": "Bonus de magie à la DEF ; **un seul** bonus de DEF magique (le plus haut). Armure : le bonus réduit aussi les pénalités (pas l'AGI max). Cumul possible avec le sort Armure de mage.",
+      "tags": [
+        "regle",
+        "defense"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Boucliers magiques",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "Bonus de DEF du bouclier et de l'armure **non cumulables**. Option MJ : convertir le bonus non utilisé en **RD contre les coups critiques**.",
+      "tags": [
+        "regle",
+        "defense"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets magiques de défense"
+    },
+    {
+      "kind": "rule",
+      "name": "Action libre",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "Propriété défensive : ne peut pas être ralenti, immobilisé ou paralysé par magie. **+5** aux tests pour résister à ce type d'effets s'il s'agit d'une contrainte physique. +1 niveau de magie (défaut des propriétés).",
+      "tags": [
+        "regle",
+        "defense",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets magiques de défense"
+    },
+    {
+      "kind": "rule",
+      "name": "Défense",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "RD **2** (+1 niveau de magie) ou **Défense supérieure** RD **4** (+2 niveaux).",
+      "tags": [
+        "regle",
+        "defense",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets magiques de défense"
+    },
+    {
+      "kind": "rule",
+      "name": "Mobile",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "Le malus d'armure est réduit de **4**.",
+      "tags": [
+        "regle",
+        "defense",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets magiques de défense"
+    },
+    {
+      "kind": "rule",
+      "name": "Natation",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "+5 aux tests de natation ; si c'est une armure, elle **flotte** et permet de rester à la surface.",
+      "tags": [
+        "regle",
+        "defense",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets magiques de défense"
+    },
+    {
+      "kind": "rule",
+      "name": "Ombre",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "+5 aux tests de discrétion (AGI). On peut imaginer d'autres objets de ce type (cape d'elfe magique).",
+      "tags": [
+        "regle",
+        "defense",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets magiques de défense"
+    },
+    {
+      "kind": "rule",
+      "name": "Protection",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "Divise par **2** les DM des coups critiques et des attaques sournoises.",
+      "tags": [
+        "regle",
+        "defense",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets magiques de défense"
+    },
+    {
+      "kind": "rule",
+      "name": "Résistance à la magie",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "+5 en DEF ou aux tests pour résister à la magie.",
+      "tags": [
+        "regle",
+        "defense",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets magiques de défense"
+    },
+    {
+      "kind": "rule",
+      "name": "Résistance [substance]",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "Le porteur retranche X points à tous les DM de la substance. Ex. : Résistance feu 10 réduit de 10 les DM de feu.",
+      "tags": [
+        "regle",
+        "defense",
+        "propriete"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets magiques de défense"
+    },
+    {
+      "kind": "rule",
+      "name": "Objets de pouvoir",
+      "page_start": 254,
+      "page_end": 255,
+      "body": "Capacités de lanceur de sort, en général **1/jour**, parfois permanent. Action gratuite (1/tour) ou action d'attaque. Niveau = rang du sort (ou somme des rangs).",
+      "tags": [
+        "regle",
+        "pouvoir"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Grimoires de pouvoir",
+      "page_start": 255,
+      "page_end": 256,
+      "body": "Sorts inconnus. Profane (mages) ou divine (mystiques) ; bardes (profil principal) : les deux. Action **L**, **1 PM**, 1/jour par inscription. Niveau = somme des rangs / **3** (arrondi au plus proche).",
+      "tags": [
+        "regle",
+        "grimoire"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Objets de puissance",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Bonus à une caractéristique. Niveau = bonus × **3**. Conseillé : max +2 classique, +3 high fantasy.",
+      "tags": [
+        "regle",
+        "puissance"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Objets mineurs de puissance",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Bonus sur DR, PC, PM ou PV. Niveau : DR 1/point, PC 1/point, PM 1/tranche de 3, PV 1/tranche de 5.",
+      "tags": [
+        "regle",
+        "puissance"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets de puissance"
+    },
+    {
+      "kind": "rule",
+      "name": "Objets de compétence",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Bonus de **+5** sur un type de test unique. Niveau de magie **1**.",
+      "tags": [
+        "regle",
+        "competence"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Objets prestigieux",
+      "page_start": 257,
+      "page_end": 258,
+      "body": "Voie propre (jusqu'à 5 rangs), sans point de capacité. Rang 1 libre ; ensuite niveau compatible, haut fait, éventuellement profil/voie/capacité.",
+      "tags": [
+        "regle",
+        "prestigieux"
+      ]
+    },
+    {
+      "kind": "rule",
+      "name": "Objet personnalisé",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "Objet faiblement enchanté qui devient prestigieux après un événement mémorable où le joueur le **nomme**. Le nom et l'événement orientent les pouvoirs.",
+      "tags": [
+        "regle",
+        "prestigieux"
+      ],
+      "parent_kind": "rule",
+      "parent_name": "Objets prestigieux"
+    },
+    {
+      "kind": "table",
+      "name": "Terrains difficiles",
+      "page_start": 233,
+      "page_end": 233,
+      "body": "| Type de terrain | Modificateur de distance parcourue |\n|---|---|\n| Hors piste | /2 |\n| Forêt dense, montagne, marais… | /2 |\n| Hors piste ET terrain difficile | /4 |",
+      "tags": [
+        "table",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Dangerosité d'une région",
+      "page_start": 233,
+      "page_end": 233,
+      "body": "| Type de région | Difficulté des tests | DM subis |\n|---|---|---|\n| Zone civilisée | 10 | 1 |\n| Zone naturelle ou frontalière | 10 | 1d4° |\n| Zone sauvage ou reculée | 15 | 2d4° |\n| Zone dangereuse (très haute montagne, marais) | 20 | 3d4° |\n| Zone de guerre | 20 | 3d4° |\n| Zone mortelle ou maudite | 25 | 4d4° |",
+      "tags": [
+        "table",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Aggravation due à l'hiver",
+      "page_start": 235,
+      "page_end": 235,
+      "body": "| Mois | Difficulté des tests | DM subis |\n|---|---|---|\n| Novembre | +5 | — |\n| Décembre | +5 | +1d4° |\n| Janvier | +5 | +1d4° |\n| Février | +5 | — |",
+      "tags": [
+        "table",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Résultat du test de progression",
+      "page_start": 235,
+      "page_end": 235,
+      "body": "| Résultat | Événement |\n|---|---|\n| 3 échecs | Progression stoppée et événement majeur |\n| 2 échecs | Progression ralentie et événement majeur |\n| 1 échec | Événement mineur |\n| 0 succès | Bivouac inconfortable |\n| 1 succès | Progression ordinaire |\n| 2 succès | Bivouac confortable |\n| 3 succès | Progression rapide et bivouac confortable |",
+      "tags": [
+        "table",
+        "voyage"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Poisons",
+      "page_start": 238,
+      "page_end": 238,
+      "body": "| Type de poison | Effet (échec CON) | Effet (réussite) | Durée | Délai avant effet | Note |\n|---|---|---|---|---|---|\n| Affaiblissant long | Victime affaiblie | — | 1d6 h | 1d6 rounds | |\n| Affaiblissant rapide | Victime affaiblie | — | 1d6 min | Immédiat | |\n| Lent | 1d4° DM | — | — | Immédiat | Un test par jour jusqu'à réussite |\n| Rapide | 2d4° DM | 1d4° DM | — | Immédiat | |\n| Mortel | Mort (PJ : 0 PV) | 2d4° DM | — | 1d6 min | Généralement ingéré |",
+      "tags": [
+        "table",
+        "poison"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Pièges",
+      "page_start": 239,
+      "page_end": 239,
+      "body": "| Nom du piège | Diff. détecter | Diff. désamorcer | Effet | Complément |\n|---|---|---|---|---|\n| Aiguille empoisonnée | 20 | 10 | selon poison | |\n| Balancier | 15 | 10 | 3d6 DM | DM/2 sur test AGI diff. 15 |\n| Bloc de pierre | 15 | 15 | 10d4° DM | DM/2 sur test AGI diff. 15 |\n| Chausse-trappe | 5 ou 15 | 5 | 1 DM + invalide | L'invalidité cesse lorsque la victime est soignée |\n| Fosse à pieux | 15 | 5 | 2d6 DM | DM/2 sur test AGI diff. 15 |\n| Lasso/Filet | 15 | 10 | immobilisé + renversé | |\n| Piège à loups | 15 | 5 | 1 DM + immobilisé | |\n| Trappe et lames | 20 | 15 | 5d4° DM | DM/2 sur test AGI diff. 15 |",
+      "tags": [
+        "table",
+        "piege"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Obstacles",
+      "page_start": 240,
+      "page_end": 240,
+      "body": "| Structures | Solidité | RD |\n|---|---|---|\n| Porte simple en bois | 15 | 5 |\n| Porte épaisse | 20 | 7 |\n| Porte renforcée | 25 | 10 |\n| Porte blindée | 30 | 15 |\n| Barreaux simples | 25 | 20 |\n| Barreaux croisés | 30 | 20 |\n| Cloison de bois et plâtre | 20 | 5 |\n| Cloison en brique | 25 | 10 |\n| Mur de pierre de 30 cm d'épaisseur | 30 | 20 |",
+      "tags": [
+        "table",
+        "obstacle"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Puissance d'un objet magique majeur",
+      "page_start": 244,
+      "page_end": 244,
+      "body": "Pour un objet mineur, diviser le niveau du PJ par 2 avant de lire la colonne. C = consommable.\n\n**Niveaux 1–10**\n\n| Niveau du PJ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|---|\n| Cadre de jeu classique | C | C | 1 | 1 | 1 | 2 | 2 | 2 | 3 | 3 |\n| Cadre high fantasy | C | 1 | 1 | 2 | 2 | 3 | 3 | 4 | 4 | 5 |\n| Cadre low fantasy | 0 | 0 | C | C | 1 | 1 | 1 | 1 | 2 | 2 |\n\n**Niveaux 11–20**\n\n| Niveau du PJ | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n|---|---|---|---|---|---|---|---|---|---|---|\n| Cadre de jeu classique | 3 | 4 | 4 | 4 | 4 | 5 | 5 | 5 | 5 | 6 |\n| Cadre high fantasy | 5 | 6 | 6 | 7 | 7 | 8 | 8 | 9 | 9 | 10 |\n| Cadre low fantasy | 2 | 2 | 2 | 2 | 2 | 3 | 3 | 3 | 3 | 3 |",
+      "tags": [
+        "table",
+        "objet-magique"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Origine d'un objet magique",
+      "page_start": 247,
+      "page_end": 247,
+      "body": "Trois jets de d10 (provenance, époque, peuple). Non adapté aux consommables.\n\n| d10 | Provenance | Époque | Peuple |\n|---|---|---|---|\n| 1 | Locale | Post Monastir | Humains |\n| 2 | La nation où l'objet est découvert | Âges sombres (−700 à −1) | Nains |\n| 3 | Une nation voisine de la nation où l'objet vient d'être trouvé | Empire d'Osgild | Elfes |\n| 4 | Grand Nord | Chute d'Anathazerïn | Gnomes |\n| 5 | Sud profond | Apogée d'Anathazerïn | Elfes des ténèbres |\n| 6 | Ouest lointain | Apogée des Premiers-nés | Orcs ou gobelins |\n| 7 | Est lointain | Corruption post Roi-Sorcier | Ange, démon, divinité |\n| 8 | Les profondeurs | Époque du Roi-Sorcier | Dragons |\n| 9 | Un autre continent | Chute des pierres du ciel | Seigneur élémentaire |\n| 10 | Un autre plan | Premier âge | Autre créature ancienne |",
+      "tags": [
+        "table",
+        "objet-magique",
+        "osgild"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Effet secondaire des potions",
+      "page_start": 248,
+      "page_end": 248,
+      "body": "| 2d6 | Effet |\n|---|---|\n| 2 | La potion ne fait pas effet et le personnage perd 1 PV sur son maximum (permanent). |\n| 3 | La potion ne fait pas effet et le buveur est affaibli jusqu'à une récupération complète. |\n| 4 | La potion ne fait pas effet et le buveur est affaibli jusqu'à une récupération rapide. |\n| 5 | La potion ne fait aucun effet. |\n| 6–8 | La potion fait effet normalement (et la précédente reste active). |\n| 9 | La potion fait effet, mais si la précédente faisait encore effet, celui-ci cesse immédiatement. |\n| 10 | La potion fait effet, mais le buveur est affaibli jusqu'à une récupération rapide. |\n| 11 | La potion fait effet, mais le buveur est affaibli jusqu'à une récupération complète. |\n| 12 | La potion fait effet, mais elle empoisonne le buveur : 1d4° DM par rang de la potion. |",
+      "tags": [
+        "table",
+        "potion"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Type de potion",
+      "page_start": 248,
+      "page_end": 248,
+      "body": "| d6 | Type de potion |\n|---|---|\n| 1–3 | Potion de soins |\n| 4–5 | Potion commune |\n| 6 | Potion rare |\n\n\\* Le niveau utilisé est celui du personnage qui consomme la potion.",
+      "tags": [
+        "table",
+        "potion"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Potions de soins",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "| d6 | Potion |\n|---|---|\n| 1–3 | Récupération mineure (Prêtre) |\n| 4–5 | Récupération majeure (Prêtre) |\n| 6 | Délivrance (Prêtre) |",
+      "tags": [
+        "table",
+        "potion"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Potions communes",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "| d10 | Potion |\n|---|---|\n| 1 | Détection de l'invisible (Ensorceleur) |\n| 2 | Lévitation (Magicien) |\n| 3 | Forme gazeuse (Magicien) |\n| 4 | Accélération (Magicien) |\n| 5 | Maîtrise des éléments (Magicien) |\n| 6 | Respiration aquatique (Magicien) |\n| 7 | Armure de mana (Magicien) |\n| 8 | Chute ralentie (Magicien) |\n| 9 | Invisibilité (Magicien) |\n| 10 | Vol (Magicien) |",
+      "tags": [
+        "table",
+        "potion"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Potions rares",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "| d20 | Potion |\n|---|---|\n| 1 | Langage des animaux (Druide, 1d6 minutes) |\n| 2 | Masque du prédateur (Druide) |\n| 3 | Forme animale (Druide, 1d6 minutes) |\n| 4 | Terrains difficiles (Druide, 2d6 h) |\n| 5 | Forme d'arbre (Druide, 2d6 minutes) |\n| 6 | Peau d'écorce (Druide, +5 DEF) |\n| 7 | Clairvoyance (Ensorceleur, 1d6 tours) |\n| 8 | Sous tension (Ensorceleur) |\n| 9 | Forme éthérée (Ensorceleur) |\n| 10 | Imitation (Ensorceleur) |\n| 11 | Fortifiant (Forgesort) |\n| 12 | Feu grégeois (Forgesort) |\n| 13 | Élixir de guérison (Forgesort) |\n| 14 | Déphasage (Magicien) |\n| 15 | Beauté de la succube (Sorcier) |\n| 16 | Aspect du démon (Sorcier) |\n| 17 | Masque mortuaire (Sorcier) |\n| 18 | Reptation (Sorcier) |\n| 19 | Ailes célestes (Prêtre) |\n| 20 | Sanctuaire (Prêtre) |",
+      "tags": [
+        "table",
+        "potion"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Parchemin / Baguette — Voie du sort inscrit",
+      "page_start": 250,
+      "page_end": 250,
+      "body": "| d20 | Voie |\n|---|---|\n| 1 | Ensorceleur — Voie de l'air |\n| 2 | Ensorceleur — Voie de la divination |\n| 3 | Ensorceleur — Voie de l'envoûteur |\n| 4 | Ensorceleur — Voie des illusions |\n| 5 | Ensorceleur — Voie de l'invocation |\n| 6 | Magicien — Voie de la magie des arcanes |\n| 7 | Magicien — Voie de la magie destructrice |\n| 8 | Magicien — Voie de la magie élémentaire |\n| 9 | Magicien — Voie de la magie protectrice |\n| 10 | Magicien — Voie de la magie universelle |\n| 11 | Sorcier — Voie du démon |\n| 12 | Sorcier — Voie de la mort |\n| 13 | Sorcier — Voie de l'outre-tombe |\n| 14 | Sorcier — Voie du sang |\n| 15 | Sorcier — Voie de la sombre magie |\n| 16 | Prêtre — Voie de la foi |\n| 17 | Prêtre — Voie de la prière |\n| 18 | Prêtre — Voie des soins |\n| 19 | Prêtre — Voie de la spiritualité |\n| 20 | Druide — Voie des végétaux |\n\nRelancer si la capacité tirée n'est pas un sort (pas d'astérisque dans le nom).",
+      "tags": [
+        "table",
+        "parchemin",
+        "baguette"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Parchemin / Baguette — Rang de la voie",
+      "page_start": 250,
+      "page_end": 250,
+      "body": "| Type | d6 | Rang |\n|---|---|---|\n| Objet mineur | 1–3 | 1 |\n| Objet mineur | 4–5 | 2 |\n| Objet mineur | 6 | 3 |\n| Objet moyen | 1–2 | 3 |\n| Objet moyen | 3–4 | 4 |\n| Objet moyen | 5–6 | 5 |",
+      "tags": [
+        "table",
+        "parchemin",
+        "baguette"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Types d'armes magiques",
+      "page_start": 252,
+      "page_end": 252,
+      "body": "| d6 | Type d'arme |\n|---|---|\n| 1–3 | Arme de contact |\n| 4–5 | Arme à distance |\n| 6 | Sceptre de magie (DM comme un bâton : 1d6) |",
+      "tags": [
+        "table",
+        "arme"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Armes magiques — Armes de contact et armes à distance",
+      "page_start": 252,
+      "page_end": 252,
+      "body": "| d20 | Armes de contact | d20 | Armes à distance |\n|---|---|---|---|\n| 1 | Maniques (mains nues) | 1 | Arbalète de poing |\n| 2 | Bâton | 2–3 | Arbalète légère |\n| 3–4 | Dague | 4–5 | Arbalète lourde |\n| 5 | Épée bâtarde | 6–7 | Arc court |\n| 6–7 | Épée courte | 8–9 | Arc long |\n| 8–10 | Épée longue | 10 | Dague |\n| 11 | Hache à une main | 11 | Fronde |\n| 12–13 | Épée à deux mains | 12 | Hachette |\n| 14 | Hache à deux mains | 13 | Javelot |\n| 15–16 | Masse ou marteau | 14–15 | Carreaux d'arbalète (1d12) |\n| 17–18 | Rapière | 16–17 | Flèches (1d12) |\n| 19 | Vivelame ou Katana | 18 | Billes de fronde (1d12) |\n| 20 | Autre arme | 19–20 | Autre arme |",
+      "tags": [
+        "table",
+        "arme"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Armes magiques — Propriétés des armes de contact",
+      "page_start": 252,
+      "page_end": 252,
+      "body": "| d12 | Propriété |\n|---|---|\n| 1–2 | Affûtée |\n| 3 | Fléau des morts |\n| 4 | Fléau des dragons |\n| 5 | Fléau des géants |\n| 6 | Fléau des goblinoïdes |\n| 7 | Fléau des démons |\n| 8 | Feu |\n| 9 | Froid |\n| 10 | Foudre |\n| 11–12 | Tirez deux propriétés, doublez son effet, ou spécial* |\n\n\\* Autre propriété au choix ou au hasard. Ex. : hache qui accorde Enchaînement (rang 3 de la voie du pourfendeur, barbare). Préférer des capacités en rapport avec l'attaque.\n\nUne arme de contact ou à distance possède une propriété particulière si 1d6 < niveau de magie de l'arme.",
+      "tags": [
+        "table",
+        "arme"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Niveau de magie des propriétés spéciales des armes magiques",
+      "page_start": 251,
+      "page_end": 251,
+      "body": "| Type | Niveau de magie |\n|---|---|\n| Affûtée | +1 |\n| [Élément/substance] | +2 |\n| Fléau des [créatures] | +1 |\n| Parade | bonus de DEF |\n\nPropriété doublée : niveau de magie de la propriété doublé.",
+      "tags": [
+        "table",
+        "arme"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Armures magiques",
+      "page_start": 254,
+      "page_end": 254,
+      "body": "| d20 | Armure |\n|---|---|\n| 1–2 | Anneau ou cape de protection |\n| 3–4 | Bracelets de défense ou robe de mage |\n| 5–6 | Cuir |\n| 7–8 | Cuir renforcé |\n| 9–10 | Chemise de mailles |\n| 11–13 | Cotte de mailles |\n| 14–15 | Demi-plaque |\n| 16 | Plaque complète |\n| 17–18 | Petit bouclier |\n| 19–20 | Grand bouclier |\n\nPropriété particulière si 1d6 < niveau de magie.",
+      "tags": [
+        "table",
+        "defense"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Propriétés des armures magiques",
+      "page_start": 254,
+      "page_end": 254,
+      "body": "| d12 | Propriété |\n|---|---|\n| 1 | Action libre |\n| 2 | Défense ou défense supérieure |\n| 3 | Natation |\n| 4 | Ombre |\n| 5 | Protection |\n| 6 | Résistance à la magie |\n| 7 | Résistance au feu |\n| 8 | Résistance au froid |\n| 9 | Résistance à l'électricité |\n| 10 | Résistance à l'acide |\n| 11 | Mobile |\n| 12 | Tirez deux propriétés, doublez son effet, ou spécial* |\n\n\\* Ex. : robe de mage qui accorde Image décalée (rang 2 de la voie des illusions, ensorceleur).",
+      "tags": [
+        "table",
+        "defense"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Rang du pouvoir",
+      "page_start": 255,
+      "page_end": 255,
+      "body": "| d8 | Rang |\n|---|---|\n| 1–2 | 1 |\n| 3–4 | 2 |\n| 5–6 | 3 |\n| 7 | 4 |\n| 8 | 5 |\n\nLe MJ peut plafonner le rang selon le niveau des PJ.",
+      "tags": [
+        "table",
+        "pouvoir"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Type de pouvoir",
+      "page_start": 255,
+      "page_end": 255,
+      "body": "| d20 | Profil |\n|---|---|\n| 1 | Arquebusier |\n| 2 | Barde |\n| 3 | Barbare |\n| 4 | Chevalier |\n| 5–6 | Druide |\n| 7–8 | Ensorceleur |\n| 9–10 | Forgesort |\n| 11 | Guerrier |\n| 12–13 | Magicien |\n| 14 | Moine |\n| 15–16 | Sorcier |\n| 17–18 | Prêtre |\n| 19 | Rôdeur |\n| 20 | Voleur |",
+      "tags": [
+        "table",
+        "pouvoir"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Niveau de magie des objets mineurs de puissance",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "| Caractéristique | Niveau de magie |\n|---|---|\n| DR | 1 / point ajouté |\n| PC | 1 / point ajouté |\n| PM | 1 / tranche de 3 PM |\n| PV | 1 / tranche de 5 PV |",
+      "tags": [
+        "table",
+        "puissance"
+      ]
+    },
+    {
+      "kind": "table",
+      "name": "Objet de puissance",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "| d12 | Caractéristique |\n|---|---|\n| 1 | AGI |\n| 2 | CON |\n| 3 | FOR |\n| 4 | PER |\n| 5 | CHA |\n| 6 | INT |\n| 7 | VOL |\n| 8 | DR |\n| 9 | PC |\n| 10 | PM |\n| 11 | PV |\n| 12 | Relancer |",
+      "tags": [
+        "table",
+        "puissance"
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de langage des animaux",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **langage des animaux** (Druide). Indication de la table : 1d6 minutes. Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Druide",
+        "potion_type": "rare",
+        "table_note": "1d6 minutes"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "langage des animaux",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de masque du prédateur",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **masque du prédateur** (Druide). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Druide",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "masque du prédateur",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de forme animale",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **forme animale** (Druide). Indication de la table : 1d6 minutes. Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Druide",
+        "potion_type": "rare",
+        "table_note": "1d6 minutes"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "forme animale",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de terrains difficiles",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **terrains difficiles** (Druide). Indication de la table : 2d6 h. Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Druide",
+        "potion_type": "rare",
+        "table_note": "2d6 h"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "terrains difficiles",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de forme d'arbre",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **forme d'arbre** (Druide). Indication de la table : 2d6 minutes. Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Druide",
+        "potion_type": "rare",
+        "table_note": "2d6 minutes"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "forme d'arbre",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de peau d'écorce",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **peau d'écorce** (Druide). Indication de la table : +5 DEF. Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Druide",
+        "potion_type": "rare",
+        "table_note": "+5 DEF"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "peau d'écorce",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de clairvoyance",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **clairvoyance** (Ensorceleur). Indication de la table : 1d6 tours. Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Ensorceleur",
+        "potion_type": "rare",
+        "table_note": "1d6 tours"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "clairvoyance",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion Sous tension",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **Sous tension** (Ensorceleur). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Ensorceleur",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "Sous tension",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de forme éthérée",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **forme éthérée** (Ensorceleur). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Ensorceleur",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "forme éthérée",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion d'imitation",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **imitation** (Ensorceleur). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Ensorceleur",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "imitation",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion fortifiant",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **fortifiant** (Forgesort). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Forgesort",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "fortifiant",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de feu grégeois",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **feu grégeois** (Forgesort). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Forgesort",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "feu grégeois",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Élixir de guérison",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **Élixir de guérison** (Forgesort). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Forgesort",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "Élixir de guérison",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de déphasage",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **déphasage** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "déphasage",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de beauté de la succube",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **beauté de la succube** (Sorcier). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Sorcier",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "beauté de la succube",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion d'aspect du démon",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **aspect du démon** (Sorcier). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Sorcier",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "aspect du démon",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de masque mortuaire",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **masque mortuaire** (Sorcier). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Sorcier",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "masque mortuaire",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de reptation",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **reptation** (Sorcier). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Sorcier",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "reptation",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion d'ailes célestes",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **ailes célestes** (Prêtre). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Prêtre",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "ailes célestes",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de sanctuaire",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **sanctuaire** (Prêtre). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "rare",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Prêtre",
+        "potion_type": "rare"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "sanctuaire",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de récupération mineure",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **récupération mineure** (Prêtre). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "soins",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Prêtre",
+        "potion_type": "soins"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "récupération mineure",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de récupération majeure",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **récupération majeure** (Prêtre). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "soins",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Prêtre",
+        "potion_type": "soins"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "récupération majeure",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de délivrance",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **délivrance** (Prêtre). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "soins",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Prêtre",
+        "potion_type": "soins"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "délivrance",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de détection de l'invisible",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **détection de l'invisible** (Ensorceleur). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Ensorceleur",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "détection de l'invisible",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de lévitation",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **lévitation** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "lévitation",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de forme gazeuse",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **forme gazeuse** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "forme gazeuse",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion d'accélération",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **accélération** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "accélération",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de maîtrise des éléments",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **maîtrise des éléments** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "maîtrise des éléments",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de respiration aquatique",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **respiration aquatique** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "respiration aquatique",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion d'armure de mana",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **armure de mana** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "armure de mana",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de chute ralentie",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **chute ralentie** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "chute ralentie",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion d'invisibilité",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **invisibilité** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "invisibilité",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Potion de vol",
+      "page_start": 249,
+      "page_end": 249,
+      "body": "Potion à usage unique reproduisant la capacité **vol** (Magicien). Niveau de magie **0**. Boire = action de mouvement.",
+      "tags": [
+        "objet-magique",
+        "potion",
+        "potion",
+        "commune",
+        "consommable"
+      ],
+      "data": {
+        "category": "potion",
+        "rarity_or_level": "0",
+        "source_profile": "Magicien",
+        "potion_type": "commune"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "vol",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Épée magique +1",
+      "page_start": 242,
+      "page_end": 244,
+      "body": "Accorde un bonus de **+1** aux tests d'attaque et aux DM. Niveau de magie **1**.\n\nValeur **200 po** (1 × 1 × 200). Coût de fabrication **100 po**, **100 jours** de travail.",
+      "tags": [
+        "objet-magique",
+        "arme",
+        "arme"
+      ],
+      "data": {
+        "category": "arme",
+        "rarity_or_level": "1",
+        "price": "200 po",
+        "fabrication_cost": "100 po",
+        "fabrication_days": 100
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Épée +2 de feu intense",
+      "page_start": 251,
+      "page_end": 251,
+      "body": "Arme +2 dont la propriété Feu est doublée : **+2d4° DM de feu**. Niveau de magie total **6** (2 + 2 × (+2)).",
+      "tags": [
+        "objet-magique",
+        "arme",
+        "arme",
+        "feu"
+      ],
+      "data": {
+        "category": "arme",
+        "rarity_or_level": "6"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Sceptre de feu",
+      "page_start": 252,
+      "page_end": 252,
+      "body": "Sceptre de magie orné d'un charbon ardent. Bonus de **+2** en attaque magique et aux DM pour tous les **sorts de feu**.",
+      "summary": "Exemple de sceptre de magie.",
+      "tags": [
+        "objet-magique",
+        "sceptre",
+        "sceptre",
+        "feu"
+      ],
+      "data": {
+        "category": "sceptre",
+        "rarity_or_level": "2"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Cotte de mailles +2",
+      "page_start": 253,
+      "page_end": 253,
+      "body": "DEF **+7** (+5 + 2). Pénalité aux tests d'AGI réduite à **−3** (5 − 2). Niveau de magie **2** (bonus).",
+      "tags": [
+        "objet-magique",
+        "armure",
+        "defense",
+        "armure"
+      ],
+      "data": {
+        "category": "armure",
+        "rarity_or_level": "2"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Anneau de protection",
+      "page_start": 254,
+      "page_end": 254,
+      "body": "Objet magique de défense (table Armures magiques, 1–2 : anneau ou cape de protection). Un anneau +2 augmente la DEF de son porteur de 2 ; ce bonus ne se cumule pas au bonus magique d'une armure magique, mais se cumule au sort Armure de mage.",
+      "tags": [
+        "objet-magique",
+        "defense",
+        "defense",
+        "anneau"
+      ],
+      "data": {
+        "category": "defense"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Cape de protection",
+      "page_start": 254,
+      "page_end": 254,
+      "body": "Objet magique de défense (table Armures magiques, 1–2 : anneau ou cape de protection). Ajoute son bonus de magie à la DEF ; un seul bonus de DEF magique s'applique.",
+      "tags": [
+        "objet-magique",
+        "defense",
+        "defense",
+        "cape"
+      ],
+      "data": {
+        "category": "defense"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Bracelets de défense",
+      "page_start": 254,
+      "page_end": 254,
+      "body": "Objet magique de défense (table Armures magiques, 3–4 : bracelets de défense ou robe de mage).",
+      "tags": [
+        "objet-magique",
+        "defense",
+        "defense"
+      ],
+      "data": {
+        "category": "defense"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Robe de mage",
+      "page_start": 254,
+      "page_end": 254,
+      "body": "Objet magique de défense (table Armures magiques, 3–4). Une note de table évoque une robe de mage pouvant accorder Image décalée (rang 2 de la voie des illusions, ensorceleur) comme propriété spéciale.",
+      "tags": [
+        "objet-magique",
+        "defense",
+        "defense",
+        "robe"
+      ],
+      "data": {
+        "category": "defense"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Sac sans fond",
+      "page_start": 254,
+      "page_end": 254,
+      "body": "Objet de pouvoir à fonctionnement **permanent**, basé sur le sort de **rang 3** de la voie des artefacts de forgesort. Niveau de magie égal au rang du sort dupliqué (**3**).",
+      "tags": [
+        "objet-magique",
+        "objet de pouvoir",
+        "pouvoir",
+        "forgesort"
+      ],
+      "data": {
+        "category": "objet de pouvoir",
+        "rarity_or_level": "3"
+      },
+      "see_also": [
+        {
+          "kind": "voie",
+          "name": "Voie des artefacts",
+          "relation": "based_on"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Bottes de vitesse",
+      "page_start": 255,
+      "page_end": 255,
+      "body": "Reproduisent **Réflexes félins** (Voleur, rang 2 de la voie du déplacement) : déplacement supplémentaire de **20 m une fois par combat**. **2** niveaux de magie.",
+      "tags": [
+        "objet-magique",
+        "objet de pouvoir",
+        "pouvoir",
+        "voleur"
+      ],
+      "data": {
+        "category": "objet de pouvoir",
+        "rarity_or_level": "2"
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "Réflexes félins",
+          "relation": "reproduces"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Grimoire de projectile de mana",
+      "page_start": 256,
+      "page_end": 256,
+      "body": "Le sort Projectile de mana y est inscrit **trois fois** (trois lancers par jour). Niveau de magie **1** : (1+1+1)/3.",
+      "tags": [
+        "objet-magique",
+        "grimoire de pouvoir",
+        "grimoire"
+      ],
+      "data": {
+        "category": "grimoire de pouvoir",
+        "rarity_or_level": "1"
+      },
+      "see_also": [
+        {
+          "kind": "spell",
+          "name": "Projectile de mana",
+          "relation": "contains"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Grimoire des illusions perdues",
+      "page_start": 256,
+      "page_end": 256,
+      "body": "Regroupe l'ensemble des sorts de la **voie des illusions**. Niveau de magie **5** : (1+2+3+4+5)/3.",
+      "tags": [
+        "objet-magique",
+        "grimoire de pouvoir",
+        "grimoire",
+        "illusions"
+      ],
+      "data": {
+        "category": "grimoire de pouvoir",
+        "rarity_or_level": "5"
+      },
+      "see_also": [
+        {
+          "kind": "voie",
+          "name": "Voie des illusions",
+          "relation": "contains"
+        }
+      ]
+    },
+    {
+      "kind": "magic_item",
+      "name": "Ceinture de force",
+      "page_start": 245,
+      "page_end": 257,
+      "body": "Objet de puissance lié à la **FOR**. Un guerrier avec une ceinture de force qui octroie FOR +1 ajoute sa FOR lors d'une attaque avec une épée magique +2 (bonus indirects cumulables). Niveau de magie = bonus de caractéristique × 3.",
+      "tags": [
+        "objet-magique",
+        "objet de puissance",
+        "puissance",
+        "FOR"
+      ],
+      "data": {
+        "category": "objet de puissance",
+        "characteristic": "FOR"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Bandeau d'intelligence",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Objet de puissance lié à l'**INT**. Forme déterminée par la caractéristique affectée. Niveau de magie = bonus × 3.",
+      "tags": [
+        "objet-magique",
+        "objet de puissance",
+        "puissance",
+        "INT"
+      ],
+      "data": {
+        "category": "objet de puissance",
+        "characteristic": "INT"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Bandeau de volonté",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Objet de puissance lié à la **VOL**. Niveau de magie = bonus × 3.",
+      "tags": [
+        "objet-magique",
+        "objet de puissance",
+        "puissance",
+        "VOL"
+      ],
+      "data": {
+        "category": "objet de puissance",
+        "characteristic": "VOL"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Gantelets d'agilité",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Objet de puissance lié à l'**AGI**. Niveau de magie = bonus × 3. Un gantelet magique ne se porte pas par-dessus un anneau (limitation d'emplacement).",
+      "tags": [
+        "objet-magique",
+        "objet de puissance",
+        "puissance",
+        "AGI"
+      ],
+      "data": {
+        "category": "objet de puissance",
+        "characteristic": "AGI"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Masque de perception",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Objet de puissance lié à la **PER**. Niveau de magie = bonus × 3.",
+      "tags": [
+        "objet-magique",
+        "objet de puissance",
+        "puissance",
+        "PER"
+      ],
+      "data": {
+        "category": "objet de puissance",
+        "characteristic": "PER"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Robe de charisme",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Objet de puissance lié au **CHA**. Niveau de magie = bonus × 3.",
+      "tags": [
+        "objet-magique",
+        "objet de puissance",
+        "puissance",
+        "CHA"
+      ],
+      "data": {
+        "category": "objet de puissance",
+        "characteristic": "CHA"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Amulette de constitution",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Objet de puissance lié à la **CON**. Niveau de magie = bonus × 3.",
+      "tags": [
+        "objet-magique",
+        "objet de puissance",
+        "puissance",
+        "CON"
+      ],
+      "data": {
+        "category": "objet de puissance",
+        "characteristic": "CON"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Cape de charisme +2",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Exemple d'objet de puissance : bonus de caractéristique **+2**, donc niveau de magie **+6** (bonus × 3). Ne pas dépasser +2 dans un cadre classique (+3 en high fantasy).",
+      "tags": [
+        "objet-magique",
+        "objet de puissance",
+        "puissance",
+        "CHA"
+      ],
+      "data": {
+        "category": "objet de puissance",
+        "rarity_or_level": "6",
+        "characteristic": "CHA",
+        "stat_bonus": 2
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Cape et bottes elfiques",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Objet de compétence : bonus de **+5** en **discrétion**. Niveau de magie **1**.",
+      "tags": [
+        "objet-magique",
+        "objet de compétence",
+        "competence",
+        "discretion"
+      ],
+      "data": {
+        "category": "objet de compétence",
+        "rarity_or_level": "1"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Amulette de danger",
+      "page_start": 257,
+      "page_end": 257,
+      "body": "Objet de compétence : **+5** aux tests pour détecter un danger ou une embuscade. Niveau de magie **1**.",
+      "tags": [
+        "objet-magique",
+        "objet de compétence",
+        "competence"
+      ],
+      "data": {
+        "category": "objet de compétence",
+        "rarity_or_level": "1"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "Couronne de charisme",
+      "page_start": 245,
+      "page_end": 245,
+      "body": "Mentionnée pour la méthode des doublons : on ne peut sans doute pas porter une couronne de CHA par-dessus un bandeau d'INT.",
+      "tags": [
+        "objet-magique",
+        "objet de puissance",
+        "puissance",
+        "CHA"
+      ],
+      "data": {
+        "category": "objet de puissance",
+        "characteristic": "CHA"
+      }
+    },
+    {
+      "kind": "magic_item",
+      "name": "La lame des échos",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "Exemple d'objet prestigieux. Celui qui la brandit entend de légers tintements, échos des coups de marteau de sa naissance. **Seul un barde** peut la faire vibrer à l'unisson du chant de son âme.\n\nLa **voie de la lame des échos** a cinq rangs (aucun point de capacité) :\n\n1. **Lame exceptionnelle** — +1 en attaque et aux DM (niveau de magie 1).\n2. **Amplification** — double la portée et +1d4° aux DM d'Attaque sonore (barde, voie du musicien, rang 3). Niveau 2. Prérequis : découvrir le nom du forgeron et celui du barde à qui elle fut offerte.\n3. **Focalisation** — rapière +2 ; point de focalisation mobile pour Zone de silence (voie du musicien, rang 4). Niveau 3. Prérequis : reproduire la note de la lame, test de PER (Musicien) difficulté 30, une tentative par jour.\n4. **Lame vibrante** — action gratuite : frapper une surface dure ; considérée comme affûtée tant qu'elle vibre (reste du combat). Niveau 4. Prérequis : apprendre comment le barde propriétaire est mort et quel tort lui a été fait.\n5. **Vibration mortelle** — lorsqu'elle vibre, inflige **1d12 DM** au lieu de **1d6**. Niveau 5. Prérequis : réhabiliter le nom du barde par une chanson de geste devant le trône du roi dont l'ancêtre avait ordonné son exécution.",
+      "summary": "Rapière prestigieuse liée au barde ; voie à 5 rangs.",
+      "tags": [
+        "objet-magique",
+        "objet prestigieux",
+        "prestigieux",
+        "barde",
+        "arme"
+      ],
+      "data": {
+        "category": "objet prestigieux",
+        "rarity_or_level": "1 à 5"
+      }
+    },
+    {
+      "kind": "voie",
+      "name": "Voie de la lame des échos",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "Voie propre à l'objet prestigieux La lame des échos, cinq rangs, sans point de capacité. Seul un barde peut en libérer les pouvoirs.",
+      "tags": [
+        "voie",
+        "prestigieux",
+        "barde"
+      ],
+      "parent_kind": "magic_item",
+      "parent_name": "La lame des échos",
+      "data": {
+        "voie_type": "generic",
+        "rank_min": 1,
+        "rank_max": 5
+      }
+    },
+    {
+      "kind": "capacity",
+      "name": "Lame exceptionnelle",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "L'arme confère un bonus de +1 en attaque et aux DM (niveau de magie 1).",
+      "parent_kind": "voie",
+      "parent_name": "Voie de la lame des échos",
+      "data": {
+        "rank": 1,
+        "action": null,
+        "is_spell": false,
+        "voie": "Voie de la lame des échos",
+        "magic_level": 1
+      }
+    },
+    {
+      "kind": "capacity",
+      "name": "Amplification",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "La lame permet de doubler la portée et ajoute +1d4° aux DM de la capacité de rang 3 de la voie du musicien (barde), Attaque sonore (niveau de magie 2).\n\nPrérequis : le personnage doit découvrir le nom du forgeron à l'origine de la création de sa lame et celui du barde à qui elle fut offerte.",
+      "parent_kind": "voie",
+      "parent_name": "Voie de la lame des échos",
+      "data": {
+        "rank": 2,
+        "action": null,
+        "is_spell": false,
+        "voie": "Voie de la lame des échos",
+        "magic_level": 2
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "Attaque sonore",
+          "relation": "modifies"
+        }
+      ]
+    },
+    {
+      "kind": "capacity",
+      "name": "Focalisation",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "La rapière devient une arme +2. De plus, elle peut servir de point de focalisation pour Zone de silence (rang 4, voie du musicien, barde). La zone d'effet est centrée sur l'arme et devient mobile si on se déplace avec l'objet (niveau de magie 3).\n\nPrérequis : reconnaître et reproduire la note de musique de la lame. Test de PER (Musicien) difficulté 30, une seule tentative par jour. Seul un musicien à l'oreille entraînée peut le faire.",
+      "parent_kind": "voie",
+      "parent_name": "Voie de la lame des échos",
+      "data": {
+        "rank": 3,
+        "action": null,
+        "is_spell": false,
+        "voie": "Voie de la lame des échos",
+        "magic_level": 3
+      },
+      "see_also": [
+        {
+          "kind": "capacity",
+          "name": "Zone de silence",
+          "relation": "modifies"
+        }
+      ]
+    },
+    {
+      "kind": "capacity",
+      "name": "Lame vibrante",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "Par une action gratuite, le personnage peut frapper une surface dure de sa lame, qui entre en résonance et produit une note aiguë pour le reste du combat. Tant qu'elle vibre, elle est considérée comme affûtée (niveau de magie 4).\n\nPrérequis : apprendre comment le barde qui possédait cette lame est mort et quel tort lui a été fait.",
+      "parent_kind": "voie",
+      "parent_name": "Voie de la lame des échos",
+      "data": {
+        "rank": 4,
+        "action": "G",
+        "is_spell": false,
+        "voie": "Voie de la lame des échos",
+        "magic_level": 4
+      }
+    },
+    {
+      "kind": "capacity",
+      "name": "Vibration mortelle",
+      "page_start": 258,
+      "page_end": 258,
+      "body": "Lorsqu'elle vibre, la lame inflige 1d12 DM au lieu de 1d6 (niveau de magie 5).\n\nPrérequis : réhabiliter le nom du barde par une chanson de geste chantée devant le trône du roi dont l'ancêtre avait ordonné l'exécution du barde (s'attirant par là même le courroux du roi).",
+      "parent_kind": "voie",
+      "parent_name": "Voie de la lame des échos",
+      "data": {
+        "rank": 5,
+        "action": null,
+        "is_spell": false,
+        "voie": "Voie de la lame des échos",
+        "magic_level": 5
+      }
+    },
+    {
+      "kind": "glossary_term",
+      "name": "Niveau de magie",
+      "page_start": 242,
+      "page_end": 242,
+      "body": "Valeur qui définit un objet enchanté et permet de déterminer son prix et sa puissance. Le plus souvent égal au bonus accordé ou au rang de la capacité reproduite.",
+      "tags": [
+        "glossaire"
+      ]
+    },
+    {
+      "kind": "glossary_term",
+      "name": "High fantasy",
+      "page_start": 242,
+      "page_end": 244,
+      "body": "Cadre où la magie est omniprésente et potentiellement ultrapuissante. Commerce d'objets magiques généralement possible. Jusqu'à 3 objets majeurs et 4 ou 5 mineurs ; somme des niveaux jusqu'au double du niveau du PJ. Détails dans Atlas d'Osgild & règles optionnelles.",
+      "tags": [
+        "glossaire"
+      ]
+    },
+    {
+      "kind": "glossary_term",
+      "name": "Low fantasy",
+      "page_start": 242,
+      "page_end": 244,
+      "body": "Univers proche du Moyen Âge ; magie rare, légendes. Échoppes d'objets magiques hors sujet. 1 objet majeur ou mineur ; somme des niveaux environ un quart du niveau du PJ.",
+      "tags": [
+        "glossaire"
+      ]
+    },
+    {
+      "kind": "glossary_term",
+      "name": "Objet majeur",
+      "page_start": 244,
+      "page_end": 245,
+      "body": "Objet magique dont le niveau de magie recommandé suit le tableau « Puissance d'un objet magique majeur » selon le niveau du PJ et le cadre. Ex. classique niveau 7 : épée +2.",
+      "tags": [
+        "glossaire"
+      ]
+    },
+    {
+      "kind": "glossary_term",
+      "name": "Objet mineur",
+      "page_start": 244,
+      "page_end": 245,
+      "body": "Même table de puissance qu'un objet majeur, en divisant le niveau du PJ par 2. Ex. classique niveau 7 : arme ou armure +1.",
+      "tags": [
+        "glossaire"
+      ]
+    }
+  ]
+}

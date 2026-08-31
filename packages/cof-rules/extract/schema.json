@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "COFRulesExtractionBatch",
+  "type": "object",
+  "required": ["batch_id", "page_start", "page_end", "sections", "elements"],
+  "properties": {
+    "batch_id": { "type": "string" },
+    "page_start": { "type": "integer" },
+    "page_end": { "type": "integer" },
+    "notes": { "type": "string" },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "kind", "page_start", "page_end", "body"],
+        "properties": {
+          "title": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": ["front_matter", "chapter", "section", "sidebar", "table", "scenario", "appendix"]
+          },
+          "page_start": { "type": "integer" },
+          "page_end": { "type": "integer" },
+          "summary": { "type": "string" },
+          "body": { "type": "string", "description": "Markdown. No watermarks, no running headers." }
+        }
+      }
+    },
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "name", "page_start", "page_end", "body"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "people",
+              "profile",
+              "voie",
+              "capacity",
+              "equipment",
+              "rule",
+              "creature",
+              "magic_item",
+              "spell",
+              "table",
+              "scenario",
+              "npc",
+              "glossary_term",
+              "setting"
+            ]
+          },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "subtitle": { "type": "string" },
+          "page_start": { "type": "integer" },
+          "page_end": { "type": "integer" },
+          "summary": { "type": "string" },
+          "body": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "parent_kind": { "type": "string" },
+          "parent_name": { "type": "string" },
+          "data": { "type": "object" },
+          "see_also": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "relation"],
+              "properties": {
+                "kind": { "type": "string" },
+                "name": { "type": "string" },
+                "relation": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

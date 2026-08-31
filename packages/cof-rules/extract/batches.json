@@ -1,0 +1,75 @@
+{
+  "book": {
+    "title": "Chroniques Oubliées Fantasy — Livre de base",
+    "edition": "2e impression Mai 2025",
+    "page_count": 358
+  },
+  "batches": [
+    {
+      "id": "01-intro",
+      "page_start": 2,
+      "page_end": 18,
+      "toc": ["Crédits", "Avant-propos", "Introduction", "Qu’est-ce que le jeu de rôle", "Les ingrédients du jeu", "Fantasy", "Les Terres d’Osgild", "Au sommaire"]
+    },
+    {
+      "id": "02-creation-progression",
+      "page_start": 19,
+      "page_end": 43,
+      "toc": ["Partie I / Le personnage", "Chapitre 1 Création du personnage (étapes 1–15)", "Chapitre 2 Progression & niveaux"]
+    },
+    {
+      "id": "03-peuples",
+      "page_start": 44,
+      "page_end": 60,
+      "toc": ["Chapitre 3 Peuples", "Demi-elfe", "Demi-orc", "Elfe haut", "Elfe sylvain", "Gnome", "Halfelins", "Humain", "Nain", "Mage"]
+    },
+    {
+      "id": "04-aventuriers-combattants",
+      "page_start": 61,
+      "page_end": 90,
+      "toc": ["Chapitre 4 Famille des aventuriers (arquebusier, barde, rôdeur, voleur)", "Chapitre 5 Famille des combattants (barbare, chevalier, guerrier)"]
+    },
+    {
+      "id": "05-mages-mystiques",
+      "page_start": 91,
+      "page_end": 127,
+      "toc": ["Chapitre 6 Famille des mages (ensorceleur, forgesort, magicien, sorcier)", "Chapitre 7 Famille des mystiques (druide, moine, prêtre)"]
+    },
+    {
+      "id": "06-prestige",
+      "page_start": 128,
+      "page_end": 175,
+      "toc": ["Chapitre 8 Voies de prestige"]
+    },
+    {
+      "id": "07-hybrides-equipement",
+      "page_start": 176,
+      "page_end": 196,
+      "toc": ["Chapitre 9 Profils hybrides", "Chapitre 10 Équipement (armes, armure, autres biens, qualité, exotique)"]
+    },
+    {
+      "id": "08-regles-combat-magie",
+      "page_start": 197,
+      "page_end": 230,
+      "toc": ["Partie II Les règles", "Chapitre 1 Les règles de base", "Chapitre 2 Le combat", "Chapitre 3 Magie et sorts"]
+    },
+    {
+      "id": "09-aventure-objets",
+      "page_start": 231,
+      "page_end": 258,
+      "toc": ["Partie III", "Chapitre 1 Les règles de l’aventure", "Chapitre 2 Objets magiques"]
+    },
+    {
+      "id": "10-adversite",
+      "page_start": 259,
+      "page_end": 303,
+      "toc": ["Chapitre 3 Adversité / Opposition", "Profils humanoïdes", "Profils animaux", "création de créatures"]
+    },
+    {
+      "id": "11-mj-scenarios",
+      "page_start": 304,
+      "page_end": 358,
+      "toc": ["Chapitre 4 Devenir MJ", "Chapitre 5 La Tour errante", "Chapitre 6 Requiem pour Clairval", "Personnages prétirés"]
+    }
+  ]
+}
