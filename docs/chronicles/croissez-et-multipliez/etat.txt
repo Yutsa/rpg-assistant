@@ -47,5 +47,4 @@ Livraison encore devant. Bêtes affolées. Jour (orcs plissent les yeux).
 
 SCÈNE OUVERTE
 -------------
-Embuscade orc en cours. Taeven a loupé une flèche. Un orc sur Bryn.
-Pip a affaibli un autre. Aucun orc à terre. Yutsa à la main.
+COMBAT → combat.txt. Round 4, tour de Yutsa. Embuscade orc non close.

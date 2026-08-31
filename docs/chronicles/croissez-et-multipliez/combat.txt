@@ -1,0 +1,78 @@
+COMBAT — croissez-et-multipliez
+===============================
+Usage : skill `.cursor/skills/cof-chronicle/SKILL.md` (MJ seulement).
+Embuscade piste Vierges, session 1. Snapshot après round 3.
+
+MANCHE
+------
+Round 4, à qui : Yutsa (Init 14, n’a pas encore agi ce round)
+Surprise : non (tous ont réussi la vigilance)
+Lumière : jour — orcs dé malus en attaque (sensible à la lumière)
+Terrain : piste étroite, talus boisés, 4 chariots
+Fuite : orcs à 50 % pertes → 4 orcs à terre ; actuel 0/8
+
+ORDRE D’INITIATIVE
+------------------
+- Yutsa 14 (PJ) → Taeven 14 (PJ) → Pip 12 (PJ) → Bryn 10 (PJ)
+- puis orcs + sergent Init 10 (créatures après PJ à égalité)
+
+PJ / ALLIÉS
+-----------
+- Yutsa — humain guerrier 1 | PV 8/12 | DEF 17 | Init 14 | DR 4d10 | PC 2 | PM —
+  AGI+1 CON+2 FOR+3 PER+1 CHA−1 INT 0 VOL+1
+  attaques: contact +4 épée 1d8+3 ; distance +2
+  capa: Protéger un allié (G, +2 DEF 1 att./rd, allié au contact) ; Vivacité (M extra 1/combat) ENCORE DISPO
+  position: centre piste, contact sergent + O1 O2 O7
+  états: touché au flanc (4 DM r2)
+- Taeven — elfe sylvain rôdeur 1 | PV 9/9 | DEF 16 | Init 14 | DR 2d8 | PC 2 | PM —
+  AGI+3 CON+1 FOR 0 PER+3 CHA−1 INT 0 VOL+1
+  attaques: distance +4 arc 1d6+3 (PER aux DM) ; contact +1
+  capa: Archer émérite ; Survie ; Lumière des étoiles
+  position: chariots / marchepied, vs O5 et O6
+  états: DR −1 (bivouac j1) ; flèche r3 dans la boue (1 nat.)
+- Bryn — naine prêtresse 1 | PV 5/10 | DEF 13 | Init 10 | DR 4d8 | PC 5 | PM 3/4
+  AGI−2 CON+2 FOR+1 PER 0 CHA+3 INT 0 VOL+3
+  attaques: contact +2 masse 1d6+1 ; magique +4
+  capa: Prédicateur ; Récupération mineure* 0/1 aujourd’hui (déjà lancée, +7 PV) ; tunnels
+  position: derrière roue 1er chariot, contact O4
+  états: 9 DM puis soin 7 puis 3 DM ; DR −1 (bivouac j1)
+- Pip — gnome magicien 1 | PV 6/6 | DEF 11 | Init 12 | DR 1d6 | PC 2 | PM 3/6
+  AGI 0 CON 0 FOR−2 PER+1 CHA+1 INT+4 VOL+2
+  attaques: magique +3 ; bâton 1d6−2
+  capa: Projectile de mana* (3 lancés ce combat) ; Lumière* ; Lévitation* (r2) ; Murmures*
+  position: près 2e chariot / Taeven
+  états: DR −1 (bivouac j1)
+
+ENNEMIS
+-------
+- Sergent — kit 02 sergent orc NC3 | PV 23/40 | DEF 18 | Init 10 | épée 2M +7 (2d6+6) Imparable 15–20
+  position/cible: piste, contact Yutsa
+  états: 7 DM r2 + 10 DM r3 ; jour = dé malus attaque
+- O1 — orc base NC½ | PV 12/12 | DEF 13 | Init 10 | hache +3 (1d8+2)
+  position/cible: contact Yutsa
+- O2 — orc base | PV 12/12 | DEF 13 | Init 10 | hache +3 (1d8+2)
+  position/cible: contact Yutsa
+- O3 — orc base | PV 12/12 | DEF 13 | Init 10 | hache +3 (1d8+2)
+  position/cible: wagons, non engagé r3 (ex-Bryn / flanc)
+- O4 — orc base | PV 12/12 | DEF 13 | Init 10 | hache +3 (1d8+2)
+  position/cible: a suivi Bryn à la roue (3 DM r3)
+- O5 — orc base | PV 12/12 | DEF 13 | Init 10 | hache +3 (1d8+2)
+  position/cible: vs Taeven
+- O6 — orc base | PV 7/12 | DEF 13 | Init 10 | hache +3 (1d8+2)
+  position/cible: chariots/roues vs Taeven (5 DM flèche r2) ; a blessé le vieux cocher r1
+- O7 — orc base | PV 12/12 | DEF 13 | Init 10 | hache +3 (1d8+2)
+  position/cible: contact Yutsa (déboulé r2)
+- O8 — orc base | PV 6/12 | DEF 13 | Init 10 | hache +3 (1d8+2)
+  position/cible: fossé/wagons, cible Pip (2+1+3 DM projectiles)
+
+PNJ NON COMBATTANTS TOUCHÉS
+---------------------------
+- Cocher « le plus vieux » — profil Bandit | PV 6/9 | DEF 12 | Init 10
+- Orel + 2 autres cochers — Bandit 9/9 ; tiennent les bœufs ; prêts à fuir
+
+RÈGLES ACTIVES
+--------------
+- Dé malus toutes attaques orcs/sergent tant que soleil
+- Protéger un allié : Bryn plus au contact de Yutsa ce round
+- Vivacité Yutsa : action M extra encore disponible
+- Aucun orc à 0 PV

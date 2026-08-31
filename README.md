@@ -54,7 +54,7 @@ src/CofRules.Cli    # import / stats / search
 src/CofRules.Mcp    # serveur MCP stdio
 extract/structured  # lots JSON du livre de base
 docs/gm-kits/       # kits MJ texte (INDEX + fiches courtes) pour sessions épargnant les tokens
-docs/chronicles/    # journal de suivi (INDEX + etat + chapitres) après compactage de session
+docs/chronicles/    # journal (INDEX + etat + chapitres ; combat.txt si combat ouvert)
 ```
 
 ## Kits MJ
@@ -64,5 +64,5 @@ Pour faire jouer un scénario sans relire le PDF : `docs/gm-kits/<scenario>/INDE
 Exemple : `docs/gm-kits/croissez-et-multipliez/`.
 
 - **Jouer** une session : skill `.cursor/skills/cof-gm/SKILL.md` (MJ, secrets, règles MCP, `<rule_application_secret>`).
-- **Compacter** l’histoire jouée : skill `.cursor/skills/cof-chronicle/SKILL.md` (INDEX + chapitres sous `docs/chronicles/<slug>/`).
+- **Compacter** l’histoire jouée : skill `.cursor/skills/cof-chronicle/SKILL.md` (INDEX + `etat.txt` ; `combat.txt` si combat ouvert).
 - **Créer** un kit depuis un PDF : skill `.cursor/skills/cof-gm-kit/SKILL.md`.

@@ -42,4 +42,4 @@ HORLOGE PERÇUE
 
 SCÈNE OUVERTE
 -------------
-(1–3 lignes : ce qui n’est pas encore clos / pas encore en chapitre)
+(1–3 lignes. Combat ouvert : « COMBAT → combat.txt », pas de PV ici.)
