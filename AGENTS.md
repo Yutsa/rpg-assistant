@@ -35,6 +35,10 @@ Suivre le skill **`.cursor/skills/cof-gm/SKILL.md`** (rôle MJ, secrets, recadra
 
 Kit actuel : `docs/gm-kits/croissez-et-multipliez/` (scénario *Croissez et multipliez*).
 
+### Compagnons IA (table solo)
+
+Skill **`.cursor/skills/cof-pj/SKILL.md`** : un agent incarne 1–n PJ en **retrait** derrière le PJ humain (combat + spécialités, pas les choix d’histoire). Pas de kit MJ, pas de bestiaire MCP. Fiches optionnelles : `docs/pc-sheets/<nom>.txt`.
+
 ### Créer un nouveau kit depuis un PDF
 
 Suivre le skill **`.cursor/skills/cof-gm-kit/SKILL.md`** (approche hybride texte + vision ciblée + MCP règles).

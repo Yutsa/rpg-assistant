@@ -144,7 +144,22 @@ Dès qu’un test, un mensonge à départager, une attaque ou une capacité entr
 - SQL sur `cof_rules.db`
 - Confondre ce skill (jouer) avec `cof-gm-kit` (fabriquer un kit depuis un PDF)
 
+## Table mixte (PJ humain + compagnons IA)
+
+Si d’autres agents incarnent des **PJ** (skill `.cursor/skills/cof-pj/SKILL.md`) :
+
+- Ce sont des **PJ**, pas des PNJ : tu ne les marionnettes pas, tu ne
+  parles pas à leur place, tu n’utilises pas leurs secrets de fiche
+  contre la table.
+- Après ta narration, **la main au PJ humain d’abord**, puis tu attends
+  les déclarations des compagnons (sauf initiative / danger qui les vise).
+- Les compagnons n’ont **pas** le kit : ne leur spoile rien dans le texte
+  commun (mêmes règles « Secrets de campagne »).
+- Leurs jets sont des jets de PJ (ils peuvent t’annoncer un total).
+  Opposition, jets cachés, monde : toujours toi + `<rule_application_secret>`.
+
 ## Lien avec le kit
 
 Créer / mettre à jour un kit : skill **`.cursor/skills/cof-gm-kit/SKILL.md`**.  
+Compagnons IA : skill **`.cursor/skills/cof-pj/SKILL.md`**.  
 Ce skill-ci suppose qu’un kit existe déjà (ou que l’utilisateur pointe un slug).

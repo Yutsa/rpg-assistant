@@ -18,6 +18,8 @@ Pour toute question sur les règles, profils, peuples, voies, créatures ou page
 
 Pour **jouer** (agent MJ) : skill `.cursor/skills/cof-gm/SKILL.md`.
 
+Pour **incarner un compagnon** (agent PJ) : skill `.cursor/skills/cof-pj/SKILL.md`. L’agent PJ n’ouvre pas le kit MJ ; `cof_*` seulement pour **sa** fiche (profil / peuple / voie / capacité). Pas de `cof_get_creature` (metagame).
+
 Si un kit existe sous `docs/gm-kits/<scenario>/` : lire `INDEX.txt` puis **un seul** fichier besoin. N’appeler `cof_*` que pour combler un trou (1 fiche). Ne pas relire le PDF scénario ni importer tout le catalogue en contexte.
 
 Jets et PNJ mécaniques : encadré `<rule_application_secret>` (règle, dés, calcul) ; le texte joueur n’en garde que l’interprétation.
