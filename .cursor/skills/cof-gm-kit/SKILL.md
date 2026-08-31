@@ -42,6 +42,43 @@ Rendre et lire l’image si la page contient au moins un de :
 
 Sinon : `get_text()` suffit pour le corps narratif.
 
+### Détection automatique (signaux)
+
+Classer chaque page en **MUST** / **SHOULD** / **TEXT** à partir du PDF (sans vision d’abord).
+
+#### Ignorer (faux positifs)
+
+- Dingbats / PUA seuls (`\uf074`, `\uf0af`, losanges de pagination, puces)
+- Filigrane / mail (`WILLISSECK`, `@gmail`)
+- Accents français normaux
+
+#### MUST vision (au moins un signal dur)
+
+1. **Title-garble** — ligne courte (≲70 car.) avec mojibake *significatif* :
+   - motifs typiques COF : `Å…àé` (à la place de `DM`), `ïáê…`, `IéPÝ…`, `ðáïðï`, `Ýßðá` (titres d’acte)
+   - ou ≥25 % de lettres hors alphabet FR sur une ligne type titre
+2. **Statblock + garble** — présence de `NC` / `Points de vigueur` / `TAILLE` / marqueurs `(S)(V)(I)` **et** title-garble sur la même page
+3. **Fiche technique scénario** — `FICHE TECHNIQUE` (hexagones Action/Ambiance non fiables en texte)
+
+#### SHOULD vision (utile, pas forcément toutes)
+
+- Encadré / callout (`TESTS OU`, `AVERTISSEMENT`, `NOTE DE…`) même si le texte est lisible
+- Statblock **sans** garble (recouper icônes / appartenance colonne)
+- Double colonne **seulement si** l’ordre du flux texte alterne L/R/L/R (chaos) — un simple `L* puis R*` propre → **TEXT OK**
+
+#### TEXT OK
+
+- Corps narratif, listes, jets en prose
+- Double colonne propre (extracteur gauche→droite)
+- Pages illustration sans règles critiques
+
+#### Budget cible
+
+Sur un one-shot ~20 p. type Croissez : viser **~30–50 %** des pages en vision (MUST+SHOULD), pas 100 %.  
+Exemple mesuré sur Croissez : MUST `{5,6,7,9,12,13,18}` + SHOULD `{16,19,20}` ≈ 10/20.
+
+Implémentation possible : petit script PyMuPDF (`get_text` + `dict` fonts/bboxes) appliquant les règles ci-dessus avant tout rendu PNG.
+
 ### Signes que `get_text()` a échoué
 
 - Mojibake sur un titre (`ïáêï…`, `IéPÝ…`) alors que le paragraphe suivant est lisible
