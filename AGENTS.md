@@ -8,6 +8,7 @@ Ce dépôt expose **uniquement** un serveur MCP pour les références Chroniques
 - SQLite + FTS5 (`data/cof_rules.db`)
 - Extraots source : `extract/structured/*.json` (livre de base)
 - Kits MJ : `docs/gm-kits/<scenario>/` (fichiers `.txt` courts + `INDEX.txt`)
+- Chroniques : `docs/chronicles/<slug>/` (INDEX + etat + chapitres ; `mj.txt` = secrets)
 - Table mixte : fiche `docs/pc-sheets/`, mémoire PJ `docs/pc-memory/`, fil public `docs/table/<slug>-public.txt`
 
 ## Commandes
@@ -39,6 +40,10 @@ Kit actuel : `docs/gm-kits/croissez-et-multipliez/` (scénario *Croissez et mult
 ### Compagnons IA (table solo)
 
 Skill **`.cursor/skills/cof-pj/SKILL.md`**. Défaut : **1 agent PJ** pour tous les compagnons (retrait, combat + spécialités). Fil MJ séparé. Le MJ écrit `docs/table/<slug>-public.txt` (1–3 beats, fiction seulement) ; chaque PJ tient `docs/pc-memory/<nom>.txt`. Pas de kit MJ, pas de bestiaire MCP, pas de transcript. Split 1 subagent / PJ seulement si voix mélangées / secrets inter-PJ / campagne longue (`resume` du même fil).
+
+### Chronique (contexte trop gros)
+
+Skill **`.cursor/skills/cof-chronicle/SKILL.md`**. Déclenchement **manuel** (compacter / archiver la session). Produit `docs/chronicles/<slug>/INDEX.txt` (résumé très court + pointeurs) et des chapitres. Reprise : INDEX + `etat.txt`, un fichier détail si trou. Pas le transcript. Agents PJ : ne pas ouvrir ce dossier.
 
 ### Créer un nouveau kit depuis un PDF
 

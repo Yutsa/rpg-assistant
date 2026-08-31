@@ -1,0 +1,25 @@
+CHRONIQUE — <titre> (<slug>)
+============================
+Kit : docs/gm-kits/<slug>/
+Fil public : docs/table/<slug>-public.txt
+Usage compactage / consultation : skill `.cursor/skills/cof-chronicle/SKILL.md`
+Session MJ : skill `.cursor/skills/cof-gm/SKILL.md`
+1. Lire CET index (~1 page).
+2. Ouvrir etat.txt (maintenant).
+3. Trou passé : UN chapitre ou recap ci-dessous. Secret encore vif : mj.txt.
+Ne pas ouvrir tout le dossier. Interdit agents PJ.
+
+RÉSUMÉ
+------
+(5–8 lignes : où on en est, enjeu, ce qui a déjà basculé. Pas de secrets.)
+
+MAINTENANT → etat.txt
+SECRETS MJ ENCORE VIFS → mj.txt
+
+CHAPITRES (1 phrase ; détail = le fichier)
+------------------------------------------
+10-<titre>.txt  Lieu — fait / décision clé.
+
+FILS OUVERTS
+------------
+- (fichier) question encore non tranchée à la table

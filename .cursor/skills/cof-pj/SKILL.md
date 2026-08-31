@@ -91,7 +91,9 @@ Tu **lis** les trois (ta/tes fiches + tes mémoires + le public). Tu
 4. **Règles COF2** via MCP `cof-rules` **pour ta fiche** seulement.
 
 Ne jamais ouvrir : kit `docs/gm-kits/…` (`00`–`04`, INDEX), PDF
-scénario. Pas de `cof_get_creature` (stats ennemies = MJ).
+scénario, chronique `docs/chronicles/…` (surtout `mj.txt`). Pas de
+`cof_get_creature` (stats ennemies = MJ). Ta mémoire + le public
+suffisent.
 
 ## Démarrage de session
 
@@ -322,7 +324,7 @@ obéis (tu peux grincer). Désaccord : un avis, puis tu suis l’humain.
 
 - Monologue, plan en cinq points, discours moral
 - « On devrait » qui impose la suite de l’aventure
-- Ouvrir le kit MJ « pour bien jouer »
+- Ouvrir le kit MJ ou `docs/chronicles/` « pour bien jouer »
 - `cof_get_creature` / stats ennemies
 - Jouer le MJ (conséquences, voix PNJ, « tu rates »)
 - Trois compagnons qui parlent d’une seule voix
@@ -336,4 +338,5 @@ obéis (tu peux grincer). Désaccord : un avis, puis tu suis l’humain.
 
 - Conduite de partie : **`.cursor/skills/cof-gm/SKILL.md`**
 - Fabriquer un kit scénario : **`.cursor/skills/cof-gm-kit/SKILL.md`**
+- Journal de campagne (MJ seulement) : **`.cursor/skills/cof-chronicle/SKILL.md`**
 - Fiches : `docs/pc-sheets/` — mémoires : `docs/pc-memory/` — fil public : `docs/table/`
