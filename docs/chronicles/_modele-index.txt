@@ -13,7 +13,7 @@ RÉSUMÉ
 ------
 (5–8 lignes : où on en est, enjeu, ce qui a déjà basculé. Pas de secrets.)
 
-MAINTENANT → etat.txt
+MAINTENANT → etat.txt (lieu, enjeu, **cast** : attitude / relation / veut)
 SECRETS MJ ENCORE VIFS → mj.txt
 
 CHAPITRES (1 phrase ; détail = le fichier)

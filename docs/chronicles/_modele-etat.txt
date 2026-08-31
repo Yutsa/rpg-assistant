@@ -1,7 +1,7 @@
 ÉTAT — <slug>
 =============
 Usage : skill `.cursor/skills/cof-chronicle/SKILL.md`
-Écraser à chaque compactage. Maintenant seulement (~40 lignes max).
+Écraser à chaque compactage. Maintenant seulement (~55 lignes max).
 Pas de secrets MJ. Pas d’historique (ça va dans les chapitres).
 
 QUAND
@@ -13,17 +13,24 @@ LIEU
 ----
 
 
-GROUPE
-------
-- <nom> — condition notable (blessure, loot durable, ressource vide)
-
 ENJEU ACTUEL
 ------------
 
 
-PNJ EN SCÈNE / ALLIÉS CONNUS
-----------------------------
-- <nom> — ce que la table en sait
+CAST EN SCÈNE
+-------------
+Personnes **présentes** (PJ + PNJ). Tel que la **table** le voit :
+attitude / relation / ce qu’ils veulent. Pas le mobile secret du kit.
+Max ~5 entrées ; les absents notables → une ligne sous HORS SCÈNE.
+
+- <nom> — <rôle court, condition notable si besoin>
+  attitude:
+  relation:
+  veut:
+
+HORS SCÈNE (encore utile)
+-------------------------
+- <nom> — une ligne (où / lien avec le groupe)
 
 OBJETS / PROMESSES
 ------------------

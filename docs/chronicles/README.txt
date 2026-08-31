@@ -5,7 +5,8 @@ fil public (1–3 beats), pas les mémoires PJ.
 
 Usage : skill `.cursor/skills/cof-chronicle/SKILL.md`
   — compacter quand le chat est trop gros (déclenchement manuel) ;
-  — consulter : INDEX.txt puis etat.txt, un chapitre seulement si trou.
+  — consulter : INDEX.txt puis etat.txt (cast en scène inclus),
+    un chapitre seulement si trou.
 
 MJ (cof-gm) : au (re)démarrage, si ce dossier existe, lire INDEX + etat.
 Agents PJ : ne pas ouvrir ce dossier (surtout pas mj.txt).

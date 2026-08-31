@@ -30,7 +30,7 @@ quand le fil devient trop long. Ne pas compacter tout seul en plein beat.
 ```
 docs/chronicles/<slug>/
   INDEX.txt      résumé global + table des chapitres (toujours ça d’abord)
-  etat.txt       maintenant (lieu, enjeu, groupe, scène encore ouverte)
+  etat.txt       maintenant (lieu, enjeu, **cast**, scène encore ouverte)
   mj.txt         secrets / horloges / fins encore vifs — JAMAIS agents PJ
   10-<titre>.txt chapitres (faits de table, une scène ou une session)
   11-<titre>.txt
@@ -57,7 +57,7 @@ et qu’on te le demande.
 | Fichier | Plafond | Contenu |
 |---------|---------|---------|
 | `INDEX.txt` | ~40 lignes | 5–8 lignes de résumé + 1 ligne par chapitre + fils ouverts |
-| `etat.txt` | ~40 lignes | Maintenant seulement, pas l’histoire |
+| `etat.txt` | ~55 lignes | Maintenant + **cast en scène** (pas l’histoire) |
 | `mj.txt` | ~40 lignes | Secrets **encore utiles** |
 | Chapitre `1N-*.txt` | ~15–40 lignes | Une scène (ou une session courte) |
 | Recap `r0N-*.txt` | ~40 lignes | Plusieurs vieux chapitres pliés |
@@ -85,8 +85,10 @@ kit, coller le fil public, transcript du chat.
    dernier chapitre s’il s’agit du même lieu / même but (ne pas exploser
    en micro-fichiers).
 6. **Écrire** les chapitres nouveaux ou mis à jour (gabarit ci-dessous).
-7. **Réécrire** `etat.txt` (écraser, ne pas append) : maintenant +
-   éventuelle scène encore ouverte en 1–3 lignes.
+7. **Réécrire** `etat.txt` (écraser, ne pas append) : maintenant,
+   **cast en scène** (PJ + PNJ présents : attitude, relation, veut —
+   tel que la table le voit), scène ouverte en 1–3 lignes. Retirer du
+   cast qui est parti ; une ligne sous HORS SCÈNE s’ils restent utiles.
 8. **Réécrire** `INDEX.txt` : résumé global à jour ; table des chapitres
    (et recaps) avec **une** phrase chacun ; fils ouverts avec pointeur
    de fichier.
@@ -113,9 +115,9 @@ Si l’INDEX listerait **plus de ~12** chapitres :
 ## Consulter — procédure
 
 1. Lire `INDEX.txt` puis `etat.txt`.
-2. Trou (« c’était qui déjà ? », « on a promis quoi ? ») : **un**
-   chapitre ou recap nommé dans l’INDEX, ou `mj.txt` si c’est un secret
-   / une horloge.
+2. Trou : **voix / attitude d’un PNJ encore là** → cast dans `etat.txt`.
+   Fait passé / promesse → **un** chapitre ou recap. Secret / horloge
+   cachée → `mj.txt`.
 3. S’arrêter. Ne pas précharger le dossier.
 
 Le skill MJ (`.cursor/skills/cof-gm/SKILL.md`) fait ça au (re)démarrage
@@ -136,6 +138,8 @@ Les secrets non révélés : **seulement** `mj.txt` (et le kit).
 - Phrases courtes, listes à tirets, noms propres stables.
 - Une décision PJ = une ligne (« ils refusent l’hospitalité de X »).
 - Une conséquence = une ligne (« Y s’enfuit vers Z »).
+- Cast : 3 champs **perçus à la table** (attitude, relation, veut).
+  Interdit d’y coller le mobile secret du kit.
 - Pas de « peut-être », pas de relancer l’intrigue, pas de conseil de jeu.
 
 ### Gabarit chapitre (densité cible)
@@ -160,12 +164,29 @@ CONSÉQUENCES
 
 PNJ / LIEUX
 -----------
-- Maël (aubergiste, inquiet, hospitable)
-- Col des Monts Vierges (objectif lendemain)
+- Maël ; chasseur du village ; col (objectif)
 
 SUSPENS
 -------
 - Qui guide ; ce qu’il y a réellement au col (non vu)
+```
+
+Le **cast vivant** (pour rejouer les voix) va dans `etat.txt`, pas ici.
+Le chapitre note seulement qui est **apparu**.
+
+### Gabarit CAST dans etat.txt
+
+```
+CAST EN SCÈNE
+-------------
+- Maël — aubergiste (présent, salle commune)
+  attitude: hospitalier, voix basse, se frotte les mains
+  relation: reconnaissant que les PJ aident ; agacé par le chasseur
+  veut: qu’on aille au col et qu’on lui rapporte des nouvelles
+- [PJ humain] — présent
+  attitude: gelé, décidé
+  relation: parle au nom du groupe
+  veut: partir à l’aube (dit à la table)
 ```
 
 ### Résumé INDEX (densité cible)
@@ -186,7 +207,9 @@ CHAPITRES
 - Append infini dans INDEX / etat (on **réécrit**)
 - Un fichier par réplique ou par round de combat
 - Jets, DD, NC, PV, noms de règles LB
-- Secrets dans un chapitre ou dans INDEX
+- Secrets dans un chapitre, l’INDEX, ou le **cast** (le « veut » = ce
+  que la table a entendu / déduit, pas le kit)
+- Cast-roman (plus de ~5 personnes, ou plus de 3 champs)
 - Relire tout `gm-kits/<slug>/` « pour être sûr »
 - Faire jouer ou incarner un PJ pendant le compactage
 - Effacer les vieux chapitres après pliage
