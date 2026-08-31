@@ -1,0 +1,35 @@
+NOTES MJ — croissez-et-multipliez
+=================================
+Usage : skill `.cursor/skills/cof-chronicle/SKILL.md` (MJ seulement).
+Interdit : agents PJ, fil public, chapitres, INDEX.
+
+SECRETS ENCORE CACHÉS
+---------------------
+- Mission officieuse Marduk = recensement / espionnage (gages = couverture).
+- « Panique / propagande » pour refuser les soldats = mensonge (kit Acte 0).
+- Légende aigle aux mille œufs = invention de Rogùn (pas encore rencontré).
+- Idole ≠ aigle : artefact tentacthulien ; géants l’ont enfermée, ils fuient.
+- Redescendre l’idole = nourrir les ténèbres + tuer le gardien.
+- Porteurs « immortels » / tribu sauvée court terme → serviteurs du mal.
+
+SECRETS DÉJÀ RÉVÉLÉS
+--------------------
+- (aucun à la table) Marduk a dit : tribus en déclin, famine, raids orcs, pas ses légionnaires.
+
+HORLOGES CACHÉES
+----------------
+- Acte I climax : 8 orcs + 1 sergent ; fuite orcs à ~50 % pertes (pas atteint).
+- Progression j2 : plutôt bonne si le combat se termine ; j1 = bivouac inconfortable (fait).
+- Ensuite : village, Rogùn, pression idole (Actes II+).
+
+KIT : NON JOUÉ / DÉVIATIONS
+---------------------------
+- 3 compagnons générés (pas de fiches pc-sheets encore).
+- Renforts Nosra refusés (conforme kit).
+- Arbre tombé joué (pas embuscade). Option bandits non jouée.
+- Joueur : tests PJ publics dans le fil ; un secret box par jet ennemi/DD.
+- Fil public table mixte pas créé (session MJ solo + compagnons MJ).
+
+FINS ENCORE POSSIBLES
+---------------------
+- Les 3 fins kit (idole / Rogùn) : intactes. Pas de happy end.

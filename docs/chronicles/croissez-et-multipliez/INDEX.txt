@@ -1,0 +1,32 @@
+CHRONIQUE — Croissez et multipliez (croissez-et-multipliez)
+===========================================================
+Kit : docs/gm-kits/croissez-et-multipliez/
+Fil public : docs/table/croissez-et-multipliez-public.txt (absent)
+Usage compactage / consultation : skill `.cursor/skills/cof-chronicle/SKILL.md`
+Session MJ : skill `.cursor/skills/cof-gm/SKILL.md`
+1. Lire CET index (~1 page).
+2. Ouvrir etat.txt (maintenant).
+3. Trou passé : UN chapitre ou recap ci-dessous. Secret encore vif : mj.txt.
+Ne pas ouvrir tout le dossier. Interdit agents PJ.
+
+RÉSUMÉ
+------
+Yutsa (humain guerrier 1, chef de convoi) + Taeven, Bryn, Pip.
+Mission Nosra : livrer gages aux tribus des monts Vierges, compter les têtes.
+Marduk refuse des soldats. Quatre chariots, cochers payés.
+Jour 1 : chêne en travers, abattu ; bivouac ingrat.
+Jour 2 : embuscade d’orcs sur la piste (en cours). Village pas encore atteint.
+
+MAINTENANT → etat.txt (lieu, enjeu, **cast** : attitude / relation / veut)
+SECRETS MJ ENCORE VIFS → mj.txt
+
+CHAPITRES (1 phrase ; détail = le fichier)
+------------------------------------------
+10-brief-nosra.txt   Nosra — Marduk ; inspection cochers ; nuit en ville.
+11-piste-chene.txt   Piste Vierges — arbre, camp, reprise à l’aube.
+
+FILS OUVERTS
+------------
+- (etat.txt) Combat orcs / chef encore debout ; Bryn à la roue ; wagons à tenir.
+- (10-brief-nosra.txt) Livraison + état des tribus ; rapport à Marduk.
+- Cochers : se battront un peu, fuiront une vraie débâcle.

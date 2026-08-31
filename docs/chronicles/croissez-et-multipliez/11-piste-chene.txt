@@ -1,0 +1,32 @@
+CHAPITRE 11 — La piste et le chêne
+==================================
+Lieu / moment : piste d’approche des Vierges, jour 1 puis nuit, aube jour 2
+Session : 1
+
+FAITS (table)
+-------------
+- Disposition : Yutsa avant-garde, Taeven au flanc, Bryn aux essieux, Pip sur un chariot.
+- Un chêne barre la piste. Yutsa le prend pour une attaque ; Taeven : arbre couché, pas d’attente.
+- Pip ne peut pas brûler l’arbre (pas ce genre de magie).
+- Yutsa + Taeven : derrière l’arbre, piste vide. Périmètre pendant l’abattage (Bryn, cochers).
+- Camp sur un replat médiocre. Gardes : Yutsa premier, Bryn milieu, Pip dernier ; Taeven s’assoit avec Pip.
+- Nuit ingrate, tout le monde mal réveillé. Reprise même disposition.
+
+DÉCISIONS PJ
+------------
+- Avant-garde et tenir le convoi.
+- Magie d’abord, sinon scout + abattre.
+- Tours de garde comme ci-dessus ; avancer le lendemain sans changer l’ordre.
+
+CONSÉQUENCES
+------------
+- Piste rouverte. Cochers un peu plus coopératifs tant qu’on les couvre.
+- Fatigue au réveil. Taeven : pas une seconde nuit comme ça si on peut.
+
+PNJ / LIEUX (apparus ; le cast vivant est dans etat.txt)
+-------------------------------------------------------
+- Orel ; piste après le dernier hameau ; chêne ; bivouac humide.
+
+SUSPENS
+-------
+- (clos) l’arbre. La livraison et les orcs de piste : voir etat.txt.
