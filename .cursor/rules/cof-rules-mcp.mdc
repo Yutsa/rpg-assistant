@@ -13,3 +13,7 @@ Pour toute question sur les règles, profils, peuples, voies, créatures ou page
 3. Page explicite : `cof_get_page(page=345, book="livre de base")`.
 4. Fiche : `cof_get_element` / `cof_get_profile` / `cof_get_people` / `cof_get_voie` / `cof_get_creature`.
 5. Catalogue : `cof_stats`, `cof_list_books`, `cof_list_outline`.
+
+## Sessions MJ / scénarios
+
+Si un kit existe sous `docs/gm-kits/<scenario>/` : lire `INDEX.txt` puis **un seul** fichier besoin. N’appeler `cof_*` que pour combler un trou (1 fiche). Ne pas relire le PDF scénario ni importer tout le catalogue en contexte.

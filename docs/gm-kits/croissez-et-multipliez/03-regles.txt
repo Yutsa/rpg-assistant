@@ -1,0 +1,60 @@
+03 — RÈGLES LB UTILES (condensé)
+================================
+Réf. MCP : cof_get_element / cof_search. Pages = livre de base.
+
+DÉS BONUS / MALUS (p.200)
+Bonus = 2d20 garder le haut ; malus = garder le bas.
+1 seul bonus et 1 malus max ; ils s’annulent.
+
+COOPÉRATION (p.203)
+Aidant : test DD 10 même carac → +2 au principal (+4 si crit aidant).
+FOR exceptionnelle : MJ peut donner +5.
+
+EMBUSCADE / SURPRISE (p.208)
+PER (Vigilance) DD = 10 + AGI embusqués (+ discrétion) ; pas malus armure.
+Surpris round 1 : pas d’action, −5 DEF.
+
+INITIATIVE (p.210)
+Init = 10 + PER + bonus. Égalité : plus haut niveau/NC ; puis PJ avant créatures.
+
+ATTAQUE / CRIT (p.212–213)
+Crit = succès auto ; DM contact/distance ×2 (bonus inclus) ; dés de capacités bonus non multipliés.
+Sorts à test d’attaque : +1d4° au lieu de ×2.
+1 naturel : pas auto-fumble ; option AGI 10 ou ralenti.
+
+DANGEROSITÉ RÉGION (p.233)
+Civilisée 10 / 1 | Naturelle 10 / 1d4° | Sauvage 15 / 2d4° | Dangereuse/guerre 20 / 3d4° | Mortelle 25 / 4d4°
+Scénario : monts approche = sauvage ; haute montagne = traiter comme dangereuse (20 / 3d4).
+
+TEST PROGRESSION (p.235)
+1×/jour/PJ : PER (Survie) DD zone. Succès/échecs s’annulent (+marge≥10 ou crit = ×2).
+| Σ | Effet |
+| 3 échecs | stop + événement majeur |
+| 2 | ralenti + majeur |
+| 1 | mineur |
+| 0 | bivouac inconfortable |
+| 1 succès | progression ordinaire |
+| 2 | bivouac confortable |
+| 3 | rapide + confortable |
+Scénario : 5 progressions ordinaires ≈ sommet ; ralenti/stop = jour+nuit en plus.
+
+FROID (p.238)
+< 0 °C sans habit adapté : CON DD = |°C| / 6 h ou 1d4° DM. Habits chauds +5 à +10.
+−10 °C → DD 10 / 6 h (scénario : bourrasques jour + mauvaise récup nuit).
+
+CHUTE (p.236)
+1d4° / 3 m (max 10d4°). AGI 10 ignore 3 premiers m.
+
+RÉCUPÉRATION (p.221 + test p.236)
+Rapide 30 min : 1 DR → [1 DR + ½ niv] PV.
+Complète 8 h : +1 DR (max 2+CON) ; conditions mauvaises → CON DD zone (dé bonus/malus bivouac).
+
+ARMES MAGIQUES (p.251)
+Affûtée : +1 chances de crit + +1d4° DM sur crit ; niv. propriété +1.
+« Anti-magie » du scénario : PAS une propriété LB nommée ainsi.
+→ Appliquer comme dit le scénario : dé bonus pour résister aux sorts ciblant le porteur (+ Affûtée).
+Proche LB : capacités/objets « Résistance à la magie » (autres contextes).
+
+RAPPEL COMBAT SCÉNARIO
+Orcs fuient à 50 % pertes. Mânes : pas de DM, VOL 15. Sommet : magie morte.
+Idole portée : magie mage/mystique inactive rayon 10 m ; Rogùn OK / boosté.
