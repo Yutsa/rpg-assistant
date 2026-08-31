@@ -175,11 +175,14 @@ Principes rédactionnels :
 
 ## Session de jeu (après création du kit)
 
+Conduite de partie : skill **`.cursor/skills/cof-gm/SKILL.md`**.
+
 L’agent MJ doit :
 
 1. Ouvrir **seulement** `INDEX.txt`.
 2. Ouvrir **un** autre fichier du kit selon le besoin.
 3. Appeler `cof_*` uniquement pour un trou ponctuel.
+4. Jets / PNJ mécaniques : `<rule_application_secret>` ; hors balise, seule l’interprétation.
 
 Interdit en session : relire le PDF campagne entier ; `cof_list_*` sans filtre large ; vision de toutes les pages.
 
