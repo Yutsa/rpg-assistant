@@ -31,3 +31,7 @@ Ne pas réintroduire l’ancien pipeline Python / Angular / Clojure d’ingestio
 3. Pour un détail absent du kit : **un** appel MCP (`cof_search` / `cof_get_creature` / `cof_get_element`), pas le livre entier.
 
 Kit actuel : `docs/gm-kits/croissez-et-multipliez/` (scénario *Croissez et multipliez*).
+
+### Créer un nouveau kit depuis un PDF
+
+Suivre le skill **`.cursor/skills/cof-gm-kit/SKILL.md`** (approche hybride texte + vision ciblée + MCP règles).
