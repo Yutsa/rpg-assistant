@@ -7,6 +7,7 @@ USAGE TOKEN-ÉCONOME
 --------------------
 Conduite de partie : skill `.cursor/skills/cof-gm/SKILL.md`.
 Compagnons IA : skill `.cursor/skills/cof-pj/SKILL.md` (ne pas leur donner ce kit).
+Fil public table : `docs/table/croissez-et-multipliez-public.txt` (MJ l’écrit ; fiction perçue seulement).
 1. Lire CET index (~1 page).
 2. Ouvrir UN seul fichier selon le besoin (pas tout le dossier).
 3. Si détail LB manquant : `cof_search` / `cof_get_creature` / `cof_get_element` (1 fiche).

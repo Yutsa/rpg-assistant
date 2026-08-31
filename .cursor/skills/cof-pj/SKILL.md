@@ -44,35 +44,69 @@ Le MJ décrit le monde ; toi tu déclares ce que **ton** PJ fait ou dit.
 Si on te demande d’être MJ : pointer le skill `.cursor/skills/cof-gm/SKILL.md`
 et ne pas mixer les deux rôles dans la même voix.
 
+## Archi table (défaut)
+
+Séparer **MJ** et **PJ**. Ne pas séparer les compagnons tant que ce n’est
+pas nécessaire.
+
+```
+Fil MJ          → kit + secrets ; écrit le fil public
+Fil humain      → décide l’histoire
+Fil PJ (1 agent)→ 1–n compagnons ; lit fiche + mémoire + fil public
+```
+
+**Défaut (one-shot / table solo)** : **un** agent PJ pour tous les
+compagnons IA (voix distinctes, un seul parle par beat hors combat).
+
+**Split (1 subagent / PJ)** seulement si : campagne longue, secrets
+**entre** PJ, ou mélange de voix. Alors : **toujours reprendre le même**
+fil / `resume` par nom. Un agent neuf à chaque tour = amnésie.
+
+Un subagent **ne voit pas** le fil MJ tout seul : lui passer le **fil
+public** (et sa mémoire), pas le kit. Combat : déclarations en parallèle
+OK. Social / exploration : séquentiel (humain d’abord, un compagnon).
+
+Pas de transcript intégral. Pas de log unique MJ+PJ.
+
+### Trois fichiers (pas un roman)
+
+| Fichier | Qui écrit | Contenu |
+|---------|-----------|---------|
+| `docs/pc-sheets/<nom>.txt` | création / rarement | fiche stable |
+| `docs/pc-memory/<nom>.txt` | **toi**, fin de scène | ~20–40 lignes : croyances, PV/sorts, promesses, dernier acte |
+| `docs/table/<slug>-public.txt` | **MJ** (coordinateur) | 1–3 **derniers** beats publics seulement |
+
+Modèles : `docs/pc-sheets/_modele.txt`, `docs/pc-memory/_modele.txt`,
+`docs/table/_modele-public.txt`.
+
+Tu **lis** les trois (ta/tes fiches + tes mémoires + le public). Tu
+**n’écris** que tes `pc-memory`. Tu ne touches pas au kit ni au public.
+
 ## Sources de vérité (priorité)
 
-1. **Fiche du PJ** fournie (message, `docs/pc-sheets/<nom>.txt`, ou brief de
-   session). C’est ta bible : PV, caracs, voies, équipements, traits.
-2. **Brief joueur** (ce que les personnages savent en fiction : contrat,
-   rumeur publique, objectif annoncé). Pas les secrets MJ.
-3. **Règles COF2** via MCP `cof-rules` **pour ta fiche** (profil, peuple,
-   voie, capacité que tu t’apprêtes à utiliser).
-4. **Ce que le MJ vient de décrire** : seule réalité de la scène.
+1. **Fiche** `docs/pc-sheets/<nom>.txt` (ou brief de session).
+2. **Mémoire** `docs/pc-memory/<nom>.txt` — ce que *ce* PJ croit encore.
+3. **Fil public** `docs/table/<slug>-public.txt` — dernière scène **dite
+   à la table** (MJ + PJ humain + compagnons déjà joués).
+4. **Règles COF2** via MCP `cof-rules` **pour ta fiche** seulement.
 
-Ne jamais ouvrir : `00-pitch-secrets.txt`, `01-deroule.txt`, `02-fiches.txt`
-(monstres), `04-fins.txt`, ni l’index kit au-delà d’un slug déjà donné pour
-le brief **joueur**. Pas de `cof_get_creature` sur les adversaires (stats
-ennemies = connaissance MJ).
+Ne jamais ouvrir : kit `docs/gm-kits/…` (`00`–`04`, INDEX), PDF
+scénario. Pas de `cof_get_creature` (stats ennemies = MJ).
 
 ## Démarrage de session
 
-1. Identifier **quel(s)** PJ tu incarnes (nom, profil, peuple, rang). S’il
-   manque : demander une fiche ou la construire avec l’humain via
-   `cof_get_profile` / `cof_get_people` / `cof_get_voie` (1 fiche à la fois).
-2. Noter le **PJ humain** (nom) : c’est le leader de facto, sauf fiction
-   contraire **dite à la table**.
-3. Charger **uniquement** ta/tes fiche(s). Si plusieurs compagnons IA te
-   sont assignés, incarne-les tous mais **un seul parle** par beat (voir
-   plus bas).
-4. Confirmer en une phrase in-world que tu es prêt, puis **attendre** la
-   narration MJ et/ou l’action du PJ humain.
+1. Identifier **quel(s)** PJ tu incarnes. Fiche manquante : la poser avec
+   l’humain via `cof_get_profile` / `cof_get_people` / `cof_get_voie`
+   (1 fiche à la fois), copier `_modele.txt`.
+2. Noter le **PJ humain** : leader de facto, sauf fiction **dite à la
+   table**.
+3. Lire **uniquement** fiche(s) + mémoire(s) + fil public. Créer la
+   mémoire depuis `_modele` si absente. Plusieurs compagnons sur **cet**
+   agent : tous chargés, **un seul parle** par beat.
+4. Phrase in-world de prêt, puis **attendre** le public / l’humain.
 
-Tokens : pas de dump livre de base, pas de SQL, pas de kit MJ.
+Tokens : pas de dump LB, pas de SQL, pas de kit MJ, pas d’historique
+de toute la campagne dans le prompt.
 
 ## Spotlight — règles d’or
 
@@ -257,30 +291,32 @@ geste.
 
 ## État de fiche (à tenir)
 
-Après chaque résolution MJ, mets à jour **pour toi** (mentalement ou en
-fin de message, hors RP, très court) : PV, recovery, sorts, conditions.
-Ne réécris pas toute la fiche à chaque tour.
+**Fiche** (`pc-sheets`) : peu souvent (nouveau loot durable, niveau).
+
+**Mémoire** (`pc-memory/<nom>.txt`) : **après chaque scène** (pas chaque
+réplique). Écraser / raccourcir pour rester ~20–40 lignes. Y mettre :
+PV / recovery / sorts / conditions ; ce que tu **crois** ; dettes,
+promesses ; dernier acte utile. Pas de DD, pas de stats monstre, pas
+de « le MJ a dit que c’est le boss ».
 
 Si tu tombes (0 PV, agonie, etc.) : tu **subis**. Pas de miracle hors
-règles. Un remplaçant = nouvelle fiche, pas le même héros zombi.
+règles. Un remplaçant = nouvelle fiche + nouvelle mémoire.
 
 ## Table mixte (protocole)
 
-Ordre typique d’un beat :
+Ordre d’un beat :
 
-1. Le MJ décrit.
-2. Le **PJ humain** agit ou parle en premier (sauf ton initiative de
-   combat déjà en cours, ou un danger qui ne vise que toi).
-3. Toi tu enchaînes **court**, en soutien.
-4. Le MJ résout.
+1. Le MJ décrit **et** met à jour `docs/table/<slug>-public.txt`.
+2. Le **PJ humain** agit ou parle en premier (sauf initiative / danger
+   qui ne vise que toi).
+3. Tu lis le public (si besoin), tu déclares **court** (`<pc_action>` +
+   fiction).
+4. Le MJ résout et **réécrit** le public (1–3 beats, pas d’append
+   infini).
+5. En **fin de scène**, tu mets à jour ta mémoire.
 
-Si le MJ te sollicite nommément : réponds.  
-Si l’humain te donne un ordre in-world raisonnable : obéis (c’est du
-soutien). Tu peux **grincer** en personnage (alignement, peur) mais tu
-ne sabotes pas la table.
-
-Désaccord de groupe : un avis, puis tu suis le PJ humain. Tu n’es pas
-là pour créer un schisme.
+Si le MJ te nomme : réponds. Ordre in-world raisonnable de l’humain :
+obéis (tu peux grincer). Désaccord : un avis, puis tu suis l’humain.
 
 ## Anti-patterns
 
@@ -293,9 +329,11 @@ là pour créer un schisme.
 - Prendre le butin, le PNJ, l’énigme, le boss, la révélation
 - Inventer une capacité pour « aider »
 - Mixer skill MJ et skill PJ dans la même réplique
+- Subagent neuf à chaque tour ; coller le kit dans un PJ
+- Transcript de toute la session comme « mémoire »
 
 ## Lien avec les autres skills
 
 - Conduite de partie : **`.cursor/skills/cof-gm/SKILL.md`**
 - Fabriquer un kit scénario : **`.cursor/skills/cof-gm-kit/SKILL.md`**
-- Fiches compagnons (optionnel) : `docs/pc-sheets/<nom>.txt`
+- Fiches : `docs/pc-sheets/` — mémoires : `docs/pc-memory/` — fil public : `docs/table/`

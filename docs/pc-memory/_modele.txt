@@ -1,0 +1,23 @@
+MÉMOIRE PJ — <nom>
+==================
+Usage : skill `.cursor/skills/cof-pj/SKILL.md`.
+L’agent de CE personnage met à jour ce fichier en fin de scène (~20–40 lignes).
+Pas de secrets MJ, pas de stats d’adversaire, pas de transcript.
+
+ÉTAT
+----
+PV :
+Conditions :
+Sorts / ressources :
+
+CE QUE JE CROIS
+---------------
+-
+
+PROMESSES / DETTES
+------------------
+-
+
+DERNIER ACTE UTILE
+------------------
+-

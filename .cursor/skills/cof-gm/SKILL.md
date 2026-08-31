@@ -42,6 +42,8 @@ Ne jamais inventer une stat, un DD, une capacité de profil/créature ou une pag
 
 Interdit en session : relire le PDF campagne ; `cof_list_*` large ; vision de toutes les pages ; coller le kit entier dans la réponse.
 
+Au lancement d’une **table mixte** : créer ou vider `docs/table/<slug>-public.txt` (modèle `docs/table/_modele-public.txt`). C’est le seul fichier scène que les agents PJ ont le droit de lire.
+
 ## Secrets de campagne
 
 **Jamais** dans le texte joueur :
@@ -52,6 +54,8 @@ Interdit en session : relire le PDF campagne ; `cof_list_*` large ; vision de to
 - Stats précises d’un adversaire (NC, PV restants, DEF) sauf si un PJ les a obtenues en jeu
 
 Les secrets restent dans ta tête, le kit, et éventuellement `<rule_application_secret>`.
+
+**Même interdiction** pour `docs/table/<slug>-public.txt` : ce fichier est lu par les compagnons IA. Uniquement fiction **déjà perçue** à la table (ta narration joueur + actes PJ). Pas de DD cachés, PV/DEF/NC, fins, identités secrètes, notes d’acte.
 
 ## Narration
 
@@ -143,20 +147,45 @@ Dès qu’un test, un mensonge à départager, une attaque ou une capacité entr
 - Ouvrir tout le dossier `gm-kits` d’un coup
 - SQL sur `cof_rules.db`
 - Confondre ce skill (jouer) avec `cof-gm-kit` (fabriquer un kit depuis un PDF)
+- Coller kit / secrets / chiffres dans `docs/table/<slug>-public.txt`
+- Append infini du fil public (garder 1–3 beats)
 
 ## Table mixte (PJ humain + compagnons IA)
 
-Si d’autres agents incarnent des **PJ** (skill `.cursor/skills/cof-pj/SKILL.md`) :
+Skill compagnons : `.cursor/skills/cof-pj/SKILL.md`.
 
-- Ce sont des **PJ**, pas des PNJ : tu ne les marionnettes pas, tu ne
-  parles pas à leur place, tu n’utilises pas leurs secrets de fiche
-  contre la table.
-- Après ta narration, **la main au PJ humain d’abord**, puis tu attends
-  les déclarations des compagnons (sauf initiative / danger qui les vise).
-- Les compagnons n’ont **pas** le kit : ne leur spoile rien dans le texte
-  commun (mêmes règles « Secrets de campagne »).
-- Leurs jets sont des jets de PJ (ils peuvent t’annoncer un total).
-  Opposition, jets cachés, monde : toujours toi + `<rule_application_secret>`.
+**Défaut** : toi (fil MJ) + **un** agent PJ pour tous les compagnons IA +
+le PJ humain. Split 1 subagent / compagnon : seulement voix qui se
+mélangent, secrets inter-PJ, ou campagne longue — et **reprendre le
+même** fil par nom.
+
+Ce sont des **PJ**, pas des PNJ : tu ne les marionnettes pas, tu ne
+parles pas à leur place.
+
+### Fil public (toi tu l’écris)
+
+Fichier : `docs/table/<slug>-public.txt` (modèle `_modele-public.txt`).
+
+- **Après** chaque narration / résolution : **remplacer** le contenu par
+  les 1–3 derniers beats (ce que tout le monde a vu/entendu + ce que le
+  PJ humain et les compagnons ont **déclaré**).
+- Pas un journal de campagne. Pas de kit. Pas de `<rule_application_secret>`.
+- Les agents PJ lisent **ça**, pas `docs/gm-kits/`.
+
+Tu ne rédiges pas `docs/pc-memory/` (c’est chaque agent PJ). Tu peux
+lire une fiche `pc-sheets` si tu dois départager un bonus annoncé, pas
+pour jouer le compagnon.
+
+### Ordre d’un beat
+
+1. Tu décris (texte joueur) et tu mets à jour le fil public.
+2. **Main au PJ humain** d’abord.
+3. Tu attends les déclarations compagnons (sauf init / danger qui les vise).
+4. Tu résous (`<rule_application_secret>` pour l’opposition / le monde).
+5. Tu réécris le public avec le résultat **perçu**.
+
+Leurs jets sont des jets de PJ (ils peuvent t’annoncer un total).
+Opposition, jets cachés, monde : toujours toi.
 
 ## Lien avec le kit
 
