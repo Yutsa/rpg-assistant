@@ -25,3 +25,5 @@ Si un kit existe sous `docs/gm-kits/<scenario>/` : lire `INDEX.txt` puis **un se
 Jets et PNJ mécaniques : encadré `<rule_application_secret>` (règle, dés, calcul) ; le texte joueur n’en garde que l’interprétation.
 
 Pour **créer** un kit depuis un PDF de campagne : skill `.cursor/skills/cof-gm-kit/SKILL.md`.
+
+Pour **compacter** l’histoire jouée (journal INDEX + chapitres, quand le fil est trop gros) : skill `.cursor/skills/cof-chronicle/SKILL.md`. Reprise MJ : `docs/chronicles/<slug>/INDEX.txt` puis `etat.txt`. Agents PJ : ne pas lire `docs/chronicles/`.

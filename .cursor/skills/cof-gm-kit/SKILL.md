@@ -175,7 +175,8 @@ Principes rédactionnels :
 
 ## Session de jeu (après création du kit)
 
-Conduite de partie : skill **`.cursor/skills/cof-gm/SKILL.md`**.
+Conduite de partie : skill **`.cursor/skills/cof-gm/SKILL.md`**.  
+Journal de suivi après jeu : skill **`.cursor/skills/cof-chronicle/SKILL.md`**.
 
 L’agent MJ doit :
 

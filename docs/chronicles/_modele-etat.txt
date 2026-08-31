@@ -1,0 +1,38 @@
+ÉTAT — <slug>
+=============
+Usage : skill `.cursor/skills/cof-chronicle/SKILL.md`
+Écraser à chaque compactage. Maintenant seulement (~40 lignes max).
+Pas de secrets MJ. Pas d’historique (ça va dans les chapitres).
+
+QUAND
+-----
+Fiction :
+Session (n° / date réelle si utile) :
+
+LIEU
+----
+
+
+GROUPE
+------
+- <nom> — condition notable (blessure, loot durable, ressource vide)
+
+ENJEU ACTUEL
+------------
+
+
+PNJ EN SCÈNE / ALLIÉS CONNUS
+----------------------------
+- <nom> — ce que la table en sait
+
+OBJETS / PROMESSES
+------------------
+-
+
+HORLOGE PERÇUE
+--------------
+(ce que les PJ sentent : délai, météo, rumeur — pas l’horloge secrète)
+
+SCÈNE OUVERTE
+-------------
+(1–3 lignes : ce qui n’est pas encore clos / pas encore en chapitre)

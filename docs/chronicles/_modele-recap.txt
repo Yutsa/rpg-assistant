@@ -1,0 +1,20 @@
+RECAP r0N — <titre> (chapitres pliés, encore sur disque : 10–…)
+==============================================================
+Usage : skill `.cursor/skills/cof-chronicle/SKILL.md`
+Pliage quand l’INDEX dépasserait ~12 chapitres. ~40 lignes. Faits de table.
+
+FAITS
+-----
+-
+
+DÉCISIONS
+---------
+-
+
+CONSÉQUENCES DURABLES
+---------------------
+-
+
+DÉTAIL ENCORE DISPO
+-------------------
+10-<titre>.txt, 11-<titre>.txt, …

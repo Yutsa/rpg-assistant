@@ -44,6 +44,8 @@ Interdit en session : relire le PDF campagne ; `cof_list_*` large ; vision de to
 
 Au lancement d’une **table mixte** : créer ou vider `docs/table/<slug>-public.txt` (modèle `docs/table/_modele-public.txt`). C’est le seul fichier scène que les agents PJ ont le droit de lire.
 
+Si une **chronique** existe (`docs/chronicles/<slug>/INDEX.txt`) : lire **INDEX + etat.txt** (reprise). Un chapitre / `mj.txt` seulement pour un trou. Compacter le fil trop long : skill `.cursor/skills/cof-chronicle/SKILL.md` **sur demande**, pas tout seul en plein beat.
+
 ## Secrets de campagne
 
 **Jamais** dans le texte joueur :
@@ -149,6 +151,8 @@ Dès qu’un test, un mensonge à départager, une attaque ou une capacité entr
 - Confondre ce skill (jouer) avec `cof-gm-kit` (fabriquer un kit depuis un PDF)
 - Coller kit / secrets / chiffres dans `docs/table/<slug>-public.txt`
 - Append infini du fil public (garder 1–3 beats)
+- Relire tout `docs/chronicles/<slug>/` ou le transcript au lieu de INDEX + etat
+- Compacter la chronique sans demande (skill `cof-chronicle`, manuel)
 
 ## Table mixte (PJ humain + compagnons IA)
 
@@ -191,4 +195,5 @@ Opposition, jets cachés, monde : toujours toi.
 
 Créer / mettre à jour un kit : skill **`.cursor/skills/cof-gm-kit/SKILL.md`**.  
 Compagnons IA : skill **`.cursor/skills/cof-pj/SKILL.md`**.  
+Journal de suivi (compactage) : skill **`.cursor/skills/cof-chronicle/SKILL.md`**.  
 Ce skill-ci suppose qu’un kit existe déjà (ou que l’utilisateur pointe un slug).
