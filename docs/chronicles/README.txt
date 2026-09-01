@@ -8,16 +8,17 @@ Usage : skill `.cursor/skills/cof-chronicle/SKILL.md`
   — consulter : INDEX.txt puis etat.txt (cast en scène inclus),
     un chapitre seulement si trou.
 
-MJ (cof-gm) : au (re)démarrage, si ce dossier existe, lire INDEX + etat.
-Agents PJ : ne pas ouvrir ce dossier (surtout pas mj.txt).
+MJ (cof-gm) : au (re)démarrage, INDEX + etat ; **combat.txt** si présent.
+Agents PJ : ne pas ouvrir ce dossier (surtout pas mj.txt / combat.txt).
 
 Un slug = un dossier, le même que le kit / le public :
   docs/chronicles/<slug>/INDEX.txt
   docs/chronicles/<slug>/etat.txt
   docs/chronicles/<slug>/mj.txt
+  docs/chronicles/<slug>/combat.txt       (seulement si combat ouvert)
   docs/chronicles/<slug>/10-<titre>.txt   (chapitres)
   docs/chronicles/<slug>/r01-<titre>.txt  (recaps pliés)
 
 Modèles : `_modele-index.txt`, `_modele-etat.txt`, `_modele-mj.txt`,
-`_modele-chapitre.txt`, `_modele-recap.txt`.
+`_modele-chapitre.txt`, `_modele-recap.txt`, `_modele-combat.txt`.
 Ne pas y coller le PDF, le kit entier, ni le chat.

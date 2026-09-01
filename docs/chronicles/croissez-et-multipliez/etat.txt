@@ -1,0 +1,50 @@
+ÉTAT — croissez-et-multipliez
+=============================
+Usage : skill `.cursor/skills/cof-chronicle/SKILL.md` — écraser, pas d’historique.
+
+QUAND
+-----
+Jour 2, matinée. Session 1 (31 août 2026).
+
+LIEU
+----
+Piste d’approche des Vierges, talus boisés, 4 chariots bloqués.
+Yutsa vs chef au centre ; autres aux wagons.
+
+ENJEU ACTUEL
+------------
+Tenir le convoi. Yutsa fixe le chef ; les autres abattent le reste.
+Bryn soignée puis un orc l’a suivie à la roue.
+
+CAST EN SCÈNE
+-------------
+- Yutsa — guerrier humain, bouclier, chef (touché au flanc, tient)
+  attitude: première ligne, ordres courts
+  relation: parle pour le groupe ; a envoyé Bryn se soigner
+  veut: le chef à lui ; que les autres achèvent le reste
+- Taeven Feuille-vive — rôdeur elfe, aux chariots
+  attitude: sec, arc / relation: exécute Yutsa / veut: wagons + orcs des roues
+- Bryn Martepierre — prêtresse naine, derrière une roue (reprise, re-touchée)
+  attitude: obstinée / relation: repli sur ordre / veut: tenir ; un orc sur elle
+- Pip Wren — magicien gnome, wagons
+  attitude: paniqué / relation: suit, ne soigne pas / veut: pas se faire toucher
+- Chef orc — épée 2M, piste (blessé, debout)
+  attitude: gueule, gêné par le jour / relation: a choisi Yutsa / veut: le convoi
+
+HORS SCÈNE (encore utile)
+-------------------------
+- Marduk Forgesang — Nosra ; veut des faits, pas ses hommes.
+- Orel + 3 cochers — bœufs ; un blessé au bras ; prêts à fuir.
+
+OBJETS / PROMESSES
+------------------
+- Pli « chef de convoi » ; gages dans les chariots.
+- Yutsa à Bryn : « je les tiens, reviens quand ça ira ».
+
+HORLOGE PERÇUE
+--------------
+Livraison encore devant. Bêtes affolées. Jour (orcs plissent les yeux).
+
+SCÈNE OUVERTE
+-------------
+COMBAT → combat.txt. Round 4, tour de Yutsa. Embuscade orc non close.

@@ -1,0 +1,39 @@
+COMBAT — <slug>
+===============
+Usage : skill `.cursor/skills/cof-chronicle/SKILL.md` (MJ seulement).
+Écraser à chaque compactage en combat. **Supprimer** quand le combat est clos.
+Interdit agents PJ / fil public / chapitres.
+
+MANCHE
+------
+Round :
+À qui le tour :
+Surprise :
+Lumière / terrain :
+Fuite / horloge :
+
+ORDRE D’INITIATIVE
+------------------
+-
+
+PJ / ALLIÉS
+-----------
+- Nom — profil niv. | PV a/max | DEF | Init | DR | PC | PM
+  attaques:
+  capa encore dispo ce combat:
+  position:
+  états:
+
+ENNEMIS
+-------
+- id — fiche | PV a/max | DEF | Init | attaque
+  position / cible:
+  états:
+
+PNJ NON COMBATTANTS TOUCHÉS
+---------------------------
+-
+
+RÈGLES ACTIVES
+--------------
+-

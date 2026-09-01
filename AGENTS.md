@@ -8,7 +8,7 @@ Ce dépôt expose **uniquement** un serveur MCP pour les références Chroniques
 - SQLite + FTS5 (`data/cof_rules.db`)
 - Extraots source : `extract/structured/*.json` (livre de base)
 - Kits MJ : `docs/gm-kits/<scenario>/` (fichiers `.txt` courts + `INDEX.txt`)
-- Chroniques : `docs/chronicles/<slug>/` (INDEX + etat + chapitres ; `mj.txt` = secrets)
+- Chroniques : `docs/chronicles/<slug>/` (INDEX + etat + chapitres ; `mj.txt` = secrets ; `combat.txt` si combat ouvert)
 - Table mixte : fiche `docs/pc-sheets/`, mémoire PJ `docs/pc-memory/`, fil public `docs/table/<slug>-public.txt`
 
 ## Commandes
@@ -43,7 +43,7 @@ Skill **`.cursor/skills/cof-pj/SKILL.md`**. Défaut : **1 agent PJ** pour tous l
 
 ### Chronique (contexte trop gros)
 
-Skill **`.cursor/skills/cof-chronicle/SKILL.md`**. Déclenchement **manuel** (compacter / archiver la session). Produit `docs/chronicles/<slug>/INDEX.txt` (résumé très court + pointeurs) et des chapitres. Reprise : INDEX + `etat.txt` (cast en scène). Un fichier détail si trou. Pas le transcript. Agents PJ : ne pas ouvrir ce dossier.
+Skill **`.cursor/skills/cof-chronicle/SKILL.md`**. Déclenchement **manuel** (compacter / archiver la session). Produit INDEX + chapitres. En combat : **`combat.txt`** (PV, Init, tour). Reprise : INDEX + `etat.txt` (+ `combat.txt` si présent). Agents PJ : ne pas ouvrir ce dossier.
 
 ### Créer un nouveau kit depuis un PDF
 
